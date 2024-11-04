@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Pocetna from "./pages/Pocetna";
 import LogIn from "./pages/LogIn"; // Import LogIn page
 import Dogadjaji from "./pages/Dogadjaji";
+import Tereni from "./pages/Tereni";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("pocetna");
@@ -14,6 +15,9 @@ function App() {
       setCurrentPage("login");
     } else if (path === "/dogadjaji") {
       setCurrentPage("dogadjaji");
+    }
+      else if (path === "/tereni") {
+      setCurrentPage("tereni");
     } else {
       setCurrentPage("pocetna");
     }
@@ -26,6 +30,7 @@ function App() {
           {currentPage === "pocetna" && <Pocetna />} {/* Show Pocetna page */}
           {currentPage === "login" && <LogIn />}
           {currentPage === "dogadjaji" && <Dogadjaji />} {/* Show LogIn page */}
+          {currentPage === "tereni" && <Tereni />} {/* Show Tereni page */}
         </div>
       </header>
     </div>
