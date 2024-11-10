@@ -21,4 +21,9 @@ urlpatterns = [
     path('api/register/standard_user/', views.register_standard_user, name='register_standard_user'),
     path('api/register/business_subject/', views.register_business_subject, name='register_business_subject'),
     path('api/register/client/', views.register_client, name='register_client'),
+
+    # User Editing Endpoints
+    path('api/edit/standard_user/<int:pk>/', views.edit_standard_user, name='edit_standard_user'),
+    path('api/edit/business_user/<int:pk>/', views.edit_business_user, name='edit_business_user'),
+    path('api/edit/client/<int:pk>/', views.edit_client, name='edit_client'),
 ]
