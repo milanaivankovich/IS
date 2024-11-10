@@ -4,6 +4,7 @@ import Pocetna from "./pages/Pocetna";
 import LogIn from "./pages/LogIn"; // Import LogIn page
 import Dogadjaji from "./pages/Dogadjaji";
 import Tereni from "./pages/Tereni";
+import EditUserProfile from "./pages/EditUserProfile";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("pocetna");
@@ -15,9 +16,10 @@ function App() {
       setCurrentPage("login");
     } else if (path === "/dogadjaji") {
       setCurrentPage("dogadjaji");
-    }
-      else if (path === "/tereni") {
+    } else if (path === "/tereni") {
       setCurrentPage("tereni");
+    } else if (path === "/userprofile") {
+      setCurrentPage("edituserprofile");
     } else {
       setCurrentPage("pocetna");
     }
@@ -31,6 +33,7 @@ function App() {
           {currentPage === "login" && <LogIn />}
           {currentPage === "dogadjaji" && <Dogadjaji />} {/* Show LogIn page */}
           {currentPage === "tereni" && <Tereni />} {/* Show Tereni page */}
+          {currentPage === "edituserprofile" && <EditUserProfile />}
         </div>
       </header>
     </div>
