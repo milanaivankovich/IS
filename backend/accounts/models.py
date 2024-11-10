@@ -37,6 +37,12 @@ class Client(models.Model):
     user = models.OneToOneField(StandardUser, on_delete=models.CASCADE, related_name="client_profile")
     password = models.CharField(max_length=128, default='temporary_password')
 
+    name = models.CharField(max_length=50, default='name')
+    surname = models.CharField(max_length=50, default='surname')
+
     date_of_birth = models.DateField(blank=True, null=True)
     profile_picture = models.ImageField(upload_to="profile_pics/", blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.name} {self.surname}"

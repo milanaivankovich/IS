@@ -9,8 +9,8 @@ class StandardUserManager(models.Manager):
         return self.create(user=user, name=name, phone=phone)
 
 class ClientManager(models.Manager):
-    def create_client(self, user, name, address):
-        return self.create(user=user, name=name, address=address)
+    def create_client(self, user, password, name, surname, date_of_birth, profile_picture, bio):
+        return self.create(user=user, password=password, name=name, surname=surname, date_of_birth=date_of_birth, profile_picture=profile_picture, bio=bio)
 
 class FounderManager(models.Manager):
     def create_founder(self, business_subject, name, role, profile_image):
