@@ -36,7 +36,7 @@ class UserRegistrationView(APIView):
 
 
 @api_view(['PUT'])
-def edit_standard_user_profile(request, pk):
+def edit_standard_user(request, pk):
     user = StandardUser.objects.get(pk=pk)
     serializer = StandardUserSerializer(user, data=request.data, partial=True)
     if serializer.is_valid():
@@ -45,7 +45,7 @@ def edit_standard_user_profile(request, pk):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['PUT'])
-def edit_client_profile(request, pk):
+def edit_client(request, pk):
     user = Client.objects.get(pk=pk)
     serializer = ClientSerializer(user, data=request.data, partial=True)
     if serializer.is_valid():
@@ -57,7 +57,7 @@ def edit_client_profile(request, pk):
 
 
 @api_view(['PUT'])
-def edit_business_subject_profile(request, pk):
+def edit_business_subject(request, pk):
     user = BusinessSubject.objects.get(pk=pk)
     serializer = BusinessSubjectSerializer(user, data=request.data, partial=True)
     if serializer.is_valid():
