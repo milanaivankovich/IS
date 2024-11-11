@@ -26,6 +26,8 @@ urlpatterns = [
     path('api/edit/standard_user/<int:pk>/', views.edit_standard_user, name='edit_standard_user'),
     path('api/edit/business_subject/<int:pk>/', views.edit_business_subject, name='edit_business_subject'),
     path('api/edit/client/<int:pk>/', views.edit_client, name='edit_client'),
+
+    path('api/get/client/<int:pk>/', views.get_client, name='get_client'),
     
     # Include the router URLs
     path('', include(router.urls)),

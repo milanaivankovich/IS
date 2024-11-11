@@ -59,6 +59,16 @@ def edit_client(request, pk):
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def get_client(request, pk):
+    try:
+        user = Client.objects.get(pk=pk)
+    except Client.DoesNotExist:
+        return Response({"error": "Client not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = ClientSerializer(user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 @api_view(['PUT'])
