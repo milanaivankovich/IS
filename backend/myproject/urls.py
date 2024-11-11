@@ -1,7 +1,8 @@
-from django.contrib import admin
+# myproject/urls.py
 from django.urls import path, include
+from django.contrib import admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls')),  # Include accounts app URLs
+    path('', include('accounts.urls')),  # Make sure this line is included
 ]
