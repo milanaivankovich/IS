@@ -3,7 +3,7 @@ import './LogIn.css';
 import logo from '../images/logo.png';
 
 
-const Login = () => {
+const LoginPoslovni = () => {
   return (
     <div className="login-container">
       <div className="login-left">
@@ -11,8 +11,8 @@ const Login = () => {
         <h2 className="login-welcome">DOBRODOŠLI!</h2>
         <p>Molimo unesite podatke za prijavu</p>
         <form>
-          <label htmlFor="email">Email ili korisničko ime</label>
-          <input type="text" placeholder="Email ili korisničko ime" className="login-input" />
+          <label htmlFor="email">Email</label>
+          <input type="text" placeholder="Email" className="login-input" />
           <label htmlFor="password">Lozinka</label>
           <input type="password" placeholder="Lozinka" className="login-input" />
           <div className="login-options">
@@ -23,8 +23,6 @@ const Login = () => {
             <a href="/">Zaboravili ste lozinku?</a>
           </div>
           <button className="login-btn">Prijavi se</button>
-          <button className="login-btn google">Prijavi se sa Google</button>
-          <button className="login-btn facebook">Prijavi se sa Facebook</button>
           <p>Nemate nalog? <a href="/">Registrujte se!</a></p>
         </form>
       </div>
@@ -35,4 +33,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginPoslovni;

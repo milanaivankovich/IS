@@ -91,3 +91,13 @@ body {
     display: block; /* osiguraj da su elementi blok elementi */
   }
   
+  .login-right{
+    height: 75vh;
+    min-width: 60vw;
+    display: flex;
+    align-items: right;
+    justify-content: right;
+    background-image: url("../images/tennis-court-seen-from-air.jpg");
+    
+    background-position: right;
+  }

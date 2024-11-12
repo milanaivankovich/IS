@@ -1,7 +1,7 @@
 import React from "react";
 import "./OdabirVrsteKorisnika.css";
 
-function OdabirVrsteKorisnika() {
+function OdabirVrsteKorisnikaRegistracija() {
   // Funkcija za navigaciju
   const navigateTo = (path) => {
     window.location.href = path;
@@ -14,11 +14,11 @@ function OdabirVrsteKorisnika() {
       
       {/* Dugmad za izbor korisnika */}
       <div className="container">
-        <button className="button" onClick={() => (window.location.href = "/login")}>Rekreativac</button>
-        <button className="button" onClick={() => (window.location.href = "/login1")}>Poslovni korisnik</button>
+        <button className="button" onClick={() => (window.location.href = "/registerRekreativac")}>Rekreativac</button>
+        <button className="button" onClick={() =>  (window.location.href = "/registerPoslovni")}>Poslovni korisnik</button>
       </div>
     </div>
   );
 }
 
-export default OdabirVrsteKorisnika;
+export default OdabirVrsteKorisnikaRegistracija;

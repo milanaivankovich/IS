@@ -6,6 +6,8 @@ import Dogadjaji from "./pages/Dogadjaji";
 import Tereni from "./pages/Tereni";
 import EditUserProfile from "./pages/EditUserProfile";
 import OdabirVrsteKorisnika from "./pages/OdabirVrsteKorisnika";
+import LoginPoslovni from "./pages/LoginPoslovni";
+import OdabirVrsteKorisnikaRegistracija from "./pages/OdabirVrsteKorisnikaRegistracija";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("pocetna");
@@ -13,7 +15,7 @@ function App() {
   useEffect(() => {
     const path = window.location.pathname;
     if (path === "/login") {
-      setCurrentPage("usertype");
+      setCurrentPage("login");
     } else if (path === "/dogadjaji") {
       setCurrentPage("dogadjaji");
     } else if (path === "/tereni") {
@@ -22,6 +24,10 @@ function App() {
       setCurrentPage("edituserprofile");
     } else if (path === "/usertype") {
       setCurrentPage("usertype");
+    } else if (path === "/usertype1") {
+      setCurrentPage("usertype1");
+    } else if (path === "/login1") {
+      setCurrentPage("login1");
     } else {
       setCurrentPage("pocetna");
     }
@@ -34,10 +40,12 @@ function App() {
         <div className="Header">
           {currentPage === "pocetna" && <Pocetna />}
           {currentPage === "login" && <LogIn />}
+          {currentPage === "login1" && <LoginPoslovni />}
           {currentPage === "dogadjaji" && <Dogadjaji />}
           {currentPage === "tereni" && <Tereni />}
           {currentPage === "edituserprofile" && <EditUserProfile />}
           {currentPage === "usertype" && <OdabirVrsteKorisnika />}
+          {currentPage === "usertype1" && <OdabirVrsteKorisnikaRegistracija />}
         </div>
       </header>
     </div>
