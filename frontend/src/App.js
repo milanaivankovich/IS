@@ -8,6 +8,7 @@ import EditUserProfile from "./pages/EditUserProfile";
 import OdabirVrsteKorisnika from "./pages/OdabirVrsteKorisnika";
 import LoginPoslovni from "./pages/LoginPoslovni";
 import OdabirVrsteKorisnikaRegistracija from "./pages/OdabirVrsteKorisnikaRegistracija";
+import UserProfile from "./pages/UserProfile";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("pocetna");
@@ -20,7 +21,7 @@ function App() {
       setCurrentPage("dogadjaji");
     } else if (path === "/tereni") {
       setCurrentPage("tereni");
-    } else if (path === "/userprofile") {
+    } else if (path === "/edituserprofile") {
       setCurrentPage("edituserprofile");
     } else if (path === "/usertype") {
       setCurrentPage("usertype");
@@ -28,12 +29,14 @@ function App() {
       setCurrentPage("usertype1");
     } else if (path === "/login1") {
       setCurrentPage("login1");
-    } else {
+    } else if (path === "/userprofile") {
+      setCurrentPage("userprofile");
+    }else {
       setCurrentPage("pocetna");
     }
   }, []);
 
-
+ 
   return (
     <div className="App">
       <header className="App-header">
@@ -46,6 +49,7 @@ function App() {
           {currentPage === "edituserprofile" && <EditUserProfile />}
           {currentPage === "usertype" && <OdabirVrsteKorisnika />}
           {currentPage === "usertype1" && <OdabirVrsteKorisnikaRegistracija />}
+          {currentPage === "userprofile" && <UserProfile />}
         </div>
       </header>
     </div>
