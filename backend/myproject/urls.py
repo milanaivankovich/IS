@@ -6,4 +6,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('accounts.urls')),  # Make sure this line is included
     path('activities/', include('activities.urls')), #aktivnosti = za slucaj da ne bude radilo
+    path('fields/', include('fields.urls')),
 ]
