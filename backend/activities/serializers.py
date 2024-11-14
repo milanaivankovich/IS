@@ -4,4 +4,4 @@ from .models import Aktivnost
 class AktivnostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Aktivnost
-        fields = '__all__'
+        fields = ['id', 'naziv', 'opis', 'client']
