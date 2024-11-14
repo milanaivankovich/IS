@@ -3,4 +3,5 @@ from . import views
 
 urlpatterns = [
     path('fields/', views.getData),
+    path('fields/add/', views.setData),
 ]
