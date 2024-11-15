@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -11,32 +12,58 @@ import Footer from "../components/Footer.js";
 
 const Tereni = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedLocation, setSelectedLocation] = useState(null); // Dodano stanje za odabranu lokaciju
-  const events = [
-    // Primjer događaja s lokacijama
-    { id: 1, title: "Događaj 1", date: new Date(), location: [44.7722, 17.191] },
-    { id: 2, title: "Događaj 2", date: new Date(), location: [44.7822, 17.201] },
-    // Dodajte više događaja ovdje
-  ];
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [events, setEvents] = useState([]);
+  const [sponsoredEvents, setSponsoredEvents] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // Funkcija za dohvaćanje događaja iz backend-a
+  const fetchEvents = async () => {
+    setLoading(true);
+    try {
+      const formattedDate = selectedDate ? selectedDate.toISOString().split("T")[0] : null;
+
+      // Dohvatanje običnih događaja
+      const eventsResponse = await axios.get("http://localhost:5000/api/events", {
+        params: {
+          date: formattedDate, // Datum u formatu YYYY-MM-DD
+          lat: selectedLocation ? selectedLocation[0] : null,
+          lng: selectedLocation ? selectedLocation[1] : null,
+        },
+      });
+      
+      // Dohvatanje sponzorisanih događaja
+      const sponsoredResponse = await axios.get("http://localhost:5000/api/sponsored-events", {
+        params: {
+          date: formattedDate,
+          lat: selectedLocation ? selectedLocation[0] : null,
+          lng: selectedLocation ? selectedLocation[1] : null,
+        },
+      });
+
+      setEvents(eventsResponse.data);
+      setSponsoredEvents(sponsoredResponse.data);
+    } catch (error) {
+      console.error("Greška pri dohvaćanju događaja:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Pozivanje funkcije za dohvaćanje događaja kad se promijeni lokacija ili datum
+  useEffect(() => {
+    if (selectedLocation) {
+      fetchEvents();
+    }
+  }, [selectedDate, selectedLocation]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    // Ovdje možete dodati logiku za filtriranje događaja na osnovu odabranog datuma
   };
 
   const handleLocationClick = (location) => {
     setSelectedLocation(location);
-    // Ovdje možete dodati logiku za filtriranje događaja na osnovu odabrane lokacije
   };
-
-  // Filtriranje događaja na osnovu datuma i lokacije
-  const filteredEvents = events.filter((event) => {
-    const isSameDate = event.date.toDateString() === selectedDate.toDateString();
-    const isSameLocation = selectedLocation ? 
-      event.location[0] === selectedLocation[0] && event.location[1] === selectedLocation[1] : true;
-
-    return isSameDate && isSameLocation;
-  });
 
   return (
     <div className="tereni-page-container">
@@ -54,12 +81,14 @@ const Tereni = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            {/* Marker za događaje */}
-            {events.map((event) => (
-              <Marker key={event.id} position={event.location} eventHandlers={{ click: () => handleLocationClick(event.location) }}>
-                <Popup>{event.title}</Popup>
-              </Marker>
-            ))}
+            {/* Primjer markera koji predstavlja mogući događaj */}
+            <Marker
+              position={[44.7722, 17.191]}
+              eventHandlers={{ click: () => handleLocationClick([44.7722, 17.191]) }}
+            >
+              <Popup>Lokacija događaja 1</Popup>
+            </Marker>
+            {/* Dodaj dodatne markere po potrebi */}
           </MapContainer>
 
           {/* Kalendar */}
@@ -70,26 +99,34 @@ const Tereni = () => {
       <div className="Events-body">
         <div className="Events-bar">
           <div className="Event-bar-title">DOGAĐAJI</div>
-          <div className="Event-bar-subtitle">Šta ima novo u gradu?</div>
-          <div className="Scroll-bar">
-            <div className="Event-cards">
-              {filteredEvents.map(event => (
-                <EventCard key={event.id} title={event.title} />
-              ))}
+          <div className="Event-bar-subtitle">Prikaz događaja</div>
+          {loading ? (
+            <p>Učitavanje događaja...</p>
+          ) : (
+            <div className="Scroll-bar">
+              <div className="Event-cards">
+                {events.map((event) => (
+                  <EventCard key={event.id} title={event.title} date={event.date} location={event.location} />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
+
         <div className="Events-bar">
           <div className="Event-bar-title">SPONZORISANO</div>
           <div className="Event-bar-subtitle">Sponzorisani događaji</div>
-          <div className="Scroll-bar">
-            <div className="Event-cards">
-              <SponsoredEventCard />
-              <SponsoredEventCard />
-              <SponsoredEventCard />
-              <SponsoredEventCard />
+          {loading ? (
+            <p>Učitavanje sponzorisanih događaja...</p>
+          ) : (
+            <div className="Scroll-bar">
+              <div className="Event-cards">
+                {sponsoredEvents.map((event) => (
+                  <SponsoredEventCard key={event.id} title={event.title} date={event.date} location={event.location} />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 

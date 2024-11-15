@@ -14,8 +14,8 @@ function OdabirVrsteKorisnika() {
       
       {/* Dugmad za izbor korisnika */}
       <div className="container">
-        <button className="button" onClick={() => navigateTo("/login?user=rekreativac")}>Rekreativac</button>
-        <button className="button" onClick={() => navigateTo("/login?user=poslovni")}>Poslovni korisnik</button>
+        <button className="button" onClick={() => (window.location.href = "/login")}>Rekreativac</button>
+        <button className="button" onClick={() => (window.location.href = "/login1")}>Poslovni korisnik</button>
       </div>
     </div>
   );

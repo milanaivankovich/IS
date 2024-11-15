@@ -16,18 +16,18 @@ router.register(r'clients', views.ClientViewSet)
 #]
 
 
-
 urlpatterns = [
-    path('api/register/standard_user/', views.register_standard_user, name='register_standard_user'),
-    path('api/register/business_subject/', views.register_business_subject, name='register_business_subject'),
-    path('api/register/client/', views.register_client, name='register_client'),
+    # Client Endpoints
+    path('api/client/', views.register_client, name='register_client'),  # POST to create new client
+    path('api/client/<int:pk>/', views.get_client, name='get_client'),  # GET client by ID
+    path('api/client/<int:pk>/', views.edit_client, name='edit_client'),  # PUT/PATCH to edit client
 
-    # User Editing Endpoints
-    path('api/edit/standard_user/<int:pk>/', views.edit_standard_user, name='edit_standard_user'),
-    path('api/edit/business_subject/<int:pk>/', views.edit_business_subject, name='edit_business_subject'),
-    path('api/edit/client/<int:pk>/', views.edit_client, name='edit_client'),
+    # Business Subject Endpoints
+    path('api/business-subject/', views.register_business_subject, name='register_business_subject'),  # POST to create new
+    path('api/business-subject/<int:pk>/', views.get_business_subject, name='get_business_subject'),  # GET by ID
+    path('api/business-subject/<int:pk>/', views.edit_business_subject, name='edit_business_subject'),  # PUT/PATCH
 
-    path('api/get/client/<int:pk>/', views.get_client, name='get_client'),
+    
     
     # Include the router URLs
     path('', include(router.urls)),

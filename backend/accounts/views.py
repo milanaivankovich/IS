@@ -70,6 +70,17 @@ def get_client(request, pk):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+def get_business_subject(request, pk):
+    try:
+        user = BusinessSubject.objects.get(pk=pk)
+    except BusinessSubject.DoesNotExist:
+        return Response({"error": "Business Subject not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = BusinessSubjectSerializer(user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 @api_view(['PUT'])
 def edit_business_subject(request, pk):

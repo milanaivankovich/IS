@@ -39,13 +39,13 @@ const MenuBar = ({ variant, search }) => {
         <div className="menu-right">
           <button
             className="login-button"
-            onClick={() => (window.location.href = "/login")}
+            onClick={() => (window.location.href = "/usertype")}
           >
             Prijava
           </button>
           <button
             className="register-button"
-            onClick={() => (window.location.href = "/register")}
+            onClick={() => (window.location.href = "/usertype1")}
           >
             Registracija
           </button>

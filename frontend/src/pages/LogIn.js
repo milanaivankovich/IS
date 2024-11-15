@@ -29,7 +29,7 @@ const Login = () => {
         </form>
       </div>
       <div className="login-right">
-        {/* Dodaj sliku ovdje */}
+       
       </div>
     </div>
   );
