@@ -4,6 +4,7 @@ from .models import Aktivnost
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from accounts.models import Client
+from .serializers import AktivnostSerializer
 
 class AktivnostCreateView(CreateView):
     model = Aktivnost
@@ -16,7 +17,7 @@ class AktivnostCreateView(CreateView):
 def client_activities(request, client_id):
     client = Client.objects.get(id=client_id)
     aktivnosti = client.activities.all()
-    data = [{"name": a.name, "descritption": a.descritption} for a in aktivnosti]
+    data = [{"name": a.name, "descritption": a.descritption, } for a in aktivnosti]
     return Response(data)
 
 @api_view(['POST'])
@@ -24,7 +25,7 @@ def add_activity(request, client_id):
     client = get_object_or_404(Client, id=client_id)
     data = request.data.copy()
     data['client'] = client.id
-    seriallizer = AktivnostSeriallizer(data=data)
+    seriallizer = AktivnostSerializer(data=data)
     if seriallizer.is_valid():
         seriallizer.save()
         return Response(seriallizer.data, status=status.HTTP_201_CRETATED)
