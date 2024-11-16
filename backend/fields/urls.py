@@ -2,6 +2,6 @@ from django.urls import path # type: ignore
 from . import views
 
 urlpatterns = [
-    path('fields/', views.getData),
-    path('fields/add/', views.setData),
+    #Field Endpoints
+    path('api/field/', views.setData), #POST to create new field
 ]

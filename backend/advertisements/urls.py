@@ -2,6 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('advertisements/', views.getData),
-    path('advertisements/add/', views.setData),
+    #Advertisement Endpoints
+    path('api/advertisement/', views.setData), #POST to create new advertisement
 ]

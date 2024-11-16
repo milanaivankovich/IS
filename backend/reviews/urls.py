@@ -2,6 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('reviews/', views.getData),
-    path('reviews/add/', views.setData),
+    #Review Endpoints
+    path('api/review/', views.setData), #POST to create new review
 ]
