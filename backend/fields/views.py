@@ -17,3 +17,12 @@ def setData(request):
     if serializer.is_valid():
         serializer.save()
     return Response(serializer.data)
+
+@api_view(['GET'])
+def fields_by_location(request, location):
+    try:
+        fields = Field.objects.filter(location=location)
+        serializer = FieldSerializer(fields, many=True)
+        return Response(serializer.data)
+    except Field.DoesNotExist:
+        return Response(status=404)
