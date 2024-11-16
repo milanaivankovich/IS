@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "description": "oglas1",
+        "date": "1.1.2024",
+        "business_subject_id": 1
+    },
+    {
+        "id": 2,
+        "description": "oglas2",
+        "date": "1.1.2024",
+        "business_subject_id": 1
+    },
+    {
+        "id": 3,
+        "description": "oglas3",
+        "date": "16.11.2024.",
+        "business_subject_id": 1
+    }
+]
