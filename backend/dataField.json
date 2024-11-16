@@ -1,0 +1,10 @@
+[
+    {
+        "id": 1,
+        "location": "Borik",
+        "latitude": 41.5647,
+        "longitude": 17.2642,
+        "type_of_sport": "kosarka",
+        "is_suspended": false
+    }
+]

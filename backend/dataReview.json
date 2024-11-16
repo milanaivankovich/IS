@@ -1,0 +1,9 @@
+[
+    {
+        "id": 1,
+        "rating": 5,
+        "description": "recenzija1",
+        "client_id": 1,
+        "field_id": 1
+    }
+]

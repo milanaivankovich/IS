@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import "./EditUserProfile.css";
 import profileImage from "../images/user.svg";
 import MenuBar from "../components/MenuBar.js";
@@ -6,14 +6,29 @@ import Footer from "../components/Footer.js";
 import axios from "axios";
 
 const EditUserProfile = () => {
+    const [userData, setUserData] = useState([]);
+  
+    useEffect(() => {
+      axios.get('http://localhost:8000/api/get/client/1/')
+        .then(response => {
+          setUserData(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching data: ', error);
+        });
+    }, []);
+
   const [updatedData, setUpdatedData] = useState("");
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (updatedData) => {
     try {
-      await axios.put("https://localhost:8000/api/edit/client/1", {
-        updatedData,
-      });
-      alert("Data updated successfully!");
+      axios.put("http://localhost:8000/api/edit/client/1/", updatedData)
+  .then(response => {
+    console.log("Data updated successfully:", response.data);
+  })
+  .catch(error => {
+    console.error("There was an error updating the data:", error);
+  });
       // Optionally, fetch and update the displayed data
     } catch (error) {
       console.error("Error updating data:", error);
@@ -35,12 +50,12 @@ const EditUserProfile = () => {
           <a href="" className="NewImage">
             Nova slika
           </a>
-          <form action="/submit" method="put">
+          <form >
             <label className="EditProfileLabel">Ime i prezime</label>
             <input
               type="text"
               value={updatedData}
-              placeholder="Ime Prezime"
+              placeholder={userData.user.username}
               className="EditProfileInput"
               required
               onChange={(e) => setUpdatedData(e.target.value)}
@@ -48,7 +63,7 @@ const EditUserProfile = () => {
             <label className="EditProfileLabel">E-mail ili telefon</label>
             <input
               type="email"
-              placeholder="email@gmail.com"
+              placeholder={userData.user.email}
               className="EditProfileInput"
               required
             />
@@ -56,7 +71,6 @@ const EditUserProfile = () => {
               className="EditProfileButton"
               id="EditNameEmailButton"
               type="submit"
-              onClick={handleUpdate}
             >
               Sačuvaj
             </button>
