@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "location": "Borik",
+        "type_of_sport": "kosarka",
+        "is_suspended": false
+    },
+    {
+        "id": 2,
+        "location": "Starcevica",
+        "type_of_sport": "fudbal",
+        "is_suspended": false
+    },
+    {
+        "id": 3,
+        "location": "Starcevica",
+        "type_of_sport": "kosarka",
+        "is_suspended": false
+    },
+    {
+        "id": 4,
+        "location": "Mejdan",
+        "type_of_sport": "fudbal",
+        "is_suspended": false
+    }
+]
