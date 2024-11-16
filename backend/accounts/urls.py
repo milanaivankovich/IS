@@ -27,6 +27,10 @@ urlpatterns = [
     path('api/business-subject/<int:pk>/', views.get_business_subject, name='get_business_subject'),  # GET by ID
     path('api/business-subject/<int:pk>/', views.edit_business_subject, name='edit_business_subject'),  # PUT/PATCH
 
+
+    path('api/login/', views.login_user, name='login_user'),
+    path('api/logout/', views.logout_user, name='logout_user'),
+
     
     
     # Include the router URLs

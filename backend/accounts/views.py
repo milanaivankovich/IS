@@ -8,6 +8,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
+from django.contrib.auth import authenticate
 
 
 class StandardUserViewSet(viewsets.ModelViewSet):
@@ -121,4 +123,69 @@ def register_client(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
 
 
+@api_view(['POST'])
+def login_user(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    
+    # Authenticate user
+    user = authenticate(username=username, password=password)
+    if user is None:
+        return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
+    # Create or retrieve the auth token
+    token, created = Token.objects.get_or_create(user=user)
+
+    # Check if the user is a Client
+    try:
+        client = Client.objects.get(user=user)
+        user_type = "Client"
+        user_data = {
+            "client_id": client.id,
+            "name": client.user.first_name,
+            "surname": client.user.last_name
+        }
+    except Client.DoesNotExist:
+        client = None
+    
+    # Check if the user is a Business Subject
+    try:
+        business_subject = BusinessSubject.objects.get(user=user)
+        user_type = "BusinessSubject"
+        user_data = {
+            "business_id": business_subject.id,
+            "name": business_subject.company_name,
+        }
+    except BusinessSubject.DoesNotExist:
+        business_subject = None
+    
+    
+    
+    if not (client or business_subject):
+        return Response({"error": "No associated user type found"}, status=status.HTTP_404_NOT_FOUND)
+    
+    return Response({
+        'token': token.key,
+        'user_id': user.pk,
+        'username': user.username,
+        'user_type': user_type,
+        'user_data': user_data
+    }, status=status.HTTP_200_OK)    
+
+
+
+@api_view(['POST'])
+def logout_user(request):
+    # Get the token from the request headers
+    auth_token = request.auth
+
+    if not auth_token:
+        return Response({"error": "No authentication token provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        # Delete the token, effectively logging the user out
+        token = Token.objects.get(key=auth_token)
+        token.delete()
+        return Response({"message": "User logged out successfully"}, status=status.HTTP_200_OK)
+    except Token.DoesNotExist:
+        return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
