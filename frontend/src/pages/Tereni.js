@@ -24,16 +24,16 @@ const Tereni = () => {
       const formattedDate = selectedDate ? selectedDate.toISOString().split("T")[0] : null;
 
       // Dohvatanje običnih događaja
-      const eventsResponse = await axios.get("http://localhost:5000/api/events", {
+      const eventsResponse = await axios.get("http://localhost:8000/api/events", {
         params: {
           date: formattedDate, // Datum u formatu YYYY-MM-DD
           lat: selectedLocation ? selectedLocation[0] : null,
           lng: selectedLocation ? selectedLocation[1] : null,
         },
       });
-      
+
       // Dohvatanje sponzorisanih događaja
-      const sponsoredResponse = await axios.get("http://localhost:5000/api/sponsored-events", {
+      const sponsoredResponse = await axios.get("http://localhost:8000/api/sponsored-events", {
         params: {
           date: formattedDate,
           lat: selectedLocation ? selectedLocation[0] : null,
@@ -52,7 +52,7 @@ const Tereni = () => {
 
   // Pozivanje funkcije za dohvaćanje događaja kad se promijeni lokacija ili datum
   useEffect(() => {
-    if (selectedLocation) {
+    if (selectedLocation || selectedDate) {
       fetchEvents();
     }
   }, [selectedDate, selectedLocation]);
@@ -81,14 +81,44 @@ const Tereni = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            {/* Primjer markera koji predstavlja mogući događaj */}
-            <Marker
-              position={[44.7722, 17.191]}
-              eventHandlers={{ click: () => handleLocationClick([44.7722, 17.191]) }}
-            >
-              <Popup>Lokacija događaja 1</Popup>
-            </Marker>
-            {/* Dodaj dodatne markere po potrebi */}
+            
+            {/* Automatsko generisanje markera za obične događaje */}
+            {events.map((event) => (
+              <Marker
+                key={event.id}
+                position={[event.lat, event.lng]} // Koristi latitude i longitude iz događaja
+                eventHandlers={{
+                  click: () => handleLocationClick([event.lat, event.lng]), // Postavlja odabranu lokaciju
+                }}
+              >
+                <Popup>
+                  <strong>{event.title}</strong>
+                  <br />
+                  {event.date}
+                  <br />
+                  {event.location}
+                </Popup>
+              </Marker>
+            ))}
+
+            {/* Automatsko generisanje markera za sponzorisane događaje */}
+            {sponsoredEvents.map((event) => (
+              <Marker
+                key={event.id}
+                position={[event.lat, event.lng]}
+                eventHandlers={{
+                  click: () => handleLocationClick([event.lat, event.lng]),
+                }}
+              >
+                <Popup>
+                  <strong>{event.title}</strong> (Sponzorisano)
+                  <br />
+                  {event.date}
+                  <br />
+                  {event.location}
+                </Popup>
+              </Marker>
+            ))}
           </MapContainer>
 
           {/* Kalendar */}
