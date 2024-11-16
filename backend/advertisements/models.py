@@ -5,6 +5,7 @@ class Advertisement(models.Model):
     description = models.CharField(max_length=200)
     date = models.CharField(max_length=100)
     business_subject = models.ForeignKey('accounts.BusinessSubject', on_delete=models.CASCADE, null=True)
+    field = models.ForeignKey('fields.Field', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.description
