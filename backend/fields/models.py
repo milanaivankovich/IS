@@ -1,4 +1,4 @@
-from django.db import models # type: ignore
+from django.db import models 
 
 class Field(models.Model):
     id = models.AutoField(primary_key=True)

@@ -1,8 +1,8 @@
-from rest_framework.response import Response # type: ignore
-from rest_framework.decorators import api_view # type: ignore
+from rest_framework.response import Response 
+from rest_framework.decorators import api_view 
 from .models import Field
 from .serializers import FieldSerializer
-from rest_framework.views import APIView # type: ignore
+from rest_framework.views import APIView 
 
 @api_view(['GET'])
 def getData(request):
