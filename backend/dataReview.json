@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "rating": 4,
+        "description": "r1",
+        "client_id": 1,
+        "field_id": 1
+    },
+    {
+        "id": 2,
+        "rating": 2,
+        "description": "r2",
+        "client_id": 1,
+        "field_id": 2
+    }
+]
