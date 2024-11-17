@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 class StandardUser(AbstractUser):
     phone = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
-    password = models.CharField(max_length=128, default='defaultpassword')
+    
 
 
     groups = models.ManyToManyField(
@@ -35,14 +35,13 @@ class BusinessSubject(models.Model):
 
 class Client(models.Model):
     user = models.OneToOneField(StandardUser, on_delete=models.CASCADE, related_name="client_profile")
-    password = models.CharField(max_length=128, default='temporary_password')
+    
 
-    name = models.CharField(max_length=50, default='name')
-    surname = models.CharField(max_length=50, default='surname')
 
-    date_of_birth = models.DateField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to="profile_pics/", blank=True, null=True)
-    bio = models.TextField(blank=True, null=True)
+    # Additional optional fields
+    date_of_birth = models.DateField(blank=True, null=True)   # Optional
+    profile_picture = models.ImageField(upload_to="profile_pics/", blank=True, null=True)  # Optional
+    bio = models.TextField(blank=True, null=True)             # Optional
 
     def __str__(self):
-        return f"{self.name} {self.surname}"
+        return f"{self.first_name} {self.last_name}" 
