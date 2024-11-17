@@ -31,7 +31,9 @@ urlpatterns = [
     path('api/login/', views.login_user, name='login_user'),
     path('api/logout/', views.logout_user, name='logout_user'),
 
-    
+    # View profile endpoint for logged-in user
+    path('api/profile/', views.get_profile, name='get_profile'),  # GET the profile of the logged-in user
+
     
     # Include the router URLs
     path('', include(router.urls)),
