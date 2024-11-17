@@ -1,0 +1,141 @@
+.register-container {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: auto;
+    text-align: center;
+  }
+  
+  .logo-container {
+    margin: 20px auto;
+    text-align: center;
+  }
+  
+  .basket-logo {
+    width: 150px;
+  }
+  
+  .welcome-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  #form-container {
+    margin: 20px 0;
+  }
+  
+  input {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .continue-button {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .continue-button:hover {
+    background-color: #e65500;
+  }
+  
+  .social-buttons {
+    margin: 20px 0;
+  }
+  
+  .social-button {
+    display: block;
+    width: 80%;
+    margin: 10px auto;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .facebook-button {
+    background-color: #3b5998;
+    color: white;
+  }
+  
+  .email-button {
+    background-color: #4285f4;
+    color: white;
+  }
+  
+  .login-prompt {
+    margin-top: 20px;
+  }
+  
+  .login-link {
+    color: #ff6600;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .login-link:hover {
+    text-decoration: underline;
+  }
+  
+  .progress-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    position: absolute;
+    width: 972px;
+    height: 82px;
+    left: calc(50% - 972px/2);
+    bottom: 15px;
+
+  }
+  
+  .steps {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .step {
+    text-align: center;
+    flex: 1;
+  }
+  
+  .step-circle {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 50%;
+    background-color: #ddd;
+    color: #fff;
+    font-weight: bold;
+    margin: auto;
+    transition: background-color 0.3s ease;
+  }
+  
+  .step.active .step-circle {
+    background-color: #ff6600;
+  }
+  
+  .step p {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #666;
+  }
+  
+  .step.active p {
+    font-weight: bold;
+    color: #333;
+  }
+  

@@ -9,6 +9,7 @@ import OdabirVrsteKorisnika from "./pages/OdabirVrsteKorisnika";
 import LoginPoslovni from "./pages/LoginPoslovni";
 import OdabirVrsteKorisnikaRegistracija from "./pages/OdabirVrsteKorisnikaRegistracija";
 import UserProfile from "./pages/UserProfile";
+import RegisterRekreativac from "./pages/RegisterRekreativac"
 
 function App() {
   const [currentPage, setCurrentPage] = useState("pocetna");
@@ -31,6 +32,8 @@ function App() {
       setCurrentPage("login1");
     } else if (path === "/userprofile") {
       setCurrentPage("userprofile");
+    }else if (path === "/registerRekreativac") {
+      setCurrentPage("registerRekreativac");
     }else {
       setCurrentPage("pocetna");
     }
@@ -50,6 +53,7 @@ function App() {
           {currentPage === "usertype" && <OdabirVrsteKorisnika />}
           {currentPage === "usertype1" && <OdabirVrsteKorisnikaRegistracija />}
           {currentPage === "userprofile" && <UserProfile />}
+          {currentPage === "registerRekreativac" && <RegisterRekreativac />}
         </div>
       </header>
     </div>

@@ -7,7 +7,9 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-left">
+        <a href="/">
         <img src={logo} alt="Oće neko na basket?" className="login-logo" />
+      </a>
         <h2 className="login-welcome">DOBRODOŠLI!</h2>
         <p>Molimo unesite podatke za prijavu</p>
         <form>
