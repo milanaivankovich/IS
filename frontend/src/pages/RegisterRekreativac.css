@@ -1,27 +1,41 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #181818;
+}
+
 .register-container {
     font-family: Arial, sans-serif;
-    max-width: 600px;
+    max-width: 400px;
     margin: auto;
     text-align: center;
   }
   
   .logo-container {
+
+    
     margin: 20px auto;
     text-align: center;
   }
   
   .basket-logo {
-    width: 150px;
+    width: 250px;
+    margin-top: 20px;
   }
   
   .welcome-title {
-    font-size: 24px;
-    margin-bottom: 20px;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
     color: #333;
   }
   
   #form-container {
-    margin: 20px 0;
+    margin: 15px 0;
   }
   
   input {
@@ -95,7 +109,7 @@
     padding: 0px;
     position: absolute;
     width: 972px;
-    height: 82px;
+    height: 30px;
     left: calc(50% - 972px/2);
     bottom: 15px;
 
