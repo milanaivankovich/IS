@@ -6,14 +6,14 @@ from django.contrib.auth.models import User
 class StandardUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = StandardUser
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'phone', 'address']
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'phone', 'address']
 
 class BusinessSubjectSerializer(serializers.ModelSerializer):
     user = StandardUserSerializer()
 
     class Meta:
         model = BusinessSubject
-        fields = ['id', 'user', 'business_name', 'registration_number', 'website', 'contact_email']
+        fields = ['business_name', 'registration_number', 'website', 'contact_email']
 
 
 # Serializer for Client
@@ -22,7 +22,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        fields = ['id', 'user', 'date_of_birth', 'profile_picture', 'bio']
+        fields = ['date_of_birth', 'profile_picture', 'bio']
 
     def create(self, validated_data):
         # Extract the user data from the validated data

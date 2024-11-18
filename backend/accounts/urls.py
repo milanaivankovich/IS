@@ -34,6 +34,9 @@ urlpatterns = [
     # View profile endpoint for logged-in user
     path('api/profile/', views.get_profile, name='get_profile'),  # GET the profile of the logged-in user
 
+    path('api/search/users/', views.search_users, name='search_users'),
+
+
     
     # Include the router URLs
     path('', include(router.urls)),

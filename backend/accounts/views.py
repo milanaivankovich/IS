@@ -12,6 +12,10 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.authtoken.views import ObtainAuthToken
 from django.contrib.auth import authenticate
 
+from rest_framework import status
+from django.db.models import Q
+from django.contrib.auth import get_user_model
+
 
 class StandardUserViewSet(viewsets.ModelViewSet):
     queryset = StandardUser.objects.all()
@@ -243,3 +247,37 @@ def get_profile(request):
         'user_type': user_type,
         'user_data': user_data  # The profile data for the logged-in user
     }, status=status.HTTP_200_OK)        
+
+
+
+User = get_user_model()
+
+@api_view(['GET'])
+def search_users(request):
+    query = request.GET.get('q', '')
+    
+    if query:
+        # Search across StandardUser fields (username, first name, last name)
+        users = User.objects.filter(
+            Q(username__icontains=query) | 
+            Q(first_name__icontains=query) | 
+            Q(last_name__icontains=query)
+        )
+    else:
+        users = User.objects.none()
+
+    # Serialize and include profile info if they exist
+    user_list = []
+    for user in users:
+        user_data = StandardUserSerializer(user).data
+        
+        # Check if the user has a client profile
+        if hasattr(user, 'client_profile'):
+            user_data['client_profile'] = ClientSerializer(user.client_profile).data
+        # Check if the user has a business profile
+        if hasattr(user, 'business_profile'):
+            user_data['business_profile'] = BusinessSubjectSerializer(user.business_profile).data
+
+        user_list.append(user_data)
+    
+    return Response(user_list, status=status.HTTP_200_OK)
