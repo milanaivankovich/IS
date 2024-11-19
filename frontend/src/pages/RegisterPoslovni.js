@@ -3,12 +3,10 @@ import axios from "axios"; // Import axios
 import "./RegisterRekreativac.css";
 import logo from '../images/logo.png';
 
-function RegisterRekreativac() {
+function RegisterPoslovni() {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    username: "",
+    nameSportOrganization: "",
     password: "",
     confirmPassword: "",
     email: "",
@@ -27,7 +25,7 @@ function RegisterRekreativac() {
   const isStepValid = () => {
     switch (currentStep) {
       case 0:
-        return formData.firstName && formData.lastName && formData.username;
+        return formData.nameSportOrganization;
       case 1:
         return formData.password && formData.confirmPassword && formData.password === formData.confirmPassword;
       case 2:
@@ -46,14 +44,12 @@ function RegisterRekreativac() {
     if (isStepValid()) {
       setIsSubmitting(true); // Pokreće indikator učitavanja
       try {
-        const response =await axios.post("http://localhost:8000/api/client/", formData);
+        const response =await axios.post("http://localhost:8000/api/business-subject/", formData);
         console.log(response.data); // Prikaz odgovora za debugging
         alert("Registracija uspješna! Verifikujte email.");
         // Reset forme ili preusmjeravanje:
         setFormData({
-          firstName: "",
-          lastName: "",
-          username: "",
+          nameSportOrganization: "",
           password: "",
           confirmPassword: "",
           email: "",
@@ -79,12 +75,8 @@ function RegisterRekreativac() {
         {currentStep === 0 && (
           <div className="form-step active">
             <p>Molimo unesite podatke</p>
-            <label htmlFor="firstName">Ime:</label>
-            <input type="text" id="firstName" value={formData.firstName} onChange={handleInputChange} required />
-            <label htmlFor="lastName">Prezime:</label>
-            <input type="text" id="lastName" value={formData.lastName} onChange={handleInputChange} required />
-            <label htmlFor="username">Korisničko ime:</label>
-            <input type="text" id="username" value={formData.username} onChange={handleInputChange} required />
+            <label htmlFor="nameSportOrganization">Naziv sportske organizacije:</label>
+            <input type="text" id="nameSportOrganization" value={formData.nameSportOrganization} onChange={handleInputChange} required />
             <button className="continue-button" onClick={nextStep}>
               Nastavi
             </button>
@@ -121,10 +113,7 @@ function RegisterRekreativac() {
           </div>
         )}
 
-        <div className="social-buttons">
-          <button className="social-button facebook-button">Registrujte se putem Facebook-a</button>
-          <button className="social-button email-button">Registrujte se putem Email-a</button>
-        </div>
+        
 
         <div className="login-prompt">
           <p>
@@ -156,4 +145,4 @@ function RegisterRekreativac() {
   );
 }
 
-export default RegisterRekreativac;
+export default RegisterPoslovni;
