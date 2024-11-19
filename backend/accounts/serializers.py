@@ -22,7 +22,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        fields = ['date_of_birth', 'profile_picture', 'bio']
+        fields = ['user', 'date_of_birth', 'profile_picture', 'bio']
 
     def create(self, validated_data):
         # Extract the user data from the validated data
