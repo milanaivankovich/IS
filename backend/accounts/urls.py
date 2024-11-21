@@ -5,7 +5,7 @@ from . import views
 
 # Set up the router for viewsets
 router = DefaultRouter()
-router.register(r'standard_users', views.StandardUserViewSet)
+#router.register(r'standard_users', views.StandardUserViewSet)
 router.register(r'business_subjects', views.BusinessSubjectViewSet)
 router.register(r'clients', views.ClientViewSet)
 

@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .models import StandardUser, BusinessSubject, Client
-from .serializers import StandardUserSerializer, BusinessSubjectSerializer, ClientSerializer
+from .models import  BusinessSubject, Client
+from .serializers import  BusinessSubjectSerializer, ClientSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
@@ -17,10 +17,7 @@ from django.db.models import Q
 from django.contrib.auth import get_user_model
 
 
-class StandardUserViewSet(viewsets.ModelViewSet):
-    queryset = StandardUser.objects.all()
-    serializer_class = StandardUserSerializer
-    permission_classes = [IsAuthenticated]
+
 
 class BusinessSubjectViewSet(viewsets.ModelViewSet):
     queryset = BusinessSubject.objects.all()
@@ -42,14 +39,6 @@ class UserRegistrationView(APIView):
 
 
 
-@api_view(['PUT'])
-def edit_standard_user(request, pk):
-    user = StandardUser.objects.get(pk=pk)
-    serializer = StandardUserSerializer(user, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['PUT'])
@@ -124,29 +113,15 @@ def register_client(request):
     serializer = ClientSerializer(data=request.data)
     
     if serializer.is_valid():
-        # Save the user data and create the user
-        user = serializer.save()
-
-        # Create a profile for the client
-        client_profile = Client.objects.create(user=user)
-
-        # If you want to create a business subject, you can do something like this:
-        # business_subject_profile = BusinessSubject.objects.create(user=user)
-
-        # Generate an auth token for the user
-        token = Token.objects.create(user=user)
-
-        # Serialize the profile to send back in the response
-        client_serializer = ClientSerializer(client_profile)
+        # Save the user data and create the user profile
+        client_profile = serializer.save()
 
         return Response({
-            "token": token.key,
-            "profile": client_serializer.data  # Return the user's profile data here
+            "profile": ClientSerializer(client_profile).data  # Return the user's profile data
         }, status=status.HTTP_201_CREATED)
     
     # If the data isn't valid, return an error response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 @api_view(['POST'])
 def login_user(request):
     username = request.data.get('username')
