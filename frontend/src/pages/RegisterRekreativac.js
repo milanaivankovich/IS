@@ -6,8 +6,8 @@ import logo from '../images/logo.png';
 function RegisterRekreativac() {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    last_name: "",
     username: "",
     password: "",
     confirmPassword: "",
@@ -27,7 +27,7 @@ function RegisterRekreativac() {
   const isStepValid = () => {
     switch (currentStep) {
       case 0:
-        return formData.firstName && formData.lastName && formData.username;
+        return formData.first_name && formData.last_name && formData.username;
       case 1:
         return formData.password && formData.confirmPassword && formData.password === formData.confirmPassword;
       case 2:
@@ -51,8 +51,8 @@ function RegisterRekreativac() {
         alert("Registracija uspješna! Verifikujte email.");
         // Reset forme ili preusmjeravanje:
         setFormData({
-          firstName: "",
-          lastName: "",
+          first_name: "",
+          last_name: "",
           username: "",
           password: "",
           confirmPassword: "",
@@ -80,9 +80,9 @@ function RegisterRekreativac() {
           <div className="form-step active">
             <p>Molimo unesite podatke</p>
             <label htmlFor="firstName">Ime:</label>
-            <input type="text" id="firstName" value={formData.firstName} onChange={handleInputChange} required />
+            <input type="text" id="first_name" value={formData.first_name} onChange={handleInputChange} required />
             <label htmlFor="lastName">Prezime:</label>
-            <input type="text" id="lastName" value={formData.lastName} onChange={handleInputChange} required />
+            <input type="text" id="last_name" value={formData.last_name} onChange={handleInputChange} required />
             <label htmlFor="username">Korisničko ime:</label>
             <input type="text" id="username" value={formData.username} onChange={handleInputChange} required />
             <button className="continue-button" onClick={nextStep}>
