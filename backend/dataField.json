@@ -2,9 +2,19 @@
     {
         "id": 1,
         "location": "Borik",
-        "latitude": 4.58457,
-        "longitude": 17.45839,
+        "latitude": 3.6543,
+        "longitude": 13.5432,
         "type_of_sport": "kosarka",
-        "is_suspended": false
+        "is_suspended": false,
+        "image": "images/teren1.jpg"
+    },
+    {
+        "id": 2,
+        "location": "Mejdan",
+        "latitude": 4.5422,
+        "longitude": 13.5432,
+        "type_of_sport": "fudbal",
+        "is_suspended": false,
+        "image": "images/teren2.jpg"
     }
 ]
