@@ -14,7 +14,8 @@ const Tereni = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [events, setEvents] = useState([]);
-  const [sponsoredEvents, setSponsoredEvents] = useState([]);
+  const [advertisements, setAdvertisements] = useState([]);
+  const [fields, setFields] = useState([]); // Dodato stanje za terene
   const [loading, setLoading] = useState(false);
 
   // Funkcija za dohvaćanje događaja iz backend-a
@@ -26,14 +27,14 @@ const Tereni = () => {
       // Dohvatanje običnih događaja
       const eventsResponse = await axios.get("http://localhost:8000/api/activities/", {
         params: {
-          date: formattedDate, // Datum u formatu YYYY-MM-DD
+          date: formattedDate,
           lat: selectedLocation ? selectedLocation[0] : null,
           lng: selectedLocation ? selectedLocation[1] : null,
         },
       });
 
       // Dohvatanje sponzorisanih događaja
-      const sponsoredResponse = await axios.get("http://localhost:8000/api/advertisements/", {
+      const sponsoredResponse = await axios.get("http://localhost:8000/api/advertisements", {
         params: {
           date: formattedDate,
           lat: selectedLocation ? selectedLocation[0] : null,
@@ -42,7 +43,7 @@ const Tereni = () => {
       });
 
       setEvents(eventsResponse.data);
-      setSponsoredEvents(sponsoredResponse.data);
+      setAdvertisements(sponsoredResponse.data);
     } catch (error) {
       console.error("Greška pri dohvaćanju događaja:", error);
     } finally {
@@ -50,12 +51,30 @@ const Tereni = () => {
     }
   };
 
-  // Pozivanje funkcije za dohvaćanje događaja kad se promijeni lokacija ili datum
+  // Funkcija za dohvaćanje terena iz backend-a
+  const fetchFields = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("http://localhost:8000/api/fields/");
+      setFields(response.data);
+    } catch (error) {
+      console.error("Greška pri dohvaćanju terena:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Pozivanje funkcija za dohvaćanje podataka kad se promijeni lokacija ili datum
   useEffect(() => {
     if (selectedLocation || selectedDate) {
       fetchEvents();
     }
   }, [selectedDate, selectedLocation]);
+
+  // Dohvatanje terena pri inicijalnom učitavanju
+  useEffect(() => {
+    fetchFields();
+  }, []);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -102,7 +121,7 @@ const Tereni = () => {
             ))}
 
             {/* Automatsko generisanje markera za sponzorisane događaje */}
-            {sponsoredEvents.map((event) => (
+            {advertisements.map((event) => (
               <Marker
                 key={event.id}
                 position={[event.lat, event.lng]}
@@ -129,7 +148,6 @@ const Tereni = () => {
       <div className="Events-body">
         <div className="Events-bar">
           <div className="Event-bar-title">DOGAĐAJI</div>
-          <div className="Event-bar-subtitle">Prikaz događaja</div>
           {loading ? (
             <p>Učitavanje događaja...</p>
           ) : (
@@ -145,16 +163,38 @@ const Tereni = () => {
 
         <div className="Events-bar">
           <div className="Event-bar-title">SPONZORISANO</div>
-          <div className="Event-bar-subtitle">Sponzorisani događaji</div>
           {loading ? (
             <p>Učitavanje sponzorisanih događaja...</p>
           ) : (
             <div className="Scroll-bar">
               <div className="Event-cards">
-                {sponsoredEvents.map((event) => (
+                {advertisements.map((event) => (
                   <SponsoredEventCard key={event.id} title={event.title} date={event.date} location={event.location} />
                 ))}
               </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="Fields-body">
+        <div className="Fields-bar">
+          <div className="Field-bar-title">TERENI</div>
+          <div className="Field-bar-subtitle">Lista svih terena</div>
+          {loading ? (
+            <p>Učitavanje terena...</p>
+          ) : (
+            <div className="Scroll-bar">
+              <ul className="Field-list">
+                {fields.map((field) => (
+                  <li key={field.id} className="Field-item">
+                    <h3>{field.name}</h3>
+                    <p>Lokacija: {field.location}</p>
+                    <p>Latitude: {field.latitude}</p>
+                    <p>Longitude: {field.longitude}</p>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </div>

@@ -84,3 +84,16 @@
 .calendar {
     width: 35%;
 }
+.Field-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .Field-item {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
