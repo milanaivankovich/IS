@@ -4,13 +4,28 @@ from django.contrib.auth.models import User
 
 
 
-
 class BusinessSubjectSerializer(serializers.ModelSerializer):
-    
+    # Define the necessary fields explicitly
+    nameSportOrganization = serializers.CharField(max_length=255, source='business_name')
+    description = serializers.CharField(allow_blank=True, required=False)
+    email = serializers.EmailField()
+
+    # Don't need to include 'first_name', 'last_name', and 'username' as they're removed in the model
 
     class Meta:
         model = BusinessSubject
-        fields = ['business_name', 'registration_number', 'website', 'contact_email']
+        fields = ['nameSportOrganization', 'profile_picture', 'description', 'email', 'password']  # Only include relevant fields
+
+    def create(self, validated_data):
+        # Extract the password from the validated data and create the user
+        password = validated_data.pop('password')
+        
+        # Create the user instance
+        user = BusinessSubject(**validated_data)  # No need to set 'first_name', 'last_name', or 'username'
+        user.set_password(password)  # Set the password using Django's built-in method
+        user.save()
+        
+        return user
 
 
 # If UserRegistrationSerializer is defined in the same file

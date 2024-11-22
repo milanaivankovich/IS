@@ -12,7 +12,7 @@ router.register(r'clients', views.ClientViewSet)
 # Add custom registration path
 #urlpatterns = [
    ## path('register/', views.UserRegistrationView.as_view(), name='user-registration'),
-    ##path('', include(router.urls)),
+    ##path('', include(pyrouter.urls)),
 #]
 
 

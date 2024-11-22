@@ -28,12 +28,33 @@ class Client(AbstractUser):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-class BusinessSubject(models.Model):
-    user = models.OneToOneField(Client, on_delete=models.CASCADE, related_name="business_profile")
-    password = models.CharField(max_length=128, default='temporary_password')
+
+class BusinessSubject(AbstractUser):
+    # Remove `first_name` and `last_name` by setting them to None
+    first_name = None
+    last_name = None
+    username = None
 
     # Business-specific fields
-    business_name = models.CharField(max_length=255, blank=True, null=True)
-    registration_number = models.CharField(max_length=50, blank=True, null=True)
-    website = models.URLField(blank=True, null=True)
-    contact_email = models.EmailField(blank=True, null=True)
+    business_name = models.CharField(max_length=255, unique=True)
+    profile_picture = models.ImageField(upload_to="business_pics/", blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+
+    # Custom related_name to avoid clashes
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name="business_subject_groups",  # Custom related name
+        blank=True,
+        help_text="The groups this user belongs to.",
+        verbose_name="groups",
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name="business_subject_user_permissions",  # Custom related name
+        blank=True,
+        help_text="Specific permissions for this user.",
+        verbose_name="user permissions",
+    )
+
+    def __str__(self):
+        return self.business_name
