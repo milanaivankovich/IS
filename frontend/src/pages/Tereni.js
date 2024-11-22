@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "leaflet/dist/leaflet.css";
@@ -11,27 +11,53 @@ import Footer from "../components/Footer.js";
 const Tereni = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [advertisements, setAdvertisements] = useState([]);
-  const [fields, setFields] = useState([]); // Dodato stanje za terene
+  const [fields, setFields] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [noEvents, setNoEvents] = useState(false);
 
-  // Funkcija za dohvaćanje sponzorisanih događaja iz backend-a, sada samo filtriranih po datumu
-  const fetchAdvertisements = async () => {
-    setLoading(true);
-    try {
-      const formattedDate = selectedDate ? selectedDate.toISOString().split("T")[0] : null;
 
-    // Dohvatanje sponzorisanih događaja po datumu
-      const sponsoredResponse = await axios.get("http://localhost:8000/api/advertisement/" + formattedDate);
+  // Funkcija za dohvaćanje sponzorisanih događaja
+const fetchAdvertisements = async () => {
+  setLoading(true);
+  setNoEvents(false);  
+  try {
+    const formattedDate = formatDateToLocal(selectedDate);
 
-      setAdvertisements(sponsoredResponse.data);
-    } catch (error) {
-      console.error("Greška pri dohvaćanju sponzorisanih događaja:", error);
-    } finally {
-      setLoading(false);
+    console.log("Slanje datuma backendu:", formattedDate);
+
+    const sponsoredResponse = await axios.get(`http://localhost:8000/api/advertisement/${formattedDate}`);
+
+    console.log("Odgovor s backend-a:", sponsoredResponse.data);
+
+    // Provjera odgovora za grešku
+    if (sponsoredResponse.data.error) {
+      setNoEvents(true); // Ako postoji greška, postavi noEvents na true
+      setAdvertisements([]);
+    } else {
+      if (sponsoredResponse.data.length === 0) {
+        setNoEvents(true); // Ako nema događaja, postavi noEvents na true
+      } else {
+        setAdvertisements(sponsoredResponse.data); // Inače postavi događaje
+      }
     }
-  };
+  } catch (error) {
+    console.error("Greška pri dohvaćanju sponzorisanih događaja:", error);
+    setNoEvents(true); // Ako dođe do greške u zahtjevu, postavi noEvents na true
+  } finally {
+    setLoading(false);
+  }
+};
 
-  // Funkcija za dohvaćanje terena iz backend-a
+// Funkcija za lokalno formatiranje datuma u YYYY-MM-DD
+const formatDateToLocal = (date) => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");  
+  const day = date.getDate().toString().padStart(2, "0");  
+
+  return `${year}-${month}-${day}`;
+};
+
+  // Funkcija za dohvaćanje terena
   const fetchFields = async () => {
     try {
       setLoading(true);
@@ -44,12 +70,10 @@ const Tereni = () => {
     }
   };
 
-  // Pozivanje funkcija za dohvaćanje podataka kad se promijeni datum
   useEffect(() => {
     fetchAdvertisements();
   }, [selectedDate]);
 
-  // Dohvatanje terena pri inicijalnom učitavanju
   useEffect(() => {
     fetchFields();
   }, []);
@@ -74,8 +98,6 @@ const Tereni = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-
-            
           </MapContainer>
 
           {/* Kalendar */}
@@ -88,6 +110,8 @@ const Tereni = () => {
           <div className="Event-bar-title">SPONZORISANI DOGAĐAJI</div>
           {loading ? (
             <p>Učitavanje sponzorisanih događaja...</p>
+          ) : noEvents ? (
+            <p>Nema sponzorisanih događaja za odabrani datum.</p>
           ) : (
             <div className="Scroll-bar">
               <div className="Event-cards">
@@ -95,8 +119,7 @@ const Tereni = () => {
                   <div key={advertisement.id} className="Event-card">
                     <h3>{advertisement.description} (Sponzorisano)</h3>
                     <p><strong>Datum:</strong> {advertisement.date}</p>
-                    <p><strong>Lokacija:</strong> {advertisement.field_id
-                    }</p>
+                    <p><strong>Lokacija:</strong> {advertisement.field_id}</p>
                   </div>
                 ))}
               </div>
