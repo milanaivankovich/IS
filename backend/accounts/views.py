@@ -3,6 +3,8 @@ from .models import  BusinessSubject, Client
 from .serializers import  BusinessSubjectSerializer, ClientSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAdminUser
+
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -102,9 +104,11 @@ def register_standard_user(request):
 def register_business_subject(request):
     serializer = BusinessSubjectSerializer(data=request.data)
     if serializer.is_valid():
-        user = serializer.save()
-        token = Token.objects.create(user=user)
-        return Response({"token": token.key}, status=status.HTTP_201_CREATED)
+        business_profile = serializer.save()
+
+        return Response({
+            "profile": BusinessSubjectSerializer(business_profile).data  # Return the user's profile data
+        }, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
@@ -114,7 +118,7 @@ def register_client(request):
     
     if serializer.is_valid():
         # Save the user data and create the user profile
-        client_profile = serializer.save()
+        client_profile = serializer.save() 
 
         return Response({
             "profile": ClientSerializer(client_profile).data  # Return the user's profile data
@@ -256,3 +260,15 @@ def search_users(request):
         user_list.append(user_data)
     
     return Response(user_list, status=status.HTTP_200_OK)
+
+    from rest_framework.permissions import IsAdminUser
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def list_clients(request):
+    """
+    List all registered clients. Accessible only to admin users.
+    """
+    clients = Client.objects.all()
+    serializer = ClientSerializer(clients, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
