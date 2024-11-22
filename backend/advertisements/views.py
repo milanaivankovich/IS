@@ -25,7 +25,7 @@ def advertisements_by_date(request, date):
         return Response(serializer.data)
     else:
         return Response({'error': 'No advertisements found for this date'}, status=404)
-    
+
 @api_view(['GET'])
 def advertisements_by_location(request, location):
     advertisements = Advertisement.objects.filter(field__location__icontains=location)
