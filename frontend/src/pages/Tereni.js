@@ -24,7 +24,7 @@ const Tereni = () => {
       const formattedDate = selectedDate ? selectedDate.toISOString().split("T")[0] : null;
 
       // Dohvatanje običnih događaja
-      const eventsResponse = await axios.get("http://localhost:8000/api/events", {
+      const eventsResponse = await axios.get("http://localhost:8000/api/activities/", {
         params: {
           date: formattedDate, // Datum u formatu YYYY-MM-DD
           lat: selectedLocation ? selectedLocation[0] : null,
@@ -33,7 +33,7 @@ const Tereni = () => {
       });
 
       // Dohvatanje sponzorisanih događaja
-      const sponsoredResponse = await axios.get("http://localhost:8000/api/sponsored-events", {
+      const sponsoredResponse = await axios.get("http://localhost:8000/api/advertisements/", {
         params: {
           date: formattedDate,
           lat: selectedLocation ? selectedLocation[0] : null,
