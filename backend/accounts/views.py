@@ -6,6 +6,14 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser
 
 
+from django.utils.crypto import get_random_string
+from django.db import IntegrityError
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import ClientToken
+import logging
+
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,  authentication_classes, permission_classes
@@ -126,50 +134,88 @@ def register_client(request):
     
     # If the data isn't valid, return an error response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 @api_view(['POST'])
-def login_user(request):
+def login_client(request):
+    """
+    Authenticate and login a client
+    """
     username = request.data.get('username')
     password = request.data.get('password')
-    
-    # Authenticate user
+
+    # Authenticate user (this will check the password as well)
     user = authenticate(username=username, password=password)
+
     if user is None:
         return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Create or retrieve the auth token
-    token, created = Token.objects.get_or_create(user=user)
-
-    # Prepare the response data
-    user_data = {}
-    user_type = None
 
     # Check if the user is a Client
     try:
         client = Client.objects.get(user=user)
-        user_type = "Client"
-        user_data = ClientSerializer(client).data  # Serialize client profile
     except Client.DoesNotExist:
-        client = None
-    
-    # Check if the user is a Business Subject
-    try:
-        business_subject = BusinessSubject.objects.get(user=user)
-        user_type = "BusinessSubject"
-        user_data = BusinessSubjectSerializer(business_subject).data  # Serialize business profile
-    except BusinessSubject.DoesNotExist:
-        business_subject = None
-    
-    if not (client or business_subject):
-        return Response({"error": "No associated user type found"}, status=status.HTTP_404_NOT_FOUND)
-    
-    # Return the authentication token, user type, and the user profile data
+        return Response({"error": "No associated client found"}, status=status.HTTP_404_NOT_FOUND)
+
+    # Generate or retrieve the auth token
+    token, created = Token.objects.get_or_create(user=user)
+
+    # Serialize the client data
+    client_data = ClientSerializer(client).data
+
+    # Return the authentication token and client data
     return Response({
         'token': token.key,
         'user_id': user.pk,
         'username': user.username,
-        'user_type': user_type,
-        'user_data': user_data  # Returning the profile data here
-    }, status=status.HTTP_200_OK)    
+        'user_type': 'Client',
+        'user_data': client_data
+    }, status=status.HTTP_200_OK)
+
+
+
+
+# Get logger for debugging
+logger = logging.getLogger(__name__)
+
+@api_view(["POST"])
+def login_user(request):
+    try:
+        # Get username and password from the request
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        # Validate input
+        if not username or not password:
+            return Response({"error": "Username and password are required"}, status=400)
+
+        # Authenticate the user using the Client model (since it extends AbstractUser)
+        client = authenticate(request, username=username, password=password)
+
+        if not client:
+            logger.warning(f"Failed login attempt for username: {username}")
+            return Response({"error": "Invalid credentials"}, status=400)
+
+        # Check if the client is active
+        if not client.is_active:
+            return Response({"error": "Account is disabled"}, status=403)
+
+        # Create or retrieve the token for the client
+        token, created = ClientToken.objects.get_or_create(
+            client=client,  # Use 'client' here since Client is the user model
+            defaults={"key": get_random_string(40)}  # Assign a random token key if it's created
+        )
+
+        # Return the token
+        return Response({"token": token.key}, status=200)
+
+    except IntegrityError:
+        logger.error(f"Token creation failed for client: {username}")
+        return Response({"error": "Token creation failed due to database integrity issues"}, status=500)
+
+    except Exception as e:
+        logger.error(f"Unexpected error during login for client '{username}': {str(e)}", exc_info=True)
+        return Response({"error": "An unexpected error occurred"}, status=500)
 
 
 @api_view(['POST'])

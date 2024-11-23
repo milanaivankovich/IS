@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+from django.utils.crypto import get_random_string
+
 class Client(AbstractUser):
     # Additional fields specific to Client
     phone = models.CharField(max_length=15, blank=True, null=True)
@@ -27,6 +29,26 @@ class Client(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+
+
+class ClientToken(models.Model):
+    client = models.OneToOneField(
+        Client,
+        on_delete=models.CASCADE,
+        related_name='client_auth_token'  # Change the related name to avoid clash
+    )
+    key = models.CharField(max_length=40, unique=True, default=get_random_string)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.key:
+            self.key = get_random_string(40)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Token for Client {self.client}"
+
 
 
 class BusinessSubject(AbstractUser):
@@ -58,3 +80,17 @@ class BusinessSubject(AbstractUser):
 
     def __str__(self):
         return self.business_name
+
+
+class BusinessSubjectToken(models.Model):
+    business_subject = models.OneToOneField(BusinessSubject, on_delete=models.CASCADE, related_name='auth_token')
+    key = models.CharField(max_length=40, unique=True, default=get_random_string)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.key:
+            self.key = get_random_string(40)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Token for BusinessSubject {self.business_subject}"        
