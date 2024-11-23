@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "leaflet/dist/leaflet.css";
@@ -10,52 +10,12 @@ import Footer from "../components/Footer.js";
 
 const Tereni = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedField, setSelectedField] = useState(null);
   const [advertisements, setAdvertisements] = useState([]);
+  const [filteredAdvertisements, setFilteredAdvertisements] = useState([]);
   const [fields, setFields] = useState([]);
   const [loading, setLoading] = useState(false);
   const [noEvents, setNoEvents] = useState(false);
-
-
-  // Funkcija za dohvaćanje sponzorisanih događaja
-const fetchAdvertisements = async () => {
-  setLoading(true);
-  setNoEvents(false);  
-  try {
-    const formattedDate = formatDateToLocal(selectedDate);
-
-    console.log("Slanje datuma backendu:", formattedDate);
-
-    const sponsoredResponse = await axios.get(`http://localhost:8000/api/advertisement/${formattedDate}`);
-
-    console.log("Odgovor s backend-a:", sponsoredResponse.data);
-
-    // Provjera odgovora za grešku
-    if (sponsoredResponse.data.error) {
-      setNoEvents(true); // Ako postoji greška, postavi noEvents na true
-      setAdvertisements([]);
-    } else {
-      if (sponsoredResponse.data.length === 0) {
-        setNoEvents(true); // Ako nema događaja, postavi noEvents na true
-      } else {
-        setAdvertisements(sponsoredResponse.data); // Inače postavi događaje
-      }
-    }
-  } catch (error) {
-    console.error("Greška pri dohvaćanju sponzorisanih događaja:", error);
-    setNoEvents(true); // Ako dođe do greške u zahtjevu, postavi noEvents na true
-  } finally {
-    setLoading(false);
-  }
-};
-
-// Funkcija za lokalno formatiranje datuma u YYYY-MM-DD
-const formatDateToLocal = (date) => {
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");  
-  const day = date.getDate().toString().padStart(2, "0");  
-
-  return `${year}-${month}-${day}`;
-};
 
   // Funkcija za dohvaćanje terena
   const fetchFields = async () => {
@@ -70,17 +30,82 @@ const formatDateToLocal = (date) => {
     }
   };
 
-  useEffect(() => {
-    fetchAdvertisements();
-  }, [selectedDate]);
+  // Funkcija za dohvaćanje sponzorisanih događaja
+  const fetchFilteredAdvertisements = async (field, date) => {
+    setLoading(true);
+    setNoEvents(false);
+    try {
+      let response;
+
+      // Ako imamo i datum i lokaciju
+      if (field && date) {
+        const formattedDate = formatDateToLocal(date);
+        response = await axios.get(
+          `http://localhost:8000/api/advertisement/${formattedDate}/location/${field.location}`
+        );
+      } 
+      // Ako imamo samo datum
+      else if (date) {
+        const formattedDate = formatDateToLocal(date);
+        response = await axios.get(
+          `http://localhost:8000/api/advertisement/${formattedDate}`
+        );
+      }
+      // Ako imamo samo lokaciju
+      else if (field) {
+        response = await axios.get(
+          `http://localhost:8000/api/advertisement/location/${field.location}`
+        );
+      }
+      // Ako nemamo nijedan parametar, prikazujemo sve oglase
+      else {
+        response = await axios.get("http://localhost:8000/api/advertisements/");
+      }
+
+      if (response.data.error || response.data.length === 0) {
+        setNoEvents(true);
+        setFilteredAdvertisements([]);
+      } else {
+        setFilteredAdvertisements(response.data);
+      }
+    } catch (error) {
+      console.error("Greška pri dohvaćanju oglasa:", error);
+      setNoEvents(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Funkcija za lokalno formatiranje datuma u YYYY-MM-DD
+  const formatDateToLocal = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Funkcija koja se poziva kada korisnik klikne na marker
+  const handleMarkerClick = (field) => {
+    setSelectedField(field);
+    fetchFilteredAdvertisements(field, selectedDate); // Filtriraj po odabranom terenu i datumu
+  };
+
+  // Funkcija koja se poziva kada korisnik odabere datum
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    fetchFilteredAdvertisements(selectedField, date); // Filtriraj po odabranom datumu i terenu
+  };
+
+  // Funkcija za resetovanje datuma (deselektovanje)
+  const handleDateReset = () => {
+    setSelectedDate(null); // Poništavamo datum
+    fetchFilteredAdvertisements(selectedField, null); // Filtriramo po terenu bez datuma
+  };
 
   useEffect(() => {
     fetchFields();
-  }, []);
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
+    fetchFilteredAdvertisements(null, selectedDate); // Inicijalno dohvatimo oglase za odabrani datum
+  }, [selectedDate]);
 
   return (
     <div className="tereni-page-container">
@@ -98,10 +123,29 @@ const formatDateToLocal = (date) => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
+
+            {/* Dodavanje markera za svaki teren */}
+            {fields.map((field) => (
+              <Marker
+                key={field.id}
+                position={[field.latitude, field.longitude]}
+                eventHandlers={{ click: () => handleMarkerClick(field) }}
+              >
+                <Popup>
+                  <h3>{field.name}</h3>
+                  <p><strong>Lokacija:</strong> {field.location}</p>
+                  <p><strong>Latitude:</strong> {field.latitude}</p>
+                  <p><strong>Longitude:</strong> {field.longitude}</p>
+                </Popup>
+              </Marker>
+            ))}
           </MapContainer>
 
           {/* Kalendar */}
           <Calendar className="calendar" onChange={handleDateChange} value={selectedDate} />
+          
+          {/* Dugme za resetovanje datuma */}
+          <button onClick={handleDateReset} className="reset-date-button">Poništi datum</button>
         </div>
       </section>
 
@@ -111,11 +155,11 @@ const formatDateToLocal = (date) => {
           {loading ? (
             <p>Učitavanje sponzorisanih događaja...</p>
           ) : noEvents ? (
-            <p>Nema sponzorisanih događaja za odabrani datum.</p>
+            <p>Nema sponzorisanih događaja za odabrani datum ili lokaciju.</p>
           ) : (
             <div className="Scroll-bar">
               <div className="Event-cards">
-                {advertisements.map((advertisement) => (
+                {filteredAdvertisements.map((advertisement) => (
                   <div key={advertisement.id} className="Event-card">
                     <h3>{advertisement.description} (Sponzorisano)</h3>
                     <p><strong>Datum:</strong> {advertisement.date}</p>

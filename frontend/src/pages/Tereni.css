@@ -96,4 +96,24 @@
     border-radius: 5px;
     background-color: #f9f9f9;
   }
+  .reset-date-button {
+    background-color: #f0f0f0; /* Svijetla pozadina */
+    color: #333; /* Tamna boja teksta */
+    border: 1px solid #ddd; /* Siva granica */
+    padding: 8px 16px; /* Manje unutrašnje margine za manje dugme */
+    font-size: 14px; /* Manja veličina fonta */
+    border-radius: 4px; /* Zaobljeni uglovi */
+    cursor: pointer; /* Pokazivač kursora na dugmetu */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Animacije pri hoveru */
+  }
+  
+  .reset-date-button:hover {
+    background-color: #e0e0e0; /* Tamnija pozadina pri hoveru */
+    transform: scale(1.05); /* Blago uvećanje pri hoveru */
+  }
+  
+  .reset-date-button:focus {
+    outline: none; /* Uklanjanje fokusa sa dugmeta */
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1); /* Blagi okvir prilikom fokusa */
+  }
   
