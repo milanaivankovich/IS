@@ -7,6 +7,7 @@ class Field(models.Model):
     longitude = models.FloatField(null=True, blank=True)
     type_of_sport = models.CharField(max_length=255)
     is_suspended = models.BooleanField(default=False)
+    image = models.ImageField(upload_to='./images/', null=True, blank=True)
 
     def __str__(self):
         return self.location

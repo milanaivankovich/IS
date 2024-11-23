@@ -1,9 +1,16 @@
 [
     {
         "id": 1,
-        "rating": 4,
+        "rating": 5,
         "description": "recenzija1",
-        "client_id": 5,
+        "client_id": 1,
         "field_id": 1
+    },
+    {
+        "id": 2,
+        "rating": 4,
+        "description": "recenzija2",
+        "client_id": 2,
+        "field_id": 2
     }
 ]

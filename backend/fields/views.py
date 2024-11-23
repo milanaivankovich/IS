@@ -2,13 +2,14 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view 
 from .models import Field
 from .serializers import FieldSerializer
-from rest_framework.views import APIView 
+from rest_framework.views import APIView
+from rest_framework import status
 
 @api_view(['GET'])
 def getData(request):
     fields = Field.objects.all()
-    serializer = FieldSerializer(fields, many=True)
-    return Response(serializer.data)
+    serializer = FieldSerializer(fields, context={'request': request}, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -26,3 +27,5 @@ def fields_by_location(request, location):
         return Response(serializer.data)
     except Field.DoesNotExist:
         return Response(status=404)
+    
+

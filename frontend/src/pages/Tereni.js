@@ -6,64 +6,106 @@ import "react-calendar/dist/Calendar.css";
 import "leaflet/dist/leaflet.css";
 import "./Tereni.css";
 import MenuBar from "../components/MenuBar.js";
-import EventCard from "../components/EventCard.js";
-import SponsoredEventCard from "../components/SponsoredEventCard.js";
 import Footer from "../components/Footer.js";
 
 const Tereni = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedLocation, setSelectedLocation] = useState(null);
-  const [events, setEvents] = useState([]);
-  const [sponsoredEvents, setSponsoredEvents] = useState([]);
+  const [selectedField, setSelectedField] = useState(null);
+  const [advertisements, setAdvertisements] = useState([]);
+  const [filteredAdvertisements, setFilteredAdvertisements] = useState([]);
+  const [fields, setFields] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [noEvents, setNoEvents] = useState(false);
 
-  // Funkcija za dohvaćanje događaja iz backend-a
-  const fetchEvents = async () => {
-    setLoading(true);
+  // Funkcija za dohvaćanje terena
+  const fetchFields = async () => {
     try {
-      const formattedDate = selectedDate ? selectedDate.toISOString().split("T")[0] : null;
-
-      // Dohvatanje običnih događaja
-      const eventsResponse = await axios.get("http://localhost:8000/api/activities/", {
-        params: {
-          date: formattedDate, // Datum u formatu YYYY-MM-DD
-          lat: selectedLocation ? selectedLocation[0] : null,
-          lng: selectedLocation ? selectedLocation[1] : null,
-        },
-      });
-
-      // Dohvatanje sponzorisanih događaja
-      const sponsoredResponse = await axios.get("http://localhost:8000/api/advertisements/", {
-        params: {
-          date: formattedDate,
-          lat: selectedLocation ? selectedLocation[0] : null,
-          lng: selectedLocation ? selectedLocation[1] : null,
-        },
-      });
-
-      setEvents(eventsResponse.data);
-      setSponsoredEvents(sponsoredResponse.data);
+      setLoading(true);
+      const response = await axios.get("http://localhost:8000/api/fields/");
+      setFields(response.data);
     } catch (error) {
-      console.error("Greška pri dohvaćanju događaja:", error);
+      console.error("Greška pri dohvaćanju terena:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  // Pozivanje funkcije za dohvaćanje događaja kad se promijeni lokacija ili datum
-  useEffect(() => {
-    if (selectedLocation || selectedDate) {
-      fetchEvents();
-    }
-  }, [selectedDate, selectedLocation]);
+  // Funkcija za dohvaćanje sponzorisanih događaja
+  const fetchFilteredAdvertisements = async (field, date) => {
+    setLoading(true);
+    setNoEvents(false);
+    try {
+      let response;
 
+      // Ako imamo i datum i lokaciju
+      if (field && date) {
+        const formattedDate = formatDateToLocal(date);
+        response = await axios.get(
+          `http://localhost:8000/api/advertisement/${formattedDate}/location/${field.location}`
+        );
+      } 
+      // Ako imamo samo datum
+      else if (date) {
+        const formattedDate = formatDateToLocal(date);
+        response = await axios.get(
+          `http://localhost:8000/api/advertisement/${formattedDate}`
+        );
+      }
+      // Ako imamo samo lokaciju
+      else if (field) {
+        response = await axios.get(
+          `http://localhost:8000/api/advertisement/location/${field.location}`
+        );
+      }
+      // Ako nemamo nijedan parametar, prikazujemo sve oglase
+      else {
+        response = await axios.get("http://localhost:8000/api/advertisements/");
+      }
+
+      if (response.data.error || response.data.length === 0) {
+        setNoEvents(true);
+        setFilteredAdvertisements([]);
+      } else {
+        setFilteredAdvertisements(response.data);
+      }
+    } catch (error) {
+      console.error("Greška pri dohvaćanju oglasa:", error);
+      setNoEvents(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Funkcija za lokalno formatiranje datuma u YYYY-MM-DD
+  const formatDateToLocal = (date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Funkcija koja se poziva kada korisnik klikne na marker
+  const handleMarkerClick = (field) => {
+    setSelectedField(field);
+    fetchFilteredAdvertisements(field, selectedDate); // Filtriraj po odabranom terenu i datumu
+  };
+
+  // Funkcija koja se poziva kada korisnik odabere datum
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    fetchFilteredAdvertisements(selectedField, date); // Filtriraj po odabranom datumu i terenu
   };
 
-  const handleLocationClick = (location) => {
-    setSelectedLocation(location);
+  // Funkcija za resetovanje datuma (deselektovanje)
+  const handleDateReset = () => {
+    setSelectedDate(null); // Poništavamo datum
+    fetchFilteredAdvertisements(selectedField, null); // Filtriramo po terenu bez datuma
   };
+
+  useEffect(() => {
+    fetchFields();
+    fetchFilteredAdvertisements(null, selectedDate); // Inicijalno dohvatimo oglase za odabrani datum
+  }, [selectedDate]);
 
   return (
     <div className="tereni-page-container">
@@ -73,7 +115,7 @@ const Tereni = () => {
 
       <section className="map-calendar-section">
         <h2 className="section-title">MAPE</h2>
-        <p className="section-subtitle">Odaberite teren i datum da biste pretražili događaje</p>
+        <p className="section-subtitle">Odaberite datum da biste pretražili sponzorisane događaje</p>
         <div className="map-calendar-container">
           {/* Leaflet mapa */}
           <MapContainer center={[44.7722, 17.191]} zoom={13} className="map-container">
@@ -81,41 +123,19 @@ const Tereni = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            
-            {/* Automatsko generisanje markera za obične događaje */}
-            {events.map((event) => (
-              <Marker
-                key={event.id}
-                position={[event.lat, event.lng]} // Koristi latitude i longitude iz događaja
-                eventHandlers={{
-                  click: () => handleLocationClick([event.lat, event.lng]), // Postavlja odabranu lokaciju
-                }}
-              >
-                <Popup>
-                  <strong>{event.title}</strong>
-                  <br />
-                  {event.date}
-                  <br />
-                  {event.location}
-                </Popup>
-              </Marker>
-            ))}
 
-            {/* Automatsko generisanje markera za sponzorisane događaje */}
-            {sponsoredEvents.map((event) => (
+            {/* Dodavanje markera za svaki teren */}
+            {fields.map((field) => (
               <Marker
-                key={event.id}
-                position={[event.lat, event.lng]}
-                eventHandlers={{
-                  click: () => handleLocationClick([event.lat, event.lng]),
-                }}
+                key={field.id}
+                position={[field.latitude, field.longitude]}
+                eventHandlers={{ click: () => handleMarkerClick(field) }}
               >
                 <Popup>
-                  <strong>{event.title}</strong> (Sponzorisano)
-                  <br />
-                  {event.date}
-                  <br />
-                  {event.location}
+                  <h3>{field.name}</h3>
+                  <p><strong>Lokacija:</strong> {field.location}</p>
+                  <p><strong>Latitude:</strong> {field.latitude}</p>
+                  <p><strong>Longitude:</strong> {field.longitude}</p>
                 </Popup>
               </Marker>
             ))}
@@ -123,38 +143,53 @@ const Tereni = () => {
 
           {/* Kalendar */}
           <Calendar className="calendar" onChange={handleDateChange} value={selectedDate} />
+          
+          {/* Dugme za resetovanje datuma */}
+          <button onClick={handleDateReset} className="reset-date-button">Poništi datum</button>
         </div>
       </section>
 
       <div className="Events-body">
         <div className="Events-bar">
-          <div className="Event-bar-title">DOGAĐAJI</div>
-          <div className="Event-bar-subtitle">Prikaz događaja</div>
+          <div className="Event-bar-title">SPONZORISANI DOGAĐAJI</div>
           {loading ? (
-            <p>Učitavanje događaja...</p>
+            <p>Učitavanje sponzorisanih događaja...</p>
+          ) : noEvents ? (
+            <p>Nema sponzorisanih događaja za odabrani datum ili lokaciju.</p>
           ) : (
             <div className="Scroll-bar">
               <div className="Event-cards">
-                {events.map((event) => (
-                  <EventCard key={event.id} title={event.title} date={event.date} location={event.location} />
+                {filteredAdvertisements.map((advertisement) => (
+                  <div key={advertisement.id} className="Event-card">
+                    <h3>{advertisement.description} (Sponzorisano)</h3>
+                    <p><strong>Datum:</strong> {advertisement.date}</p>
+                    <p><strong>Lokacija:</strong> {advertisement.field_id}</p>
+                  </div>
                 ))}
               </div>
             </div>
           )}
         </div>
+      </div>
 
-        <div className="Events-bar">
-          <div className="Event-bar-title">SPONZORISANO</div>
-          <div className="Event-bar-subtitle">Sponzorisani događaji</div>
+      <div className="Fields-body">
+        <div className="Fields-bar">
+          <div className="Field-bar-title">TERENI</div>
+          <div className="Field-bar-subtitle">Lista svih terena</div>
           {loading ? (
-            <p>Učitavanje sponzorisanih događaja...</p>
+            <p>Učitavanje terena...</p>
           ) : (
             <div className="Scroll-bar">
-              <div className="Event-cards">
-                {sponsoredEvents.map((event) => (
-                  <SponsoredEventCard key={event.id} title={event.title} date={event.date} location={event.location} />
+              <ul className="Field-list">
+                {fields.map((field) => (
+                  <li key={field.id} className="Field-item">
+                    <h3>{field.name}</h3>
+                    <p>Lokacija: {field.location}</p>
+                    <p>Latitude: {field.latitude}</p>
+                    <p>Longitude: {field.longitude}</p>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           )}
         </div>

@@ -6,7 +6,10 @@ from django.db import connection
 
 @receiver([post_save, post_delete], sender=Advertisement)
 def update_json_file(sender, instance, **kwargs):
-    advertisements = list(Advertisement.objects.values())
+    advertisements = list(Advertisement.objects.all().values())
+    for ad in advertisements:
+        if 'date' in ad and ad['date']:
+            ad['date'] = ad['date'].strftime('%Y-%m-%d')  # Format: 'YYYY-MM-DD'
     
     with open('dataAdvertisement.json', 'w', encoding='utf-8') as f:
         json.dump(advertisements, f, ensure_ascii=False, indent=4)
