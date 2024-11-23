@@ -2,19 +2,28 @@
     {
         "id": 1,
         "location": "Borik",
-        "latitude": 3.6543,
-        "longitude": 13.5432,
+        "latitude": 44.77228,
+        "longitude": 17.20399,
         "type_of_sport": "kosarka",
         "is_suspended": false,
         "image": "images/teren1.jpg"
     },
     {
         "id": 2,
-        "location": "Mejdan",
-        "latitude": 3.5422,
-        "longitude": 13.5432,
+        "location": "Starcevica",
+        "latitude": 44.76085,
+        "longitude": 17.20897,
         "type_of_sport": "fudbal",
         "is_suspended": false,
         "image": "images/teren2.jpg"
+    },
+    {
+        "id": 3,
+        "location": "Paprikovac",
+        "latitude": 44.78391,
+        "longitude": 17.17103,
+        "type_of_sport": "fudbal",
+        "is_suspended": true,
+        "image": "images/teren3.jpg"
     }
 ]
