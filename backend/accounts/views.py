@@ -4,7 +4,7 @@ from .serializers import  BusinessSubjectSerializer, ClientSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser
-
+from accounts.authentication import custom_authenticate
 
 from django.utils.crypto import get_random_string
 from django.db import IntegrityError
@@ -189,34 +189,29 @@ def login_user(request):
         if not username or not password:
             return Response({"error": "Username and password are required"}, status=400)
 
-        # Authenticate the user using the Client model (since it extends AbstractUser)
-        client = authenticate(request, username=username, password=password)
+        # Use the custom authentication function to authenticate the user
+        user = custom_authenticate(username, password)
 
-        if not client:
+        if not user:
             logger.warning(f"Failed login attempt for username: {username}")
             return Response({"error": "Invalid credentials"}, status=400)
 
-        # Check if the client is active
-        if not client.is_active:
+        # Check if the user is active
+        if not user.is_active:
             return Response({"error": "Account is disabled"}, status=403)
 
-        # Create or retrieve the token for the client
+        # Create or retrieve the token for the user (client or business subject)
         token, created = ClientToken.objects.get_or_create(
-            client=client,  # Use 'client' here since Client is the user model
+            client=user,  # Use 'user' here since both Client and BusinessSubject will be handled
             defaults={"key": get_random_string(40)}  # Assign a random token key if it's created
         )
 
         # Return the token
         return Response({"token": token.key}, status=200)
 
-    except IntegrityError:
-        logger.error(f"Token creation failed for client: {username}")
-        return Response({"error": "Token creation failed due to database integrity issues"}, status=500)
-
     except Exception as e:
-        logger.error(f"Unexpected error during login for client '{username}': {str(e)}", exc_info=True)
+        logger.error(f"Unexpected error during login for user '{username}': {str(e)}", exc_info=True)
         return Response({"error": "An unexpected error occurred"}, status=500)
-
 
 @api_view(['POST'])
 def logout_user(request):

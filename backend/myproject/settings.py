@@ -136,7 +136,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # Default backend
 )
 
-AUTH_USER_MODEL = 'accounts.Client'
+#AUTH_USER_MODEL = 'AbstractUser'
 
 DEBUG = True
 

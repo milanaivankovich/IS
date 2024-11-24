@@ -1,29 +1,20 @@
 [
     {
         "id": 1,
-        "location": "Borik",
-        "latitude": 44.77228,
-        "longitude": 17.20399,
-        "type_of_sport": "kosarka",
+        "location": "Starcevica",
+        "latitude": 5.0,
+        "longitude": 8.0,
+        "type_of_sport": "Tenis",
         "is_suspended": false,
-        "image": "images/teren1.jpg"
+        "image": ""
     },
     {
         "id": 2,
-        "location": "Starcevica",
-        "latitude": 44.76085,
-        "longitude": 17.20897,
-        "type_of_sport": "fudbal",
+        "location": "Borik",
+        "latitude": 17.0,
+        "longitude": 15.0,
+        "type_of_sport": "Basketball",
         "is_suspended": false,
-        "image": "images/teren2.jpg"
-    },
-    {
-        "id": 3,
-        "location": "Paprikovac",
-        "latitude": 44.78391,
-        "longitude": 17.17103,
-        "type_of_sport": "fudbal",
-        "is_suspended": true,
-        "image": "images/teren3.jpg"
+        "image": ""
     }
 ]
