@@ -83,7 +83,7 @@ class BusinessSubject(AbstractUser):
 
 
 class BusinessSubjectToken(models.Model):
-    business_subject = models.OneToOneField(BusinessSubject, on_delete=models.CASCADE, related_name='auth_token')
+    business_subject = models.OneToOneField(BusinessSubject, on_delete=models.CASCADE, related_name='bs_auth_token')
     key = models.CharField(max_length=40, unique=True, default=get_random_string)
     created = models.DateTimeField(auto_now_add=True)
 

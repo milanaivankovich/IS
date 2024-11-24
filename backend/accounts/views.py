@@ -5,12 +5,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser
 from accounts.authentication import custom_authenticate
+from accounts.authentication import custom_authenticate_bs
 
 from django.utils.crypto import get_random_string
 from django.db import IntegrityError
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import ClientToken
+from .models import BusinessSubjectToken
 import logging
 
 
@@ -136,41 +138,46 @@ def register_client(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Get logger for debugging
+logger = logging.getLogger(__name__)
 
-@api_view(['POST'])
-def login_client(request):
-    """
-    Authenticate and login a client
-    """
-    username = request.data.get('username')
-    password = request.data.get('password')
-
-    # Authenticate user (this will check the password as well)
-    user = authenticate(username=username, password=password)
-
-    if user is None:
-        return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Check if the user is a Client
+@api_view(["POST"])
+def login_business_subject(request):
     try:
-        client = Client.objects.get(user=user)
-    except Client.DoesNotExist:
-        return Response({"error": "No associated client found"}, status=status.HTTP_404_NOT_FOUND)
+        # Get username and password from the request
+        email = request.data.get("email")
+        password = request.data.get("password")
 
-    # Generate or retrieve the auth token
-    token, created = Token.objects.get_or_create(user=user)
+        # Validate input
+        if not email or not password:
+            return Response({"error": "Email and password are required"}, status=400)
 
-    # Serialize the client data
-    client_data = ClientSerializer(client).data
+        # Use the custom authentication function to authenticate the user
+        user = custom_authenticate_bs(email, password)
 
-    # Return the authentication token and client data
-    return Response({
-        'token': token.key,
-        'user_id': user.pk,
-        'username': user.username,
-        'user_type': 'Client',
-        'user_data': client_data
-    }, status=status.HTTP_200_OK)
+        if not user:
+            logger.warning(f"Failed login attempt for email: {email}")
+            return Response({"error": "Invalid credentials"}, status=400)
+
+        # Check if the user is active
+        if not user.is_active:
+            return Response({"error": "Account is disabled"}, status=403)
+
+        # Create or retrieve the token for the user (client or business subject)
+        token, created = BusinessSubjectToken.objects.get_or_create(
+            business_subject=user,  # Use 'user' here since both Client and BusinessSubject will be handled
+            defaults={"key": get_random_string(40)}  # Assign a random token key if it's created
+        )
+
+        # Return the token
+        return Response({"token": token.key}, status=200)
+
+    except Exception as e:
+        logger.error(f"Unexpected error during login for user '{email}': {str(e)}", exc_info=True)
+        return Response({"error": "An unexpected error occurred"}, status=500)    
+
+
+
 
 
 
