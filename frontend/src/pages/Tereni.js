@@ -7,6 +7,8 @@ import "leaflet/dist/leaflet.css";
 import "./Tereni.css";
 import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
+import SponsoredEventCard from "../components/SponsoredEventCard"; // Prilagodite putanju
+
 
 const Tereni = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -160,11 +162,7 @@ const Tereni = () => {
             <div className="Scroll-bar">
               <div className="Event-cards">
                 {filteredAdvertisements.map((advertisement) => (
-                  <div key={advertisement.id} className="Event-card">
-                    <h3>{advertisement.description} (Sponzorisano)</h3>
-                    <p><strong>Datum:</strong> {advertisement.date}</p>
-                    <p><strong>Lokacija:</strong> {advertisement.field_id}</p>
-                  </div>
+                  <SponsoredEventCard key={advertisement.id} event={advertisement} />
                 ))}
               </div>
             </div>
