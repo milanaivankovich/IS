@@ -5,7 +5,7 @@ import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
 import axios from "axios";
 
-{/* post token za provjeru, na osnovu response redirect to login, kako selektovati klijenta */}
+{/* post token za provjeru, na osnovu response else redirect to login, kako selektovati klijenta */}
 
 const EditUserProfile = () => {
     const [token, setToken] = useState([]);
@@ -96,6 +96,7 @@ const EditUserProfile = () => {
               Sačuvaj
             </button>
           </form>
+          <form>
           <label className="EditProfileLabel">Stara lozinka</label>
           <input
             type="password"
@@ -122,6 +123,7 @@ const EditUserProfile = () => {
             type="submit">
             Promijeni lozinku
           </button>
+          </form>
           <button className="EditProfileButton">Odjavi se</button>
           <button className="EditProfileButton">Deaktiviraj nalog</button>
         </div>

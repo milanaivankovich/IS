@@ -44,18 +44,28 @@
     color: #e64a19;
 }
 
+.EditUserProfileDialog form .EditProfileLabel,
+.EditUserProfileDialog form .EditProfileInput {
+    font: 'Popins', regular;
+    font-size: 16px;
+
+}
+
 .EditProfileLabel {
+    margin: 0px;
     padding-left: 17px;
+    font-weight: 500;
+    color: black;
 }
 
 .EditProfileInput {
+    color: #666666;
     display: block;
     width: 90%;
     align-self: center;
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
-    color: #666666;
     border-radius: 5px;
     /* Remove default outline */
     transition: border 0.3s ease;
