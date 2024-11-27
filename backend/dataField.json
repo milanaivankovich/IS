@@ -11,37 +11,37 @@
     {
         "id": 2,
         "location": "Borik",
-        "latitude": 44.76899,
-        "longitude": 17.19987,
+        "latitude": 44.77258,
+        "longitude": 17.20244,
         "type_of_sport": "fudbal",
         "is_suspended": true,
         "image": "images/teren2.jpg"
     },
     {
         "id": 3,
-        "location": "Petricevac",
-        "latitude": 44.78884,
-        "longitude": 17.18751,
+        "location": "Starcevica",
+        "latitude": 44.76036,
+        "longitude": 17.2094,
         "type_of_sport": "fudbal",
         "is_suspended": false,
         "image": "images/teren3.jpg"
     },
     {
         "id": 4,
-        "location": "Starcevica",
-        "latitude": 44.76051,
-        "longitude": 17.20854,
+        "location": "Paprikovac",
+        "latitude": 44.78229,
+        "longitude": 17.17545,
         "type_of_sport": "kosarka",
-        "is_suspended": true,
+        "is_suspended": false,
         "image": "images/teren4.jpg"
     },
     {
         "id": 5,
-        "location": "Paprikovac",
-        "latitude": 44.78342,
-        "longitude": 17.16949,
+        "location": "Petricevac",
+        "latitude": 44.78878,
+        "longitude": 17.19172,
         "type_of_sport": "tenis",
-        "is_suspended": false,
+        "is_suspended": true,
         "image": "images/teren5.jpg"
     }
 ]
