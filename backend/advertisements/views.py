@@ -43,3 +43,23 @@ def advertisements_by_date_and_location(request, date, location):
         return Response(serializer.data)
     else:
         return Response({'error': 'No advertisements found for this date and location'}, status=404)
+
+
+@api_view(['GET'])
+def get_location_by_field_id(request, field_id):
+    from fields.models import Field
+    try:
+        field = Field.objects.get(id=field_id)
+        return Response({'location': field.location})
+    except Field.DoesNotExist:
+        return Response({'error': 'Field not found'}, status=404)
+    
+
+@api_view(['GET'])
+def get_business_subject_by_id(request, business_subject_id):
+    from accounts.models import BusinessSubject
+    try:
+        name = BusinessSubject.objects.get(id=business_subject_id)
+        return Response({'business_name': name.business_name})
+    except BusinessSubject.DoesNotExist:
+        return Response({'error': 'Field not found'}, status=404)

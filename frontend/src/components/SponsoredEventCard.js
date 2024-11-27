@@ -1,21 +1,62 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./SponsoredEventCard.css";
 import CreatorImg from "../images/user.svg";
 
-const SponsoredEventCard = () => {
+const SponsoredEventCard = ({ event }) => {
+  const { description, date, field, business_subject } = event;
+  const [location, setLocation] = useState("");
+  const [name, setName] = useState("");
+
+      // Dohvaćanje lokacije na temelju field ID-a
+      useEffect(() => {
+        const fetchLocation = async () => {
+          try {
+            const response = await fetch(`http://127.0.0.1:8000/api/advertisement/field/${field}/`);
+            const data = await response.json();
+            setLocation(data.location); 
+          } catch (error) {
+            console.error("Error fetching location:", error);
+          }
+        };
+    
+        if (field) {
+          fetchLocation();
+        }
+      }, [field]); 
+
+      // Dohvaćanje lokacije na temelju field ID-a
+      useEffect(() => {
+        const fetchName = async () => {
+          try {
+            const response = await fetch(`http://127.0.0.1:8000/api/advertisement/businesssubject/${business_subject}/`);
+            const data = await response.json();
+            setName(data.business_name); 
+          } catch (error) {
+            console.error("Error fetching location:", error);
+          }
+        };
+    
+        if (business_subject) {
+          fetchName();
+        }
+      }, [business_subject]);
+
+      
+
   return (
     <div className="SponsoredEventCard-Okvir">
       <header className="SponsoredEventCard-Header" />
       <div className="SponsoredEventCard-body">
         <div className="SponsoredEventCard-user">
-          <img src={CreatorImg} className="creator-image" />
+          <img src={CreatorImg} className="creator-image" alt="Creator" />
           <div className="Naslov">
-            Naziv sponz dogadjaja
-            <div className="createdBy"> by @user </div>
+            {description}
+            <div className="createdBy"> by @{name}</div>
           </div>
         </div>
         <div className="Opis">
-          Lorem ipsum lorem lorem ipsum lorem ipsum lorem ipsum
+          <p><strong>Datum:</strong> {date}</p>
+          <p><strong>Lokacija:</strong> {location}</p>
         </div>
         <div className="EventCard-buttons">
           <button className="EventCard-button">Pregled</button>

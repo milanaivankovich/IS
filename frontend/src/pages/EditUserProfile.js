@@ -5,11 +5,17 @@ import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
 import axios from "axios";
 
+{/* post token za provjeru, na osnovu response else redirect to login, kako selektovati klijenta */}
+
 const EditUserProfile = () => {
+    const [token, setToken] = useState([]);
+    if (localStorage.getItem('token')!= null)
+      setToken(localStorage.getItem('token'));
+    
     const [userData, setUserData] = useState([]);
   
     useEffect(() => {
-      axios.get('http://localhost:8000/api/get/client/1/')
+      axios.get('http://localhost:8000/api/client/1/')
         .then(response => {
           setUserData(response.data);
         })
@@ -18,11 +24,9 @@ const EditUserProfile = () => {
         });
     }, []);
 
-  const [updatedData, setUpdatedData] = useState("");
-
-  const handleUpdate = async (updatedData) => {
+  const handleUpdate = async (userData) => {
     try {
-      axios.put("http://localhost:8000/api/edit/client/1/", updatedData)
+      axios.put("http://localhost:8000/api/client/1/", userData)
   .then(response => {
     console.log("Data updated successfully:", response.data);
   })
@@ -51,50 +55,75 @@ const EditUserProfile = () => {
             Nova slika
           </a>
           <form >
-            <label className="EditProfileLabel">Ime i prezime</label>
+            <label className="EditProfileLabel">Ime</label>
+            <input
+              type="name"
+              value={userData.first_name}
+              className="EditProfileInput"
+              required
+              onChange={(e) => setUserData(e.target.value)}
+            />
+             <label className="EditProfileLabel">Prezime</label>
+            <input
+              type="name"
+              value={userData.last_name}
+              className="EditProfileInput"
+              required
+              onChange={(e) => setUserData(e.target.value)}
+            />
+            <label className="EditProfileLabel">Korisničko ime</label>
             <input
               type="text"
-              value={updatedData}
-              placeholder={userData.user.username}
+              value={userData.username}
               className="EditProfileInput"
               required
-              onChange={(e) => setUpdatedData(e.target.value)}
+              onChange={(e) => setUserData(e.target.value)}
             />
-            <label className="EditProfileLabel">E-mail ili telefon</label>
+            <label className="EditProfileLabel">E-mail</label>
             <input
               type="email"
-              placeholder={userData.user.email}
+              value={userData.email}
               className="EditProfileInput"
               required
+              onChange={(e) => setUserData(e.target.value)}
             />
             <button
               className="EditProfileButton"
               id="EditNameEmailButton"
               type="submit"
+              onClick={() => handleUpdate(userData)}
             >
               Sačuvaj
             </button>
           </form>
+          <form>
           <label className="EditProfileLabel">Stara lozinka</label>
           <input
             type="password"
             placeholder="Unesi staru lozinku"
             className="EditProfileInput"
+            required
           />
           <label className="EditProfileLabel">Nova lozinka</label>
           <input
             type="password"
             placeholder="Unesi novu lozinku"
             className="EditProfileInput"
+            required
           />
           <input
             type="password"
             placeholder="Potvrdi novu lozinku"
             className="EditProfileInput"
+            required
           />
-          <button className="EditProfileButton" id="PromijeniLozinkuButton">
+          <button 
+            className="EditProfileButton" 
+            id="PromijeniLozinkuButton"
+            type="submit">
             Promijeni lozinku
           </button>
+          </form>
           <button className="EditProfileButton">Odjavi se</button>
           <button className="EditProfileButton">Deaktiviraj nalog</button>
         </div>
