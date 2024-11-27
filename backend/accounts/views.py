@@ -77,6 +77,32 @@ def edit_client(request, pk):
     if user.pk != pk:
         return Response({"error": "You can only edit your own profile"}, status=status.HTTP_403_FORBIDDEN)
     
+    # Get the old and new passwords from the request data
+    old_password = request.data.get("old_password")
+    new_password = request.data.get("new_password")
+    confirm_password = request.data.get("confirm_password")
+
+    if old_password and new_password and confirm_password:
+        # Authenticate user with the old password to verify it
+        user = custom_authenticate(username=user.username, password=old_password)
+        
+        if not user:
+            return Response({"error": "Old password is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the new password and confirm password match
+        if new_password != confirm_password:
+            return Response({"error": "New password and confirmation do not match."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Update the user's password
+        user.set_password(new_password)
+        user.save()
+
+
+        return Response({"message": "Password updated successfully."}, status=status.HTTP_200_OK)
+    
+
+
+
     try:
         # Fetch the client to be updated
         client = Client.objects.get(pk=pk)
