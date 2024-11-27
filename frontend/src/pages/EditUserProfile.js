@@ -5,14 +5,29 @@ import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
 import axios from "axios";
 
-{/* post token za provjeru, na osnovu response else redirect to login, kako selektovati klijenta */}
+{/* selektovati klijenta po tokenu? */}
 
 const EditUserProfile = () => {
+
     const [token, setToken] = useState([]);
-    if (localStorage.getItem('token')!= null)
-      setToken(localStorage.getItem('token'));
+    useEffect(()=> {
+      try {
+        setToken(localStorage.getItem('token'));
+        if (token==null) throw new Error("Sesija istekla");
+      } catch (error) {
+        console.error("Vrati se na login: ", error.message);
+        window.location.replace("/login");
+      }
+    })
     
-    const [userData, setUserData] = useState([]);
+    const [userData, setUserData] = useState({
+      "first_name": '',
+      "last_name": '',
+      "username": '',
+      "email": '',
+      "date_of_birth": '',
+      "bio": ''
+    });
   
     useEffect(() => {
       axios.get('http://localhost:8000/api/client/1/')
@@ -21,22 +36,32 @@ const EditUserProfile = () => {
         })
         .catch(error => {
           console.error('Error fetching data: ', error);
+          alert('Error fetching data');
         });
     }, []);
 
-  const handleUpdate = async (userData) => {
-    try {
-      axios.put("http://localhost:8000/api/client/1/", userData)
-  .then(response => {
-    console.log("Data updated successfully:", response.data);
-  })
-  .catch(error => {
-    console.error("There was an error updating the data:", error);
+  const handleUpdate = (userData) => {
+    axios
+      .put("http://localhost:8000/api/client/1/edit", userData)
+      .then((response) => {
+        console.log("Data updated successfully:", response.data);
+      })
+      .catch((error) => {
+        console.error("There was an error updating the data:", error);
+        alert("Doslo je do greške prilikom ažuriranja...");
+      });
+  };
+
+  const [password, setPassword] = useState({
+    old: '',
+    new: '',
+    confirm: '',
   });
-      // Optionally, fetch and update the displayed data
-    } catch (error) {
-      console.error("Error updating data:", error);
-    }
+
+  const handlePasswordUpdate = (password) =>
+  { 
+    
+
   };
 
   return (
@@ -61,7 +86,7 @@ const EditUserProfile = () => {
               value={userData.first_name}
               className="EditProfileInput"
               required
-              onChange={(e) => setUserData(e.target.value)}
+              onChange={(e) => setUserData(prevData=>({...prevData, first_name: e.target.value }))}
             />
              <label className="EditProfileLabel">Prezime</label>
             <input
@@ -69,7 +94,7 @@ const EditUserProfile = () => {
               value={userData.last_name}
               className="EditProfileInput"
               required
-              onChange={(e) => setUserData(e.target.value)}
+              onChange={(e) => setUserData(prevData=>({...prevData, last_name: e.target.value }))}
             />
             <label className="EditProfileLabel">Korisničko ime</label>
             <input
@@ -77,7 +102,7 @@ const EditUserProfile = () => {
               value={userData.username}
               className="EditProfileInput"
               required
-              onChange={(e) => setUserData(e.target.value)}
+              onChange={(e) => setUserData(prevData=>({...prevData, username: e.target.value }))}
             />
             <label className="EditProfileLabel">E-mail</label>
             <input
@@ -85,7 +110,7 @@ const EditUserProfile = () => {
               value={userData.email}
               className="EditProfileInput"
               required
-              onChange={(e) => setUserData(e.target.value)}
+              onChange={(e) => setUserData(prevData=>({...prevData, email: e.target.value }))}
             />
             <button
               className="EditProfileButton"
@@ -102,6 +127,7 @@ const EditUserProfile = () => {
             type="password"
             placeholder="Unesi staru lozinku"
             className="EditProfileInput"
+            onChange={(e) => setPassword(prevData=>({...prevData, old: e.target.value }))}
             required
           />
           <label className="EditProfileLabel">Nova lozinka</label>
@@ -109,12 +135,14 @@ const EditUserProfile = () => {
             type="password"
             placeholder="Unesi novu lozinku"
             className="EditProfileInput"
+            onChange={(e) => setPassword(prevData=>({...prevData, new: e.target.value }))}
             required
           />
           <input
             type="password"
             placeholder="Potvrdi novu lozinku"
             className="EditProfileInput"
+            onChange={(e) => setPassword(prevData=>({...prevData, confirm: e.target.value }))}
             required
           />
           <button 
