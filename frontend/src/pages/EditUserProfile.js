@@ -28,6 +28,8 @@ const EditUserProfile = () => {
       "date_of_birth": '',
       "bio": ''
     });
+
+    
   
     useEffect(() => {
       axios.get('http://localhost:8000/api/client/1/')
@@ -40,9 +42,16 @@ const EditUserProfile = () => {
         });
     }, []);
 
-  const handleUpdate = (userData) => {
-    axios
-      .put("http://localhost:8000/api/client/1/edit", userData)
+    const [userUpdate, setUserUpdate] = useState({
+      "first_name": userData.first_name,
+      "last_name":  userData.last_name,
+      "username":  userData.username,
+      "email":  userData.email,
+    });
+
+  const handleUpdate = async () => {
+    await axios
+      .put("http://localhost:8000/api/client/1/edit/", userData)
       .then((response) => {
         console.log("Data updated successfully:", response.data);
       })
@@ -64,6 +73,10 @@ const EditUserProfile = () => {
 
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <body>
       <header>
@@ -79,7 +92,7 @@ const EditUserProfile = () => {
           <a href="" className="NewImage">
             Nova slika
           </a>
-          <form >
+          <form onSubmit={handleSubmit}>
             <label className="EditProfileLabel">Ime</label>
             <input
               type="name"
@@ -116,12 +129,12 @@ const EditUserProfile = () => {
               className="EditProfileButton"
               id="EditNameEmailButton"
               type="submit"
-              onClick={() => handleUpdate(userData)}
+              onClick={() => handleUpdate()}
             >
               Sačuvaj
             </button>
           </form>
-          <form>
+          <form onSubmit={handleSubmit}>
           <label className="EditProfileLabel">Stara lozinka</label>
           <input
             type="password"
