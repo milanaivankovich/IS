@@ -24,7 +24,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/login/', formData); // Endpoint za login
+      const response = await axios.post('http://localhost:8000/api/login/client/', formData); // Endpoint za login
       console.log('Login successful:', response.data);
 
       // Spremanje tokena ili korisničkih podataka u lokalnu memoriju

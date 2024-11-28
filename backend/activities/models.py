@@ -9,8 +9,6 @@ class Aktivnost(models.Model):
     #datum_kreiranja = models.DateTimeField(auto_now_add=True)
     datum = models.DateField(null=True)
     vrijeme = models.TimeField(null=True)
-    teren = models.CharField(max_length=255, null=True)
-    #teren = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return self.naziv       
+        return self.naziv   

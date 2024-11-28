@@ -33,7 +33,7 @@ const Tereni = () => {
   };
 
   // Funkcija za dohvaćanje sponzorisanih događaja
-  const fetchFilteredAdvertisements = async (field, date) => {
+  const fetchFilteredAdvertisements = async (field, date, business_subject) => {
     setLoading(true);
     setNoEvents(false);
     try {

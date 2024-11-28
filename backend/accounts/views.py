@@ -52,15 +52,66 @@ class UserRegistrationView(APIView):
 
 
 
-
-@api_view(['PUT'])
+@api_view(["PUT"])
 def edit_client(request, pk):
+    # Retrieve the token from the Authorization header
+    token = request.headers.get('Authorization')  # Format: "Token <your_token>"
+    
+    if not token:
+        return Response({"error": "Authentication required"}, status=status.HTTP_401_UNAUTHORIZED)
+    
     try:
-        user = Client.objects.get(pk=pk)
+        # Extract the actual token key from the "Token <token>" format
+        token_key = token.split(' ')[1]  # Assumes "Token <token>"
+        
+        # Retrieve the token object from the database
+        client_token = ClientToken.objects.get(key=token_key)
+        
+        # Retrieve the client associated with this token
+        user = client_token.client  # assuming you have a reverse relationship 'client' on your ClientToken model
+        
+    except ClientToken.DoesNotExist:
+        return Response({"error": "Invalid token or token expired"}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    # Check if the authenticated user is the one trying to edit their profile
+    if user.pk != pk:
+        return Response({"error": "You can only edit your own profile"}, status=status.HTTP_403_FORBIDDEN)
+    
+    # Get the old and new passwords from the request data
+    old_password = request.data.get("old_password")
+    new_password = request.data.get("new_password")
+    confirm_password = request.data.get("confirm_password")
+
+    if old_password and new_password and confirm_password:
+        # Authenticate user with the old password to verify it
+        user = custom_authenticate(username=user.username, password=old_password)
+        
+        if not user:
+            return Response({"error": "Old password is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the new password and confirm password match
+        if new_password != confirm_password:
+            return Response({"error": "New password and confirmation do not match."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Update the user's password
+        user.set_password(new_password)
+        user.save()
+
+
+        return Response({"message": "Password updated successfully."}, status=status.HTTP_200_OK)
+    
+
+
+
+    try:
+        # Fetch the client to be updated
+        client = Client.objects.get(pk=pk)
+
     except Client.DoesNotExist:
         return Response({"error": "Client not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = ClientSerializer(user, data=request.data, partial=True)
+    # Use the serializer to update the client data
+    serializer = ClientSerializer(client, data=request.data, partial=True)  # partial=True to allow partial updates
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)

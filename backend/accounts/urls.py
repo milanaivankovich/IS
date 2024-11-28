@@ -20,7 +20,7 @@ urlpatterns = [
     # Client Endpoints
     path('api/client/', views.register_client, name='register_client'),  # POST to create new client
     path('api/client/<int:pk>/', views.get_client, name='get_client'),  # GET client by ID
-    path('api/client/<int:pk>/', views.edit_client, name='edit_client'),  # PUT/PATCH to edit client
+    path('api/client/<int:pk>/edit/', views.edit_client, name='edit_client'),  # PUT/PATCH to edit client
     path('api/clients/', views.list_clients, name='list_clients'), #pregled registrovanih rekreativaca
 
     # Business Subject Endpoints

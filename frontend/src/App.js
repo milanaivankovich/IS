@@ -9,8 +9,9 @@ import OdabirVrsteKorisnika from "./pages/OdabirVrsteKorisnika";
 import LoginPoslovni from "./pages/LoginPoslovni";
 import OdabirVrsteKorisnikaRegistracija from "./pages/OdabirVrsteKorisnikaRegistracija";
 import UserProfile from "./pages/UserProfile";
-import RegisterRekreativac from "./pages/RegisterRekreativac"
-import RegisterPoslovni from "./pages/RegisterPoslovni"
+import RegisterRekreativac from "./pages/RegisterRekreativac";
+import RegisterPoslovni from "./pages/RegisterPoslovni";
+import EditEventCard from "./components/EditEventCard";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("pocetna");
@@ -37,6 +38,8 @@ function App() {
       setCurrentPage("registerRekreativac");
     }else if (path === "/registerPoslovni") {
       setCurrentPage("registerPoslovni");
+    } else if (path=== "/probni"){
+        setCurrentPage("probni");
     }else {
       setCurrentPage("pocetna");
     }
@@ -58,6 +61,7 @@ function App() {
           {currentPage === "userprofile" && <UserProfile />}
           {currentPage === "registerRekreativac" && <RegisterRekreativac />}
           {currentPage === "registerPoslovni" && <RegisterPoslovni />}
+          {currentPage === "probni" && <EditEventCard />}
         </div>
       </header>
     </div>
