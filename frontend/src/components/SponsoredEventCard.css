@@ -30,6 +30,11 @@
     font-stretch: expanded;
 }
 
+.Opis p {
+    margin: 0; /* Uklanja defaultne margine */
+    margin-bottom: 10px; /* Minimalni razmak između paragrafa */
+}
+
 .SponsoredEventCard-Header {
     /* text */
     /* media */

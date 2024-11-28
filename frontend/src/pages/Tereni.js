@@ -98,11 +98,12 @@ const Tereni = () => {
     fetchFilteredAdvertisements(selectedField, date); // Filtriraj po odabranom datumu i terenu
   };
 
-  // Funkcija za resetovanje datuma (deselektovanje)
-  const handleDateReset = () => {
-    setSelectedDate(null); // Poništavamo datum
-    fetchFilteredAdvertisements(selectedField, null); // Filtriramo po terenu bez datuma
-  };
+// Funkcija za resetovanje datuma (deselektovanje)
+const handleDateReset = () => {
+  setSelectedDate(null); // Poništavamo datum
+  // Pozivamo fetchFilteredAdvertisements bez datuma i terena kako bi prikazali sve oglase
+  fetchFilteredAdvertisements(null, null); 
+};
 
   useEffect(() => {
     fetchFields();
@@ -134,10 +135,14 @@ const Tereni = () => {
                 eventHandlers={{ click: () => handleMarkerClick(field) }}
               >
                 <Popup>
-                  <h3>{field.name}</h3>
+                  <h3>{"Sportski teren"}</h3>
                   <p><strong>Lokacija:</strong> {field.location}</p>
-                  <p><strong>Latitude:</strong> {field.latitude}</p>
-                  <p><strong>Longitude:</strong> {field.longitude}</p>
+                  <p><strong>Sport:</strong> {field.type_of_sport}</p>
+                  <img
+                   src={field.image}
+                   alt={`Slika terena ${field.name}`}
+                  style={{ width: "100%", height: "auto", maxWidth: "200px" }}
+                  />
                 </Popup>
               </Marker>
             ))}
