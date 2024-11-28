@@ -5,6 +5,7 @@ from .serializers import FieldSerializer
 from rest_framework.views import APIView
 from rest_framework import status
 
+
 @api_view(['GET'])
 def getData(request):
     fields = Field.objects.all()

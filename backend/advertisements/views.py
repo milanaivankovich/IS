@@ -11,7 +11,7 @@ def getData(request):
 
 
 @api_view(['POST'])
-def setData(request):
+def setData(request):   
     serializer = AdvertisementSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -43,3 +43,4 @@ def advertisements_by_date_and_location(request, date, location):
         return Response(serializer.data)
     else:
         return Response({'error': 'No advertisements found for this date and location'}, status=404)
+
