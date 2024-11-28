@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "description": "oglas1",
+        "date": "2024-11-20",
+        "business_subject_id": 1,
+        "field_id": 1
+    },
+    {
+        "id": 2,
+        "description": "oglas2",
+        "date": "2024-12-12",
+        "business_subject_id": 3,
+        "field_id": 3
+    },
+    {
+        "id": 3,
+        "description": "oglas3",
+        "date": "2024-11-25",
+        "business_subject_id": 2,
+        "field_id": 4
+    },
+    {
+        "id": 4,
+        "description": "oglas4",
+        "date": "2024-12-14",
+        "business_subject_id": 2,
+        "field_id": 3
+    },
+    {
+        "id": 5,
+        "description": "oglas5",
+        "date": "2024-12-14",
+        "business_subject_id": 1,
+        "field_id": 2
+    }
+]

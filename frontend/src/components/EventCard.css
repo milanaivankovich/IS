@@ -1,0 +1,100 @@
+.Okvir {
+    /* Auto layout */
+    display: flex;
+    font-size: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 20px;
+    padding: 25px;
+
+    width: 235px;
+    height: 195px;
+    overflow: hidden;
+
+    background: #Fefefe;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+}
+
+.Naslov {
+    /* Header 3 (20 28) */
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 28px;
+    /* identical to box height, or 140% */
+    color: black;
+    /* Inside auto layout */
+    align-self: stretch;
+    }
+
+.Opis {
+    /* text */
+    color: #666666;
+    text-align: justify;
+    /* Auto layout */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+
+    /* Inside auto layout */
+    align-self: stretch;
+    font-stretch: expanded;
+}
+
+.EventCard-Header {
+    /* text */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /*padding: 20px 24px;*/
+    gap: 18px;
+    overflow: hidden;
+
+
+    /* Inside auto layout */
+    flex: none;
+    align-self: stretch;
+    
+    max-height: 159px ;
+}
+
+.EventCard-buttons {
+    /* dialog button bar */
+    /* Auto layout */
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    gap: 8px;
+    padding: 10px 0px;
+
+    /* Inside auto layout */
+    align-self: stretch;
+}
+
+.EventCard-button {
+    border: 2px transparent;
+    background-color: #fefefe;
+    color: #F15A24;
+    text-transform: uppercase;
+    
+    /* text label */
+    line-height: 24px;
+    /* identical to box height, or 171% */
+    /* Inside auto layout */
+
+    padding: 6px 8px;
+    gap: 8px;
+    height: 36px;
+
+    /* Inside auto layout */
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+}
+
+.EventCard-button:hover{
+    color: #e64a19;
+}

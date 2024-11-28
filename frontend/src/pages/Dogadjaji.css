@@ -1,0 +1,60 @@
+
+* {
+    font: 'Popins', regular;
+    font-size: 16px;
+}
+
+.Dogadjaji-header{
+    position: relative;
+}
+
+.Event-cards {
+    display: flex;
+    width: fit-content;
+    flex-direction: row;
+}
+
+.Scroll-bar {
+    width: 95vw;
+    overflow: scroll;
+}
+
+.Event-bar-title {
+    /* događaji */
+
+position: relative;
+width: 271.9px;
+
+margin-left: 20px; 
+margin-top: 20px;
+
+font-weight: 500;
+font-size: 34px;
+line-height: 51px;
+letter-spacing: 0.05em;
+text-transform: uppercase;
+
+color: black;
+
+
+}
+
+.Event-bar-subtitle {
+    /* Šta ima novo u gradu? */
+
+position: relative;
+width: 294.16px;
+font-weight: 400;
+line-height: 21px;
+letter-spacing: 0.03em;
+margin-left: 25px; 
+
+color: #666666;
+
+
+}
+.Events-body{
+    padding-left: 40px;
+    width: 95vw;
+    background-color: #fefefe;
+}

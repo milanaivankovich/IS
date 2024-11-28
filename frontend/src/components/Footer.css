@@ -1,0 +1,18 @@
+.footer {
+    background-color: #fefefe;
+    height: 58px;
+    color: #666666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    overflow: hidden;
+    
+}
+ul {
+    list-style: none;
+}
+
+li:hover{
+    color:black;
+}

@@ -1,0 +1,178 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #181818;
+}
+
+.login-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 100vh;
+  padding: 0 50px;
+  gap: 30px;
+}
+
+.login-left {
+  width: 40%;
+  max-width: 400px;
+}
+
+.login-logo {
+  margin-top: 15px;
+  max-width: 100%;
+  margin-bottom: 20px;
+}
+
+.login-welcome {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+p {
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #6c6c6c;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+  margin-left: 0; /* Uklanja neusklađenost margina */
+  text-align: left;
+}
+
+.login-input {
+  display: block;
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.login-btn {
+  display: block;
+  width: 90%;
+  padding: 12px;
+  background-color: #ff5722;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 15px;
+  transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #e64a19;
+}
+
+.login-btn.google {
+  background-color: #fff;
+  color: black;
+  border: 1px solid #ccc;
+}
+
+.login-btn.facebook {
+  background-color: #3b5998;
+  color: white;
+}
+
+.image-container{
+  width: 50%;
+  height: 100vh;
+  object-fit: contain;
+  background-position: center;
+}
+
+.additional-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+.additional-options a {
+  color: #ff5722;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.additional-options a:hover {
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .login-left, .login-right {
+    width: 100%;
+  }
+
+  .login-right {
+    height: 50vh;
+  }
+}
+
+.register-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #6c6c6c;
+}
+
+.register-link a {
+  text-decoration: none;
+  font-weight: bold;
+  color: #ff5722;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+.remember-me-container {
+  display: flex;
+  justify-content: space-between; /* Razmak između checkbox grupe i linka */
+  align-items: center; /* Vertikalno poravnanje svih elemenata */
+  font-size: 0.9rem;
+  color: #6c6c6c;
+  margin-bottom: 15px;
+}
+
+.checkbox-group {
+  display: flex; /* Horizontalno poravnanje checkbox-a i teksta */
+  align-items: center; /* Vertikalno poravnanje checkbox-a i teksta */
+  white-space: nowrap;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin: 0; /* Uklanja nepotrebni razmak oko checkbox-a */
+  margin-right: -20px;
+}
+
+.remember-me-container a {
+  text-decoration: none;
+  color: #ff5722;
+  
+}
+
+.remember-me-container a:hover {
+  text-decoration: underline;
+}
+

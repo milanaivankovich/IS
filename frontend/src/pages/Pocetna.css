@@ -1,0 +1,41 @@
+
+.pocetna {
+    margin: 0px;
+    padding: 0px;
+}
+.pocetna-body {
+    height: 97vh;
+    min-width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center elements horizontally */
+    align-content: center;
+    
+  }
+  .pocetna-header {
+    min-width: 100vw;
+    position: sticky;
+    top: 0px;
+    left: 0px;
+    display: inline-block;
+  }
+.search  {
+  height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url("../images/tennis-court-seen-from-air.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+
+.footer {
+  max-height: 58px;
+  min-width: 100vw;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,0 +1,171 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+  color: #181818;
+}
+
+.register-container {
+    font-family: Arial, sans-serif;
+    max-width: 350px;
+    margin: auto;
+    text-align: center;
+  }
+  
+  .logo-container {
+
+    
+    margin: 20px auto;
+    text-align: center;
+  }
+  
+  .basket-logo {
+    width: 200px;
+    margin-top: 20px;
+  }
+  
+  .welcome-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #333;
+  }
+  
+  #form-container {
+    margin: 15px 0;
+  }
+  
+  input {
+    display: block;
+    width: 65%; /* Smanjeno sa 80% na 70% */
+    margin: 3px auto; /* Manji razmak između polja */
+    padding: 7px; /* Smanjeno sa 10px na 8px */
+    font-size: 12px; /* Smanjeno sa 16px na 14px */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  label {
+    display: block;
+    width: 70%; /* Usaglašeno s veličinom polja za unos */
+    margin: 5px auto; /* Razmak između teksta i polja */
+    text-align: left; /* Tekst počinje s lijeve strane */
+    font-size: 14px; /* Smanjen font za tekst iznad polja */
+    color: #555;
+  }
+  
+  .continue-button {
+    background-color: #ff6600;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .continue-button:hover {
+    background-color: #e65500;
+  }
+  
+  .social-buttons {
+    margin: 15px 0; /* Smanjen razmak oko dugmadi */
+  }
+  
+  .social-button {
+    display: block;
+    width: 70%; /* Smanjeno sa 80% na 70% */
+    margin: 5px auto; /* Manji razmak između dugmadi */
+    padding: 8px; /* Smanjeno sa 10px na 8px */
+    font-size: 14px; /* Smanjen font */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .facebook-button {
+    background-color: #3b5998;
+    color: white;
+  }
+  
+  .email-button {
+    background-color: #4285f4;
+    color: white;
+  }
+  
+  .login-prompt {
+    margin-top: 20px;
+  }
+  
+  .login-link {
+    color: #ff6600;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .login-link:hover {
+    text-decoration: underline;
+  }
+    
+  .steps {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .step {
+    text-align: center;
+    flex: 1;
+  }
+  
+  .step-circle {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 50%;
+    background-color: #ddd;
+    color: #fff;
+    font-weight: bold;
+    margin: auto;
+    transition: background-color 0.3s ease;
+  }
+  
+  .step.active .step-circle {
+    background-color: #ff6600;
+  }
+  
+  .step p {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #666;
+  }
+  
+  .step.active p {
+    font-weight: bold;
+    color: #333;
+  }
+  
+ 
+
+  .login-prompt {
+    margin-top: 20px;
+    margin-bottom: 40px; /* Dodaje razmak između login-prompt i progress bara */
+    font-size: 14px; /* Opcionalno smanjenje veličine fonta za konzistentnost */
+  }
+  
+  .progress-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    position: absolute;
+    width: 972px;
+    height: 30px;
+    left: calc(50% - 972px / 2);
+    bottom: 15px;
+    margin-top: 10px; /* Uklonite ako je ranije postavljen margin-top */
+  }
