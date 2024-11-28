@@ -30,6 +30,10 @@
     font-stretch: expanded;
 }
 
+.Opis p {
+    margin-bottom: -4px; /* Smanjenje razmaka između p elemenata */
+}
+
 .SponsoredEventCard-Header {
     /* text */
     /* media */
