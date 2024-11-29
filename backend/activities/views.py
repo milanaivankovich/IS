@@ -96,4 +96,11 @@ def update_activity(request, activity_id):
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-#standard_user_by_id
+@api_view(['GET'])
+def get_type_of_sport_by_field_id(request, field_id):
+    from fields.models import Field
+    try:
+        field = Field.objects.get(id=field_id)
+        return Response({'type_of_sport': field.type_of_sport})
+    except Field.DoesNotExist:
+        return Response({'error': 'Field not found'}, status=404)

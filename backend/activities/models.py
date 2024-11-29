@@ -5,13 +5,13 @@ from accounts.models import Client
 class Activities(models.Model):
     id=models.AutoField(primary_key=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='activities', null=True)
-    name = models.CharField(max_length=255)
+    titel = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     #datum_kreiranja = models.DateTimeField(auto_now_add=True)
     date = models.DateField(null=True)
     #vrijeme = models.TimeField(null=True)
     field = models.ForeignKey('fields.Field', on_delete=models.CASCADE, null=True)
-    numberOfMembers = models.IntegerField(null=True)
+    NumberOfParticipants = models.IntegerField(null=True)
 
     def __str__(self):
         return self.name   
