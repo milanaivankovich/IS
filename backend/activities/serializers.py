@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import Aktivnost
+from .models import Activities
 
-class AktivnostSerializer(serializers.ModelSerializer):
+class ActivitiesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Aktivnost
-        fields = ['id', 'naziv', 'opis', 'client', 'datum', 'vrijeme']
+        model = Activities
+        fields = ['id', 'name', 'description', 'client', 'date', 'time']

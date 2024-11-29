@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import Aktivnost  # ili Activity ako je to ime vašeg modela
+from .models import Activities  # ili Activity ako je to ime vašeg modela
 
-admin.site.register(Aktivnost)
+admin.site.register(Activities)
