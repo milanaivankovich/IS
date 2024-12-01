@@ -11,6 +11,9 @@ from django.utils.crypto import get_random_string
 from django.db import IntegrityError
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
+from django.db.models import Q
+from rest_framework.permissions import AllowAny
 from .models import ClientToken
 from .models import BusinessSubjectToken
 import logging
@@ -328,39 +331,49 @@ def get_profile(request):
 
 
 
-User = get_user_model()
-
 @api_view(['GET'])
+@permission_classes([AllowAny])  # Allow all users to access this endpoint
 def search_users(request):
-    query = request.GET.get('q', '')
+    query = request.GET.get('q', '').strip()  # Strip any leading/trailing whitespace
     
-    if query:
-        # Search across StandardUser fields (username, first name, last name)
-        users = User.objects.filter(
-            Q(username__icontains=query) | 
-            Q(first_name__icontains=query) | 
-            Q(last_name__icontains=query)
-        )
-    else:
-        users = User.objects.none()
+    if not query:
+        return Response({"error": "Query parameter 'q' is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Serialize and include profile info if they exist
-    user_list = []
-    for user in users:
-        user_data = StandardUserSerializer(user).data
+    # Search for clients
+    client_results = Client.objects.filter(
+        Q(first_name__icontains=query) | 
+        Q(last_name__icontains=query) |
+        Q(username__icontains=query)  # Assuming you have a 'username' field for Client
+    ).distinct()  # Avoid duplicate clients in case of multiple matches
+
+    # Search for business profiles
+    business_results = BusinessSubject.objects.filter(
+        Q(business_name__icontains=query)
+    ).distinct()  # Search businesses by company name
+
+    # Serialize client results
+    serialized_clients = []
+    for client in client_results:
+        client_data = ClientSerializer(client).data
         
-        # Check if the user has a client profile
-        if hasattr(user, 'client_profile'):
-            user_data['client_profile'] = ClientSerializer(user.client_profile).data
-        # Check if the user has a business profile
-        if hasattr(user, 'business_profile'):
-            user_data['business_profile'] = BusinessSubjectSerializer(user.business_profile).data
+        # Remove the 'id' field
+        client_data.pop('id', None)
+        
+        # Add client data to the results
+        serialized_clients.append(client_data)
 
-        user_list.append(user_data)
-    
-    return Response(user_list, status=status.HTTP_200_OK)
+    # Serialize business profile results
+    serialized_business_profiles = BusinessSubjectSerializer(business_results, many=True).data
+    for business in serialized_business_profiles:
+        business.pop('id', None)  # Remove the 'id' field for each business profile
 
-    from rest_framework.permissions import IsAdminUser
+    # Combine results
+    result = {
+        "clients": serialized_clients,
+        "business_profiles": serialized_business_profiles
+    }
+
+    return Response(result, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
