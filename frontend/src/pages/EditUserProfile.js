@@ -8,7 +8,7 @@ import axios from "axios";
 {/* selektovati klijenta po tokenu? */}
 
 const EditUserProfile = () => {
-
+    const [id]=useState('10');
     const [token, setToken] = useState([]);
     useEffect(()=> {
       try {
@@ -32,7 +32,7 @@ const EditUserProfile = () => {
     
   
     useEffect(() => {
-      axios.get('http://localhost:8000/api/client/1/')
+      axios.get('http://localhost:8000/api/client/'+id+'/')
         .then(response => {
           setUserData(response.data);
         })
@@ -42,16 +42,10 @@ const EditUserProfile = () => {
         });
     }, []);
 
-    const [userUpdate, setUserUpdate] = useState({
-      "first_name": userData.first_name,
-      "last_name":  userData.last_name,
-      "username":  userData.username,
-      "email":  userData.email,
-    });
-
   const handleUpdate = async () => {
-    await axios
-      .put("http://localhost:8000/api/client/1/edit/", userData)
+    await axios.put('http://localhost:8000/api/client/'+id+'/edit/', userData, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    })
       .then((response) => {
         console.log("Data updated successfully:", response.data);
       })
@@ -62,16 +56,30 @@ const EditUserProfile = () => {
   };
 
   const [password, setPassword] = useState({
-    old: '',
-    new: '',
-    confirm: '',
+    'old_password': '',
+    'new_password': '',
+    'confirm_password': '',
   });
 
-  const handlePasswordUpdate = (password) =>
-  { 
-    
-
-  };
+  const handlePasswordUpdate =async (password) => {
+    if (password.new_password===password.old_password){
+      alert("Nova lozinka se podudara sa starom. Odaberite drugu lozinku!");
+    }
+    else if (password.new_password!==password.confirm_password){
+      alert("Nova lozinka se ne podudara sa potvrdom");}
+    else {
+      await axios.put('http://localhost:8000/api/client/'+id+'/edit/', password, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      })
+      .then((response) => {
+        console.log("Password updated successfully:", response.data);
+        alert("Lozinka je azurirana");
+      })
+      .catch((error) => {
+        console.error("There was an error updating the data:", error);
+        alert("Doslo je do greške prilikom ažuriranja...");
+      });
+    }};
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -140,7 +148,7 @@ const EditUserProfile = () => {
             type="password"
             placeholder="Unesi staru lozinku"
             className="EditProfileInput"
-            onChange={(e) => setPassword(prevData=>({...prevData, old: e.target.value }))}
+            onChange={(e) => setPassword(prevData=>({...prevData, old_password: e.target.value }))}
             required
           />
           <label className="EditProfileLabel">Nova lozinka</label>
@@ -148,20 +156,21 @@ const EditUserProfile = () => {
             type="password"
             placeholder="Unesi novu lozinku"
             className="EditProfileInput"
-            onChange={(e) => setPassword(prevData=>({...prevData, new: e.target.value }))}
+            onChange={(e) => setPassword(prevData=>({...prevData, new_password: e.target.value }))}
             required
           />
           <input
             type="password"
             placeholder="Potvrdi novu lozinku"
             className="EditProfileInput"
-            onChange={(e) => setPassword(prevData=>({...prevData, confirm: e.target.value }))}
+            onChange={(e) => setPassword(prevData=>({...prevData, confirm_password: e.target.value }))}
             required
           />
           <button 
             className="EditProfileButton" 
             id="PromijeniLozinkuButton"
-            type="submit">
+            type="submit"
+            onClick={()=>handlePasswordUpdate(password)}>
             Promijeni lozinku
           </button>
           </form>
