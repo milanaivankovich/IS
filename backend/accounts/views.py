@@ -339,41 +339,37 @@ def search_users(request):
     if not query:
         return Response({"error": "Query parameter 'q' is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Search for users
-    user_results = User.objects.filter(
-        Q(username__icontains=query) |
-        Q(first_name__icontains=query) |
-        Q(last_name__icontains=query)
-    ).distinct()  # Avoid duplicate users in case of multiple matches
-    
+    # Search for clients
+    client_results = Client.objects.filter(
+        Q(first_name__icontains=query) | 
+        Q(last_name__icontains=query) |
+        Q(username__icontains=query)  # Assuming you have a 'username' field for Client
+    ).distinct()  # Avoid duplicate clients in case of multiple matches
+
     # Search for business profiles
     business_results = BusinessSubject.objects.filter(
-        Q(company_name__icontains=query)
-    ).distinct()
+        Q(business_name__icontains=query)
+    ).distinct()  # Search businesses by company name
 
-    # Serialize results
-    serialized_users = []
-    for user in user_results:
-        user_data = StandardUserSerializer(user).data
+    # Serialize client results
+    serialized_clients = []
+    for client in client_results:
+        client_data = ClientSerializer(client).data
         
         # Remove the 'id' field
-        user_data.pop('id', None)
+        client_data.pop('id', None)
         
-        # Add client profile if it exists and remove its 'id' field
-        if hasattr(user, 'client_profile'):
-            client_data = ClientSerializer(user.client_profile).data
-            client_data.pop('id', None)
-            user_data['client_profile'] = client_data
-        
-        serialized_users.append(user_data)
+        # Add client data to the results
+        serialized_clients.append(client_data)
 
+    # Serialize business profile results
     serialized_business_profiles = BusinessSubjectSerializer(business_results, many=True).data
     for business in serialized_business_profiles:
         business.pop('id', None)  # Remove the 'id' field for each business profile
 
     # Combine results
     result = {
-        "users": serialized_users,
+        "clients": serialized_clients,
         "business_profiles": serialized_business_profiles
     }
 
