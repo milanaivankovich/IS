@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import EventCard from '../components/EventCard';
 import FavoriteCard from '../components/FavoriteCard';
 import MessageCard from '../components/MessageCard';
 import ActivityCard from '../components/ActivityCard';
 import './UserProfile.css';
+import MenuBar from "../components/MenuBar.js";
+import Footer from "../components/Footer.js";
+import CreatorImg from "../images/user.svg";
+
 
 const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("events");
@@ -14,7 +17,26 @@ const UserProfile = () => {
   const [messages, setMessages] = useState([]);
   const [activityHistory, setActivityHistory] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  
+  const [userData, setUserData] = useState({
+    "first_name": 'Ime',
+    "last_name": 'Prezime',
+    "username": 'username',
+    "email": '',
+    "date_of_birth": '',
+    "bio": ''
+  });
+
+  useEffect(() => {
+    axios.get('http://localhost:8000/api/client/1/')
+      .then(response => {
+        setUserData(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+        alert('Error fetching data');
+      });
+  }, []);
 
   // Funkcija za dohvaćanje podataka za različite kartice
   const fetchData = async () => {
@@ -22,19 +44,19 @@ const UserProfile = () => {
     try {
       switch (activeTab) {
         case "events":
-          const eventsResponse = await axios.get('http://localhost:5000/api/user/events', {
+          const eventsResponse = await axios.get('http://localhost:8000/api/user/events', {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
           });
           setUserEvents(eventsResponse.data);
           break;
         case "favorites":
-          const favoritesResponse = await axios.get('http://localhost:5000/api/user/favorites', {
+          const favoritesResponse = await axios.get('http://localhost:8000/api/user/favorites', {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
           });
           setFavorites(favoritesResponse.data);
           break;
         case "messages":
-          const messagesResponse = await axios.get('http://localhost:5000/api/user/messages', {
+          const messagesResponse = await axios.get('http://localhost:8000/api/user/messages', {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
           });
           setMessages(messagesResponse.data);
@@ -59,33 +81,61 @@ const UserProfile = () => {
     fetchData();
   }, [activeTab]);
 
-  const handleCreateEvent = () => {
+  const handleCreateEvent = () => {/*
     navigate('/create-event');
-  };
+  */};
+
+  const [selectionTitle, setSelectionTitle] = useState('Događaji');
+  const [selectionSubtitle,setSelectionSubtitle] = useState('Događaji koje je kreirao korisnik');
 
   return (
-    <div className="user-profile">
-      <header className="profile-header">
-        <h1>IME I PREZIME</h1>
-        {/* Navigacione kartice */}
-        <nav className="profile-tabs">
-          <button className={`tab-button ${activeTab === "events" ? "active" : ""}`} onClick={() => setActiveTab("events")}>Događaji</button>
-          <button className={`tab-button ${activeTab === "favorites" ? "active" : ""}`} onClick={() => setActiveTab("favorites")}>Omiljeno</button>
-          <button className={`tab-button ${activeTab === "messages" ? "active" : ""}`} onClick={() => setActiveTab("messages")}>Poruke</button>
-          <button className={`tab-button ${activeTab === "activity" ? "active" : ""}`} onClick={() => setActiveTab("activity")}>Istorija Aktivnosti</button>
-        </nav>
+    <body>
+      <header className="userprofile-menu">
+        <MenuBar variant={["registered"]} search={true} />
       </header>
-
-      <section className="tab-content">
-        {loading ? (
-          <p>Učitavanje podataka...</p>
-        ) : (
-          <>
-            {activeTab === "events" && (
-              <div className="events-section">
-                <h2 className="section-title">Događaji</h2>
-                <p className="section-subtitle">Događaji koje je kreirao korisnik</p>
-                <div className="event-cards-container">
+      <div className="userprofile-body">
+        <div className="userprofile-header">
+          <img src={CreatorImg} className="userprofilepreview-image" alt="Creator" />
+          <div className='name-surname-username'>
+            <h0 className="userprofile-name">{userData.first_name } {userData.last_name}</h0>
+            <h1 className="userprofile-subtitle">@{userData.username}</h1>
+          </div>
+          <button className='edituserprofile-button' onClick={() => window.location.replace('/edituserprofile')}>config</button>
+        </div>
+          <div>
+            <nav className="profile-tabs">
+          <button className={`tab-button ${activeTab === "events" ? "active" : ""}`} 
+          onClick={() => {
+            setSelectionTitle('Događaji'); setSelectionSubtitle('Događaji koje je kreirao korisnik');
+            setActiveTab("events");
+          }}>Događaji</button>
+          <button className={`tab-button ${activeTab === "favorites" ? "active" : ""}`} onClick={() => 
+            {
+              setSelectionTitle('Omiljeno'); setSelectionSubtitle('Vaši omiljeni događaji');
+              setActiveTab("favorites")}}>Omiljeno</button>
+          <button className={`tab-button ${activeTab === "messages" ? "active" : ""}`} onClick={() =>
+            {
+              setSelectionTitle('Poruke'); setSelectionSubtitle('');
+              setActiveTab("messages")}  
+            
+          }>Poruke</button>
+          <button className={`tab-button ${activeTab === "activity" ? "active" : ""}`} onClick={() => 
+            {
+              setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Događaji kojima se korisnik pridružio');
+              setActiveTab("activity")}}>Istorija Aktivnosti</button>
+        </nav></div>
+        
+          <div className="userprofile-selection">
+            <h1 className="userprofile-name">{selectionTitle}</h1>
+            <h2 className="userprofile-subtitle">{selectionSubtitle}</h2>
+            <section className="tab-content">
+              {loading ? (
+                <p>Učitavanje podataka...</p>
+                ) : (
+              <div>
+                {activeTab === "events" && (
+                  <div className="events-section">
+                  <div className="event-cards-container">
                   {userEvents.map((event) => (
                     <EventCard key={event.id} title={event.title} description={event.description} />
                   ))}
@@ -98,8 +148,6 @@ const UserProfile = () => {
 
             {activeTab === "favorites" && (
               <div className="favorites-section">
-                <h2 className="section-title">Omiljeni Događaji</h2>
-                <p className="section-subtitle">Vaši omiljeni događaji</p>
                 <div className="favorites-cards-container">
                   {favorites.map((favorite) => (
                     <FavoriteCard key={favorite.id} title={favorite.title} description={favorite.description} />
@@ -110,8 +158,6 @@ const UserProfile = () => {
 
             {activeTab === "messages" && (
               <div className="messages-section">
-                <h2 className="section-title">Poruke</h2>
-                <p className="section-subtitle">Vaše poruke</p>
                 <div className="messages-cards-container">
                   {messages.map((message) => (
                     <MessageCard key={message.id} sender={message.sender} content={message.content} />
@@ -122,8 +168,6 @@ const UserProfile = () => {
 
             {activeTab === "activity" && (
               <div className="activity-section">
-                <h2 className="section-title">Istorija Aktivnosti</h2>
-                <p className="section-subtitle">Vaša aktivnost na platformi</p>
                 <div className="activity-cards-container">
                   {activityHistory.map((activity) => (
                     <ActivityCard key={activity.id} description={activity.description} date={activity.date} />
@@ -131,10 +175,13 @@ const UserProfile = () => {
                 </div>
               </div>
             )}
-          </>
+          </div>
         )}
-      </section>
-    </div>
+              </section>
+          </div>
+        </div>
+      <Footer />
+    </body>
   );
 };
 

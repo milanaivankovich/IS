@@ -1,36 +1,99 @@
-.user-profile {
-    padding: 20px;
-  }
-  
-  .profile-header {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-  }
-  
-  .section-title {
-    font-size: 24px;
-    margin: 20px 0;
-  }
-  
-  .section-subtitle {
-    color: gray;
-    margin-bottom: 20px;
-  }
-  
-  .event-cards-container {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-  }
-  
-  .create-event-button {
-    margin-top: 20px;
-    background-color: #fa5c16;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
+.userprofile-body {
+  padding: 0px 40px;
+  background-color: #fefefe;
+}
+
+.userprofile-header {
+  /* card header */
+  gap: 15px;
+  width: 100%;
+  display: inline-flex;
+  flex-direction: row;
+  /* Inside auto layout */
+}
+
+.userprofilepreview-image {
+  margin: 15px;
+  border-radius: 50%;
+  /* Makes the image circular */
+  object-fit: cover;
+  /* Ensures the image covers the entire circle */
+  align-self: center;
+  width: 90px;
+  height: 90px;
+
+  background: #C4C4C4;
+}
+
+.name-surname-username {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+}
+
+.userprofile-name {
+  /* događaji */
+
+  position: relative;
+
+  margin: 20px 0px 0px 10px;
+
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 51px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+
+  color: black;
+}
+
+.userprofile-subtitle {
+  /* Šta ima novo u gradu? */
+  margin: 0px 0px 0px 10px;
+  font-weight: 400;
+  line-height: 21px;
+  letter-spacing: 0.03em;
+
+  color: #666666;
+
+  padding: 0px;
+}
+
+.edituserprofile-button {
+  position: absolute;
+  align-self: center;
+  margin-right: 40px;
+  right: 0px;
+}
+
+.tab-button {
+  border: none;
+  color: #666666;
+  background-color: #fefefe;
+  padding: 15px 20px;
+}
+
+.tab-button:hover {
+  color: black
+}
+
+.profile-tabs {
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+}
+
+.event-cards-container {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.create-event-button {
+  margin-top: 20px;
+  background-color: #fa5c16;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
