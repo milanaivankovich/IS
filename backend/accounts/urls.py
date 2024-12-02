@@ -23,6 +23,9 @@ urlpatterns = [
     path('api/client/<int:pk>/edit/', views.edit_client, name='edit_client'),  # PUT/PATCH to edit client
     path('api/clients/', views.list_clients, name='list_clients'), #pregled registrovanih rekreativaca
 
+     
+    path("api/get-client-id/", views.get_user_pk_by_token, name="get_user_pk_by_token"),
+
     # Business Subject Endpoints
     path('api/business-subject/', views.register_business_subject, name='register_business_subject'),  # POST to create new
     path('api/business-subject/<int:pk>/', views.get_business_subject, name='get_business_subject'),  # GET by ID

@@ -54,6 +54,7 @@ class UserRegistrationView(APIView):
 
 
 
+
 @api_view(["PUT"])
 def edit_client(request, pk):
     # Retrieve the token from the Authorization header
@@ -71,18 +72,14 @@ def edit_client(request, pk):
         
         # Retrieve the client associated with this token
         user = client_token.client  # assuming you have a reverse relationship 'client' on your ClientToken model
-
-    except (ClientToken.DoesNotExist, IndexError):
+        
+    except ClientToken.DoesNotExist:
         return Response({"error": "Invalid token or token expired"}, status=status.HTTP_401_UNAUTHORIZED)
     
-    # Send the primary key of the authenticated user back to the frontend
-    if request.method == "GET":
-        return Response({"pk": user.pk}, status=status.HTTP_200_OK)
-
     # Check if the authenticated user is the one trying to edit their profile
     if user.pk != pk:
         return Response({"error": "You can only edit your own profile"}, status=status.HTTP_403_FORBIDDEN)
-
+    
     # Get the old and new passwords from the request data
     old_password = request.data.get("old_password")
     new_password = request.data.get("new_password")
@@ -90,9 +87,9 @@ def edit_client(request, pk):
 
     if old_password and new_password and confirm_password:
         # Authenticate user with the old password to verify it
-        authenticated_user = custom_authenticate(username=user.username, password=old_password)
+        user = custom_authenticate(username=user.username, password=old_password)
         
-        if not authenticated_user:
+        if not user:
             return Response({"error": "Old password is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Check if the new password and confirm password match
@@ -103,9 +100,12 @@ def edit_client(request, pk):
         user.set_password(new_password)
         user.save()
 
-        return Response({"message": "Password updated successfully."}, status=status.HTTP_200_OK)
 
-    # Update client profile data
+        return Response({"message": "Password updated successfully."}, status=status.HTTP_200_OK)
+    
+
+
+
     try:
         # Fetch the client to be updated
         client = Client.objects.get(pk=pk)
@@ -121,6 +121,32 @@ def edit_client(request, pk):
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+
+@api_view(["GET"])
+def get_user_pk_by_token(request):
+    # Retrieve the token from the Authorization header
+    token = request.headers.get('Authorization')  # Expected format: "Token <your_token>"
+    
+    if not token:
+        return Response({"error": "Authentication token required"}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    try:
+        # Extract the actual token key from the "Token <token>" format
+        token_key = token.split(' ')[1]  # Assumes "Token <token>"
+        
+        # Retrieve the token object from the database
+        client_token = ClientToken.objects.get(key=token_key)
+        
+        # Retrieve the client associated with this token
+        user = client_token.client  # Assuming a reverse relationship 'client' exists
+        return Response({"pk": user.pk}, status=status.HTTP_200_OK)
+
+    except IndexError:
+        return Response({"error": "Invalid token format"}, status=status.HTTP_400_BAD_REQUEST)
+    except ClientToken.DoesNotExist:
+        return Response({"error": "Invalid token or token expired"}, status=status.HTTP_401_UNAUTHORIZED)    
 
 @api_view(['GET'])
 def get_client(request, pk):
