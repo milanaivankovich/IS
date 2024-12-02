@@ -181,6 +181,67 @@ def edit_business_subject(request, pk):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(["POST"])
+def activate_client(username):
+    """
+    Activates a Client profile by setting is_active to True.
+    """
+    try:
+        client = Client.objects.get(username=username)
+        if not client.is_active:
+            client.is_active = True
+            client.save()
+            return {"success": True, "message": f"Client '{username}' activated successfully."}
+        return {"success": False, "message": f"Client '{username}' is already active."}
+    except ObjectDoesNotExist:
+        return {"success": False, "message": f"Client '{username}' does not exist."}
+
+@api_view(["POST"])
+def deactivate_client(username):
+    """
+    Deactivates a Client profile by setting is_active to False.
+    """
+    try:
+        client = Client.objects.get(username=username)
+        if client.is_active:
+            client.is_active = False
+            client.save()
+            return {"success": True, "message": f"Client '{username}' deactivated successfully."}
+        return {"success": False, "message": f"Client '{username}' is already inactive."}
+    except ObjectDoesNotExist:
+        return {"success": False, "message": f"Client '{username}' does not exist."}
+
+@api_view(["POST"])
+def activate_business_subject(email):
+    """
+    Activates a BusinessSubject profile by setting is_active to True.
+    """
+    try:
+        business_subject = BusinessSubject.objects.get(email=email)
+        if not business_subject.is_active:
+            business_subject.is_active = True
+            business_subject.save()
+            return {"success": True, "message": f"BusinessSubject '{email}' activated successfully."}
+        return {"success": False, "message": f"BusinessSubject '{email}' is already active."}
+    except ObjectDoesNotExist:
+        return {"success": False, "message": f"BusinessSubject '{email}' does not exist."}
+
+@api_view(["POST"])
+def deactivate_business_subject(email):
+    """
+    Deactivates a BusinessSubject profile by setting is_active to False.
+    """
+    try:
+        business_subject = BusinessSubject.objects.get(email=email)
+        if business_subject.is_active:
+            business_subject.is_active = False
+            business_subject.save()
+            return {"success": True, "message": f"BusinessSubject '{email}' deactivated successfully."}
+        return {"success": False, "message": f"BusinessSubject '{email}' is already inactive."}
+    except ObjectDoesNotExist:
+        return {"success": False, "message": f"BusinessSubject '{email}' does not exist."}
+
+
 
 @api_view(['POST'])
 def register_standard_user(request):

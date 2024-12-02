@@ -41,6 +41,12 @@ urlpatterns = [
 
     path('api/search/users/', views.search_users, name='search_users'),
 
+    path('api/activate-client/', views.activate_client, name='activate_client'),
+    path('api/deactivate-client/', views.deactivate_client, name='deactivate_client'),
+
+    path('api/activate-business-subject/', views.activate_business_subject, name='activate_business_subject'),
+    path('api/deactivate-business-subject/', views.deactivate_business_subject, name='deactivate_business_subject'),
+
 
     
     # Include the router URLs
