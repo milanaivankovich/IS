@@ -4,12 +4,12 @@ import CreatorImg from "../images/user.svg";
 
 
 
-const EditEventCard = () => {
+const EditEventCard = (user) => {
   return (
-    <form className="SponsoredEventCard-form">
-      <header className="SponsoredEventCard-Header" />
-      <div className="SponsoredEventCard-body">
-        <div className="SponsoredEventCard-user">
+    <form className="EditEventCard-form">
+      <header className="EditEventCard-Header" />
+      <div className="EditEventCard-body">
+        <div className="EditEventCard-user">
           <img src={CreatorImg} className="creator-image" alt="Creator" />
           <div className="Naslov">
             <input 
@@ -18,7 +18,7 @@ const EditEventCard = () => {
                 placeholder="Unesi naslov"
                 required
             />
-            <div className="createdBy"> by @username</div>
+            <div className="createdBy"> by @{user.username}</div>
           </div>
         </div>
         <div className="Opis">

@@ -5,8 +5,6 @@ import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
 import axios from "axios";
 
-{/* selektovati klijenta po tokenu? */}
-
 const EditUserProfile = () => {
     const [id, setID]=useState({
       "pk": -1,

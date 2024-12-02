@@ -8,16 +8,25 @@ import './UserProfile.css';
 import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
 import CreatorImg from "../images/user.svg";
-
+import EditEventCard from "../components/EditEventCard.js";
 
 const UserProfile = () => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const toggleFloatingWindow = () => {
+    setIsVisible(!isVisible);
+  };
+
   const [activeTab, setActiveTab] = useState("events");
   const [userEvents, setUserEvents] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [messages, setMessages] = useState([]);
   const [activityHistory, setActivityHistory] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
+  const [id, setID]=useState({
+    "pk": -1,
+  });
   const [userData, setUserData] = useState({
     "first_name": 'Ime',
     "last_name": 'Prezime',
@@ -28,15 +37,40 @@ const UserProfile = () => {
   });
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/client/1/')
-      .then(response => {
-        setUserData(response.data);
+
+      const fetchID = async ()=> {
+      await axios.get('http://localhost:8000/api/get-client-id/', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       })
-      .catch(error => {
-        console.error('Error fetching data: ', error);
-        alert('Error fetching data');
-      });
-  }, []);
+        .then((request) => {
+          setID(request.data);
+        })
+        .catch((error) => {
+          console.error("Error getting ID: ",error);
+          alert("Neuspjesna autorizacija. Molimo ulogujte se ponovo... ");
+          window.location.replace("/login");
+        });
+      };
+
+      fetchID();
+    },[]);
+  
+    useEffect(() => {
+
+      const fetchUserData = async ()=> {
+      await axios.get('http://localhost:8000/api/client/'+id.pk+'/')
+        .then(response => {
+          setUserData(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching data: ', error);
+          alert('Error fetching data');
+        });
+      };
+
+      if(id.pk!==-1)
+        fetchUserData();
+    }, [id]);
 
   // Funkcija za dohvaćanje podataka za različite kartice
   const fetchData = async () => {
@@ -72,6 +106,7 @@ const UserProfile = () => {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      setSelectionSubtitle("Nema podataka");
     } finally {
       setLoading(false);
     }
@@ -80,10 +115,6 @@ const UserProfile = () => {
   useEffect(() => {
     fetchData();
   }, [activeTab]);
-
-  const handleCreateEvent = () => {/*
-    navigate('/create-event');
-  */};
 
   const [selectionTitle, setSelectionTitle] = useState('Događaji');
   const [selectionSubtitle,setSelectionSubtitle] = useState('Događaji koje je kreirao korisnik');
@@ -130,7 +161,7 @@ const UserProfile = () => {
             <h2 className="userprofile-subtitle">{selectionSubtitle}</h2>
             <section className="tab-content">
               {loading ? (
-                <p>Učitavanje podataka...</p>
+                <p>Učitavanje...</p>
                 ) : (
               <div>
                 {activeTab === "events" && (
@@ -140,9 +171,16 @@ const UserProfile = () => {
                     <EventCard key={event.id} title={event.title} description={event.description} />
                   ))}
                 </div>
-                <button className="create-event-button" onClick={handleCreateEvent}>
-                  + Novi događaj
-                </button>
+                { (id.pk!==-1) &&
+                  <button className="create-event-button" onClick={toggleFloatingWindow}>
+                    + Novi događaj
+                  </button> 
+                }
+                { isVisible &&
+                  <div className='dimmer' onClick={toggleFloatingWindow}>
+                  <EditEventCard user={userData} className="new-event-card"/>
+                  </div>
+                }
               </div>
             )}
 

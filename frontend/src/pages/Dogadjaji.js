@@ -17,11 +17,8 @@ const Dogadjaji = () => {
           <div className="Event-bar-subtitle">Šta ima novo u gradu?</div>
           <div className="Scroll-bar">
             <div className="Event-cards">
-              <EventCard />
-              <EventCard />
-              <EventCard />
-              <EventCard />
-              <EventCard />
+            <EventCard key='example' title='title' description='description' />
+                
             </div>
           </div>
         </div>
@@ -30,10 +27,7 @@ const Dogadjaji = () => {
           <div className="Event-bar-subtitle">Sponzorisani događaji</div>
           <div className="Scroll-bar">
             <div className="Event-cards">
-              <SponsoredEventCard />
-              <SponsoredEventCard />
-              <SponsoredEventCard />
-              <SponsoredEventCard />
+            <EventCard key='example' title='title' description='description' />
             </div>
           </div>
         </div>
