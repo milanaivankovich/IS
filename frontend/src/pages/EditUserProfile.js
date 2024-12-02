@@ -8,17 +8,9 @@ import axios from "axios";
 {/* selektovati klijenta po tokenu? */}
 
 const EditUserProfile = () => {
-    const [id]=useState('10');
-    const [token, setToken] = useState([]);
-    useEffect(()=> {
-      try {
-        setToken(localStorage.getItem('token'));
-        if (token==null) throw new Error("Sesija istekla");
-      } catch (error) {
-        console.error("Vrati se na login: ", error.message);
-        window.location.replace("/login");
-      }
-    })
+    const [id, setID]=useState({
+      "pk": -1,
+    });
     
     const [userData, setUserData] = useState({
       "first_name": '',
@@ -29,10 +21,29 @@ const EditUserProfile = () => {
       "bio": ''
     });
 
-    
+    useEffect(() => {
+
+      const fetchID = async ()=> {
+      await axios.get('http://localhost:8000/api/get-client-id/', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      })
+        .then((request) => {
+          setID(request.data);
+        })
+        .catch((error) => {
+          console.error("Error getting ID: ",error);
+          alert("Neuspjesna autorizacija. Molimo ulogujte se ponovo... ");
+          window.location.replace("/login");
+        });
+      };
+
+      fetchID();
+    },[]);
   
     useEffect(() => {
-      axios.get('http://localhost:8000/api/client/'+id+'/')
+
+      const fetchUserData = async ()=> {
+      await axios.get('http://localhost:8000/api/client/'+id.pk+'/')
         .then(response => {
           setUserData(response.data);
         })
@@ -40,10 +51,15 @@ const EditUserProfile = () => {
           console.error('Error fetching data: ', error);
           alert('Error fetching data');
         });
-    }, []);
+      };
+
+      if(id.pk!==-1)
+        fetchUserData();
+    }, [id]);
+    
 
   const handleUpdate = async () => {
-    await axios.put('http://localhost:8000/api/client/'+id+'/edit/', userData, {
+    await axios.put('http://localhost:8000/api/client/'+id.pk+'/edit/', userData, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
       .then((response) => {
@@ -73,7 +89,7 @@ const EditUserProfile = () => {
       })
       .then((response) => {
         console.log("Password updated successfully:", response.data);
-        alert("Lozinka je azurirana");
+        alert("Lozinka je azurirana"+response.data+"");
       })
       .catch((error) => {
         console.error("There was an error updating the data:", error);
@@ -83,6 +99,12 @@ const EditUserProfile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+  };
+
+  const handleLogout = () => {
+    // Remove the token from localStorage
+    localStorage.removeItem('token');
+    window.location.replace("/login");
   };
 
   return (
@@ -174,7 +196,8 @@ const EditUserProfile = () => {
             Promijeni lozinku
           </button>
           </form>
-          <button className="EditProfileButton">Odjavi se</button>
+          <button className="EditProfileButton"
+          onClick={()=>handleLogout()}>Odjavi se</button>
           <button className="EditProfileButton">Deaktiviraj nalog</button>
         </div>
       </div>
