@@ -21,15 +21,14 @@ body {
 }
 
 .login-logo {
-  margin-top: 15px;
-  max-width: 100%;
-  margin-bottom: 20px;
+  margin-top: 10px;
+  max-width: 80%;
+  margin-bottom: 15px;
 }
 
 .login-welcome {
   font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 10px;
   text-transform: uppercase;
   letter-spacing: 2px;
 }
@@ -149,7 +148,7 @@ label {
 .remember-me-container {
   display: flex;
   justify-content: space-between; /* Razmak između checkbox grupe i linka */
-  align-items: center; /* Vertikalno poravnanje svih elemenata */
+  align-items: last baseline; /* Vertikalno poravnanje svih elemenata */
   font-size: 0.9rem;
   color: #6c6c6c;
   margin-bottom: 15px;
@@ -163,7 +162,7 @@ label {
 
 .checkbox-group input[type="checkbox"] {
   margin: 0; /* Uklanja nepotrebni razmak oko checkbox-a */
-  margin-right: -20px;
+  margin-right: -33px;
 }
 
 .remember-me-container a {
@@ -176,3 +175,38 @@ label {
   text-decoration: underline;
 }
 
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.form-group input {
+  width: 90%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+.login-form {
+  background-color: #ffffff; /* Bijela pozadina forme */
+  border: 2px solid #ff5722; /* Okvir u boji */
+  border-radius: 10px; /* Zaobljeni uglovi */
+  padding: 30px; /* Unutrašnji razmak */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Blaga sjena */
+  margin-top: 10px; /* Razmak od vrha */
+}
+
+
+.login-btn {
+  margin-top: 10px; /* Razmak između dugmadi */
+}
+
+.tekst-za-unos{
+  text-align: center;
+  
+}

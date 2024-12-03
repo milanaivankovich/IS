@@ -47,31 +47,37 @@ const Login = () => {
         <a href="/">
           <img src={logo} alt="Oće neko na basket?" className="login-logo" />
         </a>
+        <form className="login-form" onSubmit={handleSubmit}>
         <h2 className="login-welcome">DOBRODOŠLI!</h2>
-        <p>Molimo unesite podatke za prijavu</p>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="username">Korisničko ime</label>
-          <input
-            id="username"
-            type="text"
-            name="username"
-            placeholder="Korisničko ime"
-            className="login-input"
-            value={formData.username}
-            onChange={handleInputChange}
-            required
-          />
-          <label htmlFor="password">Lozinka</label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            placeholder="Lozinka"
-            className="login-input"
-            value={formData.password}
-            onChange={handleInputChange}
-            required
-          />
+        <p  className="tekst-za-unos">Molimo unesite podatke za prijavu</p>
+
+          <div className="form-group">
+            <label htmlFor="username">Korisničko ime</label>
+              <input
+                id="username"
+                type="text"
+                name="username"
+                placeholder="Korisničko ime"
+                className="login-input"
+                value={formData.username}
+                onChange={handleInputChange}
+                required
+              />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Lozinka</label>
+            <input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="Lozinka"
+              className="login-input"
+              value={formData.password}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+
           <div className="remember-me-container">
             <div className="checkbox-group">
               <input type="checkbox" id="remember-me" />
