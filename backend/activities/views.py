@@ -7,6 +7,8 @@ from accounts.models import Client
 from .serializers import ActivitiesSerializer
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from datetime import datetime
 
 class ActivitiesCreateView(CreateView):
     model = Activities
@@ -55,11 +57,26 @@ def get_client_activities(request, client_id):
 
 @api_view(['GET'])
 def activities_by_date(request, date):
-    activities = Activities.objects.filter(datum=date)
+    # Validacija formata datuma
+    try:
+        valid_date = datetime.strptime(date, "%Y-%m-%d").date()
+    except ValueError:
+        return Response({'error': 'Invalid date format. Use YYYY-MM-DD.'}, status=400)
+    
+    activities = Activities.objects.filter(datum=valid_date)
     if activities.exists():
-        serializer = ActivitiesSerializer(activities, many = True)
+        serializer = ActivitiesSerializer(activities, many=True)
         return Response(serializer.data)
+
     return Response({'error': 'No activities found for this date'}, status=404)
+
+#@api_view(['GET'])
+#def activities_by_date(request, date):
+#    activities = Activities.objects.filter(datum=date)
+#    if activities.exists():
+#        serializer = ActivitiesSerializer(activities, many = True)
+#        return Response(serializer.data)
+#    return Response({'error': 'No activities found for this date'}, status=404)
 
 
 @api_view(['GET'])

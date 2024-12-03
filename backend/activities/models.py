@@ -14,6 +14,6 @@ class Activities(models.Model):
     NumberOfParticipants = models.IntegerField(null=True)
 
     def __str__(self):
-        return self.name   
+        return self.description   
     
     
