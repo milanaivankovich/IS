@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios"; // Import axios
+import axios from "axios"; 
 import "./RegisterRekreativac.css";
 import logo from '../images/logo.png';
 
@@ -12,7 +12,38 @@ function RegisterPoslovni() {
     email: "",
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false); // State za praćenje statusa zahtjeva
+  const goToStep = (stepIndex) => {
+    setCurrentStep(stepIndex);
+  }; 
+
+  const [passwordCriteria, setPasswordCriteria] = useState({
+    minLength: false,
+    hasUpperCase: false,
+    hasLowerCase: false,
+    hasSpecialChar: false,
+    hasNumber: false,
+  });
+
+  const validatePassword = (password = formData.password) => {
+    const criteria = {
+      minLength: password.length >= 8,
+      hasUpperCase: /[A-Z]/.test(password),
+      hasLowerCase: /[a-z]/.test(password),
+      hasSpecialChar: /[\W_]/.test(password),
+      hasNumber: /[0-9]/.test(password),
+    };
+    setPasswordCriteria(criteria);
+
+    return (
+      criteria.minLength &&
+      criteria.hasUpperCase &&
+      criteria.hasLowerCase &&
+      criteria.hasSpecialChar &&
+      criteria.hasNumber &&
+      password === formData.confirmPassword
+    );
+  };
+  const [isSubmitting, setIsSubmitting] = useState(false); 
 
   const nextStep = () => {
     if (isStepValid()) {
@@ -22,14 +53,16 @@ function RegisterPoslovni() {
     }
   };
 
+  const [isPasswordFieldFocused, setIsPasswordFieldFocused] = useState(false);  
+
   const isStepValid = () => {
     switch (currentStep) {
       case 0:
         return formData.nameSportOrganization;
       case 1:
-        return formData.password && formData.confirmPassword && formData.password === formData.confirmPassword;
+        return validatePassword();
       case 2:
-        return formData.email;
+        return formData.email.includes("@");
       default:
         return false;
     }
@@ -38,16 +71,18 @@ function RegisterPoslovni() {
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData({ ...formData, [id]: value });
+    if (id === "password") {
+      validatePassword(value);
+    }
   };
 
   const submitForm = async () => {
     if (isStepValid()) {
-      setIsSubmitting(true); // Pokreće indikator učitavanja
+      setIsSubmitting(true); 
       try {
         const response =await axios.post("http://localhost:8000/api/business-subject/", formData);
-        console.log(response.data); // Prikaz odgovora za debugging
+        console.log(response.data); 
         alert("Registracija uspješna! Verifikujte email.");
-        // Reset forme ili preusmjeravanje:
         setFormData({
           nameSportOrganization: "",
           password: "",
@@ -59,7 +94,7 @@ function RegisterPoslovni() {
         console.error("Greška prilikom registracije:", error);
         alert("Došlo je do greške prilikom registracije. Molimo pokušajte ponovo.");
       } finally {
-        setIsSubmitting(false); // Zaustavlja indikator učitavanja
+        setIsSubmitting(false);
       }
     }
   };
@@ -74,9 +109,9 @@ function RegisterPoslovni() {
         <h1 className="welcome-title">Dobrodošli!</h1>
         {currentStep === 0 && (
           <div className="form-step active">
-            <p>Molimo unesite podatke</p>
+            <p className="tekst-za-unos">Molimo unesite podatke</p>
             <label htmlFor="nameSportOrganization">Naziv sportske organizacije:</label>
-            <input type="text" id="nameSportOrganization" value={formData.nameSportOrganization} onChange={handleInputChange} required />
+            <input type="text" id="nameSportOrganization" placeholder="FK Borac" value={formData.nameSportOrganization} onChange={handleInputChange} required />
             <button className="continue-button" onClick={nextStep}>
               Nastavi
             </button>
@@ -85,13 +120,52 @@ function RegisterPoslovni() {
 
         {currentStep === 1 && (
           <div className="form-step">
-            <p>Molimo unesite i potvrdite lozinku</p>
+            <p className="tekst-za-unos">Molimo unesite i potvrdite lozinku</p>
             <label htmlFor="password">Lozinka:</label>
-            <input type="password" id="password" value={formData.password} onChange={handleInputChange} required />
+            <input 
+              type="password" 
+              id="password" 
+              placeholder="Lozinka123$" 
+              value={formData.password} 
+              onChange={handleInputChange} 
+              onFocus={() => setIsPasswordFieldFocused(true)}
+              onBlur={() => setIsPasswordFieldFocused(false)}
+              required />
+              {isPasswordFieldFocused && (
+              <div className="password-criteria-box">
+                <h4>Kriterijumi za lozinku:</h4>
+                <ul className="password-criteria">
+                  <li className={passwordCriteria.minLength ? "valid" : "invalid"}>
+                    Minimalno 8 karaktera
+                  </li>
+                  <li
+                    className={passwordCriteria.hasUpperCase ? "valid" : "invalid"}
+                  >
+                    Bar jedno veliko slovo
+                  </li>
+                  <li
+                    className={passwordCriteria.hasLowerCase ? "valid" : "invalid"}
+                  >
+                    Bar jedno malo slovo
+                  </li>
+                  <li
+                    className={passwordCriteria.hasSpecialChar ? "valid" : "invalid"}
+                  >
+                    Bar jedan specijalni znak
+                  </li>
+                  <li
+                    className={passwordCriteria.hasNumber ? "valid" : "invalid"}
+                  >
+                    Bar jedan broj
+                  </li>
+                </ul>
+              </div>
+            )}
             <label htmlFor="confirmPassword">Potvrdite lozinku:</label>
             <input
               type="password"
               id="confirmPassword"
+              placeholder="Lozinka123$"
               value={formData.confirmPassword}
               onChange={handleInputChange}
               required
@@ -104,7 +178,7 @@ function RegisterPoslovni() {
 
         {currentStep === 2 && (
           <div className="form-step">
-            <p>Molimo unesite svoju email adresu za verifikaciju</p>
+            <p className="tekst-za-unos">Molimo unesite svoju email adresu za verifikaciju</p>
             <label htmlFor="email">Email adresa:</label>
             <input type="email" id="email" value={formData.email} onChange={handleInputChange} required />
             <button className="continue-button" onClick={submitForm} disabled={isSubmitting}>
@@ -127,18 +201,18 @@ function RegisterPoslovni() {
 
       <div className="progress-bar">
         <div className="steps">
-          <div className={`step ${currentStep >= 0 ? "active" : ""}`}>
-            <div className="step-circle">1</div>
-            <p>Unesite podatke</p>
-          </div>
-          <div className={`step ${currentStep >= 1 ? "active" : ""}`}>
-            <div className="step-circle">2</div>
-            <p>Unesite lozinku</p>
-          </div>
-          <div className={`step ${currentStep >= 2 ? "active" : ""}`}>
-            <div className="step-circle">3</div>
-            <p>Verifikujte email</p>
-          </div>
+          {["Unesite podatke", "Unesite lozinku", "Verifikujte email"].map(
+            (label, index) => (
+              <div
+                className={`step ${currentStep >= index ? "active" : ""}`}
+                key={index}
+                onClick={() => goToStep(index)}
+              >
+                <div className="step-circle">{index + 1}</div>
+                <p>{label}</p>
+              </div>
+            )
+          )}
         </div>
       </div>
     </div>
