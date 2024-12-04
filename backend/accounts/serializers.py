@@ -16,6 +16,12 @@ class BusinessSubjectSerializer(serializers.ModelSerializer):
         model = BusinessSubject
         fields = ['nameSportOrganization', 'profile_picture', 'description', 'email', 'password']  # Only include relevant fields
 
+    def validate_email(self, value):
+        if BusinessSubject.objects.filter(email=value).exists():
+            raise serializers.ValidationError("A business subject with this email already exists.")
+        return value
+
+
     def create(self, validated_data):
         # Extract the password from the validated data and create the user
         password = validated_data.pop('password')
@@ -63,6 +69,17 @@ class ClientSerializer(serializers.ModelSerializer):
         model = Client
         fields = ['first_name', 'last_name', 'username', 'password', 'email', 'date_of_birth', 'bio']
     
+    def validate_email(self, value):
+        if Client.objects.filter(email=value).exists():
+            raise serializers.ValidationError("A client with this email already exists.")
+        return value
+
+    def validate_username(self, value):
+        if Client.objects.filter(username=value).exists():
+            raise serializers.ValidationError("A client with this username already exists.")
+        return value
+
+
     def create(self, validated_data):
         # Extract the password from the validated data and create the user
         password = validated_data.pop('password')
@@ -73,4 +90,6 @@ class ClientSerializer(serializers.ModelSerializer):
         user.save()
         
         return user
+
+
 
