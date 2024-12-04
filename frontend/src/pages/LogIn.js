@@ -27,12 +27,12 @@ const Login = () => {
       const response = await axios.post('http://localhost:8000/api/login/client/', formData); // Endpoint za login
       console.log('Login successful:', response.data);
 
-      // Spremanje tokena ili korisničkih podataka u lokalnu memoriju
+     
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
 
-      // Redirekcija korisnika nakon uspješnog logina
-      window.location.href = "/"; // Npr., stranica za korisnički panel
+      
+      window.location.href = "/"; 
     } catch (error) {
       console.error('Login failed:', error);
       setError('Neispravno korisničko ime ili lozinka. Pokušajte ponovo.');

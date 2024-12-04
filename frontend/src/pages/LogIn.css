@@ -8,16 +8,17 @@ body {
 
 .login-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: left;
+  margin-left: 10px; 
   align-items: center;
   min-height: 100vh;
-  padding: 0 50px;
+  padding: 20px;
   gap: 30px;
 }
 
 .login-left {
-  width: 40%;
-  max-width: 400px;
+  width: 100%; 
+  max-width: 350px; 
 }
 
 .login-logo {
@@ -27,15 +28,16 @@ body {
 }
 
 .login-welcome {
-  font-size: 2.5rem;
+  font-size: 2rem; 
   font-weight: bold;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
+  text-align: center; 
 }
 
 p {
-  margin-bottom: 20px;
-  font-size: 1rem;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
   color: #6c6c6c;
 }
 
@@ -43,32 +45,33 @@ label {
   font-weight: bold;
   margin-bottom: 5px;
   display: block;
-  margin-left: 0; /* Uklanja neusklađenost margina */
-  text-align: left;
+  font-size: 0.9rem; 
 }
 
 .login-input {
   display: block;
-  width: 90%;
-  padding: 10px;
-  margin-bottom: 15px;
+  width: 100%;
+  max-width: 300px; 
+  padding: 8px; 
+  margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 0.9rem; 
 }
 
 .login-btn {
   display: block;
-  width: 90%;
-  padding: 12px;
+  width: 100%;
+  max-width: 300px; 
+  padding: 10px; 
   background-color: #ff5722;
   color: white;
   border: none;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 0.9rem; 
   font-weight: bold;
   cursor: pointer;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   transition: background-color 0.3s;
 }
 
@@ -88,17 +91,19 @@ label {
 }
 
 .image-container{
-  width: 50%;
-  height: 100vh;
-  object-fit: contain;
-  background-position: center;
-}
+    width: 60%;
+    height: 100vh;
+    object-fit: contain;
+    margin-top: 20px;
+    margin-left: 250px;
+    background-position: right;
+  }
 
 .additional-options {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   margin-top: 10px;
 }
 
@@ -112,26 +117,10 @@ label {
   text-decoration: underline;
 }
 
-@media screen and (max-width: 768px) {
-  .login-container {
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-  }
-
-  .login-left, .login-right {
-    width: 100%;
-  }
-
-  .login-right {
-    height: 50vh;
-  }
-}
-
 .register-link {
   text-align: center;
-  margin-top: 20px;
-  font-size: 1rem;
+  margin-top: 15px;
+  font-size: 0.9rem;
   color: #6c6c6c;
 }
 
@@ -146,29 +135,28 @@ label {
 }
 
 .remember-me-container {
-  display: flex;
-  justify-content: space-between; /* Razmak između checkbox grupe i linka */
-  align-items: last baseline; /* Vertikalno poravnanje svih elemenata */
-  font-size: 0.9rem;
-  color: #6c6c6c;
-  margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between; 
+    align-items: last baseline; 
+    font-size: 0.8rem;
+    color: #6c6c6c;
+    margin-bottom: 10px;
 }
 
 .checkbox-group {
-  display: flex; /* Horizontalno poravnanje checkbox-a i teksta */
-  align-items: center; /* Vertikalno poravnanje checkbox-a i teksta */
-  white-space: nowrap;
+    display: flex; 
+    align-items: center; 
+    white-space: nowrap;
 }
-
+  
 .checkbox-group input[type="checkbox"] {
-  margin: 0; /* Uklanja nepotrebni razmak oko checkbox-a */
-  margin-right: -33px;
+    margin: 1;
+    margin-right: -30px;
 }
 
 .remember-me-container a {
   text-decoration: none;
   color: #ff5722;
-  
 }
 
 .remember-me-container a:hover {
@@ -176,37 +164,48 @@ label {
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+  
 }
 
 .form-group label {
   font-weight: bold;
   margin-bottom: 5px;
-  display: block;
+  font-size: 0.9rem; 
 }
 
 .form-group input {
-  width: 90%;
-  padding: 10px;
+  width: 100%;
+  max-width: 300px; 
+  padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 0.9rem; 
 }
+
 .login-form {
-  background-color: #ffffff; /* Bijela pozadina forme */
-  border: 2px solid #ff5722; /* Okvir u boji */
-  border-radius: 10px; /* Zaobljeni uglovi */
-  padding: 30px; /* Unutrašnji razmak */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Blaga sjena */
-  margin-top: 10px; /* Razmak od vrha */
+  background-color: #ffffff; 
+  border: 2px solid #ff5722; 
+  border-radius: 10px;
+  padding: 20px; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  width: 320px; 
+  max-width: 90%;
 }
 
+@media screen and (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+  }
 
-.login-btn {
-  margin-top: 10px; /* Razmak između dugmadi */
-}
+  .login-form {
+    width: 100%;
+    max-width: 350px;
+  }
 
-.tekst-za-unos{
-  text-align: center;
-  
+  .login-welcome {
+    font-size: 1.8rem;
+  }
 }

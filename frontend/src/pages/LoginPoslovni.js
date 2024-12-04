@@ -29,12 +29,12 @@ const LoginPoslovni = () => {
       const response = await axios.post('http://localhost:8000/api/login/business-subject/', formData);
       console.log('Login successful:', response.data);
 
-      // Spremanje tokena ili korisničkih podataka u lokalnu memoriju
+      
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
 
-      // Redirekcija korisnika nakon uspješnog logina
-      window.location.href = '/dashboard'; // Promijenite prema potrebi
+     
+      window.location.href = '/dashboard'; 
     } catch (error) {
       console.error('Greška pri prijavi:', error.response?.data || error.message);
       setError('Neispravan email ili lozinka. Pokušajte ponovo.');
@@ -49,9 +49,10 @@ const LoginPoslovni = () => {
         <a href="/">
           <img src={logo} alt="Oće neko na basket?" className="login-logo" />
         </a>
+        <form className="login-form" onSubmit={handleSubmit}>
         <h2 className="login-welcome">DOBRODOŠLI!</h2>
         <p>Molimo unesite podatke za prijavu</p>
-        <form onSubmit={handleSubmit}>
+        <div className="form-group">
           <label htmlFor="email">Email</label>
           <input
             type="text"
@@ -62,6 +63,8 @@ const LoginPoslovni = () => {
             onChange={handleInputChange}
             required
           />
+        </div>
+        <div className="form-group">
           <label htmlFor="password">Lozinka</label>
           <input
             type="password"
@@ -72,6 +75,7 @@ const LoginPoslovni = () => {
             onChange={handleInputChange}
             required
           />
+          </div>
           <div className="remember-me-container">
             <div className="checkbox-group">
               <input type="checkbox" id="remember-me" />
