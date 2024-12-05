@@ -2,8 +2,51 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./RegisterRekreativac.css";
 import logo from "../images/logo.png";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Cropper from "react-easy-crop";
+import getCroppedImg from "../components/ImageCrop";
+
 
 function RegisterRekreativac() {
+
+  const [imagePreview, setImagePreview] = useState(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [cropping, setCropping] = useState(false);
+
+  const [imageSrc, setImageSrc] = useState(null); 
+  const [finalImage, setFinalImage] = useState(null); 
+  const [selectedImage, setSelectedImage] = useState(null); 
+  const [crop, setCrop] = useState({ x: 0, y: 0, width: 50, height: 50 });
+  const [zoom, setZoom] = useState(1);
+  
+
+  const removeImage = () => {
+    setImageSrc(null);
+    setSelectedImage(null);
+    setFinalImage(null);
+    setCropping(false);
+  };
+
+  const onCropComplete = (croppedArea, croppedAreaPixels) => {
+    setCrop(croppedAreaPixels);
+  };
+
+  
+  const handleCrop = async () => {
+    try {
+      const croppedBlob = await getCroppedImg(imageSrc, crop); // imageSrc i crop dolaze iz stanja
+      const croppedUrl = URL.createObjectURL(croppedBlob); // Kreira URL za isečenu sliku
+      setFinalImage(croppedUrl); 
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        image: croppedBlob, // Skladišti Blob kao fajl
+      }));
+      setCropping(false); 
+    } catch (error) {
+      console.error("Greška pri izrezivanju slike:", error);
+    }
+  };
+
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
     first_name: "",
@@ -12,6 +55,7 @@ function RegisterRekreativac() {
     password: "",
     confirmPassword: "",
     email: "",
+    image: null,
   });
 
   const [passwordCriteria, setPasswordCriteria] = useState({
@@ -22,8 +66,17 @@ function RegisterRekreativac() {
     hasNumber: false,
   });
 
+  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [isPasswordFieldFocused, setIsPasswordFieldFocused] = useState(false); // Fokus na polje lozinke
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const nextStep = () => {
     if (isStepValid()) {
@@ -44,11 +97,14 @@ function RegisterRekreativac() {
       case 1:
         return validatePassword();
       case 2:
-        return formData.email.includes("@");
+          return true; // Slika je opciona
+      case 3:
+          return formData.email.includes("@");
       default:
         return false;
     }
   };
+
 
   const validatePassword = (password = formData.password) => {
     const criteria = {
@@ -95,6 +151,7 @@ function RegisterRekreativac() {
           password: "",
           confirmPassword: "",
           email: "",
+          image: null,
         });
         setCurrentStep(0);
       } catch (error) {
@@ -154,8 +211,9 @@ function RegisterRekreativac() {
           <div className="form-step">
             <p className="tekst-za-unos">Molimo unesite i potvrdite lozinku</p>
             <label htmlFor="password">Lozinka:</label>
+            <div className="password-container">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               placeholder="Lozinka123$"
               value={formData.password}
@@ -163,6 +221,14 @@ function RegisterRekreativac() {
               onFocus={() => setIsPasswordFieldFocused(true)}
               onBlur={() => setIsPasswordFieldFocused(false)}
               required />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
             {isPasswordFieldFocused && (
               <div className="password-criteria-box">
                 <h4>Kriterijumi za lozinku:</h4>
@@ -207,8 +273,75 @@ function RegisterRekreativac() {
             </button>
           </div>
         )}
-
         {currentStep === 2 && (
+        <div className="form-step">
+          <div>
+          {!cropping ? (
+            <>
+            <p className="tekst-za-unos">Molimo postavite sliku</p>
+            <label htmlFor="profileImage">Dodaj sliku:</label>
+            <input
+            type="file"
+            id="profileImage"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (file) {
+                setSelectedImage(file);
+                setImageSrc(URL.createObjectURL(file)); // Postavlja URL slike
+                setCropping(true); // Aktivira crop funkcionalnost
+              }
+              }}
+              />
+            {finalImage && (
+            <div className="image-preview-container">
+              <img src={finalImage} alt="Preview" className="preview-image" />
+              <button
+                type="button"
+                className="remove-button"
+                onClick={removeImage}
+              >
+                Ukloni sliku
+              </button>
+            </div>
+            )}
+          </>
+        ) : (
+        <div className="crop-container">
+          <Cropper
+            image={imageSrc}
+            crop={crop}
+            zoom={zoom}
+            aspect={1} // Kvadratni odnos širine i visine
+            onCropChange={setCrop}
+            onZoomChange={setZoom}
+            onCropComplete={onCropComplete}
+          />
+          <div className="crop-buttons">
+            <button
+              type="button"
+              onClick={handleCrop}
+              className="save-button"
+            >
+              Sačuvaj izrezanu sliku
+            </button>
+            <button
+              type="button"
+              onClick={() => setCropping(false)}
+              className="cancel-button"
+            >
+              Otkaži
+            </button>
+          </div>
+        </div>
+          )}
+        </div>
+        <button className="continue-button" onClick={nextStep}>
+              Nastavi
+            </button>
+        </div>
+        )}
+        {currentStep === 3 && (
           <div className="form-step">
             <p className="tekst-za-unos">Molimo unesite svoju email adresu za verifikaciju</p>
             <label htmlFor="email">Email adresa:</label>
@@ -247,7 +380,7 @@ function RegisterRekreativac() {
 
       <div className="progress-bar">
         <div className="steps">
-          {["Unesite podatke", "Unesite lozinku", "Verifikujte email"].map(
+          {["Unesite podatke", "Unesite lozinku", "Postavite sliku","Verifikujte email"].map(
             (label, index) => (
               <div
                 className={`step ${currentStep >= index ? "active" : ""}`}

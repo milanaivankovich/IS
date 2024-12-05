@@ -218,3 +218,78 @@ button.email-button:hover {
   text-align: center;
   
 }
+
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-container input {
+  flex: 1;
+}
+
+.toggle-password {
+  background: none;
+  border: none;
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+}
+.image-preview-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.preview-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.remove-button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.remove-button:hover {
+  background-color: #e60000;
+}
+.crop-container {
+  position: relative; /* Obavezno! */
+  width: 100%; /* Postavi širinu po potrebi */
+  height: 400px; /* Visina za prikaz croppera */
+  overflow: hidden; /* Sprečava da sadržaj izlazi van */
+}
+
+.crop-buttons {
+  position: absolute;
+  bottom: 10px; /* Dugmad na dnu crop-containera */
+  left: 50%;
+  transform: translateX(-50%); /* Centriraj dugmad horizontalno */
+  display: flex;
+  gap: 10px;
+}
+.save-button,
+.cancel-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.save-button:hover,
+.cancel-button:hover {
+  background-color: #0056b3;
+}
