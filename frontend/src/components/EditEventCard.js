@@ -1,22 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import "./EditEventCard.css";
 import CreatorImg from "../images/user.svg";
+import axios from "axios";
 
 
 
-const EditEventCard = (user) => {
-  return (
+const EditEventCard = (user, isVisible) => {
+
+  const [eventData, setEventData] = useState({
+    'name': '',
+    'description':''
+  });
+
+  const createNew = async () => {
+    await axios.put('http://localhost:8000/api/client//edit/', eventData, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    })
+      .then((response) => {
+        console.log("Data updated successfully:", response.data);
+      })
+      .catch((error) => {
+        console.error("There was an error updating the data:", error);
+        alert("Doslo je do greške prilikom ažuriranja...");
+      });
+  };
+
+  return ( 
+    <div className='dimmer'>
     <form className="EditEventCard-form">
       <header className="EditEventCard-Header" />
       <div className="EditEventCard-body">
         <div className="EditEventCard-user">
           <img src={CreatorImg} className="creator-image" alt="Creator" />
-          <div className="Naslov">
+          <div className="edit-event-card-header">
             <input 
                 className="UnosInformacijaDogadjaja"
+                value={eventData.name}
                 type="text" 
-                placeholder="Unesi naslov"
+                placeholder="Unesi naslov događaja"
                 required
+                onChange={(e) => setEventData(prevData=>({...prevData, name: e.target.value }))}
             />
             <div className="createdBy"> by @{user.username}</div>
           </div>
@@ -28,7 +51,10 @@ const EditEventCard = (user) => {
             cols="46"
             placeholder="Unesi opis događaja..."
             minLength="10"
-            required/>
+            value={eventData.description}
+            required
+            onChange={(e) => setEventData(prevData=>({...prevData, description: e.target.value }))}
+            />
         <label className="EditEventLabel"> Datum: </label>
         <input className="UnosInformacijaDogadjaja"
         id="UnosDatumaDogadjaja-input"
@@ -46,9 +72,12 @@ const EditEventCard = (user) => {
           className="SpasiIzmjeneDogadjaja-button "
           type="select">
             Spasi izmjene</button>
+            
         </div>
       </div>
     </form>
+    
+  </div>
   );
 };
 

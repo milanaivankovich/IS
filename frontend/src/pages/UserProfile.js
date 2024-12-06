@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import EventCard from '../components/EventCard';
+import SponsoredEventCard from '../components/SponsoredEventCard';
 import FavoriteCard from '../components/FavoriteCard';
 import MessageCard from '../components/MessageCard';
 import ActivityCard from '../components/ActivityCard';
@@ -9,7 +10,9 @@ import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
 import CreatorImg from "../images/user.svg";
 import EditEventCard from "../components/EditEventCard.js";
-
+import { CiSettings } from "react-icons/ci";
+import { IoIosCloseCircle } from "react-icons/io";
+{/*proba za sponzorisane dogadjaje */}
 const UserProfile = () => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -48,7 +51,7 @@ const UserProfile = () => {
         .catch((error) => {
           console.error("Error getting ID: ",error);
           alert("Neuspjesna autorizacija. Molimo ulogujte se ponovo... ");
-          window.location.replace("/login");
+        {/*window.location.replace("/login");*/}
         });
       };
 
@@ -78,7 +81,7 @@ const UserProfile = () => {
     try {
       switch (activeTab) {
         case "events":
-          const eventsResponse = await axios.get('http://localhost:8000/api/user/events', {
+          const eventsResponse = await axios.get('http://localhost:8000/api/advertisement/sport/1/', {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
           });
           setUserEvents(eventsResponse.data);
@@ -122,7 +125,7 @@ const UserProfile = () => {
   return (
     <body>
       <header className="userprofile-menu">
-        <MenuBar variant={["registered"]} search={true} />
+        <MenuBar variant={[id!==-1 ? "registered" : "unregistered"]} search={true} />
       </header>
       <div className="userprofile-body">
         <div className="userprofile-header">
@@ -131,7 +134,7 @@ const UserProfile = () => {
             <h0 className="userprofile-name">{userData.first_name } {userData.last_name}</h0>
             <h1 className="userprofile-subtitle">@{userData.username}</h1>
           </div>
-          <button className='edituserprofile-button' onClick={() => window.location.replace('/edituserprofile')}>config</button>
+          <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/edituserprofile')} />
         </div>
           <div>
             <nav className="profile-tabs">
@@ -167,8 +170,8 @@ const UserProfile = () => {
                 {activeTab === "events" && (
                   <div className="events-section">
                   <div className="event-cards-container">
-                  {userEvents.map((event) => (
-                    <EventCard key={event.id} title={event.title} description={event.description} />
+                  {Array.isArray(userEvents) && userEvents.map((advertisement) => (
+                    <SponsoredEventCard key={advertisement.id} event={advertisement} />
                   ))}
                 </div>
                 { (id.pk!==-1) &&
@@ -177,9 +180,10 @@ const UserProfile = () => {
                   </button> 
                 }
                 { isVisible &&
-                  <div className='dimmer' onClick={toggleFloatingWindow}>
-                  <EditEventCard user={userData} className="new-event-card"/>
-                  </div>
+                <div>
+                  <EditEventCard user={userData} isVisible={isVisible} className="new-event-card" />
+                  <IoIosCloseCircle className="close-icon" onClick={toggleFloatingWindow}/>
+                </div>
                 }
               </div>
             )}
