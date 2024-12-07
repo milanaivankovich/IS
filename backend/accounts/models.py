@@ -8,7 +8,9 @@ class Client(AbstractUser):
     phone = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
-    profile_picture = models.ImageField(upload_to="profile_pics/", blank=True, null=True)
+    profile_picture = models.ImageField(upload_to="./profile_pics/", blank=True, null=True)
+    
+
     bio = models.TextField(blank=True, null=True)
 
     # Provide custom related_name to avoid clashes
@@ -59,7 +61,7 @@ class BusinessSubject(AbstractUser):
 
     # Business-specific fields
     business_name = models.CharField(max_length=255, unique=True)
-    profile_picture = models.ImageField(upload_to="business_pics/", blank=True, null=True)
+    profile_picture = models.ImageField(upload_to="./business_profile_pics/", blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
     # Custom related_name to avoid clashes
