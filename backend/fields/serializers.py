@@ -4,11 +4,11 @@ from .models import Field, Sport
 class SportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sport
-        fields = ['name']  # Samo ime sporta
+        fields = ['name']  
 
 class FieldSerializer(serializers.ModelSerializer):
-    sports = SportSerializer(many=True)  # Koristimo SportSerializer za sports polje
+    sports = SportSerializer(many=True)  
 
     class Meta:
         model = Field
-        fields = ['id', 'location', 'latitude', 'longitude', 'sports', 'is_suspended', 'image']
+        fields = ['id', 'location', 'precise_location', 'latitude', 'longitude', 'sports', 'is_suspended', 'image']
