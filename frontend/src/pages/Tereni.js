@@ -41,16 +41,16 @@ const Tereni = () => {
       if (field && date) {
         const formattedDate = formatDateToLocal(date);
         response = await axios.get(
-          `http://localhost:8000/api/advertisement/${formattedDate}/location/${field.location}`
+          `http://localhost:8000/api/advertisement/${formattedDate}/location/${field.location}/`
         );
       } else if (date) {
         const formattedDate = formatDateToLocal(date);
         response = await axios.get(
-          `http://localhost:8000/api/advertisement/${formattedDate}`
+          `http://localhost:8000/api/advertisement/${formattedDate}/`
         );
       } else if (field) {
         response = await axios.get(
-          `http://localhost:8000/api/advertisement/location/${field.location}`
+          `http://localhost:8000/api/advertisement/location/${field.location}/`
         );
       } else {
         response = await axios.get("http://localhost:8000/api/advertisements/");
