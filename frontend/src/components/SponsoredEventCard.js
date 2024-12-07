@@ -3,7 +3,7 @@ import "./SponsoredEventCard.css";
 import CreatorImg from "../images/user.svg";
 
 const SponsoredEventCard = ({ event }) => {
-  const { description, date, field, business_subject } = event;
+  const { description, date, field, business_subject, sport } = event;
   const [location, setLocation] = useState("");
   const [name, setName] = useState("");
   const [sports, setSport] = useState("");
@@ -43,11 +43,11 @@ const SponsoredEventCard = ({ event }) => {
       }, [business_subject]);
 
 
-      // Dohvaćanje sporta na temelju field ID-a
+      // Dohvaćanje sporta na temelju njegovog ID-a
       useEffect(() => {
         const fetchSport = async () => {
           try {
-            const response = await fetch(`http://127.0.0.1:8000/api/advertisement/sports/${field}/`);
+            const response = await fetch(`http://127.0.0.1:8000/api/sport/${sport}/`);
             const data = await response.json();
             setSport(data.sports); 
           } catch (error) {
@@ -55,10 +55,10 @@ const SponsoredEventCard = ({ event }) => {
           }
         };
     
-        if (field) {
+        if (sport) {
           fetchSport();
         }
-      }, [field]); 
+      }, [sport]); 
       
 
   return (
@@ -75,7 +75,7 @@ const SponsoredEventCard = ({ event }) => {
         <div className="Opis">
           <p><strong>Datum:</strong> {date}</p>
           <p><strong>Lokacija:</strong> {location}</p>
-          <p><strong>Sportovi:</strong> {sports.length > 0 ? sports.join(", ") : "Nema sportova"}</p>
+          <p><strong>Sport:</strong> {sports}</p>
         </div>
         <div className="EventCard-buttons">
           <button className="EventCard-button">Pregled</button>

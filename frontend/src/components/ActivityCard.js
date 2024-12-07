@@ -3,7 +3,7 @@ import "./ActivityCard.css"; // Dodajte stilove
 
 
 const ActivityCard = ({ activity }) => {
-  const { description, date, field,titel } = activity;
+  const { description, date, field, titel, sport } = activity;
   const [location, setLocation] = useState("");
   const [name, setName] = useState("");
   const [sports, setSport] = useState("");
@@ -27,11 +27,11 @@ const ActivityCard = ({ activity }) => {
 
       
 
-      // Dohvaćanje sporta na temelju field ID-a
+      // Dohvaćanje sporta na temelju njegovog ID-a
       useEffect(() => {
         const fetchSport = async () => {
           try {
-            const response = await fetch(`http://127.0.0.1:8000/api/advertisement/sports/${field}/`);
+            const response = await fetch(`http://127.0.0.1:8000/api/sport/${sport}/`);
             const data = await response.json();
             setSport(data.sports); 
           } catch (error) {
@@ -39,16 +39,16 @@ const ActivityCard = ({ activity }) => {
           }
         };
     
-        if (field) {
+        if (sport) {
           fetchSport();
         }
-      }, [field]); 
+      }, [sport]);
       
   return (
     <div className="activity-card">
       <h3>{activity.titel}</h3>
       <p><strong>Opis:</strong> {activity.description}</p>
-      <p><strong>Sportovi:</strong> {sports.length > 0 ? sports.join(", ") : "Nema sportova"}</p>
+      <p><strong>Sport:</strong> {sports}</p>
       <p><strong>Datum:</strong> {activity.date}</p>
       <p><strong>Broj učesnika:</strong> {activity.NumberOfParticipants}</p>
       <p><strong>Lokacija:</strong> {location}</p>

@@ -6,6 +6,7 @@ class Advertisement(models.Model):
     date = models.DateField()
     business_subject = models.ForeignKey('accounts.BusinessSubject', on_delete=models.CASCADE, null=True)
     field = models.ForeignKey('fields.Field', on_delete=models.CASCADE, null=True)
+    sport = models.ForeignKey('fields.Sport', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.description

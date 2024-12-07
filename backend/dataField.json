@@ -2,40 +2,45 @@
     {
         "id": 1,
         "location": "Borik",
-        "latitude": 44.77157,
-        "longitude": 17.20343,
+        "precise_location": "Borik 12",
+        "latitude": 44.77008,
+        "longitude": 17.20163,
         "is_suspended": false,
         "image": "images/teren1.jpg"
     },
     {
         "id": 2,
-        "location": "Obilicevo",
-        "latitude": 44.76119,
-        "longitude": 17.19463,
+        "location": "Starcevica",
+        "precise_location": "Starcevica 17",
+        "latitude": 44.75966,
+        "longitude": 17.20596,
         "is_suspended": false,
         "image": "images/teren2.jpg"
     },
     {
         "id": 3,
-        "location": "Starcevica",
-        "latitude": 44.7593,
-        "longitude": 17.20631,
-        "is_suspended": true,
+        "location": "Obilicevo",
+        "precise_location": "Obilicevo 13",
+        "latitude": 44.76094,
+        "longitude": 17.18897,
+        "is_suspended": false,
         "image": "images/teren3.jpg"
     },
     {
         "id": 4,
         "location": "Borik",
-        "latitude": 44.77221,
-        "longitude": 17.20759,
-        "is_suspended": false,
+        "precise_location": "Borik 56",
+        "latitude": 44.77105,
+        "longitude": 17.20382,
+        "is_suspended": true,
         "image": "images/teren4.jpg"
     },
     {
         "id": 5,
         "location": "Paprikovac",
-        "latitude": 44.78598,
-        "longitude": 17.17987,
+        "precise_location": "Paprikovac 123",
+        "latitude": 44.78476,
+        "longitude": 17.17687,
         "is_suspended": false,
         "image": "images/teren5.jpg"
     }

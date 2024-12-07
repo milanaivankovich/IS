@@ -1,38 +1,42 @@
 [
     {
-        "id": 1,
+        "id": 2,
         "client_id": 1,
         "titel": "naslov1",
         "description": "opis1",
         "date": "2024-12-07",
         "field_id": 1,
-        "NumberOfParticipants": 3
-    },
-    {
-        "id": 2,
-        "client_id": 3,
-        "titel": "naslov2",
-        "description": "opis2",
-        "date": "2024-12-11",
-        "field_id": 3,
-        "NumberOfParticipants": 5
+        "NumberOfParticipants": 2,
+        "sport_id": 1
     },
     {
         "id": 3,
-        "client_id": 5,
-        "titel": "naslov3",
-        "description": "opis3",
-        "date": "2025-01-09",
-        "field_id": 5,
-        "NumberOfParticipants": 10
+        "client_id": 3,
+        "titel": "naslov2",
+        "description": "opis2",
+        "date": "2024-12-12",
+        "field_id": 2,
+        "NumberOfParticipants": 3,
+        "sport_id": 2
     },
     {
         "id": 4,
         "client_id": 6,
+        "titel": "naslov3",
+        "description": "opis3",
+        "date": "2024-12-20",
+        "field_id": 4,
+        "NumberOfParticipants": 4,
+        "sport_id": 1
+    },
+    {
+        "id": 5,
+        "client_id": 9,
         "titel": "naslov4",
         "description": "opis4",
-        "date": "2024-12-23",
-        "field_id": 2,
-        "NumberOfParticipants": 4
+        "date": "2025-01-17",
+        "field_id": 3,
+        "NumberOfParticipants": 6,
+        "sport_id": 2
     }
 ]
