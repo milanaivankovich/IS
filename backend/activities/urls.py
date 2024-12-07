@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from rest_framework.routers import DefaultRouter
+from .views import get_location_by_field_id
 
 urlpatterns = [
     #path('dodaj/', AktivnostCreateView.as_view(), name='dodaj-aktivnost'),
@@ -8,7 +9,7 @@ urlpatterns = [
     path('clients/<int:client_id>/activities/add/', views.add_activity, name='add_activity'),
     path('clients/<int:client_id>/client_activities/', views.client_activities, name='client_activities'),
     path('activities/create/', views.ActivitiesCreateView.as_view(), name='create_activity'), #kreiranje aktivnosti
-    path('api/activities/', views.getData, name='get_activities'),# API endpointi za dohvat i unos podataka
+    path('api/activities/', views.getData),# API endpointi za dohvat i unos podataka
     path('api/activities/add/', views.setData, name='add_activity_api'),
    
     path('activities/date/<str:date>/', views.activities_by_date, name='activities_by_date'),      # Filtriranje aktivnosti prema datumu, lokaciji ili kombinaciji

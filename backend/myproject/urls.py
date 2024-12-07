@@ -7,7 +7,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('accounts.urls')),  # Make sure this line is included
-    path('activities/', include('activities.urls')), #aktivnosti = za slucaj da ne bude radilo
+    path('', include('activities.urls')), #aktivnosti = za slucaj da ne bude radilo
     path('', include('fields.urls')),
     path('', include('reviews.urls')),
     path('', include('advertisements.urls')),
