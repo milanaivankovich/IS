@@ -132,7 +132,6 @@ const Tereni = () => {
                 <Popup>
                   <h3>{"Sportski teren"}</h3>
                   <p><strong>Lokacija:</strong> {field.location}</p>
-                  <p><strong>Sport:</strong> {field.type_of_sport}</p>
                   <img
                     src={field.image}
                     alt={`Slika terena ${field.name}`}

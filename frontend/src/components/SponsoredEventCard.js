@@ -6,7 +6,7 @@ const SponsoredEventCard = ({ event }) => {
   const { description, date, field, business_subject } = event;
   const [location, setLocation] = useState("");
   const [name, setName] = useState("");
-  const [type_of_sport, setSport] = useState("");
+  const [sports, setSport] = useState("");
 
       // Dohvaćanje lokacije na temelju field ID-a
       useEffect(() => {
@@ -47,9 +47,9 @@ const SponsoredEventCard = ({ event }) => {
       useEffect(() => {
         const fetchSport = async () => {
           try {
-            const response = await fetch(`http://127.0.0.1:8000/api/advertisement/sport/${field}/`);
+            const response = await fetch(`http://127.0.0.1:8000/api/advertisement/sports/${field}/`);
             const data = await response.json();
-            setSport(data.type_of_sport); 
+            setSport(data.sports); 
           } catch (error) {
             console.error("Error fetching type_of_sport:", error);
           }
@@ -75,7 +75,7 @@ const SponsoredEventCard = ({ event }) => {
         <div className="Opis">
           <p><strong>Datum:</strong> {date}</p>
           <p><strong>Lokacija:</strong> {location}</p>
-          <p><strong>Sport:</strong> {type_of_sport}</p>
+          <p><strong>Sportovi:</strong> {sports.length > 0 ? sports.join(", ") : "Nema sportova"}</p>
         </div>
         <div className="EventCard-buttons">
           <button className="EventCard-button">Pregled</button>
