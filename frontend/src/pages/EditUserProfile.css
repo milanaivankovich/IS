@@ -35,9 +35,23 @@
 .NewImage {
     margin-bottom: 28px;
     align-self: center;
+    background-color: #fefefe;
+    border: none;
+    cursor: pointer;
     color: #F15A24;
     text-decoration: none;
     transition: color 0.3s ease;
+}
+
+.close-icon-orange {
+    z-index: 1001;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    height: 25px;
+    width: 25px;
+    transform: translate(220px, -230px);
+    color: #F15A24;
 }
 
 .NewImage:hover {

@@ -4,6 +4,8 @@ import profileImage from "../images/user.svg";
 import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
 import axios from "axios";
+import AddPhoto from '../components/AddPhoto.js';
+import { IoIosCloseCircle } from "react-icons/io";
 
 const EditUserProfile = () => {
     const [id, setID]=useState({
@@ -15,8 +17,7 @@ const EditUserProfile = () => {
       "last_name": '',
       "username": '',
       "email": '',
-      "date_of_birth": '',
-      "bio": ''
+      "profile_picture": null
     });
 
     useEffect(() => {
@@ -74,6 +75,7 @@ const EditUserProfile = () => {
     'new_password': '',
     'confirm_password': '',
   });
+  
 
   const handlePasswordUpdate =async (password) => {
     if (password.new_password===password.old_password){
@@ -107,7 +109,7 @@ const EditUserProfile = () => {
       console.error("There was an error updating the data:", error);
       alert("Doslo je do greške prilikom deaktivacije...");});
   };
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
   };
@@ -118,6 +120,11 @@ const EditUserProfile = () => {
     window.location.replace("/login");
   };
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const toggleDialog = () => {
+    setIsDialogOpen(!isDialogOpen);
+  };
+
   return (
     <body>
       <header>
@@ -126,13 +133,17 @@ const EditUserProfile = () => {
       <div className="EditUserProfileBody">
         <div className="EditUserProfileDialog">
           <img
-            src={profileImage}
+            src={userData.profile_picture!==null ? userData.profile_picture: profileImage}
             alt="Circular Image"
             className="EditProfileImage"
           />
-          <a href="" className="NewImage">
+          <button className="NewImage" onClick={()=>toggleDialog()} >
             Nova slika
-          </a>
+          </button>
+          {isDialogOpen && id.pk!==-1 ?  <div>
+                  <AddPhoto className="new-event-card" userId={id} />
+                  <IoIosCloseCircle className="close-icon-orange" onClick={()=>toggleDialog()}/>
+                </div>  : null}
           <form onSubmit={handleSubmit}>
             <label className="EditProfileLabel">Ime</label>
             <input

@@ -35,8 +35,7 @@ const UserProfile = () => {
     "last_name": 'Prezime',
     "username": 'username',
     "email": '',
-    "date_of_birth": '',
-    "bio": ''
+    "profile_picture": null
   });
 
   useEffect(() => {
@@ -129,7 +128,8 @@ const UserProfile = () => {
       </header>
       <div className="userprofile-body">
         <div className="userprofile-header">
-          <img src={CreatorImg} className="userprofilepreview-image" alt="Creator" />
+          <img src={userData.profile_picture!==null ? userData.profile_picture: CreatorImg} 
+          className="userprofilepreview-image" alt="Creator" />
           <div className='name-surname-username'>
             <h0 className="userprofile-name">{userData.first_name } {userData.last_name}</h0>
             <h1 className="userprofile-subtitle">@{userData.username}</h1>
