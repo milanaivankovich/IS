@@ -174,17 +174,17 @@ const UserProfile = () => {
                     <SponsoredEventCard key={advertisement.id} event={advertisement} />
                   ))}
                 </div>
-                { (id.pk!==-1) &&
-                  <button className="create-event-button" onClick={toggleFloatingWindow}>
+                { (id.pk!==-1) ? (
+                  <button className="create-event-button" onClick={()=>toggleFloatingWindow()}>
                     + Novi događaj
                   </button> 
-                }
-                { isVisible &&
+                  ) : null }
+                { isVisible ? (
                 <div>
-                  <EditEventCard user={userData} isVisible={isVisible} className="new-event-card" />
-                  <IoIosCloseCircle className="close-icon" onClick={toggleFloatingWindow}/>
+                  <EditEventCard user={userData} className="new-event-card" />
+                  <IoIosCloseCircle className="close-icon" onClick={()=>toggleFloatingWindow()}/>
                 </div>
-                }
+                ): null }
               </div>
             )}
 
