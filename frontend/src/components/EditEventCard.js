@@ -19,7 +19,7 @@ useEffect(() => {
         setFields(response.data);
         setOptions(response.data.map(item => ({
           value: item.id,
-          label: item.location+', '+ item.type_of_sport,
+          label: item.location+' ('+ item.sports.map(sport=>sport.name).join(', ')+')',
         })));
         console.log("Data updated successfully:", response.data);
       })
