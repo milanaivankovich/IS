@@ -69,7 +69,7 @@ class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        fields = ['first_name', 'last_name', 'username', 'password', 'email', 'date_of_birth', 'bio']
+        fields = ['first_name', 'last_name', 'username', 'password', 'email', 'profile_picture']
     
     def validate_email(self, value):
         if Client.objects.filter(email=value).exists():
