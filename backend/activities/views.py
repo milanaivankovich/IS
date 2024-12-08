@@ -12,7 +12,7 @@ from datetime import datetime
 
 class ActivitiesCreateView(CreateView):
     model = Activities
-    fields = ['name', 'description']
+    fields = ['titel', 'description']
     template_name = 'activities/aktivnost_form.html'    
     success_url = reverse_lazy('aktivnost-success')
 
@@ -45,7 +45,7 @@ def add_activity(request, client_id):
     seriallizer = ActivitiesSerializer(data=data)    
     if seriallizer.is_valid():
         seriallizer.save()
-        return Response(seriallizer.data, status=status.HTTP_201_CRETATED)
+        return Response(seriallizer.data, status=status.HTTP_201_CREATED)
     return Response(seriallizer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
@@ -63,7 +63,7 @@ def activities_by_date(request, date):
     except ValueError:
         return Response({'error': 'Invalid date format. Use YYYY-MM-DD.'}, status=400)
     
-    activities = Activities.objects.filter(datum=valid_date)
+    activities = Activities.objects.filter(date=valid_date)
     if activities.exists():
         serializer = ActivitiesSerializer(activities, many=True)
         return Response(serializer.data)
@@ -89,7 +89,7 @@ def activities_by_location(request, location):
 
 @api_view(['GET'])
 def activities_by_date_and_location(request, date, location):
-    activities = Activities.objects.filter(datum = date, field__location__icontains=location)
+    activities = Activities.objects.filter(date = date, field__location__icontains=location)
     if activities.exists():
         serializer = ActivitiesSerializer(activities, many = True)
         return Response(serializer.data)

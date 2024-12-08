@@ -9,6 +9,7 @@ class BusinessSubjectSerializer(serializers.ModelSerializer):
     nameSportOrganization = serializers.CharField(max_length=255, source='business_name')
     description = serializers.CharField(allow_blank=True, required=False)
     email = serializers.EmailField()
+    profile_picture = serializers.ImageField(required=False)
 
     # Don't need to include 'first_name', 'last_name', and 'username' as they're removed in the model
 
@@ -64,6 +65,7 @@ class ClientSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=150)
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
     email = serializers.EmailField()
+    profile_picture = serializers.ImageField(required=False)
 
     class Meta:
         model = Client

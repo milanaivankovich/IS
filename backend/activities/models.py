@@ -10,6 +10,7 @@ class Activities(models.Model):
     date = models.DateField(null=True)
     field = models.ForeignKey('fields.Field', on_delete=models.CASCADE, null=True)
     NumberOfParticipants = models.IntegerField(null=True)
+    sport = models.ForeignKey('fields.Sport', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.description   
