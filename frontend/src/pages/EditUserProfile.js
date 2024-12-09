@@ -6,6 +6,8 @@ import Footer from "../components/Footer.js";
 import axios from "axios";
 import AddPhoto from '../components/AddPhoto.js';
 import { IoIosCloseCircle } from "react-icons/io";
+import {Modal, Button} from 'react-bootstrap';
+//import 'bootstrap/dist/css/bootstrap.min.css';
 
 const EditUserProfile = () => {
     const [id, setID]=useState({
@@ -125,6 +127,11 @@ const EditUserProfile = () => {
     setIsDialogOpen(!isDialogOpen);
   };
 
+  const [isDeactivating, setIsDeactivating] = useState(false);
+  const toggleDeactivation = () => {
+    setIsDeactivating(!isDeactivating);
+  };
+
   return (
     <body>
       <header>
@@ -220,7 +227,32 @@ const EditUserProfile = () => {
           </form>
           <button className="EditProfileButton"
           onClick={()=>handleLogout()}>Odjavi se</button>
-          <button className="EditProfileButton">Deaktiviraj nalog</button>
+          <button className="EditProfileButton" onClick={()=>toggleDeactivation()}>Deaktiviraj nalog</button>
+          { isDeactivating ? <div
+           className="dimmer"
+           >
+          <Modal.Dialog className='modal-bootstrap' >
+            <Modal.Header>
+              <Modal.Title className='Naslov'>DEAKTIVACIJA NALOGA</Modal.Title>
+            </Modal.Header>
+
+            <Modal.Body>
+          <p className='modal-body'>Da li sigurno želite deaktivirati vaš nalog?</p>
+            </Modal.Body>
+
+          <Modal.Footer>
+            <Button 
+            className="EditProfileButton" 
+            id='OdustaniButton'
+            onClick={()=>toggleDeactivation()} 
+            variant="primary">Odustani</Button>
+            <Button 
+            className="EditProfileButton" 
+            onClick={()=>handleDeactivation()}
+            variant="secondary">Nastavi</Button>
+          </Modal.Footer>
+        </Modal.Dialog>
+        </div> : null }
         </div>
       </div>
       <Footer />
