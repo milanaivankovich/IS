@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 
 @api_view(['GET'])
 def getData(request):
-    fields = Field.objects.all()
+    fields = Field.objects.filter(is_suspended=False)
     serializer = FieldSerializer(fields, context={'request': request}, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 

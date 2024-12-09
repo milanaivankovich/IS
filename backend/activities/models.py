@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import Client
+from django.core.exceptions import ValidationError
 
 
 class Activities(models.Model):
@@ -11,6 +12,10 @@ class Activities(models.Model):
     field = models.ForeignKey('fields.Field', on_delete=models.CASCADE, null=True)
     NumberOfParticipants = models.IntegerField(null=True)
     sport = models.ForeignKey('fields.Sport', on_delete=models.CASCADE, null=True)
+
+    def clean(self):
+        if self.field and self.field.is_suspended:
+            raise ValidationError('Aktivnost se ne može povezati s terenom jer je teren suspendovan.')
 
     def __str__(self):
         return self.description   

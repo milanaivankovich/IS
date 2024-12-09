@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 class Advertisement(models.Model):
     id = models.AutoField(primary_key=True)
@@ -7,6 +8,10 @@ class Advertisement(models.Model):
     business_subject = models.ForeignKey('accounts.BusinessSubject', on_delete=models.CASCADE, null=True)
     field = models.ForeignKey('fields.Field', on_delete=models.CASCADE, null=True)
     sport = models.ForeignKey('fields.Sport', on_delete=models.CASCADE, null=True)
+
+    def clean(self):
+        if self.field and self.field.is_suspended:
+            raise ValidationError('Oglas se ne može povezati s terenom jer je teren suspendovan.')
 
     def __str__(self):
         return self.description
