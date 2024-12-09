@@ -9,6 +9,8 @@ import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
 import SponsoredEventCard from "../components/SponsoredEventCard";
 import ActivityCard from "../components/ActivityCard";
+import iconPath from "../images/marker.jpg";
+import L from 'leaflet';
 
 const Tereni = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -138,6 +140,14 @@ const Tereni = () => {
     fetchFilteredActivities(selectedField, date);
   };
 
+  //Ikona za marker
+  const sportIcon = L.icon({
+    iconUrl: iconPath, 
+    iconSize: [25, 25],
+    iconAnchor: [12.5, 12.5],
+    popupAnchor: [0, -15], 
+  });
+
   // Resetovanje datuma i lokacije
   const handleDateReset = () => {
     setSelectedDate(null);
@@ -177,6 +187,7 @@ const Tereni = () => {
               <Marker
                 key={field.id}
                 position={[field.latitude, field.longitude]}
+                icon={sportIcon} 
                 eventHandlers={{ click: () => handleMarkerClick(field) }}
               >
                 <Popup>
