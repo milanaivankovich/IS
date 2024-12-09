@@ -12,6 +12,12 @@ class Advertisement(models.Model):
     def clean(self):
         if self.field and self.field.is_suspended:
             raise ValidationError('Oglas se ne može povezati s terenom jer je teren suspendovan.')
+        
+        sports_on_teren = self.field.sports.all()
+        if self.sport not in sports_on_teren:
+            raise ValidationError(f"Sport '{self.sport.name}' nije dostupan na terenu '{self.field.location}'.")
+
+        super().clean()
 
     def __str__(self):
         return self.description
