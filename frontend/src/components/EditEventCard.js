@@ -6,7 +6,7 @@ import Select from 'react-select';
 
 
 //pretraziti lokacije pa ponuditi autofill
-const EditEventCard = ({user}) => {
+const EditEventCard = ({user, pk}) => {
 
   const [fields, setFields] = useState([]);
   const [options, setOptions] = useState([]);
@@ -37,18 +37,25 @@ useEffect(() => {
   const [selectedOption, setSelectedOption] = useState(null);
 
   const [eventData, setEventData] = useState({
-    'name': '',
-    'description':'',
-    'location':'',
-    'date':''
+        "id": 10,
+        "titel": "",
+        "description": "",
+        "date": "0000-00-00",
+        "NumberOfParticipants": -1,
+        "client": pk.pk,
+        "field": -1,
+        "sport": -1
   });
 
   const createNew = async () => {
-    await axios.put('http://localhost:8000/api/client//edit/', eventData, {
+    setEventData(prevData=>({...prevData, field: selectedOption.value }));
+    await axios.post('http://localhost:8000/api/activities/add/', eventData, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
       .then((response) => {
+        alert("Događaj je uspješno kreiran");
         console.log("Data updated successfully:", response.data);
+        window.location.reload();
       })
       .catch((error) => {
         console.error("There was an error updating the data:", error);
@@ -71,7 +78,8 @@ useEffect(() => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+      e.preventDefault();
+      createNew();
   };
 
   return ( 
@@ -88,7 +96,7 @@ useEffect(() => {
                 type="text" 
                 placeholder="Unesi naslov događaja"
                 required
-                onChange={(e) => setEventData(prevData=>({...prevData, name: e.target.value }))}
+                onChange={(e) => setEventData(prevData=>({...prevData, titel: e.target.value }))}
             />
             <div className="createdBy"> by @{user.username}</div>
           </div>
@@ -121,20 +129,24 @@ useEffect(() => {
         <input className="UnosInformacijaDogadjaja"
         id="UnosDatumaDogadjaja-input"
         type="datetime-local" 
-        min={new Date().toISOString().slice(0, 16)} 
+        min={new Date().toISOString().slice(0, 16)}
+        onChange={(e) => setEventData(prevData=>({...prevData, date: e.target.value }))}
         required/>
        
-        {/*<input 
+        <label className="EditEventLabel"> Broj osoba: </label>
+        <input 
          className="UnosInformacijaDogadjaja"
-         type="text"
-         placeholder="Odaberi teren"
-         required />*/}
+         type="number"
+         placeholder="Unesi broj..."
+         min={0}
+         onChange={(e) => setEventData(prevData=>({...prevData, NumberOfParticipants: e.target.value }))}
+         required />
 
         </div>
         <div className="EventCard-buttons">
           <button 
           className="SpasiIzmjeneDogadjaja-button "
-          type="select">
+          type="submit">
             Spasi izmjene</button>
             
         </div>

@@ -114,6 +114,7 @@ const EditUserProfile = () => {
   
   const handleSubmit = (e) => {
     e.preventDefault();
+    handleUpdate();
   };
 
   const handleLogout = () => {

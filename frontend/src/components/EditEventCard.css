@@ -94,9 +94,10 @@
     /* media */
 
     width: 100%;
-    height: 100px;
+    height: 30px;
+    border-radius: 8px;
 
-    background: #F15A24;
+    background: #FEFEFE;
 
     display: flex;
     flex-direction: column;

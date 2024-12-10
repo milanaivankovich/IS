@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import EventCard from '../components/EventCard';
 import SponsoredEventCard from '../components/SponsoredEventCard';
+import EventCard from '../components/EventCard';
 import FavoriteCard from '../components/FavoriteCard';
 import MessageCard from '../components/MessageCard';
 import ActivityCard from '../components/ActivityCard';
@@ -21,7 +21,6 @@ const UserProfile = () => {
   };
 
   const [activeTab, setActiveTab] = useState("events");
-  const [userEvents, setUserEvents] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [messages, setMessages] = useState([]);
   const [activityHistory, setActivityHistory] = useState([]);
@@ -74,16 +73,17 @@ const UserProfile = () => {
         fetchUserData();
     }, [id]);
 
+    const [eventsData, setEventsData] = useState([]);
+    //napraviti chain sa fetch
   // Funkcija za dohvaćanje podataka za različite kartice
+  useEffect(() => {
   const fetchData = async () => {
     setLoading(true);
     try {
       switch (activeTab) {
         case "events":
-          const eventsResponse = await axios.get('http://localhost:8000/api/advertisement/sport/1/', {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-          });
-          setUserEvents(eventsResponse.data);
+          const eventsResponse = await axios.get('http://localhost:8000/clients/'+id.pk+'/activities/');
+          setEventsData(eventsResponse.data);
           break;
         case "favorites":
           const favoritesResponse = await axios.get('http://localhost:8000/api/user/favorites', {
@@ -114,9 +114,9 @@ const UserProfile = () => {
     }
   };
 
-  useEffect(() => {
+  
     fetchData();
-  }, [activeTab]);
+  }, [id, activeTab]);
 
   const [selectionTitle, setSelectionTitle] = useState('Događaji');
   const [selectionSubtitle,setSelectionSubtitle] = useState('Događaji koje je kreirao korisnik');
@@ -170,8 +170,8 @@ const UserProfile = () => {
                 {activeTab === "events" && (
                   <div className="events-section">
                   <div className="event-cards-container">
-                  {Array.isArray(userEvents) && userEvents.map((advertisement) => (
-                    <SponsoredEventCard key={advertisement.id} event={advertisement} />
+                  {Array.isArray(eventsData) && eventsData.map((activity) => (
+                    <ActivityCard key={activity.id} activity={activity} />
                   ))}
                 </div>
                 { (id.pk!==-1) ? (
@@ -181,7 +181,7 @@ const UserProfile = () => {
                   ) : null }
                 { isVisible ? (
                 <div>
-                  <EditEventCard user={userData} className="new-event-card" />
+                  <EditEventCard user={userData} pk={id} className="new-event-card" />
                   <IoIosCloseCircle className="close-icon" onClick={()=>toggleFloatingWindow()}/>
                 </div>
                 ): null }

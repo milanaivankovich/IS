@@ -103,11 +103,11 @@
 
 .close-icon {
   z-index: 1001;
-  color: whitesmoke;
+  color: #fa5c16;
   position: fixed;
   top: 50%;
   left: 50%;
   height: 25px;
   width: 25px;
-  transform: translate(220px, -230px);
+  transform: translate(220px, -243px);
 }
