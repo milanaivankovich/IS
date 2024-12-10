@@ -34,12 +34,12 @@ function RegisterRekreativac() {
   
   const handleCrop = async () => {
     try {
-      const croppedBlob = await getCroppedImg(imageSrc, crop); // imageSrc i crop dolaze iz stanja
-      const croppedUrl = URL.createObjectURL(croppedBlob); // Kreira URL za isečenu sliku
+      const croppedBlob = await getCroppedImg(imageSrc, crop); 
+      const croppedUrl = URL.createObjectURL(croppedBlob); 
       setFinalImage(croppedUrl); 
       setFormData((prevFormData) => ({
         ...prevFormData,
-        image: croppedBlob, // Skladišti Blob kao fajl
+        image: croppedBlob, 
       }));
       setCropping(false); 
     } catch (error) {
@@ -70,7 +70,7 @@ function RegisterRekreativac() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [isPasswordFieldFocused, setIsPasswordFieldFocused] = useState(false); // Fokus na polje lozinke
+  const [isPasswordFieldFocused, setIsPasswordFieldFocused] = useState(false); 
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -288,8 +288,8 @@ function RegisterRekreativac() {
               const file = e.target.files[0];
               if (file) {
                 setSelectedImage(file);
-                setImageSrc(URL.createObjectURL(file)); // Postavlja URL slike
-                setCropping(true); // Aktivira crop funkcionalnost
+                setImageSrc(URL.createObjectURL(file)); 
+                setCropping(true); 
               }
               }}
               />
@@ -312,7 +312,7 @@ function RegisterRekreativac() {
             image={imageSrc}
             crop={crop}
             zoom={zoom}
-            aspect={1} // Kvadratni odnos širine i visine
+            aspect={1} 
             onCropChange={setCrop}
             onZoomChange={setZoom}
             onCropComplete={onCropComplete}

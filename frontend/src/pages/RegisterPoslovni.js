@@ -32,12 +32,12 @@ function RegisterPoslovni() {
   
   const handleCrop = async () => {
     try {
-      const croppedBlob = await getCroppedImg(imageSrc, crop); // imageSrc i crop dolaze iz stanja
-      const croppedUrl = URL.createObjectURL(croppedBlob); // Kreira URL za isečenu sliku
+      const croppedBlob = await getCroppedImg(imageSrc, crop); 
+      const croppedUrl = URL.createObjectURL(croppedBlob); 
       setFinalImage(croppedUrl); 
       setFormData((prevFormData) => ({
         ...prevFormData,
-        image: croppedBlob, // Skladišti Blob kao fajl
+        image: croppedBlob, 
       }));
       setCropping(false); 
     } catch (error) {
@@ -248,8 +248,8 @@ function RegisterPoslovni() {
               const file = e.target.files[0];
               if (file) {
                 setSelectedImage(file);
-                setImageSrc(URL.createObjectURL(file)); // Postavlja URL slike
-                setCropping(true); // Aktivira crop funkcionalnost
+                setImageSrc(URL.createObjectURL(file)); 
+                setCropping(true); 
               }
               }}
               />
@@ -272,7 +272,7 @@ function RegisterPoslovni() {
             image={imageSrc}
             crop={crop}
             zoom={zoom}
-            aspect={1} // Kvadratni odnos širine i visine
+            aspect={1} 
             onCropChange={setCrop}
             onZoomChange={setZoom}
             onCropComplete={onCropComplete}
