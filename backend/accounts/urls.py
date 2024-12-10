@@ -47,6 +47,9 @@ urlpatterns = [
     path('api/activate-business-subject/', views.activate_business_subject, name='activate_business_subject'),
     path('api/deactivate-business-subject/', views.deactivate_business_subject, name='deactivate_business_subject'),
 
+    path('api/request-password-reset/', views.request_password_reset, name='request_password_reset'),
+    path('api/reset-password/<str:uidb64>/<str:token>/', views.reset_password, name='reset_password'),
+
 
     
     # Include the router URLs

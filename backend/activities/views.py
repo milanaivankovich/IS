@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from datetime import datetime
 
+
 class ActivitiesCreateView(CreateView):
     model = Activities
     fields = ['titel', 'description']

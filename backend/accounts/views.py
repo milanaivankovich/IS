@@ -18,6 +18,13 @@ from .models import ClientToken
 from .models import BusinessSubjectToken
 import logging
 
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.core.mail import send_mail
+from django.conf import settings
+from django.shortcuts import get_object_or_404
+
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -378,6 +385,64 @@ def logout_user(request):
     except Token.DoesNotExist:
         return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
+def generate_password_reset_link(user):
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = PasswordResetTokenGenerator().make_token(user)
+    return f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
+
+@api_view(['POST'])
+def request_password_reset(request):
+    # Retrieve the username from the request
+    username = request.data.get('username')
+    
+    try:
+        # Find the user associated with the username (could be Client, BusinessSubject, or User)
+        user = User.objects.get(username=username)  # Use Client or BusinessSubject as necessary
+        
+        # Generate the password reset link (contains unique token and user identifier)
+        reset_url = generate_password_reset_link(user)
+        
+        # Send the reset email with the generated link
+        send_mail(
+            subject="Password Reset Request",
+            message=f"Click the link to reset your password: {reset_url}",
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],  # Send to the user's email
+        )
+
+        return Response({"message": "Password reset link sent successfully."}, status=200)
+
+    except User.DoesNotExist:
+        # If no user found for that username, return error (optional)
+        return Response({"error": "No user found with this username."}, status=400)
+
+
+
+@api_view(['POST'])
+def reset_password(request, uidb64, token):
+    try:
+        # Decode the UID
+        uid = urlsafe_base64_decode(uidb64).decode()
+
+        # Attempt to find a matching Client
+        try:
+            user = Client.objects.get(pk=uid)
+        except Client.DoesNotExist:
+            # Attempt to find a matching BusinessSubject if not found in Client
+            user = BusinessSubject.objects.get(pk=uid)
+
+        # Validate the token
+        if PasswordResetTokenGenerator().check_token(user, token):
+            # Update password
+            new_password = request.data.get('password')
+            user.set_password(new_password)  # Ensure your models use Django's UserManager
+            user.save()
+            return Response({"message": "Password reset successful."}, status=200)
+        else:
+            return Response({"error": "Invalid or expired token."}, status=400)
+
+    except (Client.DoesNotExist, BusinessSubject.DoesNotExist, ValueError, TypeError):
+        return Response({"error": "Invalid reset link."}, status=400)
 
 
 @api_view(['GET'])
