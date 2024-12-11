@@ -59,7 +59,8 @@ const EditUserProfile = () => {
     }, [id]);
     
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (e) => {
+    e.preventDefault();
     await axios.put('http://localhost:8000/api/client/'+id.pk+'/edit/', userData, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
@@ -79,14 +80,15 @@ const EditUserProfile = () => {
   });
   
 
-  const handlePasswordUpdate =async (password) => {
+  const handlePasswordUpdate =async (e, password) => {
+    e.preventDefault();
     if (password.new_password===password.old_password){
       alert("Nova lozinka se podudara sa starom. Odaberite drugu lozinku!");
     }
     else if (password.new_password!==password.confirm_password){
       alert("Nova lozinka se ne podudara sa potvrdom");}
     else {
-      await axios.put('http://localhost:8000/api/client/'+id+'/edit/', password, {
+      await axios.put('http://localhost:8000/api/client/'+id.pk+'/edit/', password, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       })
       .then((response) => {
@@ -110,11 +112,6 @@ const EditUserProfile = () => {
     .catch((error)=>{
       console.error("There was an error updating the data:", error);
       alert("Doslo je do greške prilikom deaktivacije...");});
-  };
-  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handleUpdate();
   };
 
   const handleLogout = () => {
@@ -152,7 +149,7 @@ const EditUserProfile = () => {
                   <AddPhoto className="new-event-card" userId={id} />
                   <IoIosCloseCircle className="close-icon-orange" onClick={()=>toggleDialog()}/>
                 </div>  : null}
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleUpdate}>
             <label className="EditProfileLabel">Ime</label>
             <input
               type="name"
@@ -189,12 +186,11 @@ const EditUserProfile = () => {
               className="EditProfileButton"
               id="EditNameEmailButton"
               type="submit"
-              onClick={() => handleUpdate()}
             >
               Sačuvaj
             </button>
           </form>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={(e)=>handlePasswordUpdate(e,password)}>
           <label className="EditProfileLabel">Stara lozinka</label>
           <input
             type="password"
@@ -221,8 +217,7 @@ const EditUserProfile = () => {
           <button 
             className="EditProfileButton" 
             id="PromijeniLozinkuButton"
-            type="submit"
-            onClick={()=>handlePasswordUpdate(password)}>
+            type="submit">
             Promijeni lozinku
           </button>
           </form>
