@@ -6,14 +6,15 @@ import FavoriteCard from '../components/FavoriteCard';
 import MessageCard from '../components/MessageCard';
 import ActivityCard from '../components/ActivityCard';
 import './UserProfile.css';
+import './BusinessSubjectProfile.css';
 import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
 import CreatorImg from "../images/user.svg";
-import EditEventCard from "../components/EditEventCard.js";
+import NewAdvertisementCard from "../components/NewAdvertisementCard.js";
 import { CiSettings } from "react-icons/ci";
 import { IoIosCloseCircle } from "react-icons/io";
 {/*proba za sponzorisane dogadjaje */}
-const UserProfile = () => {
+const BusinessSubjectProfile = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   const toggleFloatingWindow = () => {
@@ -30,12 +31,11 @@ const UserProfile = () => {
     "id": -1,
     "type": ''
   });
-  const [userData, setUserData] = useState({
-    "first_name": 'Ime',
-    "last_name": 'Prezime',
-    "username": 'username',
-    "email": '',
-    "profile_picture": null
+  const [subjectData, setSubjectData] = useState({
+    "nameSportOrganization": "Sport organization",
+    "profile_picture": null,
+    "description": "",
+    "email": "email",
   });
 
   useEffect(() => {
@@ -44,8 +44,8 @@ const UserProfile = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
           .then((request) => {
-            if(request.data.type==='BusinessSubject')
-              window.location.replace("/userprofile1");
+            if(request.data.type==='Client')
+              window.location.replace("/userprofile");
             setID(request.data);
           })
           .catch((error) => {
@@ -54,19 +54,6 @@ const UserProfile = () => {
           {/*window.location.replace("/login");*/}
           });
         };
-      const fetchID = async ()=> {
-      await axios.get('http://localhost:8000/api/get-client-id/', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      })
-        .then((request) => {
-          setID(request.data);
-        })
-        .catch((error) => {
-          console.error("Error getting ID: ",error);
-          alert("Neuspjesna autorizacija. Molimo ulogujte se ponovo... ");
-        {/*window.location.replace("/login");*/}
-        });
-      };
 
       fetchIDType();
     },[]);
@@ -74,9 +61,9 @@ const UserProfile = () => {
     useEffect(() => {
 
       const fetchUserData = async ()=> {
-      await axios.get('http://localhost:8000/api/client/'+id.id+'/')
+      await axios.get('http://localhost:8000/api/business-subject/'+id.id+'/')
         .then(response => {
-          setUserData(response.data);
+          setSubjectData(response.data);
         })
         .catch(error => {
           console.error('Error fetching data: ', error);
@@ -98,7 +85,7 @@ const UserProfile = () => {
     setLoading(true);
     try {
       switch (activeTab) {
-        case "events":
+        case "events":  //todo
           const eventsResponse = await axios.get('http://localhost:8000/clients/'+id.id+'/activities/');
           setEventsData(eventsResponse.data);
           break;
@@ -141,13 +128,13 @@ const UserProfile = () => {
       </header>
       <div className="userprofile-body">
         <div className="userprofile-header">
-          <img src={userData.profile_picture!==null ? userData.profile_picture: CreatorImg} 
+          <img src={subjectData?.profile_picture!==null ? subjectData.profile_picture : CreatorImg} 
           className="userprofilepreview-image" alt="Creator" />
           <div className='name-surname-username'>
-            <h0 className="userprofile-name">{userData.first_name } {userData.last_name}</h0>
-            <h1 className="userprofile-subtitle">@{userData.username}</h1>
+            <h0 className="userprofile-name">{subjectData.nameSportOrganization }</h0>
+            <h1 className="userprofile-subtitle">{subjectData.description}</h1>
           </div>
-          <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/edituserprofile')} />
+          <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/edituserprofile1')} />
         </div>
           <div>
             <nav className="profile-tabs">
@@ -185,7 +172,7 @@ const UserProfile = () => {
                   <div className="events-section">
                   <div className="scroll-bar-user-profile">
                   {Array.isArray(eventsData) && eventsData.map((activity) => (
-                    <ActivityCard key={activity.id} activity={activity} />
+                    <SponsoredEventCard key={activity.id} event={activity} />
                   ))}
                 </div>
                 { (id.pk!==-1) ? (
@@ -195,8 +182,8 @@ const UserProfile = () => {
                   ) : null }
                 { isVisible ? (
                 <div>
-                  <EditEventCard user={userData} pk={id} className="new-event-card" />
-                  <IoIosCloseCircle className="close-icon" onClick={()=>toggleFloatingWindow()}/>
+                  <NewAdvertisementCard user={subjectData} pk={id.id} className="new-event-card" />
+                  <IoIosCloseCircle className="close-icon-new-advertisement" onClick={()=>toggleFloatingWindow()}/>
                 </div>
                 ): null }
               </div>
@@ -235,4 +222,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default BusinessSubjectProfile;

@@ -12,6 +12,7 @@ import UserProfile from "./pages/UserProfile";
 import RegisterRekreativac from "./pages/RegisterRekreativac";
 import RegisterPoslovni from "./pages/RegisterPoslovni";
 import EditEventCard from "./components/EditEventCard";
+import BusinessSubjectProfile from "./pages/BusinessSubjectProfile";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("pocetna");
@@ -38,8 +39,8 @@ function App() {
       setCurrentPage("registerRekreativac");
     }else if (path === "/registerPoslovni") {
       setCurrentPage("registerPoslovni");
-    } else if (path=== "/probni"){
-        setCurrentPage("probni");
+    } else if (path=== "/userprofile1"){
+        setCurrentPage("userprofile1");
     }else {
       setCurrentPage("pocetna");
     }
@@ -61,7 +62,7 @@ function App() {
           {currentPage === "userprofile" && <UserProfile />}
           {currentPage === "registerRekreativac" && <RegisterRekreativac />}
           {currentPage === "registerPoslovni" && <RegisterPoslovni />}
-          {currentPage === "probni" && <EditEventCard />}
+          {currentPage === "userprofile1" && <BusinessSubjectProfile />}
         </div>
       </header>
     </div>
