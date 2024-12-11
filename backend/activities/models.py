@@ -38,8 +38,9 @@ class Activities(models.Model):
         self.NumberOfParticipants -= 1
         self.save()
 
-    #def __str__(self):
-    #    return self.description   
+    def __str__(self):
+        client_username = self.client.username if self.client else "No client"
+        return self.description   
     
     
     

@@ -138,3 +138,15 @@ def register_to_activity(request, activity_id):
         )
     except ValidationError as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+@api_view(['GET'])
+def activities_by_username(request, username):
+    """
+    Pretražuje aktivnosti na osnovu username-a korisnika.
+    """
+    activities = Activities.objects.filter(client__username__icontains=username)
+    if activities.exists():
+        serializer = ActivitiesSerializer(activities, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response({'error': 'No activities found for this username'}, status=status.HTTP_404_NOT_FOUND)
