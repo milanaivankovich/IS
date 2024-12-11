@@ -127,11 +127,11 @@ const Tereni = () => {
   };
 
   // Klik na marker
-  const handleMarkerClick = (field) => {
-    setSelectedField(field);
-    fetchFilteredAdvertisements(field, selectedDate);
-    fetchFilteredActivities(field, selectedDate);
-  };
+const handleMarkerClick = (field) => {
+  setSelectedField(field); 
+  fetchFilteredAdvertisements(field, selectedDate); 
+  fetchFilteredActivities(field, selectedDate); 
+};
 
   // Promena datuma
   const handleDateChange = (date) => {
@@ -141,7 +141,7 @@ const Tereni = () => {
   };
 
   //Ikona za marker
-  const sportIcon = L.icon({
+  const markerIcon = L.icon({
     iconUrl: iconPath, 
     iconSize: [25, 25],
     iconAnchor: [12.5, 12.5],
@@ -155,6 +155,10 @@ const Tereni = () => {
     fetchFilteredAdvertisements(null, null);
     fetchFilteredActivities(null, null);
   };
+
+  useEffect(() => {
+    handleDateReset(); 
+  }, []); 
 
   useEffect(() => {
     fetchFields();
@@ -174,7 +178,7 @@ const Tereni = () => {
       <section className="map-calendar-section">
         <h2 className="section-title">MAPA I KALENDAR</h2>
         <p className="section-subtitle">
-          Odaberite datum i lokaciju da biste pretražili reklame i aktivnosti
+          Odaberite lokaciju i datum da biste pretražili reklame i aktivnosti
         </p>
         <div className="map-calendar-container">
           <MapContainer center={[44.7722, 17.191]} zoom={13} className="map-container">
@@ -187,7 +191,7 @@ const Tereni = () => {
               <Marker
                 key={field.id}
                 position={[field.latitude, field.longitude]}
-                icon={sportIcon} 
+                icon={markerIcon} 
                 eventHandlers={{ click: () => handleMarkerClick(field) }}
               >
                 <Popup>
@@ -208,10 +212,7 @@ const Tereni = () => {
             onChange={handleDateChange}
             value={selectedDate}
           />
-
-          <button onClick={handleDateReset} className="reset-date-button">
-            Poništi datum i lokaciju
-          </button>
+          <button onClick={handleDateReset} className="reset-date-button"></button>
         </div>
       </section>
 
