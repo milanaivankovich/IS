@@ -168,6 +168,47 @@ def get_client(request, pk):
 
 
 @api_view(['GET'])
+def get_user_type_and_id(request):    
+    """
+    Determines whether the provided token belongs to a Client or BusinessSubject
+    and returns the user's primary key (id) and type ('Client' or 'BusinessSubject').
+    """
+    # Retrieve the token from the Authorization header
+    token = request.headers.get('Authorization')  # Expected format: "Token <your_token>"
+    
+    if not token:
+        return Response({"error": "Authentication token required"}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    try:
+        # Extract the actual token key from the "Token <token>" format
+        token_key = token.split(' ')[1]  # Assumes "Token <token>"
+        
+        # Check if the token is for a Client
+        try:
+            client_token = ClientToken.objects.get(key=token_key)
+            user = client_token.client  # Retrieve the associated user
+            return Response({"id": user.pk, "type": "Client"}, status=status.HTTP_200_OK)
+        except ClientToken.DoesNotExist:
+            pass  # Token is not for a Client
+        
+        # Check if the token is for a BusinessSubject
+        try:
+            business_token = BusinessSubjectToken.objects.get(key=token_key)
+            user = business_token.business_subject  # Retrieve the associated user
+            return Response({"id": user.pk, "type": "BusinessSubject"}, status=status.HTTP_200_OK)
+        except BusinessSubjectToken.DoesNotExist:
+            pass  # Token is not for a BusinessSubject
+        
+        # If no token match is found, return an error
+        return Response({"error": "Invalid token or token expired"}, status=status.HTTP_401_UNAUTHORIZED)
+
+    except IndexError:
+        return Response({"error": "Invalid token format"}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
 def get_business_subject(request, pk):
     try:
         user = BusinessSubject.objects.get(pk=pk)
@@ -386,18 +427,8 @@ def logout_user(request):
     except Token.DoesNotExist:
         return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET'])
-def get_user_type_and_id(user):
-    """
-    Returns the primary key (id) and type of the given user.
-    The type will be either 'Client' or 'BusinessSubject'.
-    """
-    if isinstance(user, Client):
-        return {"id": user.pk, "type": "Client"}
-    elif isinstance(user, BusinessSubject):
-        return {"id": user.pk, "type": "BusinessSubject"}
-    else:
-        return {"error": "Unknown user type"}        
+
+    
 
 def generate_password_reset_link(user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
