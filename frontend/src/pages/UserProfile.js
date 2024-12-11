@@ -74,6 +74,8 @@ const UserProfile = () => {
     }, [id]);
 
     const [eventsData, setEventsData] = useState([]);
+    const [selectionTitle, setSelectionTitle] = useState('Događaji');
+    const [selectionSubtitle,setSelectionSubtitle] = useState('Događaji koje je kreirao korisnik');
     //napraviti chain sa fetch
   // Funkcija za dohvaćanje podataka za različite kartice
   useEffect(() => {
@@ -108,7 +110,6 @@ const UserProfile = () => {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-      setSelectionSubtitle("Nema podataka");
     } finally {
       setLoading(false);
     }
@@ -117,9 +118,6 @@ const UserProfile = () => {
   
     fetchData();
   }, [id, activeTab]);
-
-  const [selectionTitle, setSelectionTitle] = useState('Događaji');
-  const [selectionSubtitle,setSelectionSubtitle] = useState('Događaji koje je kreirao korisnik');
 
   return (
     <body>
@@ -140,7 +138,8 @@ const UserProfile = () => {
             <nav className="profile-tabs">
           <button className={`tab-button ${activeTab === "events" ? "active" : ""}`} 
           onClick={() => {
-            setSelectionTitle('Događaji'); setSelectionSubtitle('Događaji koje je kreirao korisnik');
+            setSelectionTitle('Događaji'); 
+            setSelectionSubtitle('Događaji koje je kreirao korisnik');
             setActiveTab("events");
           }}>Događaji</button>
           <button className={`tab-button ${activeTab === "favorites" ? "active" : ""}`} onClick={() => 
@@ -169,7 +168,7 @@ const UserProfile = () => {
               <div>
                 {activeTab === "events" && (
                   <div className="events-section">
-                  <div className="event-cards-container">
+                  <div className="scroll-bar-user-profile">
                   {Array.isArray(eventsData) && eventsData.map((activity) => (
                     <ActivityCard key={activity.id} activity={activity} />
                   ))}
@@ -189,33 +188,27 @@ const UserProfile = () => {
             )}
 
             {activeTab === "favorites" && (
-              <div className="favorites-section">
-                <div className="favorites-cards-container">
+                <div className="scroll-bar-user-profile">
                   {favorites.map((favorite) => (
                     <FavoriteCard key={favorite.id} title={favorite.title} description={favorite.description} />
                   ))}
                 </div>
-              </div>
             )}
 
             {activeTab === "messages" && (
-              <div className="messages-section">
                 <div className="messages-cards-container">
                   {messages.map((message) => (
                     <MessageCard key={message.id} sender={message.sender} content={message.content} />
                   ))}
                 </div>
-              </div>
             )}
 
             {activeTab === "activity" && (
-              <div className="activity-section">
-                <div className="activity-cards-container">
+                <div className="scroll-bar-user-profile">
                   {activityHistory.map((activity) => (
-                    <ActivityCard key={activity.id} description={activity.description} date={activity.date} />
+                    <ActivityCard key={activity.id} activity={activity} />
                   ))}
                 </div>
-              </div>
             )}
           </div>
         )}

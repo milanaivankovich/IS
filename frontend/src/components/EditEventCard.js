@@ -9,15 +9,18 @@ import Select from 'react-select';
 const EditEventCard = ({user, pk}) => {
 
   const [fields, setFields] = useState([]);
-  const [options, setOptions] = useState([]);
-  
+  const [optionsLocation, setOptionsLocation] = useState([]);
+  const [optionsSport, setOptionsSport] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedSport, setSelectedSport] = useState(null);
+
 useEffect(() => {
   const searchFields = async () => {
     if (fields.length=== 0){
     await axios.get('http://localhost:8000/api/fields/')
       .then((response) => {
         setFields(response.data);
-        setOptions(response.data.map(item => ({
+        setOptionsLocation(response.data.map(item => ({
           value: item.id,
           label: item.location+' ('+ item.sports.map(sport=>sport.name).join(', ')+')',
         })));
@@ -33,8 +36,16 @@ useEffect(() => {
 
     searchFields();
 },[]);
+/*
+useEffect(() => {
+  const searchSports =
+    fields.find((field)=>field.id===parseInt(selectedLocation.id))?.(sports.name);
+    setOptionsSport(searchSports.map((item)=>{value: 1,
+      name
 
-  const [selectedOption, setSelectedOption] = useState(null);
+    })));
+  },[selectedLocation]);
+  */
 
   const [eventData, setEventData] = useState({
         "id": 10,
@@ -48,7 +59,7 @@ useEffect(() => {
   });
 
   const createNew = async () => {
-    setEventData(prevData=>({...prevData, field: selectedOption.value }));
+    setEventData(prevData=>({...prevData, field: selectedLocation.value }));
     await axios.post('http://localhost:8000/api/activities/add/', eventData, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
@@ -88,7 +99,7 @@ useEffect(() => {
       <header className="EditEventCard-Header" />
       <div className="EditEventCard-body">
         <div className="EditEventCard-user">
-          <img src={CreatorImg} className="creator-image" alt="Creator" />
+          <img src={user.profile_picture!==null ? user.profile_picture : CreatorImg} className="creator-image" alt="Creator" />
           <div className="edit-event-card-header">
             <input 
                 className="UnosInformacijaDogadjaja"
@@ -118,9 +129,19 @@ useEffect(() => {
         <label className="EditEventLabel"> Lokacija: </label>
         <Select className='editeventcard-selectlocation'
         styles={colourOptions}
-        options={options}
-        onChange={setSelectedOption}
-        placeholder="Unesi naziv terena..."
+        options={optionsLocation}
+        onChange={setSelectedLocation}
+        placeholder="Odaberi lokaciju terena..."
+        isClearable
+        required
+        />
+
+        <label className="EditEventLabel"> Sport: </label>
+        <Select className='editeventcard-selectlocation'
+        styles={colourOptions}
+        options={optionsSport}
+        onChange={setSelectedSport}
+        placeholder="Odaberi sport..."
         isClearable
         required
         />
@@ -137,7 +158,7 @@ useEffect(() => {
         <input 
          className="UnosInformacijaDogadjaja"
          type="number"
-         placeholder="Unesi broj..."
+         placeholder="Unesi broj osoba..."
          min={0}
          onChange={(e) => setEventData(prevData=>({...prevData, NumberOfParticipants: e.target.value }))}
          required />
