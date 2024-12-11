@@ -9,6 +9,7 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from datetime import datetime
+from django.core.exceptions import ValidationError
 
 
 class ActivitiesCreateView(CreateView):
@@ -122,3 +123,18 @@ def get_type_of_sport_by_field_id(request, field_id):
         return Response({'type_of_sport': field.type_of_sport})
     except Field.DoesNotExist:
         return Response({'error': 'Field not found'}, status=404)
+
+@api_view(['POST'])
+def register_to_activity(request, activity_id):
+    """
+    Smanjuje broj učesnika za aktivnost ako su mjesta dostupna.
+    """
+    activity = get_object_or_404(Activities, id=activity_id)
+    try:
+        activity.register_participant()
+        return Response(
+             {'message': 'Uspješno ste se prijavili na aktivnost!', 'remaining_slots': activity.NumberOfParticipants},
+            status=status.HTTP_200_OK
+        )
+    except ValidationError as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

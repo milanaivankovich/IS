@@ -22,5 +22,8 @@ urlpatterns = [
     path('fields/<int:field_id>/type_of_sport/', views.get_type_of_sport_by_field_id, name='get_type_of_sport_by_field_id'),
     # Ažuriranje aktivnosti
     path('activities/update/<int:activity_id>/', views.update_activity, name='update_activity'),
+    #Obrada broja ucesnika u aktivnosti
+    path('activities/<int:activity_id>/register/', views.register_to_activity, name='register_to_activity'),
+
 
 ]
