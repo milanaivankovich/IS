@@ -386,10 +386,24 @@ def logout_user(request):
     except Token.DoesNotExist:
         return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def get_user_type_and_id(user):
+    """
+    Returns the primary key (id) and type of the given user.
+    The type will be either 'Client' or 'BusinessSubject'.
+    """
+    if isinstance(user, Client):
+        return {"id": user.pk, "type": "Client"}
+    elif isinstance(user, BusinessSubject):
+        return {"id": user.pk, "type": "BusinessSubject"}
+    else:
+        return {"error": "Unknown user type"}        
+
 def generate_password_reset_link(user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = PasswordResetTokenGenerator().make_token(user)
     return f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
+
 @api_view(['POST'])
 def request_password_reset(request):
     # Get the username from the request data

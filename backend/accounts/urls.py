@@ -50,6 +50,9 @@ urlpatterns = [
     path('api/request-password-reset/', views.request_password_reset, name='request_password_reset'),
     path('api/reset-password/<str:uidb64>/<str:token>/', views.reset_password, name='reset_password'),
 
+    path('api/get-user-type-and-id/', views.get_user_type_and_id, name='get-user-type-and-id'),
+
+
 
     
     # Include the router URLs
