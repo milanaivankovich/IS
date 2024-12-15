@@ -1,0 +1,52 @@
+.teren-profil {
+  padding: 20px;
+}
+
+h1 {
+  text-align: left;
+  margin-bottom: 50px;
+  margin-left: 70px;
+  font-size: 30px;
+  color: #333; /* Tamno siva */
+}
+
+.profile-content {
+  display: flex; 
+  align-items: flex-start; 
+}
+
+.image-container {
+  width: 60%; 
+}
+
+.image-container img {
+  width: 100%; 
+  height: auto;
+  border-radius: 10px;
+  margin-left: -200px;
+}
+
+.info-container {
+  width: 70%; 
+  color: #333; /* Tamno siva */
+}
+
+.info-container p {
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.info-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.info-container li {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.info-container strong {
+  font-weight: bold;
+  color: #000000; /* Tamno siva */
+}

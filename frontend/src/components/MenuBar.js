@@ -12,20 +12,20 @@ const MenuBar = ({ variant, search }) => {
         <img src={logo} className="logo" />
         <ul className="menu">
           <li className="menu-item">
-            <a href="pocetna">Početna</a>
+            <a href="/pocetna">Početna</a>
           </li>
           <li className="menu-item">
-            <a href="tereni">Tereni</a>
+            <a href="/tereni">Tereni</a>
           </li>
           <li className="menu-item">
-            <a href="dogadjaji">Događaji</a>
+            <a href="/dogadjaji">Događaji</a>
           </li>
         </ul>
       </div>
       {variant.includes("registered") && (
         <div className="menu-right">
           {search && <SearchComponent />}
-          <a href="userprofile">
+          <a href="/userprofile">
             <img
               src={profileImage}
               alt="Circular Image"

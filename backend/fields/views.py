@@ -62,3 +62,11 @@ def field_sports(request, field_id):
     except Field.DoesNotExist:
         return Response(status=404)
     
+@api_view(['GET'])
+def field_by_id(request, id):
+    try:
+        field = Field.objects.get(id=id)  
+        serializer = FieldSerializer(field) 
+        return Response(serializer.data)
+    except Field.DoesNotExist:
+        return Response({"error": "Field not found"}, status=status.HTTP_404_NOT_FOUND)

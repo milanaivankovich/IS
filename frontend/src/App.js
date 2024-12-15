@@ -13,9 +13,11 @@ import RegisterRekreativac from "./pages/RegisterRekreativac";
 import RegisterPoslovni from "./pages/RegisterPoslovni";
 import EditEventCard from "./components/EditEventCard";
 import BusinessSubjectProfile from "./pages/BusinessSubjectProfile";
+import TerenProfil from "./pages/TerenProfil";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("pocetna");
+  const [terenId, setTerenId] = useState(null); 
 
   useEffect(() => {
     const path = window.location.pathname;
@@ -35,18 +37,23 @@ function App() {
       setCurrentPage("login1");
     } else if (path === "/userprofile") {
       setCurrentPage("userprofile");
-    }else if (path === "/registerRekreativac") {
+    } else if (path === "/registerRekreativac") {
       setCurrentPage("registerRekreativac");
-    }else if (path === "/registerPoslovni") {
+    } else if (path === "/registerPoslovni") {
       setCurrentPage("registerPoslovni");
-    } else if (path=== "/userprofile1"){
-        setCurrentPage("userprofile1");
-    }else {
+    } else if (path === "/userprofile1") {
+      setCurrentPage("userprofile1");
+    } else if (path.includes("/teren-profil/")) {
+      setCurrentPage("teren-profil");
+      const id = path.split("/")[2]; 
+      if (id) {
+        setTerenId(id); 
+      }
+    } else {
       setCurrentPage("pocetna");
     }
   }, []);
 
- 
   return (
     <div className="App">
       <header className="App-header">
@@ -63,6 +70,7 @@ function App() {
           {currentPage === "registerRekreativac" && <RegisterRekreativac />}
           {currentPage === "registerPoslovni" && <RegisterPoslovni />}
           {currentPage === "userprofile1" && <BusinessSubjectProfile />}
+          {currentPage === "teren-profil" && <TerenProfil id={terenId} />} 
         </div>
       </header>
     </div>

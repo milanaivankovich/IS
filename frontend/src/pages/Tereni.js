@@ -133,6 +133,11 @@ const handleMarkerClick = (field) => {
   fetchFilteredActivities(field, selectedDate); 
 };
 
+// Klik na sliku
+const handleImageClick = (fieldId) => {
+  window.location.href = `/teren-profil/${fieldId}`;
+};
+
   // Promena datuma
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -202,6 +207,7 @@ const handleMarkerClick = (field) => {
                     src={field.image}
                     alt={`Slika terena ${field.name}`}
                     style={{ width: "100%", height: "auto", maxWidth: "200px" }}
+                    onClick={() => handleImageClick(field.id)}
                   />
                 </Popup>
               </Marker>

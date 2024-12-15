@@ -70,5 +70,23 @@
         "business_subject_id": 3,
         "field_id": 3,
         "sport_id": 2
+    },
+    {
+        "id": 9,
+        "name": "oglas10",
+        "description": "opia10opis10",
+        "date": "2024-12-19",
+        "business_subject_id": 3,
+        "field_id": 3,
+        "sport_id": 2
+    },
+    {
+        "id": 10,
+        "name": "oglas11",
+        "description": "opis11opis11",
+        "date": "2025-02-06",
+        "business_subject_id": 3,
+        "field_id": 5,
+        "sport_id": 3
     }
 ]
