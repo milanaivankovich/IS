@@ -86,7 +86,7 @@ const BusinessSubjectProfile = () => {
     try {
       switch (activeTab) {
         case "events":  //todo
-          const eventsResponse = await axios.get('http://localhost:8000/clients/'+id.id+'/activities/');
+          const eventsResponse = await axios.get('http://localhost:8000/api/advertisements/businesssubject/'+id.id+'/');
           setEventsData(eventsResponse.data);
           break;
         case "favorites":

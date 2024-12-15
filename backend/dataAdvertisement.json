@@ -88,5 +88,32 @@
         "business_subject_id": 3,
         "field_id": 5,
         "sport_id": 3
+    },
+    {
+        "id": 11,
+        "name": "oglas20",
+        "description": "opis20opis20",
+        "date": "2024-12-15",
+        "business_subject_id": 2,
+        "field_id": 2,
+        "sport_id": 2
+    },
+    {
+        "id": 12,
+        "name": "oglas21",
+        "description": "opis21opis21",
+        "date": "2024-12-27",
+        "business_subject_id": 3,
+        "field_id": 3,
+        "sport_id": 1
+    },
+    {
+        "id": 13,
+        "name": "oglas22",
+        "description": "opis22opis22",
+        "date": "2024-12-17",
+        "business_subject_id": 3,
+        "field_id": 3,
+        "sport_id": 1
     }
 ]

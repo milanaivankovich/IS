@@ -168,6 +168,7 @@ const handleImageClick = (fieldId) => {
   useEffect(() => {
     fetchFields();
     fetchFilteredAdvertisements(null,null);
+    fetchFilteredActivities(null,null);
   }, []);
 
   useEffect(() => {

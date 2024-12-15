@@ -123,3 +123,13 @@
 .EventCard-button:hover{
     color: #e64a19;
 }
+
+.scroll-bar-user-profile {
+    display: flex;
+    justify-content: space-between;
+    overflow-x: auto;
+}
+
+.scroll-bar-user-profile > * {
+    flex-shrink: 0;
+}
