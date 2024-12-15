@@ -120,3 +120,12 @@ def get_advertisements_by_business_subject(request, business_subject_id):
         return Response(serializer.data)
     else:
         return Response({'error': 'No advertisements found for this business subject'}, status=404)
+    
+@api_view(['GET'])
+def advertisements_by_field(request, field):
+    try:
+        reviews = Advertisement.objects.filter(field=field)
+        serializer = AdvertisementSerializer(reviews, many=True)
+        return Response(serializer.data)
+    except Advertisement.DoesNotExist:
+        return Response(status=404)

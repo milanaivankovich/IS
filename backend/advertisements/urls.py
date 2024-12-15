@@ -14,4 +14,5 @@ urlpatterns = [
     path('api/advertisement/businesssubject/<int:business_subject_id>/', get_business_subject_by_id, name='get_business_subject_by_id'), #GET business subject by id
     path('api/advertisement/sports/<int:field_id>/', get_sports_by_field_id, name='get_sports_by_field_id'), #GET type_of_sports by field id
     path('api/advertisements/businesssubject/<int:business_subject_id>/', get_advertisements_by_business_subject, name='get_advertisements_by_business_subject'), #GET business subject by id
+    path('api/advertisements/field/<int:field>/', views.advertisements_by_field, name='advertisements_by_field'), #GET advertisements by field
 ] 
