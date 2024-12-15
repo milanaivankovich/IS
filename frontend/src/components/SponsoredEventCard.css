@@ -126,8 +126,8 @@
 
 .scroll-bar-user-profile {
     display: flex;
-    justify-content: space-between;
     overflow-x: auto;
+    gap: 10px;
 }
 
 .scroll-bar-user-profile > * {
