@@ -162,6 +162,7 @@ const handleMarkerClick = (field) => {
 
   useEffect(() => {
     fetchFields();
+    fetchFilteredAdvertisements(null,null);
   }, []);
 
   useEffect(() => {

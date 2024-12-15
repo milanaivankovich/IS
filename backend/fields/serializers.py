@@ -4,7 +4,7 @@ from .models import Field, Sport
 class SportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sport
-        fields = ['name']  
+        fields = ['id', 'name']  
 
 class FieldSerializer(serializers.ModelSerializer):
     sports = SportSerializer(many=True)  

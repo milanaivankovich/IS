@@ -40,7 +40,7 @@
     /* media */
 
     width: 344px;
-    height: 194px;
+    height: 120px;
 
     background: #F15A24;
 
@@ -58,7 +58,7 @@
     max-height: 159px ;
 }
 .SponsoredEventCard-body {
-    margin: 25px;
+    margin: 25px; 
 }
 .SponsoredEventCard-user{
     /* card header */

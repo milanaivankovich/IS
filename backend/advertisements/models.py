@@ -3,8 +3,9 @@ from django.core.exceptions import ValidationError
 
 class Advertisement(models.Model):
     id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100, null=True)
     description = models.CharField(max_length=200)
-    date = models.DateField()
+    date = models.DateTimeField()
     business_subject = models.ForeignKey('accounts.BusinessSubject', on_delete=models.CASCADE, null=True)
     field = models.ForeignKey('fields.Field', on_delete=models.CASCADE, null=True)
     sport = models.ForeignKey('fields.Sport', on_delete=models.CASCADE, null=True)

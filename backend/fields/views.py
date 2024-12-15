@@ -1,7 +1,7 @@
 from rest_framework.response import Response 
 from rest_framework.decorators import api_view 
 from .models import Field, Sport
-from .serializers import FieldSerializer
+from .serializers import FieldSerializer, SportSerializer
 from rest_framework.views import APIView
 from rest_framework import status
 from django.http import JsonResponse
@@ -37,3 +37,28 @@ def get_sport_name(request, sport_id):
         return Response({'sports': sport.name})
     except Sport.DoesNotExist:
         return Response({'error': 'Field not found'}, status=404)
+    
+@api_view(['GET'])
+def get_sport_id(request, sport_name):
+    try:
+        sport = Sport.objects.get(name=sport_name)
+        return Response({'sports': sport.id})
+    except Sport.DoesNotExist:
+        return Response({'error': 'Field not found'}, status=404)
+    
+@api_view(['GET'])
+def getSports(request):
+    sports = Sport.objects.filter()
+    serializer = SportSerializer(sports, context={'request': request}, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def field_sports(request, field_id):
+    try:
+        field = Field.objects.get(id=field_id)
+        sports = field.sports.all()
+        serializer = SportSerializer(sports, many=True)
+        return Response({"sports": serializer.data})
+    except Field.DoesNotExist:
+        return Response(status=404)
+    

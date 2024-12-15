@@ -3,10 +3,16 @@ import "./SponsoredEventCard.css";
 import CreatorImg from "../images/user.svg";
 
 const SponsoredEventCard = ({ event }) => {
-  const { description, date, field, business_subject, sport } = event;
+  const { name, date, field, business_subject, sport } = event;
   const [location, setLocation] = useState("");
-  const [name, setName] = useState("");
+  const [name1, setName] = useState("");
   const [sports, setSport] = useState("");
+
+  const formattedDate = new Date(date);
+
+formattedDate.setHours(formattedDate.getHours() - 1);
+const dateOnly = formattedDate.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
+const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', minute: '2-digit' }); // Format: HH:MMFormat: HH:MM
 
       // Dohvaćanje lokacije na temelju field ID-a
       useEffect(() => {
@@ -68,13 +74,14 @@ const SponsoredEventCard = ({ event }) => {
         <div className="SponsoredEventCard-user">
           <img src={CreatorImg} className="creator-image" alt="Creator" />
           <div className="Naslov">
-            {description}
-            <div className="createdBy"> by @{name}</div>
+            {name}
+            <div className="createdBy"> by @{name1}</div>
           </div>
         </div>
         <div className="Opis">
-          <p><strong>Datum:</strong> {date}</p>
           <p><strong>Lokacija:</strong> {location}</p>
+          <p><strong>Datum:</strong> {dateOnly}</p>
+          <p><strong>Vrijeme:</strong> {timeOnly}</p>
           <p><strong>Sport:</strong> {sports}</p>
         </div>
         <div className="EventCard-buttons">
