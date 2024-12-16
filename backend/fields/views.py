@@ -70,3 +70,4 @@ def field_by_id(request, id):
         return Response(serializer.data)
     except Field.DoesNotExist:
         return Response({"error": "Field not found"}, status=status.HTTP_404_NOT_FOUND)
+    

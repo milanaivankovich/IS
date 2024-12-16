@@ -7,6 +7,8 @@ import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
 import { CiSettings } from "react-icons/ci";
 import './TerenProfil.css';
+import NewReviewCard from '../components/NewReviewCard.js';
+import { IoIosCloseCircle } from "react-icons/io";
 
 const TerenProfil = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -24,6 +26,7 @@ const TerenProfil = () => {
   const [id, setId]=useState({
     "id": -1
   });
+  
   const [fieldData, setFieldData] = useState({
     "id": -1,
     "location": "",
@@ -89,8 +92,6 @@ const TerenProfil = () => {
     fetchData();
   }, [id]); 
   
-  
-  
   return (
     <body>
       <header className="userprofile-menu">
@@ -144,17 +145,31 @@ const TerenProfil = () => {
             )}
 
             {activeTab === "reviews" && (
-              <div>
-                {reviews.map((review) => (
-                <div key={review.id}>
-                <p>Rating: {review.rating}</p>
-                <p>Description: {review.description}</p>
-                <p>Client: {review.client}</p>
-                <p>Field: {review.field}</p>
+             <div className="activity-section">
+               <div className="activity-cards-container">
+              {reviews.map((review) => (
+              <div key={review.id} className="activity-card">
+                <p className="size"><strong>RECENZIJA</strong></p>
+                <p className="size">Ocjena: {review.rating}</p>
+                <p className="size">Komentar: {review.description}</p>
+                <p className="size">Datum: {review.date.split('T')[0]}</p>
+                <p className="size">Vrijeme: {review.date.split('T')[1].split(':').slice(0, 2).join(':')}</p>
+                </div>
+                ))}
               </div>
-              ))}
-               </div>
-            )}  
+              { (id.pk!==-1) ? (
+                  <button className="create-event-button" onClick={()=>toggleFloatingWindow()}>
+                    + Nova recenzija
+                  </button> 
+                  ) : null }
+                { isVisible ? (
+                <div>
+                  <NewReviewCard user={fieldData} pk={id.id} className="new-event-card" />
+                  <IoIosCloseCircle className="close-icon-new-advertisement" onClick={()=>toggleFloatingWindow()}/>
+                </div>
+                ): null }
+            </div>
+           )}
 
             {activeTab === "information" && (
             <div className="information-container">
@@ -163,9 +178,9 @@ const TerenProfil = () => {
              </div>
             <div>
              <p className="information-text">Lokacija: {information.location}</p>
-             <p className="information-text">Tacna lokacija: {information.precise_location}</p>
-             <p className="information-text">Latitude: {information.latitude}</p>
-             <p className="information-text">Longitude: {information.longitude}</p>
+             <p className="information-text">Tačna lokacija: {information.precise_location}</p>
+             <p className="information-text">Geografska širina: {information.latitude}</p>
+             <p className="information-text">Geografska dužina: {information.longitude}</p>
              <div className="information-text">
              Sportovi:
              {Array.isArray(information.sports) && information.sports.length > 0 ? (

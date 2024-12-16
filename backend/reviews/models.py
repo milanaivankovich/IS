@@ -11,6 +11,7 @@ class Review(models.Model):
     description = models.CharField(max_length=200)
     client = models.ForeignKey('accounts.Client', on_delete=models.CASCADE, null=True)
     field = models.ForeignKey('fields.Field', on_delete=models.CASCADE, null=True)
+    date = models.DateTimeField(auto_now_add=True, null=True)
 
     def clean(self):
         if self.field and self.field.is_suspended:

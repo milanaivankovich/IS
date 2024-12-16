@@ -115,5 +115,14 @@
         "business_subject_id": 3,
         "field_id": 3,
         "sport_id": 1
+    },
+    {
+        "id": 14,
+        "name": "oglas24",
+        "description": "opis14opis14",
+        "date": "2024-12-18",
+        "business_subject_id": 3,
+        "field_id": 2,
+        "sport_id": 2
     }
 ]

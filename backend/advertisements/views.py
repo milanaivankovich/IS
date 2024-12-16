@@ -89,6 +89,7 @@ def get_business_subject_by_id(request, business_subject_id):
     except BusinessSubject.DoesNotExist:
         return Response({'error': 'Field not found'}, status=404)
     
+    
 @api_view(['GET'])
 def get_sports_by_field_id(request, field_id):
     from fields.models import Field, Sport

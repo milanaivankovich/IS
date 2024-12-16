@@ -7,6 +7,9 @@ from django.db import connection
 @receiver([post_save, post_delete], sender=Review)
 def update_json_file(sender, instance, **kwargs):
     reviews = list(Review.objects.values())
+    for ad in reviews:
+        if 'date' in ad and ad['date']:
+            ad['date'] = ad['date'].strftime('%Y-%m-%d')  # Format: 'YYYY-MM-DD'
     
     with open('dataReview.json', 'w', encoding='utf-8') as f:
         json.dump(reviews, f, ensure_ascii=False, indent=4)

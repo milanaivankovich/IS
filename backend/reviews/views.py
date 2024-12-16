@@ -24,3 +24,4 @@ def reviews_by_field(request, field):
         return Response(serializer.data)
     except Review.DoesNotExist:
         return Response(status=404)
+    
