@@ -9,6 +9,7 @@ import { CiSettings } from "react-icons/ci";
 import './TerenProfil.css';
 import NewReviewCard from '../components/NewReviewCard.js';
 import { IoIosCloseCircle } from "react-icons/io";
+import ReviewCard from '../components/ReviewCard.js';
 
 const TerenProfil = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -38,6 +39,8 @@ const TerenProfil = () => {
     "image": null,
   });
 
+  
+
   useEffect(() => {
     // Izvlačenje poslednjeg segmenta iz URL-a
     const path = window.location.pathname; 
@@ -46,6 +49,8 @@ const TerenProfil = () => {
       setId({ id: parseInt(idFromUrl, 10) });
     }
   }, []);
+
+  
   
     useEffect(() => {
 
@@ -111,7 +116,7 @@ const TerenProfil = () => {
           <button className={`tab-button ${activeTab === "events" ? "active" : ""}`} 
           onClick={() => {
             setSelectionTitle('Događaji'); 
-            setSelectionSubtitle('Događaji na terenu');
+            setSelectionSubtitle('Događaji koji su na terenu');
             setActiveTab("events");
           }}>Događaji</button>
           <button className={`tab-button ${activeTab === "reviews" ? "active" : ""}`} onClick={() => 
@@ -149,7 +154,7 @@ const TerenProfil = () => {
                <div className="activity-cards-container">
               {reviews.map((review) => (
               <div key={review.id} className="activity-card">
-                <p className="size"><strong>RECENZIJA</strong></p>
+                <ReviewCard clientId={review.client} />
                 <p className="size">Ocjena: {review.rating}</p>
                 <p className="size">Komentar: {review.description}</p>
                 <p className="size">Datum: {review.date.split('T')[0]}</p>
