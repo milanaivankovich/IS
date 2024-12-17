@@ -29,7 +29,7 @@ urlpatterns = [
     # Business Subject Endpoints
     path('api/business-subject/', views.register_business_subject, name='register_business_subject'),  # POST to create new
     path('api/business-subject/<int:pk>/', views.get_business_subject, name='get_business_subject'),  # GET by ID
-    path('api/business-subject/<int:pk>/', views.edit_business_subject, name='edit_business_subject'),  # PUT/PATCH
+    path('api/business-subject/<int:pk>/edit/', views.edit_business_subject, name='edit_business_subject'),  # PUT/PATCH
 
 
     path('api/login/client/', views.login_user, name='login_user'),

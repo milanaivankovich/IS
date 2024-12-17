@@ -18,9 +18,12 @@ class BusinessSubjectSerializer(serializers.ModelSerializer):
         fields = ['nameSportOrganization', 'profile_picture', 'description', 'email', 'password']  # Only include relevant fields
 
     def validate_email(self, value):
-        if BusinessSubject.objects.filter(email=value).exists():
-            raise serializers.ValidationError("A business subject with this email already exists.")
-        return value
+        # Check if the email exists in any of the user models
+        if (BusinessSubject.objects.filter(email=value).exists() or
+           Client.objects.filter(email=value).exists() or
+           User.objects.filter(email=value).exists()):
+          raise serializers.ValidationError("A user with this email already exists.")
+    return value
 
 
     def create(self, validated_data):
@@ -72,9 +75,13 @@ class ClientSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name', 'username', 'password', 'email', 'profile_picture']
     
     def validate_email(self, value):
-        if Client.objects.filter(email=value).exists():
-            raise serializers.ValidationError("A client with this email already exists.")
-        return value
+        # Check if the email exists in any of the user models
+        if (BusinessSubject.objects.filter(email=value).exists() or
+           Client.objects.filter(email=value).exists() or
+           User.objects.filter(email=value).exists()):
+          raise serializers.ValidationError("A user with this email already exists.")
+    return value
+
 
     def validate_username(self, value):
         if Client.objects.filter(username=value).exists():

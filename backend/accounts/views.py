@@ -302,6 +302,7 @@ def register_standard_user(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
+
 def register_business_subject(request):
     serializer = BusinessSubjectSerializer(data=request.data)
     if serializer.is_valid():
