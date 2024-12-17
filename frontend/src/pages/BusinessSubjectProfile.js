@@ -134,7 +134,7 @@ const BusinessSubjectProfile = () => {
             <h0 className="userprofile-name">{subjectData.nameSportOrganization }</h0>
             <h1 className="userprofile-subtitle">{subjectData.description}</h1>
           </div>
-          <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/edituserprofile1')} />
+          <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/editbusinessprofile')} />
         </div>
           <div>
             <nav className="profile-tabs">

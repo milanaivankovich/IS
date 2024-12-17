@@ -14,6 +14,7 @@ import RegisterPoslovni from "./pages/RegisterPoslovni";
 import EditEventCard from "./components/EditEventCard";
 import BusinessSubjectProfile from "./pages/BusinessSubjectProfile";
 import TerenProfil from "./pages/TerenProfil";
+import EditBusinessSubjectProfile from "./pages/EditBusinessSubjectProfile";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("pocetna");
@@ -43,6 +44,8 @@ function App() {
       setCurrentPage("registerPoslovni");
     } else if (path === "/userprofile1") {
       setCurrentPage("userprofile1");
+    } else if (path === "/editbusinessprofile") {
+      setCurrentPage("editbusinessprofile");
     } else if (path.includes("/teren-profil/")) {
       setCurrentPage("teren-profil");
       const id = path.split("/")[2]; 
@@ -64,6 +67,7 @@ function App() {
           {currentPage === "dogadjaji" && <Dogadjaji />}
           {currentPage === "tereni" && <Tereni />}
           {currentPage === "edituserprofile" && <EditUserProfile />}
+          {currentPage === "editbusinessprofile" && <EditBusinessSubjectProfile />}
           {currentPage === "usertype" && <OdabirVrsteKorisnika />}
           {currentPage === "usertype1" && <OdabirVrsteKorisnikaRegistracija />}
           {currentPage === "userprofile" && <UserProfile />}
