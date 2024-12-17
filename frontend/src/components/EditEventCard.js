@@ -23,6 +23,9 @@ useEffect(() => {
         setOptionsLocation(response.data.map(item => ({
           value: item.id,
           label: item.location+' ('+ item.sports.map(sport=>sport.name).join(', ')+')',
+          sport: item.sports.map(sport => ({
+                  sportID: sport.id,
+                  sportName: sport.name, })),
         })));
         console.log("Data updated successfully:", response.data);
       })
@@ -36,16 +39,15 @@ useEffect(() => {
 
     searchFields();
 },[]);
-/*
-useEffect(() => {
-  const searchSports =
-    fields.find((field)=>field.id===parseInt(selectedLocation.id))?.(sports.name);
-    setOptionsSport(searchSports.map((item)=>{value: 1,
-      name
 
+  const searchSports = (location) => {
+    setSelectedLocation(location);
+    setSelectedSport(null);
+    setOptionsSport(location?.sport.map(item => ({
+    value: item.sportID,
+    label: item.sportName,
     })));
-  },[selectedLocation]);
-  */
+  };
 
   const [eventData, setEventData] = useState({
         "id": 10,
@@ -59,7 +61,7 @@ useEffect(() => {
   });
 
   const createNew = async () => {
-    setEventData(prevData=>({...prevData, field: selectedLocation.value }));
+    setEventData(prevData=>({...prevData, field: selectedLocation.value, sport: selectedLocation.value }));
     await axios.post('http://localhost:8000/api/activities/add/', eventData, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
@@ -129,8 +131,9 @@ useEffect(() => {
         <label className="EditEventLabel"> Lokacija: </label>
         <Select className='editeventcard-selectlocation'
         styles={colourOptions}
+        value={selectedLocation}
         options={optionsLocation}
-        onChange={setSelectedLocation}
+        onChange={(e) => searchSports(e)}
         placeholder="Odaberi lokaciju terena..."
         isClearable
         required
@@ -140,6 +143,7 @@ useEffect(() => {
         <Select className='editeventcard-selectlocation'
         styles={colourOptions}
         options={optionsSport}
+        value={selectedSport}
         onChange={setSelectedSport}
         placeholder="Odaberi sport..."
         isClearable

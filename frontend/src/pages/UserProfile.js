@@ -188,7 +188,7 @@ const UserProfile = () => {
                     <ActivityCard key={activity.id} activity={activity} />
                   ))}
                 </div>
-                { (id.pk!==-1) ? (
+                { (id.id!==-1) ? (
                   <button className="create-event-button" onClick={()=>toggleFloatingWindow()}>
                     + Novi događaj
                   </button> 

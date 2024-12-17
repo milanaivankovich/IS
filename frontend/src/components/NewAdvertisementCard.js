@@ -31,6 +31,9 @@ const EditEventCard = ({ user, pk, eventId }) => {
             setOptionsLocation(response.data.map(item => ({
               value: item.id,  // ID terena
               label: `${item.location} (${item.sports.map(sport => sport.name).join(', ')})`,  // Prikazivanje svih sportova
+              sport: item.sports.map(sport => ({
+                sportID: sport.id,
+                sportName: sport.name, })),
             })));
           })
           .catch((error) => {
@@ -178,7 +181,7 @@ const EditEventCard = ({ user, pk, eventId }) => {
   
             <label className="EditEventLabel"> Sport: </label>
             <Select
-              className='editeventcard-selectsport'
+              className='editeventcard-selectlocation' //vezano samo za css
               options={optionsSport}
               styles={{
                 control: (styles) => ({
