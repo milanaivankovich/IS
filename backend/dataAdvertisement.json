@@ -124,5 +124,23 @@
         "business_subject_id": 3,
         "field_id": 2,
         "sport_id": 2
+    },
+    {
+        "id": 15,
+        "name": "oglas111",
+        "description": "novi oglas",
+        "date": "2024-12-19",
+        "business_subject_id": 3,
+        "field_id": 3,
+        "sport_id": 1
+    },
+    {
+        "id": 16,
+        "name": "oglas112",
+        "description": "opisopis123",
+        "date": "2024-12-25",
+        "business_subject_id": 3,
+        "field_id": 2,
+        "sport_id": 2
     }
 ]

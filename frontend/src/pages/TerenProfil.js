@@ -24,9 +24,22 @@ const TerenProfil = () => {
   const [information, setInformation] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [id, setId]=useState({
+  const [idField, setIdField]=useState({
     "id": -1
   });
+
+    const [id, setID]=useState({
+      "id": -1,
+      "type": ''
+    });
+
+    const [user, setUser] = useState({
+      "first_name": "",
+      "last_name": "",
+      "username": "",
+      "email": "email",
+      "profile_picture": null
+    });
   
   const [fieldData, setFieldData] = useState({
     "id": -1,
@@ -39,18 +52,46 @@ const TerenProfil = () => {
     "image": null,
   });
 
-  
+  useEffect(() => {
+
+    const fetchUserData = async ()=> {
+    await axios.get('http://localhost:8000/api/client/'+id.id+'/')
+      .then(response => {
+        setUser(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+      });
+    };
+
+    if(id.id!==-1)
+      fetchUserData();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchIDType = async ()=> {
+      await axios.get('http://localhost:8000/api/get-user-type-and-id/', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      })
+        .then((request) => {
+          setID(request.data);
+        })
+        .catch((error) => {
+          console.error("Error getting ID: ",error);
+        });
+      };
+
+    fetchIDType();
+  },[]);
 
   useEffect(() => {
     // Izvlačenje poslednjeg segmenta iz URL-a
     const path = window.location.pathname; 
     const idFromUrl = path.split("/").pop(); 
     if (!isNaN(idFromUrl)) {
-      setId({ id: parseInt(idFromUrl, 10) });
+      setIdField({ id: parseInt(idFromUrl, 10) });
     }
   }, []);
-
-  
   
     useEffect(() => {
 
@@ -61,13 +102,12 @@ const TerenProfil = () => {
         })
         .catch(error => {
           console.error('Error fetching data: ', error);
-          alert('Error fetching data');
         });
       };
 
-      if(id.id!==-1)
+      if(idField.id!==-1)
         fetchFieldData();
-    }, [id]);
+    }, [idField]);
 
     const [eventsData, setEventsData] = useState([]);
     const [selectionTitle, setSelectionTitle] = useState('Događaji');
@@ -79,13 +119,13 @@ const TerenProfil = () => {
       setLoading(true);
       try {
         // Učitavanje podataka odmah, bez obzira na trenutno aktivni tab
-        const informationResponse = await axios.get(`http://localhost:8000/api/field/id/${id.id}/`);
+        const informationResponse = await axios.get(`http://localhost:8000/api/field/id/${idField.id}/`);
         setInformation(informationResponse.data);
 
-        const eventsResponse = await axios.get(`http://localhost:8000/api/advertisements/field/${id.id}/`);
+        const eventsResponse = await axios.get(`http://localhost:8000/api/advertisements/field/${idField.id}/`);
         setEventsData(eventsResponse.data);
 
-        const reviewsResponse = await axios.get(`http://localhost:8000/api/reviews/${id.id}/`);
+        const reviewsResponse = await axios.get(`http://localhost:8000/api/reviews/${idField.id}/`);
         setReviews(reviewsResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -95,12 +135,12 @@ const TerenProfil = () => {
     };
 
     fetchData();
-  }, [id]); 
+  }, [idField]); 
   
   return (
     <body>
       <header className="userprofile-menu">
-        <MenuBar variant={[id.id!==-1 ? "registered" : "unregistered"]} search={true} />
+        <MenuBar variant={[idField.id!==-1 ? "registered" : "unregistered"]} search={true} />
       </header>
       <div className="userprofile-body">
         <div className="userprofile-header">
@@ -152,24 +192,30 @@ const TerenProfil = () => {
             {activeTab === "reviews" && (
              <div className="activity-section">
                <div className="activity-cards-container">
-              {reviews.map((review) => (
-              <div key={review.id} className="activity-card">
-                <ReviewCard clientId={review.client} />
-                <p className="size">Ocjena: {review.rating}</p>
-                <p className="size">Komentar: {review.description}</p>
-                <p className="size">Datum: {review.date.split('T')[0]}</p>
-                <p className="size">Vrijeme: {review.date.split('T')[1].split(':').slice(0, 2).join(':')}</p>
-                </div>
-                ))}
+               {reviews.map((review) => {
+               const reviewDate = new Date(review.date);
+               reviewDate.setHours(reviewDate.getHours() + 1); // Dodajemo 1 sat na vrijeme
+
+               return (
+               <div key={review.id} className="activity-card">
+               <ReviewCard clientId={review.client} />
+               <p className="size"><strong>Ocjena: </strong>{review.rating}</p>
+               <p className="size"><strong>Komentar: </strong>{review.description}</p>
+               <p className="size"><strong>Datum: </strong>{reviewDate.toISOString().split('T')[0]}</p>
+               <p className="size"><strong>Vrijeme: </strong>{reviewDate.toISOString().split('T')[1].split(':').slice(0, 2).join(':')}</p>
+               </div>
+               );
+              })}
+
               </div>
-              { (id.pk!==-1) ? (
+              { (idField.pk!==-1) ? (
                   <button className="create-event-button" onClick={()=>toggleFloatingWindow()}>
                     + Nova recenzija
                   </button> 
                   ) : null }
                 { isVisible ? (
                 <div>
-                  <NewReviewCard user={fieldData} pk={id.id} className="new-event-card" />
+                  <NewReviewCard user={user} pk={id.id} className="new-event-card" />
                   <IoIosCloseCircle className="close-icon-new-advertisement" onClick={()=>toggleFloatingWindow()}/>
                 </div>
                 ): null }

@@ -1,0 +1,198 @@
+.EditEventCard-form-review {
+  /* Auto layout */
+  display: flex;
+  font-size: 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 20px;
+  width: 500px;
+  height: 400px;
+
+  background: #Fefefe;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+
+  z-index: 1000;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-53%, -53%);
+  position: relative;
+}
+
+.edit-event-card-header-review {
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
+  color: black;
+  align-self: stretch;
+  margin-top: 14px;
+  width: 84.5%;
+}
+
+#UnosDatumaDogadjaja-input::placeholder {
+  color: #666666;
+}
+
+.EditEventLabel {
+  margin: 5px;
+  font: 'Popins', regular;
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+}
+
+
+.UnosInformacijaDogadjaja {
+  margin: 0px;
+  padding: 10px;
+  width: 95%;
+  font-size: 16px;
+  transition: border 0.3s ease;
+  border-radius: 4px;
+  border: 1px solid gray;
+}
+
+.editeventcard-selectlocation {
+  padding: 0;
+  font-size: 16px;
+  width: 100%;
+  transition: border 0.3 ease;
+}
+
+.editeventcard-selectlocation:focus {
+  color: black;
+  font-weight: 500;
+}
+
+.UnosInformacijaDogadjaja:focus {
+
+  font-weight: 500;
+  /* identical to box height, or 140% */
+  /* Inside auto layout */
+  color: black;
+  outline: none;
+  border: 1.5px solid #F15A24;
+}
+
+.Opis-review {
+  /* text */
+  color: #666666;
+  text-align: justify;
+  /* Auto layout */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+
+  /* Inside auto layout */
+  align-self: stretch;
+  font-stretch: expanded;
+}
+
+.EditEventCard-Header-review {
+  /* text */
+  /* media */
+  width: 100%;
+  height: 30px;
+  border-radius: 8px;
+
+  background: #FEFEFE;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /*padding: 20px 24px;*/
+  overflow: hidden;
+
+
+  /* Inside auto layout */
+  flex: none;
+  align-self: stretch;
+
+  max-height: 15px;
+}
+
+.EditEventCard-body-review {
+  margin: 25px;
+}
+
+.EditEventCard-user-review {
+  /* card header */
+  height: 80px;
+  gap: 20px;
+  width: 100%;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  /* Inside auto layout */
+}
+
+.creator-image-review {
+  background-color: gainsboro;
+  margin: 5px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  /* Makes the image circular */
+  object-fit: cover;
+  margin-top: 10px;
+}
+
+.createdBy-new-review {
+  color: #666666;
+}
+
+.EventCard-buttons-review {
+  /* dialog button bar */
+  /* Auto layout */
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-end;
+
+  gap: 8px;
+  padding: 10px 0px;
+
+  /* Inside auto layout */
+  align-self: stretch;
+}
+
+.SpasiIzmjeneDogadjaja-button-review {
+  border: 2px transparent;
+  background-color: #fefefe;
+  color: #F15A24;
+  text-transform: uppercase;
+
+  /* text label */
+  line-height: 24px;
+  /* identical to box height, or 171% */
+  /* Inside auto layout */
+
+  padding: 15px 10px;
+  gap: 80px;
+  height: 36px;
+
+  /* Inside auto layout */
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
+
+.dimmer-review {
+  position: fixed;
+  /* Sticks the overlay to the entire screen */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  gap: 20px;
+  /* Semi-transparent background */
+  z-index: 999;
+  /* Ensure it's above other content */
+}
+
+.SpasiIzmjeneDogadjaja-button:hover {
+  color: #e64a19;
+}
