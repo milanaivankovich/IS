@@ -23,7 +23,7 @@ class BusinessSubjectSerializer(serializers.ModelSerializer):
            Client.objects.filter(email=value).exists() or
            User.objects.filter(email=value).exists()):
           raise serializers.ValidationError("A user with this email already exists.")
-    return value
+        return value
 
 
     def create(self, validated_data):
@@ -80,7 +80,7 @@ class ClientSerializer(serializers.ModelSerializer):
            Client.objects.filter(email=value).exists() or
            User.objects.filter(email=value).exists()):
           raise serializers.ValidationError("A user with this email already exists.")
-    return value
+        return value
 
 
     def validate_username(self, value):
