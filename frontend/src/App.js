@@ -15,6 +15,7 @@ import EditEventCard from "./components/EditEventCard";
 import BusinessSubjectProfile from "./pages/BusinessSubjectProfile";
 import TerenProfil from "./pages/TerenProfil";
 import EditBusinessSubjectProfile from "./pages/EditBusinessSubjectProfile";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("pocetna");
@@ -46,7 +47,9 @@ function App() {
       setCurrentPage("userprofile1");
     } else if (path === "/editbusinessprofile") {
       setCurrentPage("editbusinessprofile");
-    } else if (path.includes("/teren-profil/")) {
+    } else if (path === "/resetpassword") {
+      setCurrentPage("resetpassword");
+    }else if (path.includes("/teren-profil/")) {
       setCurrentPage("teren-profil");
       const id = path.split("/")[2]; 
       if (id) {
@@ -75,6 +78,7 @@ function App() {
           {currentPage === "registerPoslovni" && <RegisterPoslovni />}
           {currentPage === "userprofile1" && <BusinessSubjectProfile />}
           {currentPage === "teren-profil" && <TerenProfil id={terenId} />} 
+          {currentPage === "resetpassword" && <ResetPassword />} 
         </div>
       </header>
     </div>
