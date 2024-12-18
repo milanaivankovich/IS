@@ -191,7 +191,7 @@ const TerenProfil = () => {
 
             {activeTab === "reviews" && (
              <div className="activity-section">
-               <div className="activity-cards-container">
+               <div className="activity-cards-container-field">
                {reviews.map((review) => {
                const reviewDate = new Date(review.date);
                reviewDate.setHours(reviewDate.getHours() + 1); // Dodajemo 1 sat na vrijeme
