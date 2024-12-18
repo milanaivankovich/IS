@@ -1,52 +1,42 @@
 [
     {
-        "id": 6,
+        "id": 12,
         "client_id": 1,
         "titel": "naslov1",
         "description": "opis1",
-        "date": "2024-12-09",
-        "field_id": 5,
-        "NumberOfParticipants": 3,
-        "sport_id": 4
+        "date": "2024-12-18",
+        "field_id": 1,
+        "NumberOfParticipants": 5,
+        "sport_id": 1
     },
     {
-        "id": 7,
+        "id": 13,
         "client_id": 2,
         "titel": "naslov2",
         "description": "opis2",
-        "date": "2024-12-12",
+        "date": "2024-12-28",
         "field_id": 3,
+        "NumberOfParticipants": 5,
+        "sport_id": 2
+    },
+    {
+        "id": 14,
+        "client_id": 4,
+        "titel": "naslov3",
+        "description": "opis3",
+        "date": "2024-12-30",
+        "field_id": 4,
         "NumberOfParticipants": 4,
         "sport_id": 2
     },
     {
-        "id": 8,
-        "client_id": 4,
-        "titel": "naslov3",
-        "description": "opis3",
-        "date": "2024-12-19",
-        "field_id": 2,
-        "NumberOfParticipants": 6,
-        "sport_id": 2
-    },
-    {
-        "id": 9,
-        "client_id": 7,
+        "id": 15,
+        "client_id": 6,
         "titel": "naslov4",
         "description": "opis4",
-        "date": "2025-01-01",
-        "field_id": 5,
-        "NumberOfParticipants": 10,
+        "date": "2025-01-17",
+        "field_id": 6,
+        "NumberOfParticipants": 8,
         "sport_id": 4
-    },
-    {
-        "id": 10,
-        "client_id": 9,
-        "titel": "naslov5",
-        "description": "opis5",
-        "date": "2025-01-16",
-        "field_id": 2,
-        "NumberOfParticipants": 7,
-        "sport_id": 2
     }
 ]

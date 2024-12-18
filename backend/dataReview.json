@@ -1,138 +1,58 @@
 [
     {
         "id": 1,
-        "rating": 1,
-        "description": "komentar1",
-        "client_id": 1,
-        "field_id": 1,
-        "date": "2024-12-16"
+        "rating": 2,
+        "description": "recenzija1",
+        "client_id": 10,
+        "field_id": 5,
+        "date": "2024-12-18"
     },
     {
         "id": 2,
         "rating": 3,
-        "description": "kom2",
-        "client_id": 3,
+        "description": "recenzija2",
+        "client_id": 10,
         "field_id": 2,
-        "date": "2024-12-16"
+        "date": "2024-12-18"
     },
     {
         "id": 3,
-        "rating": 4,
-        "description": "kom4",
-        "client_id": 5,
-        "field_id": 5,
-        "date": "2024-12-16"
+        "rating": 5,
+        "description": "recenzija3",
+        "client_id": 10,
+        "field_id": 6,
+        "date": "2024-12-18"
     },
     {
         "id": 4,
-        "rating": 5,
-        "description": "kom7",
-        "client_id": 5,
-        "field_id": 3,
-        "date": "2024-12-16"
+        "rating": 4,
+        "description": "recenzija4",
+        "client_id": 10,
+        "field_id": 1,
+        "date": "2024-12-18"
     },
     {
         "id": 5,
-        "rating": 3,
-        "description": "kom5",
-        "client_id": 7,
-        "field_id": 3,
-        "date": "2024-12-16"
+        "rating": 4,
+        "description": "recenzija5",
+        "client_id": 10,
+        "field_id": 4,
+        "date": "2024-12-18"
     },
     {
         "id": 6,
-        "rating": 2,
-        "description": "kom10",
-        "client_id": 5,
-        "field_id": 5,
-        "date": "2024-12-16"
+        "rating": 3,
+        "description": "recenzija6",
+        "client_id": 10,
+        "field_id": 3,
+        "date": "2024-12-18"
     },
     {
         "id": 7,
-        "rating": 3,
-        "description": "kom6",
-        "client_id": 3,
-        "field_id": 3,
-        "date": "2024-12-16"
-    },
-    {
-        "id": 8,
-        "rating": 2,
-        "description": "kom7",
-        "client_id": 3,
-        "field_id": 5,
-        "date": "2024-12-16"
-    },
-    {
-        "id": 9,
-        "rating": 2,
-        "description": "kom7",
-        "client_id": 3,
-        "field_id": 5,
-        "date": "2024-12-16"
-    },
-    {
-        "id": 10,
         "rating": 5,
-        "description": "novi komentar123",
+        "description": "recenzija7",
         "client_id": 10,
-        "field_id": 3,
-        "date": "2024-12-16"
-    },
-    {
-        "id": 11,
-        "rating": 3,
-        "description": "nova recenzija2",
-        "client_id": 10,
-        "field_id": 1,
-        "date": "2024-12-16"
-    },
-    {
-        "id": 12,
-        "rating": 5,
-        "description": "recenzija1234",
-        "client_id": 10,
-        "field_id": 5,
-        "date": "2024-12-16"
-    },
-    {
-        "id": 13,
-        "rating": 1,
-        "description": "hgfdsdfghnbgfdsas",
-        "client_id": 3,
-        "field_id": 5,
-        "date": "2024-12-16"
-    },
-    {
-        "id": 14,
-        "rating": 2,
-        "description": "Komentar123",
-        "client_id": 10,
-        "field_id": 5,
-        "date": "2024-12-17"
-    },
-    {
-        "id": 15,
-        "rating": 2,
-        "description": "Komentar123456",
-        "client_id": 10,
-        "field_id": 5,
-        "date": "2024-12-17"
-    },
-    {
-        "id": 16,
-        "rating": 3,
-        "description": "recenzija12345",
-        "client_id": 10,
-        "field_id": 1,
-        "date": "2024-12-17"
-    },
-    {
-        "id": 17,
-        "rating": 5,
-        "description": "novarecenzija123456",
-        "client_id": 10,
-        "field_id": 3,
-        "date": "2024-12-17"
+        "field_id": 4,
+        "date": "2024-12-18"
     }
 ]

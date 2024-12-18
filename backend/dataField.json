@@ -2,46 +2,55 @@
     {
         "id": 1,
         "location": "Borik",
-        "precise_location": "Borik 12",
-        "latitude": 44.77008,
-        "longitude": 17.20163,
+        "precise_location": "Borik123",
+        "latitude": 44.77094,
+        "longitude": 17.20613,
         "is_suspended": false,
-        "image": "images/teren1.jpg"
+        "image": "media/teren1.jpg"
     },
     {
         "id": 2,
-        "location": "Starcevica",
-        "precise_location": "Starcevica 17",
-        "latitude": 44.75966,
-        "longitude": 17.20596,
+        "location": "Paprikovac",
+        "precise_location": "Paprikovac123",
+        "latitude": 44.78166,
+        "longitude": 17.17472,
         "is_suspended": false,
-        "image": "images/teren2.jpg"
+        "image": "media/teren2.jpg"
     },
     {
         "id": 3,
         "location": "Obilicevo",
-        "precise_location": "Obilicevo 13",
-        "latitude": 44.76094,
-        "longitude": 17.18897,
+        "precise_location": "Obilicevo123",
+        "latitude": 44.761,
+        "longitude": 17.18871,
         "is_suspended": false,
-        "image": "images/teren3.jpg"
+        "image": "media/teren3.jpg"
     },
     {
         "id": 4,
-        "location": "Borik",
-        "precise_location": "Borik 56",
-        "latitude": 44.77105,
-        "longitude": 17.20382,
-        "is_suspended": true,
-        "image": "images/teren4.jpg"
+        "location": "Starcevica",
+        "precise_location": "Starcevica123",
+        "latitude": 44.7599,
+        "longitude": 17.20622,
+        "is_suspended": false,
+        "image": "media/teren4.jpg"
     },
     {
         "id": 5,
-        "location": "Paprikovac",
-        "precise_location": "Paprikovac 123",
-        "latitude": 44.78476,
-        "longitude": 17.17687,
+        "location": "Petricevac",
+        "precise_location": "Petricevac123",
+        "latitude": 44.78768,
+        "longitude": 17.18631,
         "is_suspended": false,
-        "image": "images/teren5.jpg"
+        "image": "media/teren5.jpg"
+    },
+    {
+        "id": 6,
+        "location": "Laus",
+        "precise_location": "Laus123",
+        "latitude": 44.77819,
+        "longitude": 17.16391,
+        "is_suspended": false,
+        "image": "media/teren6.jpg"
     }
 ]

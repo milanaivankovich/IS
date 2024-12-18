@@ -14,7 +14,7 @@ class Field(models.Model):
     longitude = models.FloatField(null=True, blank=True)
     sports = models.ManyToManyField(Sport, related_name='fields')
     is_suspended = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='./images/', null=True, blank=True)
+    image = models.ImageField(upload_to='./media/', null=True, blank=True)
 
     def __str__(self):
         sports_list = ', '.join(sport.name for sport in self.sports.all())

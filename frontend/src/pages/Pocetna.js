@@ -3,6 +3,7 @@ import React from "react";
 import MenuBar from "../components/MenuBar.js";
 import Search from "../components/Search.js";
 import Footer from "../components/Footer.js";
+import SearchFields from "../components/SearchFields.js";
 
 function Pocetna() {
   return (
@@ -12,7 +13,7 @@ function Pocetna() {
       </header>
       <div className="pocetna-body">
         <div className="search">
-          <Search />
+          <SearchFields />
         </div>
         <div className="footer">
           <Footer />

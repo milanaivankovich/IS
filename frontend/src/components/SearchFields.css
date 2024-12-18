@@ -1,0 +1,85 @@
+.searchContainer {
+  display: flex;
+  max-width: 181px;
+  min-width: 120px;
+  height: 18px;
+  padding: 10px;
+  background: #fefefe;
+  border-radius: 18px;
+  border: 1.125px solid rgba(102, 102, 102, 0.35);
+  box-shadow: -1.5px 1.5px 7.5px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  gap: 10px;
+  }
+  
+  
+  .searchContent {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+  }
+  
+  
+  .searchIcon {
+    width: 18px;
+    aspect-ratio: 1;
+    object-fit: contain;
+  }
+  
+  .searchInput {
+    margin-left: 5px;
+    outline: none;
+    white-space: nowrap;
+    border: 2px solid transparent;
+    width: 80%;
+  }
+
+  .comboBox {
+    background: rgb(239, 239, 239);
+    border: 1px solid rgb(239, 239, 239);
+    box-shadow: 0 4px 12px rgba(228, 136, 136, 0.1);
+    max-height: 60px;
+    overflow-y: scroll;
+    position: absolute; 
+    z-index: 10;
+    border-radius: 10px;
+    width: 140px; 
+    margin-top: 120px;
+    margin-left: -172px;
+    top: 297px;
+    left: 869px;
+    text-align:justify;
+    -ms-overflow-style: none; 
+    scrollbar-width: none;
+  }
+  
+  .comboBoxList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .comboBoxItem {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    color: #8b8a8a;
+    border-radius: 6px;
+    border-bottom: 1px solid #d8a0a0;
+    height:10px;
+    text-align: center; 
+    padding-top: 3px;  
+    line-height: 1.2;
+  }
+  
+  .comboBoxItem:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .noResults {
+    color: #8b8a8a;
+    font-style: italic;
+    border-radius: 8px;
+    height:10px;
+    background-color: #f9f9f9;
+  }

@@ -3,7 +3,7 @@
         "id": 1,
         "name": "oglas1",
         "description": "opis1opis1",
-        "date": "2025-01-03",
+        "date": "2024-12-25",
         "business_subject_id": 3,
         "field_id": 1,
         "sport_id": 1
@@ -12,16 +12,16 @@
         "id": 2,
         "name": "oglas2",
         "description": "opis2opis2",
-        "date": "2025-01-11",
+        "date": "2025-01-15",
         "business_subject_id": 3,
         "field_id": 2,
-        "sport_id": 2
+        "sport_id": 3
     },
     {
         "id": 3,
         "name": "oglas3",
         "description": "opis3opis3",
-        "date": "2024-12-29",
+        "date": "2025-01-27",
         "business_subject_id": 3,
         "field_id": 3,
         "sport_id": 2
@@ -30,117 +30,27 @@
         "id": 4,
         "name": "oglas4",
         "description": "opis4opis4",
-        "date": "2025-01-11",
+        "date": "2025-01-28",
         "business_subject_id": 3,
-        "field_id": 5,
-        "sport_id": 4
+        "field_id": 4,
+        "sport_id": 1
     },
     {
         "id": 5,
         "name": "oglas5",
         "description": "opis5opis5",
-        "date": "2024-12-19",
+        "date": "2025-01-31",
         "business_subject_id": 3,
-        "field_id": 2,
-        "sport_id": 2
+        "field_id": 5,
+        "sport_id": 4
     },
     {
         "id": 6,
         "name": "oglas6",
         "description": "opis6opis6",
-        "date": "2024-12-27",
+        "date": "2025-02-20",
         "business_subject_id": 3,
-        "field_id": 1,
-        "sport_id": 1
-    },
-    {
-        "id": 7,
-        "name": "oglas7",
-        "description": "opis7opis7",
-        "date": "2025-01-08",
-        "business_subject_id": 3,
-        "field_id": 3,
-        "sport_id": 1
-    },
-    {
-        "id": 8,
-        "name": "oglas9",
-        "description": "opis9opis9",
-        "date": "2024-12-18",
-        "business_subject_id": 3,
-        "field_id": 3,
-        "sport_id": 2
-    },
-    {
-        "id": 9,
-        "name": "oglas10",
-        "description": "opia10opis10",
-        "date": "2024-12-19",
-        "business_subject_id": 3,
-        "field_id": 3,
-        "sport_id": 2
-    },
-    {
-        "id": 10,
-        "name": "oglas11",
-        "description": "opis11opis11",
-        "date": "2025-02-06",
-        "business_subject_id": 3,
-        "field_id": 5,
-        "sport_id": 3
-    },
-    {
-        "id": 11,
-        "name": "oglas20",
-        "description": "opis20opis20",
-        "date": "2024-12-15",
-        "business_subject_id": 2,
-        "field_id": 2,
-        "sport_id": 2
-    },
-    {
-        "id": 12,
-        "name": "oglas21",
-        "description": "opis21opis21",
-        "date": "2024-12-27",
-        "business_subject_id": 3,
-        "field_id": 3,
-        "sport_id": 1
-    },
-    {
-        "id": 13,
-        "name": "oglas22",
-        "description": "opis22opis22",
-        "date": "2024-12-17",
-        "business_subject_id": 3,
-        "field_id": 3,
-        "sport_id": 1
-    },
-    {
-        "id": 14,
-        "name": "oglas24",
-        "description": "opis14opis14",
-        "date": "2024-12-18",
-        "business_subject_id": 3,
-        "field_id": 2,
-        "sport_id": 2
-    },
-    {
-        "id": 15,
-        "name": "oglas111",
-        "description": "novi oglas",
-        "date": "2024-12-19",
-        "business_subject_id": 3,
-        "field_id": 3,
-        "sport_id": 1
-    },
-    {
-        "id": 16,
-        "name": "oglas112",
-        "description": "opisopis123",
-        "date": "2024-12-25",
-        "business_subject_id": 3,
-        "field_id": 2,
-        "sport_id": 2
+        "field_id": 6,
+        "sport_id": 4
     }
 ]
