@@ -48,8 +48,14 @@ const EditUserProfile = () => {
 
     const fetchUserData = async () => {
       await axios.get('http://localhost:8000/api/client/' + id.id + '/')
-        .then(response => {
-          setUserData(response.data);
+        .then(async response => {
+          await setUserData({
+            first_name: response.data.first_name,
+            last_name: response.data.last_name,
+            username: response.data.username,
+            email: response.data.email,
+            profile_picture: 'http://localhost:8000' + response.data.profile_picture,
+          })
         })
         .catch(error => {
           console.error('Error fetching data: ', error);
@@ -65,11 +71,11 @@ const EditUserProfile = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     await axios.put('http://localhost:8000/api/client/' + id.id + '/edit/', {
-      data: {
+      user: {
         first_name: userData.first_name,
         last_name: userData.last_name,
         username: userData.username,
-        email: userData.password,
+        email: userData.email,
       }
     }, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -104,7 +110,7 @@ const EditUserProfile = () => {
       })
         .then((response) => {
           console.log("Password updated successfully:", response.data);
-          alert("Lozinka je azurirana" + response.data + "");
+          alert("Lozinka je azurirana");
         })
         .catch((error) => {
           console.error("There was an error updating the data:", error);
@@ -152,7 +158,7 @@ const EditUserProfile = () => {
         <div className="EditUserProfileDialog">
           <img
             src={userData.profile_picture ? userData.profile_picture : profileImage}
-            alt="Circular Image"
+            alt="profile photo"
             className="EditProfileImage"
           />
           <button className="NewImage" onClick={() => toggleDialog()} >

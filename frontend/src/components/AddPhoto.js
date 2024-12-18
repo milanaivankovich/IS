@@ -40,15 +40,26 @@ const AddPhoto = ({ userId }) => {
       return;
     }
     const picture = new FormData();
-    const imageFile = new File([formData.image], "profile_picture.jpg", { type: "image/jpeg" });
-    picture.append("file", imageFile);
-    await axios.put('http://localhost:8000/api/client/' + userId.id + '/edit/',
-      selectedImage, {
+    const imageFile = new File([formData.image], "${userId.id}.jpeg", { type: "image/jpeg" });
+    picture.append("profile_picture", imageFile);
+    let uri;
+    if (userId.type === 'BusinessSubject')
+      uri = 'http://localhost:8000/api/business-subject/';
+    else if (userId.type === 'Client')
+      uri = 'http://localhost:8000/api/client/'
+    else {
+      console.error('Invalid user type:', userId.type);
+      throw new Error('Error 404');
+    }
+
+    await axios.put(uri + userId.id + '/edit/',
+      picture, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
       .then((response) => {
         console.log("Data updated successfully:", response.data);
-        alert("Slika je azurirana...")
+        alert("Slika je azurirana...");
+        window.location.reload();
       })
       .catch((error) => {
         console.error("There was an error updating the data:", error);

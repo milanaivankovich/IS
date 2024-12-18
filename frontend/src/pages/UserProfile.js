@@ -80,13 +80,13 @@ const UserProfile = () => {
           first_name: response.data.first_name,
           last_name: response.data.last_name,
           username: response.data.username,
-          email: response.data.username,
-          profile_picture: URL.createObjectURL(new Blob([response.data.profile_picture], { type: 'text/plain' }),
-          )
-        });
+          email: response.data.email,
+          profile_picture: 'http://localhost:8000' + response.data.profile_picture,
+        })
+      })
         //const imageResponse = await axios.get(response.data.profile_picture, { responseType: 'file' });
 
-      })
+
         .catch(error => {
           console.error('Error fetching data: ', error);
           alert('Error 404');
@@ -157,8 +157,8 @@ const UserProfile = () => {
       </header>
       <div className="userprofile-body">
         <div className="userprofile-header">
-          <img src={!userData.profile_picture ? userData.profile_picture : CreatorImg}
-            className="userprofilepreview-image" alt="Creator" />
+          <img src={userData.profile_picture ? userData.profile_picture : CreatorImg}
+            className="userprofilepreview-image" alt="profile photo" />
           <div className='name-surname-username'>
             <h0 className="userprofile-name">{userData.first_name} {userData.last_name}</h0>
             <h1 className="userprofile-subtitle">@{userData.username}</h1>
