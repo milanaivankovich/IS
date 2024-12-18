@@ -8,6 +8,7 @@ const ActivityCard = ({ activity }) => {
   const [remainingSlots, setRemainingSlots] = useState(NumberOfParticipants);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Dohvaćanje lokacije na osnovu field ID-a
   useEffect(() => {
@@ -24,6 +25,11 @@ const ActivityCard = ({ activity }) => {
     if (field) {
       fetchLocation();
     }
+
+    // Provera da li je korisnik prijavljen
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token); // Ako postoji token, korisnik je prijavljen
+
   }, [field]);
 
   // Dohvaćanje sporta na osnovu njegovog ID-a
@@ -45,6 +51,11 @@ const ActivityCard = ({ activity }) => {
 
   // Funkcija za registraciju na aktivnost
   const handleRegister = async () => {
+    if (!isLoggedIn) {
+      alert("Morate biti prijavljeni da biste se prijavili na aktivnost.");
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -81,11 +92,13 @@ const ActivityCard = ({ activity }) => {
         <button 
           className="button" 
           onClick={handleRegister} 
-          disabled={remainingSlots <= 0 || isLoading}
+          disabled={remainingSlots <= 0 || isLoading || !isLoggedIn}
         >
           {isLoading ? "Prijava u toku..." : "Prijavi se"}
         </button>
       </div>
+
+      {!isLoggedIn && <p className="error-message">Morate biti prijavljeni da biste se prijavili na aktivnost.</p>}
 
       {error && <p className="error-message">{error}</p>}
     </div>
