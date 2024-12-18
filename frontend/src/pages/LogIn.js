@@ -48,7 +48,7 @@ const Login = () => {
   const handleResetPassword = async () => {
     setResetMessage('');
     try { /*endpoint nije dobar */
-      await axios.post('http://localhost:8000/api/password-reset/', { username: resetUsername });
+      await axios.post('http://localhost:8000/api/request-password-reset/', { username: resetUsername });
       setResetMessage('Link za resetovanje lozinke je poslan na vašu email adresu.');
     } catch (error) {
       console.error('Password reset failed:', error);
