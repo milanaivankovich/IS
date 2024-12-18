@@ -35,12 +35,20 @@ const AddPhoto = ({ userId }) => {
   const [formData, setFormData] = useState(null);
 
   const handlePhotoUpdate = async () => {
+    if (!selectedImage) {
+      alert("Please select a file!");
+      return;
+    }
+    const picture = new FormData();
+    const imageFile = new File([formData.image], "profile_picture.jpg", { type: "image/jpeg" });
+    picture.append("file", imageFile);
     await axios.put('http://localhost:8000/api/client/' + userId.id + '/edit/',
-      { profile_picture: formData }, {
+      selectedImage, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
       .then((response) => {
         console.log("Data updated successfully:", response.data);
+        alert("Slika je azurirana...")
       })
       .catch((error) => {
         console.error("There was an error updating the data:", error);

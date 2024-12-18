@@ -64,7 +64,14 @@ const EditUserProfile = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    await axios.put('http://localhost:8000/api/client/' + id.id + '/edit/', userData, {
+    await axios.put('http://localhost:8000/api/client/' + id.id + '/edit/', {
+      data: {
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        username: userData.username,
+        email: userData.password,
+      }
+    }, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
       .then((response) => {
@@ -144,7 +151,7 @@ const EditUserProfile = () => {
       <div className="EditUserProfileBody">
         <div className="EditUserProfileDialog">
           <img
-            src={userData.profile_picture !== null ? userData.profile_picture : profileImage}
+            src={userData.profile_picture ? userData.profile_picture : profileImage}
             alt="Circular Image"
             className="EditProfileImage"
           />
