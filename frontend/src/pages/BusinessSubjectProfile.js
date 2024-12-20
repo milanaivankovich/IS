@@ -62,8 +62,13 @@ const BusinessSubjectProfile = () => {
 
     const fetchUserData = async () => {
       await axios.get('http://localhost:8000/api/business-subject/' + id.id + '/')
-        .then(response => {
-          setSubjectData(response.data);
+        .then(async response => {
+          await setSubjectData({
+            nameSportOrganization: response.data.nameSportOrganization,
+            description: response.data.description,
+            email: response.data.email,
+            profile_picture: 'http://localhost:8000' + response.data.profile_picture,
+          })
         })
         .catch(error => {
           console.error('Error fetching data: ', error);
