@@ -579,12 +579,12 @@ def generate_password_reset_link(user):
 @api_view(['POST'])
 def request_password_reset(request):
     # Get the username from the request data
-    username = request.data.get('username')
+    email = request.data.get('email')
 
     # Check in Client model
     try:
         # Check if the client exists by username
-        client = Client.objects.get(username=username)
+        client = Client.objects.get(email=email)
         # Generate the password reset link using the client instance
         reset_url = generate_password_reset_link(client)
         # Send the password reset email to the client's associated email
@@ -602,15 +602,15 @@ def request_password_reset(request):
     # Check in BusinessSubject model
     try:
         # Check if the business subject exists by username
-        business_subject = BusinessSubject.objects.get(username=username)
+        business_subject = BusinessSubject.objects.get(email=email)
         # Generate the password reset link using the business subject instance
         reset_url = generate_password_reset_link(business_subject)
         # Send the password reset email to the business subject's associated email
-        send_mail(
+        send_email_via_gmail(
+            to_email=client.email,
             subject="Password Reset Request",
-            message=f"Click the link to reset your password: {reset_url}",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[business_subject.email],  # Send to the business subject's email
+            message=f"Click the link to reset your password: {reset_url}"
+             # Send to the client's email
         )
         return Response({"message": "Password reset link sent successfully."}, status=200)
 
