@@ -23,6 +23,8 @@ urlpatterns = [
     path('api/client/<int:pk>/edit/', views.edit_client, name='edit_client'),  # PUT/PATCH to edit client
     path('api/clients/', views.list_clients, name='list_clients'), #pregled registrovanih rekreativaca
 
+    
+
      
     path("api/get-client-id/", views.get_user_pk_by_token, name="get_user_pk_by_token"),
 
@@ -35,6 +37,8 @@ urlpatterns = [
     path('api/login/client/', views.login_user, name='login_user'),
     path('api/login/business-subject/', views.login_business_subject, name='login_business_subject'),
     path('api/logout/', views.logout_user, name='logout_user'),
+
+     path('oauth2callback/', views.oauth2callback, name='oauth2callback'),
 
     # View profile endpoint for logged-in user
     path('api/profile/', views.get_profile, name='get_profile'),  # GET the profile of the logged-in user

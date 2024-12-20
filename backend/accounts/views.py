@@ -7,6 +7,21 @@ from rest_framework.permissions import IsAdminUser
 from accounts.authentication import custom_authenticate
 from accounts.authentication import custom_authenticate_bs
 
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+from email.mime.text import MIMEText
+import base64
+from google.auth.transport.requests import Request
+
+import os
+import pickle
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+
+from django.http import HttpResponse
+from django.urls import path
+
+
 from django.utils.crypto import get_random_string
 from django.db import IntegrityError
 from rest_framework.decorators import api_view
@@ -497,7 +512,64 @@ def logout_user(request):
         return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
 
+def oauth2callback(request):
+    # This function will handle the callback after OAuth authorization
+    flow = InstalledAppFlow.from_client_secrets_file(
+        'client_secret.json', SCOPES)
+    creds = flow.fetch_token(authorization_response=request.build_absolute_uri())
     
+    # Save the credentials for future use
+    with open('token.json', 'wb') as token:
+        pickle.dump(creds, token)
+
+    return HttpResponse("OAuth2 callback handled successfully!")
+
+# Define the required Gmail API scopes
+SCOPES = ['https://www.googleapis.com/auth/gmail.send']
+
+def send_email_via_gmail(to_email, subject, message):
+    # Check if token.json exists and load credentials
+    creds = None
+    if os.path.exists('token.json'):
+        with open('token.json', 'rb') as token:
+            creds = pickle.load(token)
+
+    # If there are no valid credentials, go through the OAuth flow to get new credentials
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'client_secret.json', SCOPES)
+            creds = flow.run_local_server(port=8000)
+
+
+        # Save the credentials for the next run
+        with open('token.json', 'wb') as token:
+            pickle.dump(creds, token)
+
+    # Build the Gmail API service
+    service = build('gmail', 'v1', credentials=creds)
+
+    # Create the email content
+    email_message = MIMEText(message)
+    email_message['To'] = to_email
+    email_message['Subject'] = subject
+    raw_message = base64.urlsafe_b64encode(email_message.as_bytes()).decode()
+
+    # Send the email
+    try:
+        message = (
+            service.users()
+            .messages()
+            .send(userId="me", body={"raw": raw_message})
+            .execute()
+        )
+        print(f"Email sent: {message['id']}")
+        return True
+    except Exception as error:
+        print(f"An error occurred: {error}")
+        return False
 
 def generate_password_reset_link(user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -516,11 +588,11 @@ def request_password_reset(request):
         # Generate the password reset link using the client instance
         reset_url = generate_password_reset_link(client)
         # Send the password reset email to the client's associated email
-        send_mail(
+        send_email_via_gmail(
+            to_email=client.email,
             subject="Password Reset Request",
-            message=f"Click the link to reset your password: {reset_url}",
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[client.email],  # Send to the client's email
+            message=f"Click the link to reset your password: {reset_url}"
+             # Send to the client's email
         )
         return Response({"message": "Password reset link sent successfully."}, status=200)
 
