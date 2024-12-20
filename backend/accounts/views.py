@@ -607,7 +607,7 @@ def request_password_reset(request):
         reset_url = generate_password_reset_link(business_subject)
         # Send the password reset email to the business subject's associated email
         send_email_via_gmail(
-            to_email=client.email,
+            to_email=business_subject.email,
             subject="Password Reset Request",
             message=f"Click the link to reset your password: {reset_url}"
              # Send to the client's email
