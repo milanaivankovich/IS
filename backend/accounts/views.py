@@ -293,7 +293,7 @@ def edit_business_subject(request, pk):
 
     if old_password and new_password and confirm_password:
         # Authenticate user with the old password to verify it
-        user = custom_authenticate(email=user.email, password=old_password)
+        user = custom_authenticate_bs(email=user.email, password=old_password)
         
         if not user:
             return Response({"error": "Old password is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
