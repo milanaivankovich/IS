@@ -36,7 +36,7 @@ const EditUserProfile = () => {
         .catch((error) => {
           console.error("Error getting ID: ", error);
           alert("Neuspjesna autorizacija. Molimo ulogujte se ponovo... ");
-          window.location.replace("/login");
+          window.location.replace("/login1");
         });
     };
 
@@ -52,7 +52,7 @@ const EditUserProfile = () => {
             nameSportOrganization: response.data.nameSportOrganization,
             description: response.data.description,
             email: response.data.email,
-            profile_picture: 'http://localhost:8000' + response.data.profile_picture,
+            profile_picture: response.data.profile_picture ? 'http://localhost:8000' + response.data.profile_picture : null,
           })
         })
         .catch(error => {

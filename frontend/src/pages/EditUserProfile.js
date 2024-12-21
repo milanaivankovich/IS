@@ -54,7 +54,7 @@ const EditUserProfile = () => {
             last_name: response.data.last_name,
             username: response.data.username,
             email: response.data.email,
-            profile_picture: 'http://localhost:8000' + response.data.profile_picture,
+            profile_picture: response.data.profile_picture ? 'http://localhost:8000' + response.data.profile_picture : null,
           })
         })
         .catch(error => {
