@@ -133,7 +133,7 @@ const BusinessSubjectProfile = () => {
       </header>
       <div className="userprofile-body">
         <div className="userprofile-header">
-          <img src={subjectData?.profile_picture !== null ? subjectData.profile_picture : CreatorImg}
+          <img src={subjectData?.profile_picture ? subjectData.profile_picture : CreatorImg}
             className="userprofilepreview-image" alt="Creator" />
           <div className='name-surname-username'>
             <h0 className="userprofile-name">{subjectData.nameSportOrganization}</h0>

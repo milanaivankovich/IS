@@ -70,14 +70,16 @@ const EditUserProfile = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    await axios.put('http://localhost:8000/api/client/' + id.id + '/edit/', {
-      user: {
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        username: userData.username,
-        email: userData.email,
-      }
-    }, {
+    await axios.put('http://localhost:8000/api/client/' + id.id + '/edit/',
+      {
+        data: {
+          id: id.id,
+          first_name: userData.first_name,
+          last_name: userData.last_name,
+          username: userData.username,
+          email: userData.email,
+        }
+      }, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
       .then((response) => {
