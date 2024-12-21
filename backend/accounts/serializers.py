@@ -6,9 +6,9 @@ from django.contrib.auth.models import User
 
 class BusinessSubjectSerializer(serializers.ModelSerializer):
     # Define the necessary fields explicitly
-    nameSportOrganization = serializers.CharField(max_length=255, source='business_name')
+    nameSportOrganization = serializers.CharField(max_length=255, source='business_name', required=False)
     description = serializers.CharField(allow_blank=True, required=False)
-    email = serializers.EmailField()
+    email = serializers.EmailField(required=False)
     profile_picture = serializers.ImageField(required=False)
 
     # Don't need to include 'first_name', 'last_name', and 'username' as they're removed in the model
@@ -63,11 +63,11 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class ClientSerializer(serializers.ModelSerializer):
     # Remove the 'user' field and directly define the necessary fields
-    first_name = serializers.CharField(max_length=30)
-    last_name = serializers.CharField(max_length=30)
-    username = serializers.CharField(max_length=150)
+    first_name = serializers.CharField(max_length=30, required=False)
+    last_name = serializers.CharField(max_length=30, required=False)
+    username = serializers.CharField(max_length=150, required=False)
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
-    email = serializers.EmailField()
+    email = serializers.EmailField(required=False)
     profile_picture = serializers.ImageField(required=False)
 
     class Meta:

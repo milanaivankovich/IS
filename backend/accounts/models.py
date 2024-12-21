@@ -5,6 +5,10 @@ from django.utils.crypto import get_random_string
 
 class Client(AbstractUser):
     # Additional fields specific to Client
+    username = models.CharField(
+        max_length=150, 
+        blank=True  # Allows it to be empty (for forms)
+    )
     phone = models.CharField(max_length=15, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
@@ -61,7 +65,7 @@ class BusinessSubject(AbstractUser):
     username = None
 
     # Business-specific fields
-    business_name = models.CharField(max_length=255, unique=True)
+    business_name = models.CharField(max_length=255, unique=True, blank=True)
     profile_picture = models.ImageField(upload_to='business_profile_pics/', blank=True, null=True)
 
     description = models.TextField(blank=True, null=True)
