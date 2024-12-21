@@ -13,7 +13,7 @@ import iconPath from "../images/marker.jpg";
 import L from 'leaflet';
 
 const Tereni = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null);
   const [selectedField, setSelectedField] = useState(null);
   const [advertisements, setAdvertisements] = useState([]);
   const [filteredAdvertisements, setFilteredAdvertisements] = useState([]);
@@ -160,10 +160,6 @@ const handleImageClick = (fieldId) => {
     fetchFilteredAdvertisements(null, null);
     fetchFilteredActivities(null, null);
   };
-
-  useEffect(() => {
-    handleDateReset(); 
-  }, []); 
 
   useEffect(() => {
     fetchFields();

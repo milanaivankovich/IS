@@ -1,6 +1,6 @@
 from django.urls import path, re_path
 from . import views
-from .views import get_location_by_field_id, get_business_subject_by_id, get_sports_by_field_id, get_advertisements_by_business_subject
+from .views import get_location_by_field_id, get_business_subject_by_id, get_sports_by_field_id, get_advertisements_by_business_subject, update_advertisement, delete_advertisement
 
 urlpatterns = [
     #Advertisement Endpoints
@@ -15,4 +15,6 @@ urlpatterns = [
     path('api/advertisement/sports/<int:field_id>/', get_sports_by_field_id, name='get_sports_by_field_id'), #GET type_of_sports by field id
     path('api/advertisements/businesssubject/<int:business_subject_id>/', get_advertisements_by_business_subject, name='get_advertisements_by_business_subject'), #GET business subject by id
     path('api/advertisements/field/<int:field>/', views.advertisements_by_field, name='advertisements_by_field'), #GET advertisements by field
+    path('api/advertisement/update/<int:pk>/', views.update_advertisement, name='update_advertisement'),
+    path('api/advertisement/delete/<int:pk>/', views.delete_advertisement, name='delete_advertisement'),
 ] 

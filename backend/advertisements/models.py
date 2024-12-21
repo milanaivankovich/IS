@@ -9,6 +9,7 @@ class Advertisement(models.Model):
     business_subject = models.ForeignKey('accounts.BusinessSubject', on_delete=models.CASCADE, null=True)
     field = models.ForeignKey('fields.Field', on_delete=models.CASCADE, null=True)
     sport = models.ForeignKey('fields.Sport', on_delete=models.CASCADE, null=True)
+    is_deleted = models.BooleanField(default=False)
 
     def clean(self):
         if self.field and self.field.is_suspended:
