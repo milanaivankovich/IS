@@ -102,6 +102,26 @@ def edit_client(request, pk):
     # Check if the authenticated user is the one trying to edit their profile
     if user.pk != pk:
         return Response({"error": "You can only edit your own profile"}, status=status.HTTP_403_FORBIDDEN)
+
+    # Get first_name and last_name from the request data
+    first_name = request.data.get("first_name")
+    last_name = request.data.get("last_name")
+    
+    # Validate first_name and last_name
+    if first_name:
+        if len(first_name.strip()) < 2:
+            return Response({"error": "First name must be at least 2 characters long."}, status=status.HTTP_400_BAD_REQUEST)
+        if not re.match("^[a-zA-Z\s'-]+$", first_name):
+            return Response({"error": "First name can only contain letters, spaces, apostrophes, or hyphens."}, status=status.HTTP_400_BAD_REQUEST)
+        user.first_name = first_name  # Set the validated first name
+
+    if last_name:
+        if len(last_name.strip()) < 2:
+            return Response({"error": "Last name must be at least 2 characters long."}, status=status.HTTP_400_BAD_REQUEST)
+        if not re.match("^[a-zA-Z\s'-]+$", last_name):
+            return Response({"error": "Last name can only contain letters, spaces, apostrophes, or hyphens."}, status=status.HTTP_400_BAD_REQUEST)
+        user.last_name = last_name  # Set the validated last name
+    
     
     # Get the old and new passwords from the request data
     old_password = request.data.get("old_password")
