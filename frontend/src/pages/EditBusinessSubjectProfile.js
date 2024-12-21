@@ -146,7 +146,7 @@ const EditUserProfile = () => {
       <div className="EditUserProfileBody">
         <div className="EditUserProfileDialog">
           <img
-            src={subjectData.profile_picture !== null ? subjectData.profile_picture : profileImage}
+            src={subjectData.profile_picture ? subjectData.profile_picture : profileImage}
             alt="Circular Image"
             className="EditProfileImage"
           />

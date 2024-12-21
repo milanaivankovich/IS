@@ -305,7 +305,7 @@ def edit_business_subject(request, pk):
         business_subject.profile_picture = request.FILES['profile_picture']    
 
     # Use the serializer to update the client data
-    serializer = BusinessSubjectSerializer(client, data=request.data, partial=True)  # partial=True to allow partial updates
+    serializer = BusinessSubjectSerializer(business_subject, data=request.data, partial=True)  # partial=True to allow partial updates
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
