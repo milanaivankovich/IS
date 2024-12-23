@@ -68,28 +68,31 @@ const EditUserProfile = () => {
   }, [id]);
 
 
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    await axios.put('http://localhost:8000/api/client/' + id.id + '/edit/',
+const handleUpdate = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await axios.put(
+      `http://localhost:8000/api/client/${id.id}/edit/`,
       {
-        data: {
-          id: id.id,
-          first_name: userData.first_name,
-          last_name: userData.last_name,
-          username: userData.username,
-          email: userData.email,
-        }
-      }, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    })
-      .then((response) => {
-        console.log("Data updated successfully:", response.data);
-      })
-      .catch((error) => {
-        console.error("There was an error updating the data:", error);
-        alert("Doslo je do greške prilikom ažuriranja...");
-      });
-  };
+        id: id.id,
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        username: userData.username,
+        email: userData.email
+      },
+      {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      }
+    );
+    console.log("Data updated successfully:", response.data);
+    alert("Podaci su uspješno ažurirani.");
+  } catch (error) {
+    console.error("There was an error updating the data:", error);
+    alert("Došlo je do greške prilikom ažuriranja...");
+  }
+};
+  
 
   const [password, setPassword] = useState({
     'old_password': '',

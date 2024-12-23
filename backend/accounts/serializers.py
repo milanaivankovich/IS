@@ -18,25 +18,38 @@ class BusinessSubjectSerializer(serializers.ModelSerializer):
         fields = ['nameSportOrganization', 'profile_picture', 'description', 'email', 'password']  # Only include relevant fields
 
     def validate_email(self, value):
-        # Check if the email exists in any of the user models
+        request = self.context.get("request")
+        if request and request.method in ['PUT', 'PATCH']:
+            # Only validate email if it is being updated
+            instance = self.instance  # Current instance being updated
+            if instance and instance.email == value:
+                return value
+        # Check for email conflicts
         if (BusinessSubject.objects.filter(email=value).exists() or
            Client.objects.filter(email=value).exists() or
            User.objects.filter(email=value).exists()):
-          raise serializers.ValidationError("A user with this email already exists.")
+            raise serializers.ValidationError("A user with this email already exists.")
         return value
 
+    def update(self, instance, validated_data):
+        # Handle password update separately if provided
+        password = validated_data.pop('password', None)
+        if password:
+            instance.set_password(password)
+
+        # Update the instance with other fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
 
     def create(self, validated_data):
-        # Extract the password from the validated data and create the user
+        # Handle password separately
         password = validated_data.pop('password')
-        
-        # Create the user instance
-        user = BusinessSubject(**validated_data)  # No need to set 'first_name', 'last_name', or 'username'
-        user.set_password(password)  # Set the password using Django's built-in method
+        user = BusinessSubject(**validated_data)
+        user.set_password(password)
         user.save()
-        
         return user
-
 
 # If UserRegistrationSerializer is defined in the same file
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -74,20 +87,38 @@ class ClientSerializer(serializers.ModelSerializer):
         model = Client
         fields = ['first_name', 'last_name', 'username', 'password', 'email', 'profile_picture']
     
+
     def validate_email(self, value):
-        # Check if the email exists in any of the user models
-        if (BusinessSubject.objects.filter(email=value).exists() or
-           Client.objects.filter(email=value).exists() or
-           User.objects.filter(email=value).exists()):
-          raise serializers.ValidationError("A user with this email already exists.")
+        instance = self.instance  # Current instance being updated
+        if instance and instance.email == value:
+            return value  # Skip validation if the email hasn't changed
+
+        # Check if the email is being updated and is unique
+        if Client.objects.filter(email=value).exists():
+            raise serializers.ValidationError("A user with this email already exists.")
         return value
 
-
     def validate_username(self, value):
+        instance = self.instance  # Current instance being updated
+        if instance and instance.username == value:
+            return value  # Skip validation if the username hasn't changed
+
+        # Check if the username is being updated and is unique
         if Client.objects.filter(username=value).exists():
             raise serializers.ValidationError("A client with this username already exists.")
         return value
 
+    def update(self, instance, validated_data):
+        # Handle password update separately if provided
+        password = validated_data.pop('password', None)
+        if password:
+            instance.set_password(password)
+
+        # Update the instance with other fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
 
     def create(self, validated_data):
         # Extract the password from the validated data and create the user
