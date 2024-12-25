@@ -260,76 +260,89 @@ def get_business_subject(request, pk):
 
 
 
+logger = logging.getLogger(__name__)
+
 @api_view(["PUT"])
 def edit_business_subject(request, pk):
-    # Retrieve the token from the Authorization header
-    token = request.headers.get('Authorization')  # Format: "Token <your_token>"
-    
+    # Extract token from the Authorization header
+    token = request.headers.get('Authorization')  # Format: "Bearer <your_token>"
     if not token:
+        logger.error("Authentication failed: No token provided.")
         return Response({"error": "Authentication required"}, status=status.HTTP_401_UNAUTHORIZED)
-    
+
     try:
-        # Extract the actual token key from the "Token <token>" format
-        token_key = token.split(' ')[1]  # Assumes "Token <token>"
-        
-        # Retrieve the token object from the database
+        token_key = token.split(' ')[1]  # Extract actual token key
         business_token = BusinessSubjectToken.objects.get(key=token_key)
-        
-        # Retrieve the client associated with this token
-        user = business_token.business_subject  # assuming you have a reverse relationship 'client' on your ClientToken model
-        
+        user = business_token.business_subject  # Associated user
     except BusinessSubjectToken.DoesNotExist:
+        logger.error("Authentication failed: Invalid token or token expired.")
         return Response({"error": "Invalid token or token expired"}, status=status.HTTP_401_UNAUTHORIZED)
-    
-    # Check if the authenticated user is the one trying to edit their profile
+
+    # Verify the user is updating their own profile
     if user.pk != pk:
+        logger.error(f"User {user.pk} attempted to edit another user's profile {pk}.")
         return Response({"error": "You can only edit your own profile"}, status=status.HTTP_403_FORBIDDEN)
+
+    # Log request data
+    logger.info(f"Request data for user {user.pk}: {request.data}")
+
     
-    # Get the old and new passwords from the request data
+
+    # Handle password change
     old_password = request.data.get("old_password")
     new_password = request.data.get("new_password")
     confirm_password = request.data.get("confirm_password")
-
     if old_password and new_password and confirm_password:
-        # Authenticate user with the old password to verify it
-        user = custom_authenticate_bs(email=user.email, password=old_password)
-        
-        if not user:
+        # Verify old password
+        if not user.check_password(old_password):
+            logger.error(f"Password update failed for user {user.pk}: Incorrect old password.")
             return Response({"error": "Old password is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Check if the new password and confirm password match
         if new_password != confirm_password:
-            return Response({"error": "New password and confirmation do not match."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Update the user's password
+            logger.error(f"Password update failed for user {user.pk}: Passwords do not match.")
+            return Response({"error": "Passwords do not match"}, status=status.HTTP_400_BAD_REQUEST)
         user.set_password(new_password)
-        user.save()
+        logger.info(f"Password updated successfully for user {user.pk}.")
 
-
-        return Response({"message": "Password updated successfully."}, status=status.HTTP_200_OK)
-    
-
-
-
-    try:
-        # Fetch the client to be updated
-        business_subject = BusinessSubject.objects.get(pk=pk)
-
-    except BusinessSubject.DoesNotExist:
-        return Response({"error": "Business subject not found"}, status=status.HTTP_404_NOT_FOUND)
-
-
-     # Update the `profile_picture` separately to prevent accidental overwrites
+    # Handle profile picture
     if 'profile_picture' in request.FILES:
-        business_subject.profile_picture = request.FILES['profile_picture']    
+        user.profile_picture = request.FILES['profile_picture']
+        logger.info(f"Profile picture updated for user {user.pk}.")
 
-    # Use the serializer to update the client data
-    serializer = BusinessSubjectSerializer(business_subject, data=request.data, partial=True)  # partial=True to allow partial updates
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # Save changes to user before serializing
+    try:
+        user.save()
+        logger.info(f"User {user.pk} updated successfully: {user}.")
+    except Exception as e:
+        logger.error(f"Failed to save user {user.pk}: {e}")
+        return Response({"error": "Failed to update user."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # Now, update additional fields using the serializer
+    try:
+        business_subject = BusinessSubject.objects.get(pk=pk)
+        serializer = BusinessSubjectSerializer(business_subject, data=request.data, partial=True)
+        
+        # Validate the serializer before saving the instance
+        if serializer.is_valid():  # This is the point where you check if the serializer is valid
+            serializer.save()
+            logger.info(f"Business subject {pk} updated successfully in database.")
+        else:
+            logger.error(f"Validation failed for business subject {pk}: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except BusinessSubject.DoesNotExist:
+        logger.error(f"Business subject with ID {pk} not found.")
+        return Response({"error": "Business subject not found"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        logger.error(f"Failed to update business subject {pk}: {e}")
+        return Response({"error": "Failed to update business subject."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # Inspect the database after updates
+    try:
+        updated_bs = BusinessSubject.objects.get(pk=pk)
+        logger.info(f"Database inspection: Updated business subject {updated_bs}.")
+    except Exception as e:
+        logger.error(f"Failed to fetch updated business subject {pk} from database: {e}")
+
+    return Response({"message": "Business subject updated successfully."}, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])

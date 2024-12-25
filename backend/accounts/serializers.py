@@ -9,7 +9,7 @@ class BusinessSubjectSerializer(serializers.ModelSerializer):
     nameSportOrganization = serializers.CharField(max_length=255, source='business_name', required=False)
     description = serializers.CharField(allow_blank=True, required=False)
     email = serializers.EmailField(required=False)
-    profile_picture = serializers.ImageField(required=False)
+    profile_picture = serializers.ImageField(required=False, allow_null=True)
 
     # Don't need to include 'first_name', 'last_name', and 'username' as they're removed in the model
 
@@ -18,16 +18,12 @@ class BusinessSubjectSerializer(serializers.ModelSerializer):
         fields = ['nameSportOrganization', 'profile_picture', 'description', 'email', 'password']  # Only include relevant fields
 
     def validate_email(self, value):
-        request = self.context.get("request")
-        if request and request.method in ['PUT', 'PATCH']:
-            # Only validate email if it is being updated
-            instance = self.instance  # Current instance being updated
-            if instance and instance.email == value:
-                return value
-        # Check for email conflicts
-        if (BusinessSubject.objects.filter(email=value).exists() or
-           Client.objects.filter(email=value).exists() or
-           User.objects.filter(email=value).exists()):
+        instance = self.instance  # Current instance being updated
+        if instance and instance.email == value:
+            return value  # Skip validation if the email hasn't changed
+
+        # Check if the email is being updated and is unique
+        if BusinessSubject.objects.filter(email=value).exists():
             raise serializers.ValidationError("A user with this email already exists.")
         return value
 
@@ -81,7 +77,7 @@ class ClientSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=150, required=False)
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
     email = serializers.EmailField(required=False)
-    profile_picture = serializers.ImageField(required=False)
+    profile_picture = serializers.ImageField(required=False, allow_null=True)
 
     class Meta:
         model = Client
