@@ -12,6 +12,7 @@ import CreatorImg from "../images/user.svg";
 import EditEventCard from "../components/EditEventCard.js";
 import { CiSettings } from "react-icons/ci";
 import { IoIosCloseCircle } from "react-icons/io";
+import FieldsCard from '../components/FieldsCard.js'
 {/*proba za sponzorisane dogadjaje */ }
 const UserProfile = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -223,6 +224,8 @@ const UserProfile = () => {
                     {favorites.map((favorite) => (
                       <FavoriteCard key={favorite.id} title={favorite.title} description={favorite.description} />
                     ))}
+                    <FieldsCard //value=favorite.id
+                    />
                   </div>
                 )}
 
