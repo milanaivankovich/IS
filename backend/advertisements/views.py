@@ -3,15 +3,20 @@ from rest_framework.decorators import api_view
 from .models import Advertisement
 from .serializers import AdvertisementSerializer
 from django.db.models.functions import TruncDate
+from django.utils.timezone import now
 from fields.models import Field, Sport   
 from accounts.models import BusinessSubject
+from datetime import datetime
 
 @api_view(['GET'])
 def getData(request):
-    advertisements = Advertisement.objects.filter(is_deleted=False)
+    now = datetime.now()
+    advertisements = Advertisement.objects.filter(
+        is_deleted=False,
+        date__gt=now
+    )
     serializer = AdvertisementSerializer(advertisements, many=True)
     return Response(serializer.data)
-
 
 @api_view(['POST'])
 def setData(request):
@@ -115,7 +120,14 @@ def get_advertisement_by_id(request, id):
     
 @api_view(['GET'])
 def get_advertisements_by_business_subject(request, business_subject_id):
-    advertisements = Advertisement.objects.filter(business_subject=business_subject_id, is_deleted=False)
+    now = datetime.now()
+
+    advertisements = Advertisement.objects.filter(
+        business_subject=business_subject_id,
+        is_deleted=False,
+        date__gt=now
+    )
+    
     if advertisements.exists():
         serializer = AdvertisementSerializer(advertisements, many=True)
         return Response(serializer.data)
@@ -157,3 +169,16 @@ def delete_advertisement(request, pk):
     advertisement.is_deleted = True
     advertisement.save()
     return Response({'message': 'Advertisement marked as deleted'}, status=200)
+
+@api_view(['GET'])
+def get_past_advertisements_by_business_subject(request, business_subject_id):
+    advertisements = Advertisement.objects.filter(
+        business_subject=business_subject_id,
+        is_deleted=False,
+        date__lt=now()  
+    )
+    if advertisements.exists():
+        serializer = AdvertisementSerializer(advertisements, many=True)
+        return Response(serializer.data)
+    else:
+        return Response({'error': 'No past advertisements found for this business subject'}, status=404)

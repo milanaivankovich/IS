@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import SponsoredEventCardForBusinessSubject from '../components/SponsoredEventCardForBusinessSubject';
-import EventCard from '../components/EventCard';
+import SponsoredEventCard from '../components/SponsoredEventCard';
 import FavoriteCard from '../components/FavoriteCard';
 import MessageCard from '../components/MessageCard';
-import ActivityCard from '../components/ActivityCard';
 import './UserProfile.css';
 import './BusinessSubjectProfile.css';
 import MenuBar from "../components/MenuBar.js";
@@ -82,7 +80,7 @@ const BusinessSubjectProfile = () => {
 
   const [eventsData, setEventsData] = useState([]);
   const [selectionTitle, setSelectionTitle] = useState('Događaji');
-  const [selectionSubtitle, setSelectionSubtitle] = useState('Događaji koje je kreirao korisnik');
+  const [selectionSubtitle, setSelectionSubtitle] = useState('Predstojeći događaji koje je kreirao korisnik');
 
   // Funkcija za dohvaćanje podataka za različite kartice
   useEffect(() => {
@@ -107,7 +105,7 @@ const BusinessSubjectProfile = () => {
             setMessages(messagesResponse.data);
             break;
           case "activity":
-            const activityResponse = await axios.get('http://localhost:5000/api/user/activity', {
+            const activityResponse = await axios.get('http://127.0.0.1:8000/api/advertisementspast/businesssubject/' + id.id + '/', {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setActivityHistory(activityResponse.data);
@@ -146,7 +144,7 @@ const BusinessSubjectProfile = () => {
             <button className={`tab-button ${activeTab === "events" ? "active" : ""}`}
               onClick={() => {
                 setSelectionTitle('Događaji');
-                setSelectionSubtitle('Događaji koje je kreirao korisnik');
+                setSelectionSubtitle('Predstojeći događaji koje je kreirao korisnik');
                 setActiveTab("events");
               }}>Događaji</button>
             <button className={`tab-button ${activeTab === "favorites" ? "active" : ""}`} onClick={() => {
@@ -160,7 +158,7 @@ const BusinessSubjectProfile = () => {
 
             }>Poruke</button>
             <button className={`tab-button ${activeTab === "activity" ? "active" : ""}`} onClick={() => {
-              setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Događaji kojima se korisnik pridružio');
+              setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Stari događaji koje je kreirao korisnik');
               setActiveTab("activity")
             }}>Istorija Aktivnosti</button>
           </nav></div>
@@ -177,7 +175,7 @@ const BusinessSubjectProfile = () => {
                   <div className="events-section">
                     <div className="scroll-bar-user-profile">
                       {Array.isArray(eventsData) && eventsData.map((activity) => (
-                        <SponsoredEventCardForBusinessSubject key={activity.id} event={activity} />
+                        <SponsoredEventCard key={activity.id} event={activity} />
                       ))}
                     </div>
                     {(id.id !== -1) ? (
@@ -209,13 +207,13 @@ const BusinessSubjectProfile = () => {
                     ))}
                   </div>
                 )}
-
-                {activeTab === "activity" && (
-                  <div className="scroll-bar-user-profile">
-                    {activityHistory.map((activity) => (
-                      <ActivityCard key={activity.id} activity={activity} />
-                    ))}
-                  </div>
+               
+               {activeTab === "activity" && (
+                <div className="scroll-bar-user-profile">
+                 {Array.isArray(activityHistory) && activityHistory.map((activity) => (
+                   <SponsoredEventCard key={activity.id} event={activity} />
+                 ))}
+                </div>
                 )}
               </div>
             )}
