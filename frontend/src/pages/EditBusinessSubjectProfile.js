@@ -7,6 +7,7 @@ import axios from "axios";
 import AddPhoto from '../components/AddPhoto.js';
 import { IoIosCloseCircle } from "react-icons/io";
 import { Modal, Button } from 'react-bootstrap';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 //import 'bootstrap/dist/css/bootstrap.min.css';
 
 const EditUserProfile = () => {
@@ -80,12 +81,70 @@ const EditUserProfile = () => {
       });
   };
 
+  /**
+    * password update and validation (show hide)
+    * 
+    */
+
   const [password, setPassword] = useState({
     'old_password': '',
     'new_password': '',
     'confirm_password': '',
   });
 
+  const [isPasswordFieldFocused, setIsPasswordFieldFocused] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [passwordCriteria, setPasswordCriteria] = useState({
+    minLength: false,
+    hasUpperCase: false,
+    hasLowerCase: false,
+    hasSpecialChar: false,
+    hasNumber: false,
+  });
+
+  const validatePassword = (value = password.new_password) => {
+    if (!value) return false;
+    const criteria = {
+      minLength: value.length >= 8,
+      hasUpperCase: /[A-Z]/.test(value),
+      hasLowerCase: /[a-z]/.test(value),
+      hasSpecialChar: /[\W_]/.test(value),
+      hasNumber: /[0-9]/.test(value),
+    };
+
+    setPasswordCriteria(criteria);
+
+    return (
+      criteria.minLength &&
+      criteria.hasUpperCase &&
+      criteria.hasLowerCase &&
+      criteria.hasSpecialChar &&
+      criteria.hasNumber &&
+      value === password.confirm_password
+    );
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  //odvojen button za staru lozinku
+  const [showPasswordOld, setShowPasswordOld] = useState(false);
+
+  const togglePasswordVisibilityOld = () => {
+    setShowPasswordOld(!showPasswordOld)
+  }
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    if (id === "password") {
+      validatePassword(value);
+    }
+  };
+
+  //update
 
   const handlePasswordUpdate = async (e, password) => {
     e.preventDefault();
@@ -95,6 +154,7 @@ const EditUserProfile = () => {
     else if (password.new_password !== password.confirm_password) {
       alert("Nova lozinka se ne podudara sa potvrdom");
     }
+    else if (!validatePassword()) alert("Nova lozinka ne ispunjava zadane kriterijume");
     else {
       await axios.put('http://localhost:8000/api/business-subject/' + id.id + '/edit/', password, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -200,28 +260,97 @@ const EditUserProfile = () => {
           </form>
           <form onSubmit={(e) => handlePasswordUpdate(e, password)}>
             <label className="EditProfileLabel">Stara lozinka</label>
-            <input
-              type="password"
-              placeholder="Unesi staru lozinku"
-              className="EditProfileInput"
-              onChange={(e) => setPassword(prevData => ({ ...prevData, old_password: e.target.value }))}
-              required
-            />
+            <div className="password-container">
+              <input
+                type={showPasswordOld ? "text" : "password"}
+                placeholder="Unesi staru lozinku"
+                className="EditProfileInput"
+                onChange={(e) => setPassword(prevData => ({ ...prevData, old_password: e.target.value }))}
+                required
+              />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={togglePasswordVisibilityOld}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
             <label className="EditProfileLabel">Nova lozinka</label>
-            <input
-              type="password"
-              placeholder="Unesi novu lozinku"
-              className="EditProfileInput"
-              onChange={(e) => setPassword(prevData => ({ ...prevData, new_password: e.target.value }))}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Potvrdi novu lozinku"
-              className="EditProfileInput"
-              onChange={(e) => setPassword(prevData => ({ ...prevData, confirm_password: e.target.value }))}
-              required
-            />
+            {/*<input
+                          type="password"
+                          placeholder="Unesi novu lozinku"
+                          className="EditProfileInput"
+                          onChange={(e) => setPassword(prevData => ({ ...prevData, new_password: e.target.value }))}
+                          required
+                        />*/}
+            <div className="password-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="EditProfileInput"
+                id="password"
+                placeholder="Unesi novu lozinku"
+                onChange={(e) => {
+                  setPassword(prevData => ({ ...prevData, new_password: e.target.value }));
+                  handleInputChange(e);
+                  setIsPasswordFieldFocused(true);
+                }}
+                //onFocus={() => setIsPasswordFieldFocused(true)}
+                //onBlur={() => setIsPasswordFieldFocused(false)}
+                required />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+            {isPasswordFieldFocused && (
+              <div className="password-criteria-box">
+                <h4>Kriterijumi za lozinku:</h4>
+                <ul className="password-criteria">
+                  <li className={passwordCriteria.minLength ? "valid" : "invalid"}>
+                    Minimalno 8 karaktera
+                  </li>
+                  <li
+                    className={passwordCriteria.hasUpperCase ? "valid" : "invalid"}
+                  >
+                    Bar jedno veliko slovo
+                  </li>
+                  <li
+                    className={passwordCriteria.hasLowerCase ? "valid" : "invalid"}
+                  >
+                    Bar jedno malo slovo
+                  </li>
+                  <li
+                    className={passwordCriteria.hasSpecialChar ? "valid" : "invalid"}
+                  >
+                    Bar jedan specijalni znak
+                  </li>
+                  <li
+                    className={passwordCriteria.hasNumber ? "valid" : "invalid"}
+                  >
+                    Bar jedan broj
+                  </li>
+                </ul>
+              </div>)}
+            <div className="password-container">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Potvrdi novu lozinku"
+                className="EditProfileInput"
+                onChange={(e) => setPassword(prevData => ({ ...prevData, confirm_password: e.target.value }))}
+                required
+              />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
             <button
               className="EditProfileButton"
               id="PromijeniLozinkuButton"
