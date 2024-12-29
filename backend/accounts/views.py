@@ -573,7 +573,7 @@ def send_email_via_gmail(to_email, subject, message):
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
                 'client_secret.json', SCOPES)
-            creds = flow.run_local_server(port=8000)
+            creds = flow.run_local_server(port=8001)
 
 
         # Save the credentials for the next run

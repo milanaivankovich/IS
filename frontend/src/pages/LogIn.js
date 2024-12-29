@@ -11,7 +11,7 @@ const Login = () => {
   });
 
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
-  const [resetUsername, setResetUsername] = useState('');
+  const [resetEmail, setResetEmail] = useState('');
   const [resetMessage, setResetMessage] = useState('');
 
   const [error, setError] = useState('');
@@ -46,15 +46,34 @@ const Login = () => {
   };
 
   const handleResetPassword = async () => {
-    setResetMessage('');
-    try { /*endpoint nije dobar */
-      await axios.post('http://localhost:8000/api/request-password-reset/', { username: resetUsername });
+    setResetMessage(''); // Clear previous messages
+    setError(''); // Clear error messages
+  
+    if (!resetEmail) {
+      setError('Unesite email adresu.');
+      return;
+    }
+  
+    try {
+      // Call the backend API with the email
+      const response = await axios.post('http://localhost:8000/api/request-password-reset/', {
+        email: resetEmail, // Backend expects `email`
+      });
+  
+      // Display success message from backend
       setResetMessage('Link za resetovanje lozinke je poslan na vašu email adresu.');
     } catch (error) {
       console.error('Password reset failed:', error);
-      setResetMessage('Došlo je do greške. Provjerite korisničko ime i pokušajte ponovo.');
+  
+      // Handle specific errors from backend
+      if (error.response?.status === 400) {
+        setResetMessage('Korisnik sa ovom email adresom ne postoji.');
+      } else {
+        setResetMessage('Došlo je do greške. Pokušajte ponovo.');
+      }
     }
   };
+  
   
 
   return (
@@ -117,12 +136,12 @@ const Login = () => {
       <div className="modal-overlay">
         <div className="modal-content">
           <h3>Resetujte lozinku</h3>
-          <p>Unesite vaše korisničko ime da bismo vam poslali link za resetovanje lozinke.</p>
+          <p>Unesite Vaš email da bismo vam poslali link za resetovanje lozinke.</p>
           <input
             type="text"
-            placeholder="Korisničko ime"
-            value={resetUsername}
-            onChange={(e) => setResetUsername(e.target.value)}
+            placeholder="Email"
+            value={resetEmail}
+            onChange={(e) => setResetEmail(e.target.value)}
             className="modal-input"
           />
           <button onClick={handleResetPassword} className="modal-btn">
