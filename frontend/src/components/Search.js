@@ -15,7 +15,7 @@ const SearchComponent = () => {
 
     setIsLoading(true);  // Postavljamo da je pretraga u toku
     try {
-      const response = await fetch(`/api/search?q=${query}`);
+      const response = await fetch(`http://localhost:8000//api/search/users?q=${query}`);
       const data = await response.json();
 
       setResults({

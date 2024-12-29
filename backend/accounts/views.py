@@ -733,6 +733,8 @@ def get_profile(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])  # Allow all users to access this endpoint
 def search_users(request):
+
+    logger.debug("Search users endpoint was hit")  # Add this log line
     query = request.GET.get('q', '').strip()  # Strip any leading/trailing whitespace
     
     if not query:
