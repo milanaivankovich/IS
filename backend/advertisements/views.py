@@ -20,9 +20,8 @@ def getData(request):
 
 @api_view(['POST'])
 def setData(request):
-    print("Received data:", request.data)  # Provjerite što dolazi u zahtjevu
+    print("Received data:", request.data) 
     try:
-        # Provjerite ako su polja prisutna u request.data
         if 'field' not in request.data or 'sport' not in request.data:
             return Response({'error': 'Missing required fields: field or sport'}, status=400)
 
@@ -46,7 +45,7 @@ def setData(request):
 
 @api_view(['GET'])
 def advertisements_by_date(request, date):
-    advertisements = Advertisement.objects.annotate(date_only=TruncDate('date')).filter(date_only=date, is_deleted=False)
+    advertisements = Advertisement.objects.annotate(date_only=TruncDate('date')).filter(date_only=date, is_deleted=False, date__gt=now())
     if advertisements.exists():
         serializer = AdvertisementSerializer(advertisements, many=True)
         return Response(serializer.data)
@@ -56,7 +55,7 @@ def advertisements_by_date(request, date):
 
 @api_view(['GET'])
 def advertisements_by_location(request, location):
-    advertisements = Advertisement.objects.filter(field__location__icontains=location, is_deleted=False)
+    advertisements = Advertisement.objects.filter(field__location__icontains=location, is_deleted=False, date__gt=now())
     if advertisements.exists():
         serializer = AdvertisementSerializer(advertisements, many=True)
         return Response(serializer.data)
@@ -67,7 +66,7 @@ def advertisements_by_location(request, location):
 @api_view(['GET'])
 def advertisements_by_date_and_location(request, date, location):
     advertisements = Advertisement.objects.annotate(date_only=TruncDate('date')) \
-                                           .filter(date_only=date, field__location__icontains=location, is_deleted=False)
+                                           .filter(date_only=date, field__location__icontains=location, is_deleted=False, date__gt=now())
     if advertisements.exists():
         serializer = AdvertisementSerializer(advertisements, many=True)
         return Response(serializer.data)
@@ -137,7 +136,7 @@ def get_advertisements_by_business_subject(request, business_subject_id):
 @api_view(['GET'])
 def advertisements_by_field(request, field):
     try:
-        reviews = Advertisement.objects.filter(field=field, is_deleted=False)
+        reviews = Advertisement.objects.filter(field=field, is_deleted=False, date__gt=now())
         serializer = AdvertisementSerializer(reviews, many=True)
         return Response(serializer.data)
     except Advertisement.DoesNotExist:
