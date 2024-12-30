@@ -606,7 +606,7 @@ def send_email_via_gmail(to_email, subject, message):
 def generate_password_reset_link(user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = PasswordResetTokenGenerator().make_token(user)
-    return f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
+    return f"{settings.FRONTEND_URL}/resetpassword?uid={uid}&token={token}"
 
 @api_view(['POST'])
 def request_password_reset(request):
