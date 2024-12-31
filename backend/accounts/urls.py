@@ -56,6 +56,8 @@ urlpatterns = [
 
     path('api/get-user-type-and-id/', views.get_user_type_and_id, name='get-user-type-and-id'),
 
+    path('api/social-login/', views.social_login, name='social_login'),
+
 
 
     

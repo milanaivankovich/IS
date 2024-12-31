@@ -7,6 +7,12 @@ from rest_framework.permissions import IsAdminUser
 from accounts.authentication import custom_authenticate
 from accounts.authentication import custom_authenticate_bs
 
+from firebase_admin import auth
+from django.http import JsonResponse
+
+from django.views.decorators.csrf import csrf_exempt
+import json
+
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from email.mime.text import MIMEText
@@ -75,7 +81,71 @@ class UserRegistrationView(APIView):
             return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+def verify_firebase_token(token):
+    try:
+        decoded_token = auth.verify_id_token(token)
+        return decoded_token
+    except Exception as e:
+        return None
 
+
+@csrf_exempt
+def social_login(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        token = data.get("id_token")
+
+        if not token:
+            return JsonResponse({"error": "No token provided"}, status=400)
+
+        user_data = verify_firebase_token(token)
+
+        if not user_data:
+            return JsonResponse({"error": "Invalid token"}, status=401)
+
+        # At this point, user_data contains verified Firebase user info
+        return JsonResponse({
+            "uid": user_data["uid"],
+            "email": user_data.get("email"),
+            "name": user_data.get("name"),
+        })
+
+    return JsonResponse({"error": "Invalid method"}, status=405)
+
+from django.core.files.base import ContentFile
+import requests
+
+def link_firebase_user(firebase_user_data):
+    email = firebase_user_data.get("email")
+    uid = firebase_user_data["uid"]
+    name = firebase_user_data.get("name", "").split(" ", 1)  # Split full name into first and last name
+    first_name = name[0] if len(name) > 0 else ""  # Extract first name
+    last_name = name[1] if len(name) > 1 else ""  # Extract last name
+    profile_picture_url = firebase_user_data.get("photoUrl")  # Firebase might have `photoUrl`
+
+    # Create or get the user
+    user, created = Client.objects.get_or_create(
+        username= first_name + uid,
+        defaults={
+            "email": email,
+            "first_name": first_name,
+            "last_name": last_name,
+        },
+    )
+
+    # Handle profile picture
+    if created and profile_picture_url:  # Only download if the user is newly created
+        try:
+            response = requests.get(profile_picture_url)
+            if response.status_code == 200:
+                user.profile_picture.save(
+                    f"{uid}_profile.jpg", ContentFile(response.content), save=True
+                )
+        except requests.RequestException:
+            pass  # Handle errors silently (optional: log the error)
+
+    return user
+         
 
 logger = logging.getLogger(__name__)
 
