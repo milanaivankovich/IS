@@ -5,7 +5,7 @@ import logo from "../images/logo.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../components/ImageCrop";
-
+import { auth, googleProvider, facebookProvider, signInWithPopup } from "../components/Firebase.js"; 
 
 function RegisterRekreativac() {
 
@@ -131,6 +131,17 @@ function RegisterRekreativac() {
     setFormData({ ...formData, [id]: value });
     if (id === "password") {
       validatePassword(value);
+    }
+  };
+
+  const handleSocialSignIn = async (provider) => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      console.log("Korisnik:", result.user);
+      alert("Prijava uspješna!");
+    } catch (error) {
+      console.error("Greška prilikom prijave:", error);
+      alert("Došlo je do greške. Molimo pokušajte ponovo.");
     }
   };
 
@@ -360,11 +371,17 @@ function RegisterRekreativac() {
         )}
 
         <div className="social-buttons">
-          <button className="social-button facebook-button">
-            Registrujte se putem Facebook-a
+          <button
+            className="social-button google-button"
+            onClick={() => handleSocialSignIn(googleProvider)}
+          >
+            Registrujte se putem Google-a
           </button>
-          <button className="social-button email-button">
-            Registrujte se putem Email-a
+          <button
+            className="social-button facebook-button"
+            onClick={() => handleSocialSignIn(facebookProvider)}
+          >
+            Registrujte se putem Facebook-a
           </button>
         </div>
 
