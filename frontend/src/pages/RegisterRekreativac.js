@@ -138,6 +138,9 @@ function RegisterRekreativac() {
     try {
       const result = await signInWithPopup(auth, provider);
       console.log("Korisnik:", result.user);
+      const idToken = await result.user.getIdToken(); // Get the Firebase ID token
+      console.log("Generated ID Token:", idToken);
+
   
       // Priprema podataka za slanje na backend
       const userData = {
@@ -148,7 +151,11 @@ function RegisterRekreativac() {
       };
   
       // Slanje podataka na backend pomoću axiosa
-      const response = await axios.post("https://your-backend-api.com/api/auth/social-login", userData);
+      //const response = await axios.post("http://localhost:8000/api/social-login/", userData);
+
+      const response = await axios.post("http://localhost:8000/api/social-login/", {
+        id_token: idToken, // This matches the backend's expected field
+    });
   
       // Provjera odgovora sa servera
       if (response.status === 200) {

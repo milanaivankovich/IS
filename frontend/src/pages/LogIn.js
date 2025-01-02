@@ -52,7 +52,10 @@ const Login = () => {
 
       // Optional: Send user info to backend
       const token = await user.getIdToken();
-      await axios.post('http://localhost:8000/api/social-login/', { token });
+      await axios.post('http://localhost:8000/api/social-login/', { id_token: token });
+
+
+    
 
       localStorage.setItem('user', JSON.stringify(user));
       window.location.href = "/";
