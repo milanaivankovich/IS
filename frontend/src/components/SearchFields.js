@@ -86,7 +86,7 @@ const SearchFieldsComponent = () => {
                   className="comboBoxItem"
                   onMouseDown={() => handleFieldClick(item.id)}
                 >
-                  <div>{item.location}</div>
+                  <div>{item.location}-{item.precise_location}</div>
                 </li>
               ))}
             </ul>
