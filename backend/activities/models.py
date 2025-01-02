@@ -14,7 +14,8 @@ class Activities(models.Model):
     field = models.ForeignKey('fields.Field', on_delete=models.CASCADE, null=True)
     NumberOfParticipants = models.IntegerField(null=True)
     sport = models.ForeignKey('fields.Sport', on_delete=models.CASCADE, null=True)
-
+    is_deleted = models.BooleanField(default=False)
+    
     #def __str__(self):
     #    formatted_date = localtime(self.date).strftime('%Y-%m-%d %H:%M:%S') if self.date else "N/A"
     #    return f"{self.titel} - {formatted_date}"

@@ -103,21 +103,23 @@ def activities_by_date(request, date):
 
 @api_view(['GET'])
 def activities_by_location(request, location):
-    activities = Activities.objects.filter(field__location__icontains=location)
+    activities = Activities.objects.filter(field__location__icontains=location, is_deleted=False, date__gt=now())
     if activities.exists():
         serializer = ActivitiesSerializer(activities, many=True)
         return Response(serializer.data)
     return Response({'error': 'No activities found for this location'}, status=404)
 
+
+
 @api_view(['GET'])
 def activities_by_date_and_location(request, date, location):
-    activities = Activities.objects.annotate(date_only=TruncDate('date')).filter(date_only=date, is_deleted=False, date__gt=now())
+    activities = Activities.objects.annotate(date_only=TruncDate('date')) \
+                                           .filter(date_only=date, field__location__icontains=location, is_deleted=False, date__gt=now())
     if activities.exists():
         serializer = ActivitiesSerializer(activities, many = True)
         return Response(serializer.data)
     return Response({'error': 'No activities found for this date and location'}, status=404)
 
- 
 
 @api_view(['GET'])
 def get_location_by_field_id(request, field_id):
