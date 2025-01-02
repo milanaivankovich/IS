@@ -12,7 +12,8 @@ import CreatorImg from "../images/user.svg";
 import EditEventCard from "../components/EditEventCard.js";
 import { CiSettings } from "react-icons/ci";
 import { IoIosCloseCircle } from "react-icons/io";
-import FieldsCard from '../components/FieldsCard.js'
+import FieldsCard from '../components/FieldsCard.js';
+import Spinner from 'react-bootstrap/Spinner';
 {/*proba za sponzorisane dogadjaje */ }
 const UserProfile = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -176,7 +177,7 @@ const UserProfile = () => {
                 setActiveTab("events");
               }}>Događaji</button>
             <button className={`tab-button ${activeTab === "favorites" ? "active" : ""}`} onClick={() => {
-              setSelectionTitle('Omiljeno'); setSelectionSubtitle('Vaši omiljeni događaji');
+              setSelectionTitle('Omiljeno'); setSelectionSubtitle('Omiljeni tereni');
               setActiveTab("favorites")
             }}>Omiljeno</button>
             <button className={`tab-button ${activeTab === "messages" ? "active" : ""}`} onClick={() => {
@@ -196,7 +197,7 @@ const UserProfile = () => {
           <h2 className="userprofile-subtitle">{selectionSubtitle}</h2>
           <section className="tab-content">
             {loading ? (
-              <p>Učitavanje...</p>
+              <Spinner animation="border" />
             ) : (
               <div>
                 {activeTab === "events" && (
@@ -249,9 +250,9 @@ const UserProfile = () => {
             )}
           </section>
         </div>
-      </div>
+      </div >
       <Footer />
-    </body>
+    </body >
   );
 };
 

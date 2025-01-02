@@ -51,7 +51,7 @@ const EditEventCard = ({ user, pk }) => {
   };
 
   const [eventData, setEventData] = useState({
-    "id": 10,
+    //"id": 10,
     "username": user.username,
     "titel": "",
     "description": "",
@@ -63,14 +63,13 @@ const EditEventCard = ({ user, pk }) => {
   });
 
   const createNew = async () => {
-    setEventData(prevData => ({ ...prevData, field: selectedLocation.value, sport: selectedLocation.value }));
     await axios.post('http://localhost:8000/api/activities/add/', eventData, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
       .then((response) => {
         console.log("Data updated successfully:", response.data);
         window.location.reload();
-        alert("Događaj je uspješno kreiran.");
+        //alert("Događaj je uspješno kreiran.");
       })
       .catch((error) => {
         console.error("There was an error updating the data:", error);
@@ -92,9 +91,12 @@ const EditEventCard = ({ user, pk }) => {
     }),
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    createNew();
+
+    await setEventData(prevData => ({ ...prevData, field: selectedLocation.value, sport: selectedLocation.value }));
+    if (eventData.field !== -1 && eventData.sport !== -1 && eventData.NumberOfParticipants !== -1)
+      await createNew();
   };
 
   return (
