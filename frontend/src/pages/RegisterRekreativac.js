@@ -138,12 +138,46 @@ function RegisterRekreativac() {
     try {
       const result = await signInWithPopup(auth, provider);
       console.log("Korisnik:", result.user);
-      alert("Prijava uspješna!");
+      const idToken = await result.user.getIdToken(); // Get the Firebase ID token
+      console.log("Generated ID Token:", idToken);
+
+  
+      // Priprema podataka za slanje na backend
+      const userData = {
+        uid: result.user.uid,
+        email: result.user.email,
+        displayName: result.user.displayName,
+        photoURL: result.user.photoURL,
+      };
+  
+      // Slanje podataka na backend pomoću axiosa
+      //const response = await axios.post("http://localhost:8000/api/social-login/", userData);
+
+      const response = await axios.post("http://localhost:8000/api/social-login/", {
+        id_token: idToken, // This matches the backend's expected field
+    });
+  
+      // Provjera odgovora sa servera
+      if (response.status === 200) {
+        console.log("Korisnik uspješno sinhronizovan s backendom");
+        alert("Prijava uspješna!");
+      } else {
+        console.error("Greška sa servera:", response.data);
+        alert("Došlo je do greške pri sinhronizaciji s backendom.");
+      }
     } catch (error) {
       console.error("Greška prilikom prijave:", error);
-      alert("Došlo je do greške. Molimo pokušajte ponovo.");
+      if (error.response) {
+        // Greška s backendom (npr. 400 ili 500 status)
+        console.error("Backend greška:", error.response.data);
+        alert(`Greška sa servera: ${error.response.data.message || "Pokušajte ponovo."}`);
+      } else {
+        // Greška s prijavom ili mrežom
+        alert("Došlo je do greške. Molimo pokušajte ponovo.");
+      }
     }
   };
+  
 
   const submitForm = async () => {
     if (isStepValid()) {

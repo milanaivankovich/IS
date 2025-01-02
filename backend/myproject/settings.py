@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import firebase_admin
+from firebase_admin import credentials
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -164,6 +166,12 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+# Path to the Firebase credentials file
+FIREBASE_CREDENTIALS = os.path.join(BASE_DIR, "firebasecredentials.json")
+
+# Initialize Firebase Admin SDK
+cred = credentials.Certificate(FIREBASE_CREDENTIALS)
+firebase_admin.initialize_app(cred)
 
 
 # Static files (CSS, JavaScript, Images)

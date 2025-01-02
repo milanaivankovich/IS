@@ -86,6 +86,7 @@ def verify_firebase_token(token):
         decoded_token = auth.verify_id_token(token)
         return decoded_token
     except Exception as e:
+        print(f"Token verification failed: {e}")
         return None
 
 
