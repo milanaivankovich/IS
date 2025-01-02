@@ -79,19 +79,44 @@ const ActivityCard = ({ activity }) => {
     }
   };
 
+  ///datetime
+  const parseDateTime = (dateString) => {
+    // Parse the input date string
+    const date = new Date(dateString);
+
+    // Format the date as dd/MM/yyyy
+    const formattedDate = date
+      .toLocaleDateString("en-GB")
+      .replace(/\//g, "-")
+      .replace(/-/g, "/");
+
+    // Format the time as hh:mm
+    const formattedTime = date
+      .toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+
+    return { formattedDate, formattedTime };
+  };
+
+  const { formattedDate, formattedTime } = parseDateTime(date);
+
   return (
     <div className="activity-card">
       <h3 className="activity-card-title">{titel}</h3>
       <p><strong>Opis:</strong> {description}</p>
       <p><strong>Sport:</strong> {sports}</p>
-      <p><strong>Datum:</strong> {date}</p>
+      <p><strong>Datum:</strong> {formattedDate}</p>
+      <p><strong>Vrijeme: </strong>{formattedTime}</p>
       <p><strong>Broj preostalih učesnika:</strong> {remainingSlots}</p>
       <p><strong>Lokacija:</strong> {location}</p>
 
       <div className="activity-card-buttons">
-        <button 
-          className="button" 
-          onClick={handleRegister} 
+        <button
+          className="button"
+          onClick={handleRegister}
           disabled={remainingSlots <= 0 || isLoading || !isLoggedIn}
         >
           {isLoading ? "Prijava u toku..." : "Prijavi se"}

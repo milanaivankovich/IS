@@ -148,7 +148,8 @@ const UserProfile = () => {
       }
     };
 
-    fetchData();
+    if (id.id !== -1)
+      fetchData();
   }, [id, activeTab]);
 
   return (
