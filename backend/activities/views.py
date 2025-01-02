@@ -7,10 +7,10 @@ from accounts.models import Client
 from .serializers import ActivitiesSerializer
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
 from datetime import datetime
 from django.core.exceptions import ValidationError
-
+from django.db.models.functions import TruncDate
+from django.utils.timezone import now
 
 class ActivitiesCreateView(CreateView):
     model = Activities
@@ -18,10 +18,20 @@ class ActivitiesCreateView(CreateView):
     template_name = 'activities/aktivnost_form.html'    
     success_url = reverse_lazy('aktivnost-success')
 
+#@api_view(['GET'])
+#def getData(request):
+#    activities = Activities.objects.all()
+#    serializer = ActivitiesSerializer(activities, many=True)
+#    return Response(serializer.data)
+
 @api_view(['GET'])
 def getData(request):
-    activities = Activities.objects.all()
-    serializer = ActivitiesSerializer(activities, many=True)
+    now = datetime.now()
+    activiti = Activities.objects.filter(
+        is_deleted=False,
+        date__gt=now
+    )
+    serializer = ActivitiesSerializer(activiti, many=True)
     return Response(serializer.data)
 
 @api_view(['POST'])
@@ -57,20 +67,30 @@ def get_client_activities(request, client_id):
     serializer = ActivitiesSerializer(activities, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 @api_view(['GET'])
 def activities_by_date(request, date):
-    # Validacija formata datuma
-    try:
-        valid_date = datetime.strptime(date, "%Y-%m-%d").date()
-    except ValueError:
-        return Response({'error': 'Invalid date format. Use YYYY-MM-DD.'}, status=400)
-    
-    activities = Activities.objects.filter(date=valid_date)
+    activities = Activities.objects.annotate(date_only=TruncDate('date')).filter(date_only=date, is_deleted=False, date__gt=now())
     if activities.exists():
         serializer = ActivitiesSerializer(activities, many=True)
         return Response(serializer.data)
+    else:
+        return Response({'error': 'No advertisements found for this date'}, status=404)
 
-    return Response({'error': 'No activities found for this date'}, status=404)
+#@api_view(['GET'])
+#def activities_by_date(request, date):
+    # Validacija formata datuma
+ #   try:
+   #     valid_date = datetime.strptime(date, "%Y-%m-%d").date()
+  #  except ValueError:
+ #       return Response({'error': 'Invalid date format. Use YYYY-MM-DD.'}, status=400)
+  #  
+  #  activities = Activities.objects.filter(date=valid_date)
+   # if activities.exists():
+   #     serializer = ActivitiesSerializer(activities, many=True)
+   #     return Response(serializer.data)
+
+  #  return Response({'error': 'No activities found for this date'}, status=404)
 
 #@api_view(['GET'])
 #def activities_by_date(request, date):
@@ -91,11 +111,13 @@ def activities_by_location(request, location):
 
 @api_view(['GET'])
 def activities_by_date_and_location(request, date, location):
-    activities = Activities.objects.filter(date = date, field__location__icontains=location)
+    activities = Activities.objects.annotate(date_only=TruncDate('date')).filter(date_only=date, is_deleted=False, date__gt=now())
     if activities.exists():
         serializer = ActivitiesSerializer(activities, many = True)
         return Response(serializer.data)
     return Response({'error': 'No activities found for this date and location'}, status=404)
+
+ 
 
 @api_view(['GET'])
 def get_location_by_field_id(request, field_id):
@@ -108,12 +130,18 @@ def get_location_by_field_id(request, field_id):
     
 @api_view(['PUT'])
 def update_activity(request, activity_id):
-    activities = get_object_or_404(Activities, id=activity_id)
-    serializer = ActivitiesSerializer(activities, data=request.data)
+    try:
+        activities = Activities.objects.get(activity_id = activity_id, is_deleted=False)
+    except Activities.DoesNotExist:
+        return Response({'error': 'Advertisement not found'}, status=404)
+
+    serializer = ActivitiesSerializer(activities, data=request.data, partial=True)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=200)
+    else:
+        return Response(serializer.errors, status=400)
+
 
 @api_view(['GET'])
 def get_type_of_sport_by_field_id(request, field_id):
