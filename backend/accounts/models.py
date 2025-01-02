@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 from django.utils.crypto import get_random_string
+from fields.models import Field
 
 class Client(AbstractUser):
     # Additional fields specific to Client
@@ -32,6 +33,11 @@ class Client(AbstractUser):
         blank=True,
         help_text="Specific permissions for this user.",
         verbose_name="user permissions",
+    )
+    favorite_fields = models.ManyToManyField(
+        'fields.Field', 
+        related_name='favorite_clients', 
+        blank=True
     )
 
     def __str__(self):
@@ -84,6 +90,11 @@ class BusinessSubject(AbstractUser):
         blank=True,
         help_text="Specific permissions for this user.",
         verbose_name="user permissions",
+    )
+    favorite_fields = models.ManyToManyField(
+        'fields.Field', 
+        related_name='favorite_business_subjects', 
+        blank=True
     )
 
     def __str__(self):

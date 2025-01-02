@@ -2,6 +2,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
+from .views import get_business_subject_favorite_fields
 
 # Set up the router for viewsets
 router = DefaultRouter()
@@ -58,9 +59,9 @@ urlpatterns = [
 
     path('api/social-login/', views.social_login, name='social_login'),
 
+    path('api/client/favorite-fields/<int:user_id>/', views.get_client_favorite_fields, name='client-favorite-fields'),
+    path('api/business-subject/favorite-fields/<int:business_id>/', get_business_subject_favorite_fields, name='business-subject-favorite-fields'),
 
-
-    
     # Include the router URLs
     path('', include(router.urls)),
 ]

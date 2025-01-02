@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SponsoredEventCard from '../components/SponsoredEventCard';
-import FavoriteCard from '../components/FavoriteCard';
 import MessageCard from '../components/MessageCard';
 import './UserProfile.css';
 import './BusinessSubjectProfile.css';
@@ -11,6 +10,7 @@ import CreatorImg from "../images/user.svg";
 import NewAdvertisementCard from "../components/NewAdvertisementCard.js";
 import { CiSettings } from "react-icons/ci";
 import { IoIosCloseCircle } from "react-icons/io";
+import FieldsCard from '../components/FieldsCard.js';
 {/*proba za sponzorisane dogadjaje */ }
 const BusinessSubjectProfile = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -93,7 +93,7 @@ const BusinessSubjectProfile = () => {
             setEventsData(eventsResponse.data);
             break;
           case "favorites":
-            const favoritesResponse = await axios.get('http://localhost:8000/api/user/favorites', {
+            const favoritesResponse = await axios.get('http://localhost:8000/api/business-subject/favorite-fields/'+ id.id + '/', {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setFavorites(favoritesResponse.data);
@@ -192,13 +192,13 @@ const BusinessSubjectProfile = () => {
                   </div>
                 )}
 
-                {activeTab === "favorites" && (
-                  <div className="scroll-bar-user-profile">
-                    {favorites.map((favorite) => (
-                      <FavoriteCard key={favorite.id} title={favorite.title} description={favorite.description} />
-                    ))}
-                  </div>
-                )}
+              {activeTab === "favorites" && (
+              <div className="scroll-bar-user-profile">
+              {favorites.map((favorite) => (
+                <FieldsCard key={favorite.id} field={favorite} />
+              ))}
+              </div>
+               )}
 
                 {activeTab === "messages" && (
                   <div className="messages-cards-container">

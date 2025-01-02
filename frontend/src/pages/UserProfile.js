@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SponsoredEventCard from '../components/SponsoredEventCard';
 import EventCard from '../components/EventCard';
-import FavoriteCard from '../components/FavoriteCard';
 import MessageCard from '../components/MessageCard';
 import ActivityCard from '../components/ActivityCard';
 import './UserProfile.css';
@@ -122,7 +121,7 @@ const UserProfile = () => {
             setEventsData(eventsResponse.data);
             break;
           case "favorites":
-            const favoritesResponse = await axios.get('http://localhost:8000/api/user/favorites', {
+            const favoritesResponse = await axios.get('http://localhost:8000/api/client/favorite-fields/'+ id.id + '/', {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setFavorites(favoritesResponse.data);
@@ -222,13 +221,11 @@ const UserProfile = () => {
                 )}
 
                 {activeTab === "favorites" && (
-                  <div className="scroll-bar-user-profile">
-                    {favorites.map((favorite) => (
-                      <FavoriteCard key={favorite.id} title={favorite.title} description={favorite.description} />
-                    ))}
-                    <FieldsCard //value=favorite.id
-                    />
-                  </div>
+                <div className="scroll-bar-user-profile">
+                {favorites.map((favorite) => (
+                 <FieldsCard key={favorite.id} field={favorite} />
+                ))}
+                </div>
                 )}
 
                 {activeTab === "messages" && (

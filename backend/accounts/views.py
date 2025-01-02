@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from .models import  BusinessSubject, Client
 from .serializers import  BusinessSubjectSerializer, ClientSerializer
+from fields.serializers import FieldSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAdminUser
@@ -856,3 +857,25 @@ def list_clients(request):
     clients = Client.objects.all()
     serializer = ClientSerializer(clients, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def get_client_favorite_fields(request, user_id):
+    try:
+        user = Client.objects.get(id=user_id)
+        favorite_fields = user.favorite_fields.all()
+        serializer = FieldSerializer(favorite_fields, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    except Client.DoesNotExist:
+        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+def get_business_subject_favorite_fields(request, business_id):
+    try:
+        business_subject = BusinessSubject.objects.get(id=business_id)
+        favorite_fields = business_subject.favorite_fields.all()
+        serializer = FieldSerializer(favorite_fields, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    except BusinessSubject.DoesNotExist:
+        return Response({"error": "Business subject not found."}, status=status.HTTP_404_NOT_FOUND)
