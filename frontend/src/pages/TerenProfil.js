@@ -15,10 +15,83 @@ import { FaRegHeart, FaHeart } from "react-icons/fa";
 const TerenProfil = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [idField, setIdField]=useState({
+    "id": -1
+  });
+  const [id, setID]=useState({
+    "id": -1,
+    "type": ''
+  });
+  const [userId, setUserId] = useState(null);
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/api/get-user-type-and-id/', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+        setID(response.data);
+        setUserId(response.data.id);  
+      } catch (error) {
+        console.error("Greška prilikom dohvaćanja ID-a korisnika:", error);
+      }
+    };
+    fetchUserId();
+  }, []);
 
-  const toggleFavorite = () => {
-    setIsFavorited(!isFavorited);
+  const checkIfFavorited = async () => {
+    if (!userId) return; 
+    
+    const url = id.type === 'Client' 
+      ? `http://127.0.0.1:8000/api/client/favorite-fields/${userId}/`
+      : `http://127.0.0.1:8000/api/business-subject/favorite-fields/${userId}/`; 
+  
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      const isFieldFavorited = response.data.some(field => field.id === idField.id);
+      setIsFavorited(isFieldFavorited);
+    } catch (error) {
+      console.error('Greška prilikom provjere omiljenih terena:', error);
+    }
   };
+
+  useEffect(() => {
+    if (idField.id !== -1 && userId) {
+      checkIfFavorited();
+    }
+  }, [idField.id, userId]);
+  
+
+  const toggleFavorite = async () => {
+    const action = !isFavorited ? 'add' : 'remove';  
+    setIsFavorited(!isFavorited); 
+    
+    if (!userId) return; // Ensure userId is valid
+    
+    const url = id.type === 'Client' 
+      ? `http://127.0.0.1:8000/api/client/update-favorite-fields/${userId}/`
+      : `http://127.0.0.1:8000/api/business-subject/update-favorite-fields/${userId}/`; // Adjust URL based on user type
+  
+    try {
+      await axios.post(url, 
+        { field_id: idField.id, action: action }, 
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+      console.log('Status omiljenog terena ažuriran');
+      checkIfFavorited();  
+    } catch (error) {
+      console.error('Greška prilikom ažuriranja statusa omiljenog terena:', error);
+    }
+  };
+  
+  
 
   const toggleFloatingWindow = () => {
     setIsVisible(!isVisible);
@@ -30,15 +103,6 @@ const TerenProfil = () => {
   const [information, setInformation] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [idField, setIdField]=useState({
-    "id": -1
-  });
-
-    const [id, setID]=useState({
-      "id": -1,
-      "type": ''
-    });
-
     const [user, setUser] = useState({
       "first_name": "",
       "last_name": "",
@@ -46,7 +110,7 @@ const TerenProfil = () => {
       "email": "email",
       "profile_picture": null
     });
-  
+
   const [fieldData, setFieldData] = useState({
     "id": -1,
     "location": "",
@@ -91,7 +155,6 @@ const TerenProfil = () => {
   },[]);
 
   useEffect(() => {
-    // Izvlačenje poslednjeg segmenta iz URL-a
     const path = window.location.pathname; 
     const idFromUrl = path.split("/").pop(); 
     if (!isNaN(idFromUrl)) {
@@ -118,8 +181,6 @@ const TerenProfil = () => {
     const [eventsData, setEventsData] = useState([]);
     const [selectionTitle, setSelectionTitle] = useState('Događaji');
     const [selectionSubtitle,setSelectionSubtitle] = useState('Događaji koji su na terenu');
-    //napraviti chain sa fetch
-  // Funkcija za dohvaćanje podataka za različite kartice
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);

@@ -1,14 +1,40 @@
 import React, { useState } from "react";
+import axios from "axios";  
 import "./FieldsCard.css";
 import { FaRegHeart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
 
-const FieldsCard = ({ field }) => {
+const FieldsCard = ({ field, userId, userType }) => {
   const [isFavourite, setIsFavourite] = useState(true);
 
-  const handleFavouriteFields = () => {
-    // todo: poslati zahtev za dodavanje/uklanjanje sa omiljenih
-    setIsFavourite(!isFavourite);
+
+  const handleFavouriteFields = async () => {
+    try {
+      const action = isFavourite ? "remove" : "add";  
+      const url = userType === "Client" 
+        ? `http://127.0.0.1:8000/api/client/update-favorite-fields/${userId}/` 
+        : `http://127.0.0.1:8000/api/business-subject/update-favorite-fields/${userId}/`;
+
+      const response = await axios.post(
+        url,
+        {
+          field_id: field.id, 
+          action: action,    
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,  
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setIsFavourite(!isFavourite);  
+      }
+    } catch (error) {
+      console.error("Error updating favorite fields:", error);
+      alert("Došlo je do greške prilikom ažuriranja omiljenih terena.");
+    }
   };
 
   const preview = () => {

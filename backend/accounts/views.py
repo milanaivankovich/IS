@@ -60,7 +60,7 @@ from django.contrib.auth import authenticate
 from rest_framework import status
 from django.db.models import Q
 from django.contrib.auth import get_user_model
-
+from fields.models import Field
 
 
 
@@ -879,3 +879,58 @@ def get_business_subject_favorite_fields(request, business_id):
 
     except BusinessSubject.DoesNotExist:
         return Response({"error": "Business subject not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['POST'])
+def update_client_favorite_fields(request, user_id):
+    try:
+        client = Client.objects.get(id=user_id)
+    except Client.DoesNotExist:
+        return Response({"detail": "Client not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    field_id = request.data.get('field_id')
+    action = request.data.get('action')
+
+    if not field_id or not action or action not in ['add', 'remove']:
+        return Response({"detail": "Invalid input. Action must be 'add' or 'remove', and field_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        field = Field.objects.get(id=field_id)
+        
+        if action == 'add':
+            client.favorite_fields.add(field)
+        elif action == 'remove':
+            client.favorite_fields.remove(field)
+        
+        client.save()
+        return Response({"detail": "Successfully updated favorite fields."}, status=status.HTTP_200_OK)
+    
+    except Field.DoesNotExist:
+        return Response({"detail": "Field not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+
+@api_view(['POST'])
+def update_business_subject_favorite_fields(request, business_id):
+    try:
+        business_subject = BusinessSubject.objects.get(id=business_id)
+    except BusinessSubject.DoesNotExist:
+        return Response({"detail": "Business subject not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    field_id = request.data.get('field_id')
+    action = request.data.get('action')
+
+    if not field_id or not action or action not in ['add', 'remove']:
+        return Response({"detail": "Invalid input. Action must be 'add' or 'remove', and field_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        field = Field.objects.get(id=field_id)
+        
+        if action == 'add':
+            business_subject.favorite_fields.add(field)
+        elif action == 'remove':
+            business_subject.favorite_fields.remove(field)
+        
+        business_subject.save()
+        return Response({"detail": "Successfully updated favorite fields."}, status=status.HTTP_200_OK)
+    
+    except Field.DoesNotExist:
+        return Response({"detail": "Field not found."}, status=status.HTTP_404_NOT_FOUND)

@@ -195,7 +195,7 @@ const BusinessSubjectProfile = () => {
               {activeTab === "favorites" && (
               <div className="scroll-bar-user-profile">
               {favorites.map((favorite) => (
-                <FieldsCard key={favorite.id} field={favorite} />
+                <FieldsCard key={favorite.id} field={favorite} userId={id.id} userType={id.type}/>
               ))}
               </div>
                )}
