@@ -97,7 +97,7 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
           </div>
         </div>
         <div className="Opis">
-          <p><strong>Opis:</strong>{description}</p>
+          <p><strong>Opis:</strong> {description}</p>
           <p><strong>Sport:</strong> {sports}</p>
           <p><strong>Datum:</strong> {dateOnly}</p>
           <p><strong>Vrijeme:</strong> {timeOnly}</p>

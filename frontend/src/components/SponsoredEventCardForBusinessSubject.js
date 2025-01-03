@@ -2,14 +2,17 @@ import React, { useEffect, useState } from "react";
 import "./SponsoredEventCardForBusinessSubject.css";
 import CreatorImg from "../images/user.svg";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import NewAdvertisementCard from "./NewAdvertisementCard";
+import { IoIosCloseCircle } from "react-icons/io";
 
-const SponsoredEventCardForBusinessSubject = ({ event}) => {
+const SponsoredEventCardForBusinessSubject = ({user, event}) => {
   const { id, name, description, date, field, business_subject, sport } = event;
   const [location, setLocation] = useState("");
   const [preciseLocation, setPreciseLocation] = useState("");
   const [name1, setName] = useState("");
   const [sports, setSport] = useState("");
   const [menuVisible, setMenuVisible] = useState(false);
+  const [isEditVisible, setIsEditVisible] = useState(false);
 
   const formattedDate = new Date(date);
 
@@ -119,6 +122,10 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
       }
     };
 
+    const showEvent = () => {
+      setIsEditVisible(true);
+    };  
+
   return (
     <div className="SponsoredEventCard-Okvir-bs">
       <header className="SponsoredEventCard-Header-bs" />
@@ -133,19 +140,28 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
             <BsThreeDotsVertical className="menu-icon" onClick={toggleMenu} />
             {menuVisible && (
               <div className="dropdown-menu">
-              <button onClick={() => console.log(`Edit event ${id}`)}>Uredi</button>
+              <button onClick={showEvent}>Uredi</button>
               <button onClick={deleteEvent}>Obriši</button> 
             </div>
             )}
           </div>
         </div>
         <div className="Opis-bs">
-          <p><strong>Opis:</strong>{description}</p>
+          <p><strong>Opis:</strong> {description}</p>
           <p><strong>Sport:</strong> {sports}</p>
           <p><strong>Datum:</strong> {dateOnly}</p>
           <p><strong>Vrijeme:</strong> {timeOnly}</p>
           <p><strong>Lokacija:</strong> {location} - {preciseLocation}</p>
         </div>
+        {isEditVisible && (
+          <div>
+            <NewAdvertisementCard user={user} pk={business_subject} eventId={id} className="new-event-card" />
+            <IoIosCloseCircle
+              className="close-icon-new-advertisement"
+              onClick={() => setIsEditVisible(false)}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

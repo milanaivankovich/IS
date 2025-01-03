@@ -45,18 +45,28 @@
         "description": "opis121opis121",
         "date": "2025-01-30",
         "business_subject_id": 3,
-        "field_id": 4,
-        "sport_id": 1,
+        "field_id": 5,
+        "sport_id": 4,
         "is_deleted": false
     },
     {
         "id": 6,
         "name": "oglas222",
-        "description": "opis222opis222",
+        "description": "opis222opis333",
         "date": "2025-01-31",
         "business_subject_id": 3,
         "field_id": 2,
         "sport_id": 2,
         "is_deleted": false
+    },
+    {
+        "id": 7,
+        "name": "oglas555",
+        "description": "opis555opis555",
+        "date": "2025-01-23",
+        "business_subject_id": 3,
+        "field_id": 2,
+        "sport_id": 3,
+        "is_deleted": true
     }
 ]

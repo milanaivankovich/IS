@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./EditEventCard.css";
 import CreatorImg from "../images/user.svg";
 import axios from "axios";
-import Select from 'react-select';
+import Select from "react-select";
 
 const EditEventCard = ({ user, pk, eventId }) => {
   const [fields, setFields] = useState([]);
@@ -10,140 +10,221 @@ const EditEventCard = ({ user, pk, eventId }) => {
   const [optionsSport, setOptionsSport] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedSport, setSelectedSport] = useState(null);
+  const[advertisementName, setAdvertisementName] = useState("");
+  const[advertisementDescription, setAdvertisementDescription] = useState("");
+  const[advertisementDate, setAdvertisementDate] = useState("");
+  const[advertisementField, setAdvertisementField] = useState("");
+  const[advertisementSport, setAdvertisementSport] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [eventData, setEventData] = useState({
-    id: -1,
+    id: eventId || -1,
     name: "",
     description: "",
     date: "",
     business_subject: pk,
-    field: null,  
-    sport: null,  
+    field: null,
+    sport: null,
   });
-  const [isSubmitting, setIsSubmitting] = useState(false); // Dodajemo stanje za praćenje slanja
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Učitaj terene (fields) i postavi opcije za lokacije
   useEffect(() => {
     const searchFields = async () => {
       if (fields.length === 0) {
-        await axios.get('http://localhost:8000/api/fields/')
-          .then((response) => {
-            setFields(response.data);
-            setOptionsLocation(response.data.map(item => ({
-              value: item.id,  // ID terena
-              label: `${item.location} (${item.sports.map(sport => sport.name).join(', ')})`,  // Prikazivanje svih sportova
-              sport: item.sports.map(sport => ({
+        try {
+          const response = await axios.get("http://127.0.0.1:8000/api/fields/");
+          setFields(response.data);
+          setOptionsLocation(
+            response.data.map((item) => ({
+              value: item.id,
+              label: `${item.location} (${item.sports
+                .map((sport) => sport.name)
+                .join(", ")})`,
+              sport: item.sports.map((sport) => ({
                 sportID: sport.id,
-                sportName: sport.name, })),
-            })));
-          })
-          .catch((error) => {
-            console.error("Error loading fields:", error);
-            window.location.replace("/userprofile1");
-            alert("Došlo je do greške prilikom pretrage lokacija...");
-          });
+                sportName: sport.name,
+              })),
+            }))
+          );
+        } catch (error) {
+          console.error("Error loading fields:", error);
+          window.location.replace("/userprofile1");
+          alert("Došlo je do greške prilikom pretrage lokacija...");
+        }
       }
     };
 
     searchFields();
   }, [fields]);
 
-  // Kada se odabere lokacija, postavi dostupne sportove za odabrani teren
   useEffect(() => {
     if (selectedLocation) {
-      const selectedField = fields.find(field => field.id === selectedLocation.value);
+      const selectedField = fields.find(
+        (field) => field.id === selectedLocation.value
+      );
       if (selectedField) {
-        setOptionsSport(selectedField.sports.map(sport => ({
-          value: sport.id,  // ID sporta
-          label: sport.name,  // Ime sporta
-        })));
+        setOptionsSport(
+          selectedField.sports.map((sport) => ({
+            value: sport.id,
+            label: sport.name,
+          }))
+        );
       }
     }
   }, [selectedLocation, fields]);
-  console.log("Selected sport:", selectedSport);
+
+  useEffect(() => {
+    const fetchAdvertisementData = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/advertisement/${eventId}/`);
+        const data = await response.json();
+
+        if (data && data[0]) {
+          setAdvertisementName(data[0].name || "");
+          setAdvertisementDescription(data[0].description || "");
+          setAdvertisementDate(data[0].date || "");
+          setAdvertisementField(data[0].field || "");
+          setAdvertisementSport(data[0].sport || "");
+        }
+        setIsLoading(false); // Postavljanje statusa učitavanja na false kada su podaci učitani
+      } catch (error) {
+        console.error("Error fetching advertisement data:", error);
+        setIsLoading(false); // Ako dođe do greške, postavite na false kako bi se omogućio unos
+      }
+    };
+
+    if (eventId) {
+      fetchAdvertisementData();
+    }
+  }, [eventId]);
+
 
   const createOrUpdateEvent = async (updatedEventData) => {
-    // Provjeri postoji li eventData i njegov ID prije nego što pošaljemo zahtjev
-    if (!updatedEventData || !updatedEventData.id) {
-      alert("Događaj nije pravilno postavljen.");
-      return;
-    }
-
-    const url = updatedEventData.id === -1
-      ? 'http://localhost:8000/api/advertisement/'
-      : `http://localhost:8000/api/advertisement/${updatedEventData.id}/`;
-
-    if (!updatedEventData.name || !updatedEventData.description || !updatedEventData.date || !updatedEventData.business_subject || !updatedEventData.field || !updatedEventData.sport) {
-      alert("Sva obavezna polja moraju biti popunjena!");
-      return;
-    }
-
+    const isPost = updatedEventData.id === -1; 
+    const url = isPost
+      ? "http://127.0.0.1:8000/api/advertisement/"
+      : `http://127.0.0.1:8000/api/advertisement/update/${updatedEventData.id}/`;
+  
+    const payload = {
+      id: updatedEventData.id,
+      name: updatedEventData.name || advertisementName,
+      description: updatedEventData.description || advertisementDescription,
+      date: updatedEventData.date || advertisementDate,
+      is_deleted: false,
+      business_subject: pk, 
+      field: updatedEventData.field || advertisementField,
+      sport: updatedEventData.sport || advertisementSport,
+    };
+  
+    console.log("Payload being sent to API:", payload);
+  
     try {
       const response = await axios({
-        method: updatedEventData.id === -1 ? 'post' : 'put',
+        method: isPost ? "post" : "put",
         url: url,
-        data: updatedEventData,
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        data: payload,
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      alert("Događaj je uspješno sačuvan!");
-      window.location.reload();
+  
+      // Prikazivanje odgovarajuće poruke
+      if (isPost) {
+        alert("Događaj je uspješno dodan!");
+      } else {
+        alert("Događaj je uspješno ažuriran!");
+      }
+  
+      window.location.reload(); 
     } catch (error) {
-      console.error("Greška pri spremanju događaja:", error.response?.data || error.message);
+      console.error(
+        "Greška pri spremanju događaja:",
+        error.response?.data || error.message
+      );
       alert("Došlo je do greške prilikom spremanja događaja.");
     }
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Ako je već u procesu slanja, nemoj ponovo poslati
     if (isSubmitting) {
       return;
     }
 
-    // Postavi isSubmitting na true
     setIsSubmitting(true);
 
-    if (!selectedLocation || !selectedSport) {
-      alert("Morate odabrati lokaciju terena i sport.");
-      setIsSubmitting(false); // Postavi isSubmitting na false ako je došlo do greške
-      return;
-    }
-
-    // Postavi ID sporta i ID lokacije u eventData
     const updatedEventData = {
       ...eventData,
-      field: selectedLocation.value,  // ID odabrane lokacije
-      sport: selectedSport.value,  // ID odabranog sporta
+      field: selectedLocation?.value || eventData.field,
+      sport: selectedSport?.value || eventData.sport,
+      business_subject: pk, 
     };
 
     console.log("updatedEventData prije slanja:", updatedEventData);
-    // Pozivamo createOrUpdateEvent nakon što su svi podaci potvrđeni
     await createOrUpdateEvent(updatedEventData);
-
-    // Postavi isSubmitting na false nakon što se operacija završi
     setIsSubmitting(false);
   };
 
+  useEffect(() => {
+    if (advertisementField) {
+      const selectedField = optionsLocation.find(
+        (option) => option.value === advertisementField
+      );
+      if (selectedField) {
+        setSelectedLocation(selectedField); 
+      }
+    }
+  }, [advertisementField, optionsLocation]);
+  
+  useEffect(() => {
+    if (advertisementSport) {
+      const selectedSportOption = optionsSport.find(
+        (option) => option.value === advertisementSport
+      );
+      if (selectedSportOption) {
+        setSelectedSport(selectedSportOption); 
+      }
+    }
+  }, [advertisementSport, optionsSport]);
+
+  useEffect(() => {
+    if (advertisementDate) {
+      const formattedDate = new Date(advertisementDate).toISOString().slice(0, 16);
+      setEventData((prevData) => ({
+        ...prevData,
+        date: formattedDate, 
+      }));
+    }
+  }, [advertisementDate]);
+  
+  
   return (
-    <div className='dimmer'>
+    <div className="dimmer">
       <form className="EditEventCard-form" onSubmit={handleSubmit}>
         <header className="EditEventCard-Header" />
         <div className="EditEventCard-body">
           <div className="EditEventCard-user">
-            <img src={user.profile_picture !== null ? user.profile_picture : CreatorImg} className="creator-image" alt="Creator" />
+            <img
+              src={user.profile_picture !== null ? user.profile_picture : CreatorImg}
+              className="creator-image"
+              alt="Creator"
+            />
             <div className="edit-event-card-header">
               <input
                 className="UnosInformacijaDogadjaja"
-                value={eventData.name}
+                value={eventData.name || advertisementName}
                 type="text"
                 placeholder="Unesi naslov događaja"
-                onChange={(e) => setEventData(prevData => ({ ...prevData, name: e.target.value }))}
-                required
+                onChange={(e) =>
+                  setEventData((prevData) => ({
+                    ...prevData,
+                    name: e.target.value,
+                  }))
+                }
               />
               <div className="createdBy"> by {user.nameSportOrganization}</div>
             </div>
           </div>
-  
+
           <div className="Opis">
             <textarea
               className="UnosInformacijaDogadjaja"
@@ -151,73 +232,53 @@ const EditEventCard = ({ user, pk, eventId }) => {
               cols="46"
               placeholder="Unesi opis događaja..."
               minLength="10"
-              value={eventData.description}
-              required
-              onChange={(e) => setEventData(prevData => ({ ...prevData, description: e.target.value }))}
+              value={eventData.description || advertisementDescription}
+              onChange={(e) =>
+                setEventData((prevData) => ({
+                  ...prevData,
+                  description: e.target.value,
+                }))
+              }
             />
-  
+
             <label className="EditEventLabel"> Lokacija: </label>
             <Select
-              className='editeventcard-selectlocation'
+              className="editeventcard-selectlocation"
               options={optionsLocation}
-              styles={{
-                control: (styles) => ({
-                  ...styles,
-                  borderColor: 'gray',
-                  boxShadow: 'none',
-                  '&:hover': { borderColor: 'gray' },
-                }),
-                option: (styles, { isFocused, isSelected }) => ({
-                  ...styles,
-                  backgroundColor: 'white',
-                  color: isSelected ? '#F15A24' : 'gray',
-                }),
-              }}
               onChange={setSelectedLocation}
               placeholder="Odaberi lokaciju terena..."
               isClearable
-              required
+              value={selectedLocation} 
             />
-  
+
             <label className="EditEventLabel"> Sport: </label>
             <Select
-              className='editeventcard-selectlocation' //vezano samo za css
+              className="editeventcard-selectlocation"
               options={optionsSport}
-              styles={{
-                control: (styles) => ({
-                  ...styles,
-                  borderColor: 'gray',
-                  boxShadow: 'none',
-                  '&:hover': { borderColor: 'gray' },
-                }),
-                option: (styles, { isFocused, isSelected }) => ({
-                  ...styles,
-                  backgroundColor: 'white',
-                  color: isSelected ? '#F15A24' : 'gray',
-                }),
-              }}
               onChange={setSelectedSport}
               placeholder="Odaberi sport..."
               isClearable
-              required
+              value={selectedSport}
             />
-  
+
             <label className="EditEventLabel"> Datum i vrijeme: </label>
             <input
               className="UnosInformacijaDogadjaja"
               id="UnosDatumaDogadjaja-input"
               type="datetime-local"
               min={new Date().toISOString().slice(0, 16)}
-              onChange={(e) => setEventData(prevData => ({ ...prevData, date: e.target.value }))}
-              required
+              value={eventData.date}
+              onChange={(e) =>
+                setEventData((prevData) => ({
+                  ...prevData,
+                  date: e.target.value,
+                }))
+              }
             />
           </div>
-  
+
           <div className="EventCard-buttons">
-            <button
-              className="SpasiIzmjeneDogadjaja-button"
-              type="submit"
-            >
+            <button className="SpasiIzmjeneDogadjaja-button" type="submit">
               Spasi izmjene
             </button>
           </div>

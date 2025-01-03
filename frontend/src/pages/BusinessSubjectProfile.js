@@ -176,7 +176,7 @@ const BusinessSubjectProfile = () => {
                   <div className="events-section">
                     <div className="scroll-bar-user-profile">
                       {Array.isArray(eventsData) && eventsData.map((activity) => (
-                        <SponsoredEventCardForBusinessSubject key={activity.id} event={activity} />
+                        <SponsoredEventCardForBusinessSubject user={subjectData} event={activity}/>
                       ))}
                     </div>
                     {(id.id !== -1) ? (
