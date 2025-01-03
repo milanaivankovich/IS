@@ -91,6 +91,9 @@ def verify_firebase_token(token):
         return None
 
 
+
+from firebase_admin import auth
+
 @csrf_exempt
 def social_login(request):
     if request.method == "POST":
@@ -105,7 +108,12 @@ def social_login(request):
         if not user_data:
             return JsonResponse({"error": "Invalid token"}, status=401)
 
-        # At this point, user_data contains verified Firebase user info
+        # Mark the user's email as verified
+        try:
+            auth.update_user(user_data["uid"], email_verified=True)
+        except Exception as e:
+            return JsonResponse({"error": f"Failed to update emailVerified: {str(e)}"}, status=500)
+
         return JsonResponse({
             "uid": user_data["uid"],
             "email": user_data.get("email"),
@@ -113,6 +121,7 @@ def social_login(request):
         })
 
     return JsonResponse({"error": "Invalid method"}, status=405)
+
 
 from django.core.files.base import ContentFile
 import requests

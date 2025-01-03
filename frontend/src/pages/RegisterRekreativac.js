@@ -5,7 +5,7 @@ import logo from "../images/logo.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../components/ImageCrop";
-import { auth, googleProvider, facebookProvider, signInWithPopup } from "../components/Firebase.js"; 
+import { auth, googleProvider, FacebookAuthProvider, facebookProvider, signInWithPopup } from "../components/Firebase.js"; 
 
 function RegisterRekreativac() {
 
@@ -140,6 +140,24 @@ function RegisterRekreativac() {
       console.log("Korisnik:", result.user);
       const idToken = await result.user.getIdToken(); // Get the Firebase ID token
       console.log("Generated ID Token:", idToken);
+      // **Update emailVerified for Facebook users**
+      const user = auth.currentUser;
+      if (user && user.providerData.some((provider) => provider.providerId === "facebook.com")) {
+        // Force update emailVerified to true
+        await fetch("https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyD6Zb6zPA7vvUelLkEwR_YTq3p5lijfCt0", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            idToken: idToken,
+            emailVerified: true,
+          }),
+        });
+        console.log("emailVerified set to true");
+      }
+  
+
 
   
       // Priprema podataka za slanje na backend
@@ -175,6 +193,77 @@ function RegisterRekreativac() {
         // Greška s prijavom ili mrežom
         alert("Došlo je do greške. Molimo pokušajte ponovo.");
       }
+    }
+  };
+
+  const handleFacebookSignIn = async () => {
+    try {
+      // Initialize the Facebook provider if it's not already initialized
+      
+  
+      // Perform the sign-in
+      const result = await signInWithPopup(auth, facebookProvider);
+  
+      // Get the credential from the result (Facebook credential)
+      const credential = FacebookAuthProvider.credentialFromResult(result);
+  
+      if (!credential || !credential.accessToken) {
+        throw new Error("Facebook access token not found");
+      }
+  
+      const accessToken = credential.accessToken;  // Facebook access token
+      const firebaseIdToken = await result.user.getIdToken();  // Firebase ID token
+  
+      console.log("Facebook User:", result.user);
+      console.log("Access Token:", accessToken);
+      console.log("Firebase ID Token:", firebaseIdToken);
+  
+      // **Update emailVerified for Facebook users**
+      const user = auth.currentUser;
+      if (user && user.providerData.some((provider) => provider.providerId === "facebook.com")) {
+        // Force update emailVerified to true
+        await fetch("https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyD6Zb6zPA7vvUelLkEwR_YTq3p5lijfCt0", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            idToken: firebaseIdToken,
+            emailVerified: true,
+          }),
+        });
+        console.log("emailVerified set to true");
+      }
+  
+      // Prepare data to send to the backend
+      const userData = {
+        uid: result.user.uid,
+        email: result.user.email,
+        displayName: result.user.displayName,
+        photoURL: result.user.photoURL,
+      };
+  
+      // Send data to the backend using fetch (or axios if preferred)
+      const response = await fetch("http://localhost:8000/api/facebook-login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          accessToken: accessToken, // Facebook access token
+          idToken: firebaseIdToken, // Firebase ID token
+          userData: userData, // Send the user data
+        }),
+      });
+  
+      const data = await response.json();
+      console.log("Backend response:", data);
+  
+      if (!response.ok) {
+        throw new Error("Failed to login with Facebook");
+      }
+    } catch (error) {
+      console.error("Error during Facebook sign-in:", error);
     }
   };
   

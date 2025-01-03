@@ -72,8 +72,8 @@ const Login = () => {
       console.log('Facebook Login Successful:', user);
 
       // Optional: Send user info to backend
-      const token = await user.getIdToken();
-      await axios.post('http://localhost:8000/api/social-login/', { token });
+      const id_token = await user.getIdToken();
+      await axios.post('http://localhost:8000/api/social-login/', { id_token });
 
       localStorage.setItem('user', JSON.stringify(user));
       window.location.href = "/";

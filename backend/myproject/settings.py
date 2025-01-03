@@ -64,7 +64,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',  # Add this to your middleware
     'django.middleware.common.CommonMiddleware',
-    'allauth.account.middleware.AccountMiddleware'
+    'allauth.account.middleware.AccountMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware'
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -91,8 +92,15 @@ CORS_ALLOWED_ORIGINS = [
     # Add any other frontend origins that need access
 ]
 
+# Allow credentials (cookies)
+CORS_ALLOW_CREDENTIALS = True
+
 WSGI_APPLICATION = 'myproject.wsgi.application'
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+    # Add any other trusted origins here
+]
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
