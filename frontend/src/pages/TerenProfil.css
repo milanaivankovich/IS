@@ -38,3 +38,16 @@
   overflow-x: auto;
   padding-bottom: 10px;
 }
+
+.fav-field-like-button,
+.fav-field-like-button FaHeart,
+.fav-field-like-button FaRegHeart {
+    color: #F15A24;
+    margin-top: 73px;
+    margin-left: 10px;
+    
+}
+
+.fav-field-like-button:hover {
+    color: #e64a19;
+}

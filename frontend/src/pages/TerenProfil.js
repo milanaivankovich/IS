@@ -10,9 +10,15 @@ import './TerenProfil.css';
 import NewReviewCard from '../components/NewReviewCard.js';
 import { IoIosCloseCircle } from "react-icons/io";
 import ReviewCard from '../components/ReviewCard.js';
+import { FaRegHeart, FaHeart } from "react-icons/fa";
 
 const TerenProfil = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
+
+  const toggleFavorite = () => {
+    setIsFavorited(!isFavorited);
+  };
 
   const toggleFloatingWindow = () => {
     setIsVisible(!isVisible);
@@ -149,6 +155,10 @@ const TerenProfil = () => {
             <h0 className="userprofile-name">{information.location }</h0>
             <h1 className="userprofile-subtitle">{information.precise_location}</h1>
           </div>
+          <div className="fav-field-like-button">
+          <div onClick={toggleFavorite} className="favorite-icon">
+            {isFavorited ? <FaHeart /> : <FaRegHeart />}
+          </div></div>
           <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/teren-profil')} />
         </div>
           <div>
