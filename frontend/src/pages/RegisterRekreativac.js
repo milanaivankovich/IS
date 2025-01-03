@@ -55,7 +55,7 @@ function RegisterRekreativac() {
     password: "",
     confirmPassword: "",
     email: "",
-    image: null,
+    profile_picture:"",
   });
 
   const [passwordCriteria, setPasswordCriteria] = useState({
