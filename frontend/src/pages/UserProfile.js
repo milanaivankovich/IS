@@ -176,7 +176,7 @@ const UserProfile = () => {
                 setActiveTab("events");
               }}>Događaji</button>
             <button className={`tab-button ${activeTab === "favorites" ? "active" : ""}`} onClick={() => {
-              setSelectionTitle('Omiljeno'); setSelectionSubtitle('Omiljeni tereni');
+              setSelectionTitle('Omiljeno'); setSelectionSubtitle('Vaši omiljeni tereni');
               setActiveTab("favorites")
             }}>Omiljeno</button>
             <button className={`tab-button ${activeTab === "messages" ? "active" : ""}`} onClick={() => {

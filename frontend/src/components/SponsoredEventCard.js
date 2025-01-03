@@ -3,8 +3,9 @@ import "./SponsoredEventCard.css";
 import CreatorImg from "../images/user.svg";
 
 const SponsoredEventCard = ({ event }) => {
-  const { name, date, field, business_subject, sport } = event;
+  const { name, description, date, field, business_subject, sport } = event;
   const [location, setLocation] = useState("");
+  const[preciseLocation, setPreciseLocation] = useState("");
   const [name1, setName] = useState("");
   const [sports, setSport] = useState("");
 
@@ -28,6 +29,23 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
     
         if (field) {
           fetchLocation();
+        }
+      }, [field]); 
+
+      //Dohvaćanje precizne lokacije na temelju field ID-a
+      useEffect(() => {
+        const fetchPreciseLocation = async () => {
+          try {
+            const response = await fetch(`http://127.0.0.1:8000/api/advertisement/field/${field}/`);
+            const data = await response.json();
+            setPreciseLocation(data.precise_location); 
+          } catch (error) {
+            console.error("Error fetching precise location:", error);
+          }
+        };
+    
+        if (field) {
+          fetchPreciseLocation();
         }
       }, [field]); 
 
@@ -79,10 +97,11 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
           </div>
         </div>
         <div className="Opis">
-          <p><strong>Lokacija:</strong> {location}</p>
+          <p><strong>Opis:</strong>{description}</p>
+          <p><strong>Sport:</strong> {sports}</p>
           <p><strong>Datum:</strong> {dateOnly}</p>
           <p><strong>Vrijeme:</strong> {timeOnly}</p>
-          <p><strong>Sport:</strong> {sports}</p>
+          <p><strong>Lokacija:</strong> {location} - {preciseLocation}</p>
         </div>
         <div className="EventCard-buttons">
           <button className="EventCard-button">Pregled</button>

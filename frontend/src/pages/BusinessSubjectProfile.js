@@ -148,7 +148,7 @@ const BusinessSubjectProfile = () => {
                 setActiveTab("events");
               }}>Događaji</button>
             <button className={`tab-button ${activeTab === "favorites" ? "active" : ""}`} onClick={() => {
-              setSelectionTitle('Omiljeno'); setSelectionSubtitle('Vaši omiljeni događaji');
+              setSelectionTitle('Omiljeno'); setSelectionSubtitle('Vaši omiljeni tereni');
               setActiveTab("favorites")
             }}>Omiljeno</button>
             <button className={`tab-button ${activeTab === "messages" ? "active" : ""}`} onClick={() => {

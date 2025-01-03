@@ -79,7 +79,10 @@ def get_location_by_field_id(request, field_id):
     from fields.models import Field
     try:
         field = Field.objects.get(id=field_id)
-        return Response({'location': field.location})
+        return Response({
+            'location': field.location,
+            'precise_location': field.precise_location
+        })
     except Field.DoesNotExist:
         return Response({'error': 'Field not found'}, status=404)
     
