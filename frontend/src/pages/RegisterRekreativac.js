@@ -285,7 +285,7 @@ function RegisterRekreativac() {
           password: "",
           confirmPassword: "",
           email: "",
-          image: null,
+          profile_picture:""
         });
         setCurrentStep(0);
       } catch (error) {
