@@ -15,7 +15,7 @@ const SearchComponent = () => {
 
     setIsLoading(true); // Postavljamo da je pretraga u toku
     try {
-      const response = await fetch(`http://localhost:8000/api/search/users?q=${query}`);
+      const response = await fetch(`http://localhost:8000/api/search/users/?q=${query}`);
       const data = await response.json();
 
       setResults({
@@ -86,10 +86,10 @@ const SearchComponent = () => {
               <ul>
                 {results.business_profiles.map((business) => (
                   <li
-                    key={business.business_name}
-                    onClick={() => handleProfileRedirect(business.id, "business")}
+                    key={business.nameSportOrganization}
+                    onClick={() => handleProfileRedirect(business.nameSportOrganization, "business")}
                   >
-                    {business.business_name}
+                    {business.nameSportOrganization}
                   </li>
                 ))}
               </ul>

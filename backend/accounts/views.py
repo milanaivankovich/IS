@@ -869,11 +869,18 @@ def search_users(request):
         # Add client data to the results
         serialized_clients.append(client_data)
 
-    # Serialize business profile results
-    serialized_business_profiles = BusinessSubjectSerializer(business_results, many=True).data
-    for business in serialized_business_profiles:
-        business.pop('id', None)  # Remove the 'id' field for each business profile
+    # Serialize client results
+    serialized_business_profiles = []
+    for business in business_results:
+        business_data = BusinessSubjectSerializer(business).data
+        
+        # Remove the 'id' field
+        business_data.pop('id', None)
+        
+        # Add client data to the results
+        serialized_business_profiles.append(business_data)
 
+    
     # Combine results
     result = {
         "clients": serialized_clients,
