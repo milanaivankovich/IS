@@ -1,10 +1,14 @@
 * {
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Sprečava probleme sa paddingom i marginama */
 }
 
 .Tereni-header {
     position: relative;
+    z-index: 2; /* Postavljanje header-a u pravilan sloj */
 }
 
 .Event-cards {
@@ -47,7 +51,7 @@
     background-color: #fefefe;
 }
 
-/* Novi stilovi za sekciju mape i kalendara */
+/* Stilovi za sekciju mape i kalendara */
 .section-title {
     font-size: 34px;
     font-weight: 500;
@@ -73,12 +77,15 @@
     padding: 20px;
     border-radius: 10px;
     margin: 20px;
+    position: relative;
+    z-index: 1; /* Sprečavanje preklapanja sa futerom */
 }
 
 .map-container {
     width: 60%;
     height: 350px;
     border-radius: 10px;
+    z-index: 2; /* Zadržavanje sloja iznad pozadine */
 }
 
 .calendar {
@@ -87,21 +94,23 @@
     position: relative;
     left: 15px;
     border-color: white;
+    z-index: 2; /* Sprečavanje preklapanja sa futerom */
 }
 
 .Field-list {
     list-style-type: none;
     padding: 0;
-  }
-  
-  .Field-item {
+}
+
+.Field-item {
     margin-bottom: 20px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f9f9f9;
-  }
-  .reset-date-button {
+}
+
+.reset-date-button {
     background-color: transparent; 
     border: none; 
     cursor: pointer; 
@@ -125,4 +134,39 @@
 .react-calendar__tile--active {
     background-color: #fa5c16 !important;
     color: white; 
-  }
+}
+
+/* Stilovi za pretragu */
+.search-bar {
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    margin: 20px auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+}
+
+.search-bar input {
+    width: 80%;
+    padding: 5px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+.search-bar button {
+    width: 15%;
+    padding: 5px;
+    border: none;
+    background-color: #fa5c16;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background-color: #e05414;
+}

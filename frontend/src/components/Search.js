@@ -3,45 +3,45 @@ import "./Search.css";
 import Icon from "../images/iconMagnifier.svg";
 
 const SearchComponent = () => {
-  const [query, setQuery] = useState("");  // Drži upit koji korisnik unosi
-  const [results, setResults] = useState({ clients: [], business_profiles: [] });  // Drži rezultate pretrage
-  const [isLoading, setIsLoading] = useState(false);  // Indikator učitavanja rezultata
+  const [query, setQuery] = useState(""); // Drži upit koji korisnik unosi
+  const [results, setResults] = useState({ clients: [], business_profiles: [] }); // Drži rezultate pretrage
+  const [isLoading, setIsLoading] = useState(false); // Indikator učitavanja rezultata
 
   // Funkcija za slanje upita na backend
   const handleSearch = async (e) => {
     e.preventDefault();
 
-    if (!query) return;  // Ako upit nije unet, ne šaljemo zahtev
+    if (!query) return; // Ako upit nije unet, ne šaljemo zahtev
 
-    setIsLoading(true);  // Postavljamo da je pretraga u toku
+    setIsLoading(true); // Postavljamo da je pretraga u toku
     try {
-      const response = await fetch(`http://localhost:8000//api/search/users?q=${query}`);
+      const response = await fetch(`http://localhost:8000/api/search/users?q=${query}`);
       const data = await response.json();
 
       setResults({
         clients: data.clients || [],
-        business_profiles: data.business_profiles || []
+        business_profiles: data.business_profiles || [],
       });
     } catch (error) {
       console.error("Greška prilikom pretrage:", error);
     } finally {
-      setIsLoading(false);  // Pretraga je završena
+      setIsLoading(false); // Pretraga je završena
     }
   };
 
   // Funkcija za preusmeravanje na profil korisnika koristeći window.location
-  const handleProfileRedirect = (id, type) => {
+  const handleProfileRedirect = (pk, type) => {
     if (type === "client") {
-      window.location.href = `/client/${id}`;  // Preusmeravanje na profil korisnika
-    } else if (type === "business") {
-      window.location.href = `/business/${id}`;  // Preusmeravanje na profil poslovnog subjekta
+      window.location.href = `/api/client/${pk}/`; // Preusmeravanje na profil korisnika
+    } else if (type === "business-subject") {
+      window.location.href = `/api/business-subject/${pk}/`; // Preusmeravanje na profil poslovnog subjekta
     }
   };
 
   return (
     <div>
-      <form className="searchContainer" role="search" onSubmit={handleSearch}>
-        <div className="searchContent">
+      <form className="searchComponent" role="search" onSubmit={handleSearch}>
+        <div className="searchComponent">
           <img src={Icon} alt="Search icon" className="searchIcon" />
           <input
             type="search"
@@ -50,7 +50,7 @@ const SearchComponent = () => {
             placeholder="Pretraga..."
             aria-label="Pretraga terena i korisnika"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}  // Održava stanje unosa
+            onChange={(e) => setQuery(e.target.value)} // Održava stanje unosa
           />
         </div>
       </form>
@@ -68,7 +68,10 @@ const SearchComponent = () => {
               <h4>Klijenti:</h4>
               <ul>
                 {results.clients.map((client) => (
-                  <li key={client.username} onClick={() => handleProfileRedirect(client.username, "client")}>
+                  <li
+                    key={client.username}
+                    onClick={() => handleProfileRedirect(client.username, "client")}
+                  >
                     {client.first_name} {client.last_name}
                   </li>
                 ))}
@@ -82,7 +85,10 @@ const SearchComponent = () => {
               <h4>Poslovni profili:</h4>
               <ul>
                 {results.business_profiles.map((business) => (
-                  <li key={business.business_name} onClick={() => handleProfileRedirect(business.id, "business")}>
+                  <li
+                    key={business.business_name}
+                    onClick={() => handleProfileRedirect(business.id, "business")}
+                  >
                     {business.business_name}
                   </li>
                 ))}
