@@ -5,7 +5,7 @@ import logo from "../images/logo.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../components/ImageCrop";
-import { auth, googleProvider, FacebookAuthProvider, facebookProvider, signInWithPopup } from "../components/Firebase.js"; 
+import { auth, googleProvider, GoogleAuthProvider,FacebookAuthProvider, facebookProvider, signInWithPopup } from "../components/Firebase.js"; 
 
 function RegisterRekreativac() {
 
@@ -134,33 +134,17 @@ function RegisterRekreativac() {
     }
   };
 
-  const handleSocialSignIn = async (provider) => {
+
+
+const handleSocialSignIn = async () => {
     try {
+      const provider = new GoogleAuthProvider(); // Use GoogleAuthProvider for Google login
       const result = await signInWithPopup(auth, provider);
       console.log("Korisnik:", result.user);
+      
       const idToken = await result.user.getIdToken(); // Get the Firebase ID token
-      console.log("Generated ID Token:", idToken);
-      // **Update emailVerified for Facebook users**
-      const user = auth.currentUser;
-      if (user && user.providerData.some((provider) => provider.providerId === "facebook.com")) {
-        // Force update emailVerified to true
-        await fetch("https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyD6Zb6zPA7vvUelLkEwR_YTq3p5lijfCt0", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            idToken: idToken,
-            emailVerified: true,
-          }),
-        });
-        console.log("emailVerified set to true");
-      }
-  
 
-
-  
-      // Priprema podataka za slanje na backend
+      // Prepare the user data to send to the backend
       const userData = {
         uid: result.user.uid,
         email: result.user.email,
@@ -168,14 +152,15 @@ function RegisterRekreativac() {
         photoURL: result.user.photoURL,
       };
   
-      // Slanje podataka na backend pomoću axiosa
-      //const response = await axios.post("http://localhost:8000/api/social-login/", userData);
-
       const response = await axios.post("http://localhost:8000/api/social-login/", {
-        id_token: idToken, // This matches the backend's expected field
-    });
+        id_token: idToken,
+        uid: result.user.uid,
+        email: result.user.email,
+        displayName: result.user.displayName,
+        photoURL: result.user.photoURL,
+      });
   
-      // Provjera odgovora sa servera
+      // Check the response from the backend
       if (response.status === 200) {
         console.log("Korisnik uspješno sinhronizovan s backendom");
         alert("Prijava uspješna!");
@@ -186,87 +171,86 @@ function RegisterRekreativac() {
     } catch (error) {
       console.error("Greška prilikom prijave:", error);
       if (error.response) {
-        // Greška s backendom (npr. 400 ili 500 status)
+        // Handle backend error (e.g., 400 or 500 status)
         console.error("Backend greška:", error.response.data);
         alert(`Greška sa servera: ${error.response.data.message || "Pokušajte ponovo."}`);
       } else {
-        // Greška s prijavom ili mrežom
+        // Handle other errors (e.g., network or login errors)
         alert("Došlo je do greške. Molimo pokušajte ponovo.");
       }
     }
-  };
+};
 
-  const handleFacebookSignIn = async () => {
+  const handleFacebookSignIn = async (provider) => {
     try {
-      // Initialize the Facebook provider if it's not already initialized
-      
+      // If the provider is Facebook, add the necessary scopes
+      if (provider.providerId === 'facebook.com') {
+        provider.addScope('email');
+        provider.addScope('public_profile');
+      }
   
-      // Perform the sign-in
-      const result = await signInWithPopup(auth, facebookProvider);
+      // Perform the sign-in with the chosen provider
+      const result = await signInWithPopup(auth, provider);
+      console.log("Korisnik:", result.user);
   
-      // Get the credential from the result (Facebook credential)
+      // Get the Firebase ID token for the user
+      const idToken = await result.user.getIdToken();
+      console.log("Generated ID Token:", idToken);
+  
+      // Extract the Facebook access token from the result
       const credential = FacebookAuthProvider.credentialFromResult(result);
+      const facebookAccessToken = credential.accessToken;
+      console.log("Facebook Access Token:", facebookAccessToken);
   
-      if (!credential || !credential.accessToken) {
-        throw new Error("Facebook access token not found");
-      }
+      // Use the Facebook Graph API to fetch the user's email
+      const graphUrl = `https://graph.facebook.com/v11.0/me?fields=email&access_token=${facebookAccessToken}`;
+      const facebookResponse = await axios.get(graphUrl);
   
-      const accessToken = credential.accessToken;  // Facebook access token
-      const firebaseIdToken = await result.user.getIdToken();  // Firebase ID token
+      // Extract the email from the Graph API response
+      const email = facebookResponse.data.email;
+      console.log("Facebook Email:", email);
   
-      console.log("Facebook User:", result.user);
-      console.log("Access Token:", accessToken);
-      console.log("Firebase ID Token:", firebaseIdToken);
-  
-      // **Update emailVerified for Facebook users**
-      const user = auth.currentUser;
-      if (user && user.providerData.some((provider) => provider.providerId === "facebook.com")) {
-        // Force update emailVerified to true
-        await fetch("https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyD6Zb6zPA7vvUelLkEwR_YTq3p5lijfCt0", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            idToken: firebaseIdToken,
-            emailVerified: true,
-          }),
-        });
-        console.log("emailVerified set to true");
-      }
-  
-      // Prepare data to send to the backend
+      // Prepare the user data to send to the backend
       const userData = {
         uid: result.user.uid,
-        email: result.user.email,
+        email: email,
         displayName: result.user.displayName,
         photoURL: result.user.photoURL,
       };
   
-      // Send data to the backend using fetch (or axios if preferred)
-      const response = await fetch("http://localhost:8000/api/facebook-login/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          accessToken: accessToken, // Facebook access token
-          idToken: firebaseIdToken, // Firebase ID token
-          userData: userData, // Send the user data
-        }),
+      // Send data to the backend using axios
+      const response = await axios.post("http://localhost:8000/api/social-login/", {
+        id_token: idToken,
+        uid: result.user.uid,
+        email: email,
+        displayName: result.user.displayName,
+        photoURL: result.user.photoURL,
       });
   
-      const data = await response.json();
-      console.log("Backend response:", data);
-  
-      if (!response.ok) {
-        throw new Error("Failed to login with Facebook");
+      // Check the response from the backend
+      if (response.status === 200) {
+        console.log("Korisnik uspješno sinhronizovan s backendom");
+        alert("Prijava uspješna!");
+      } else {
+        console.error("Greška sa servera:", response.data);
+        alert("Došlo je do greške pri sinhronizaciji s backendom.");
       }
     } catch (error) {
-      console.error("Error during Facebook sign-in:", error);
+      console.error("Greška prilikom prijave:", error);
+  
+      // Handle errors from the backend (e.g., 400 or 500 status)
+      if (error.response) {
+        console.error("Backend greška:", error.response.data);
+        alert(`Greška sa servera: ${error.response.data.message || "Pokušajte ponovo."}`);
+      } else {
+        // Handle other errors (e.g., network or login errors)
+        alert("Došlo je do greške. Molimo pokušajte ponovo.");
+      }
     }
   };
   
+
+
 
   const submitForm = async () => {
     if (isStepValid()) {
@@ -502,7 +486,7 @@ function RegisterRekreativac() {
           </button>
           <button
             className="social-button facebook-button"
-            onClick={() => handleSocialSignIn(facebookProvider)}
+            onClick={() => handleFacebookSignIn(facebookProvider)}
           >
             Registrujte se putem Facebook-a
           </button>

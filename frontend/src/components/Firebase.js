@@ -16,4 +16,4 @@ const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
 facebookProvider.addScope("email");
-export { auth, googleProvider, facebookProvider, FacebookAuthProvider, signInWithPopup };
+export { auth, googleProvider, facebookProvider, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup };

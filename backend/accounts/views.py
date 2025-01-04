@@ -82,6 +82,19 @@ class UserRegistrationView(APIView):
             return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+
+
+from firebase_admin import auth
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.crypto import get_random_string
+from firebase_admin import auth as firebase_auth
+from .models import Client, ClientToken
+
+
 def verify_firebase_token(token):
     try:
         decoded_token = auth.verify_id_token(token)
@@ -91,72 +104,84 @@ def verify_firebase_token(token):
         return None
 
 
-
-from firebase_admin import auth
-
 @csrf_exempt
 def social_login(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        token = data.get("id_token")
-
-        if not token:
-            return JsonResponse({"error": "No token provided"}, status=400)
-
-        user_data = verify_firebase_token(token)
-
-        if not user_data:
-            return JsonResponse({"error": "Invalid token"}, status=401)
-
-        # Mark the user's email as verified
         try:
-            auth.update_user(user_data["uid"], email_verified=True)
-        except Exception as e:
-            return JsonResponse({"error": f"Failed to update emailVerified: {str(e)}"}, status=500)
+            data = json.loads(request.body)
+            
+            token = data.get("id_token")
+            email = data.get("email")
+            display_name = data.get("displayName", "")
+            photo_url = data.get("photoURL", "")
 
-        return JsonResponse({
-            "uid": user_data["uid"],
-            "email": user_data.get("email"),
-            "name": user_data.get("name"),
-        })
+            if not token:
+                return JsonResponse({"error": "No token provided"}, status=400)
+
+            # Verify the Firebase token
+            user_data = verify_firebase_token(token)
+            if not user_data:
+                return JsonResponse({"error": "Invalid token"}, status=401)
+
+            # Split the display name
+            name_parts = display_name.split(" ", 1)
+            first_name = name_parts[0]
+            last_name = name_parts[1] if len(name_parts) > 1 else ""
+
+            # Update Firebase email verification
+            try:
+                firebase_auth.update_user(user_data["uid"], email_verified=True)
+            except Exception:
+                pass  # Log error but proceed
+
+            # Create or get the client
+            client, created = Client.objects.get_or_create(
+                email=email,
+                username=f"{first_name}{user_data['uid'][:5]}",
+                defaults={
+                    "first_name": first_name,
+                    "last_name": last_name,
+                    "profile_picture": photo_url,
+                    
+                },
+            )
+
+           
+
+            # Create token if user is new
+            if created:
+                client_token = ClientToken.objects.create(
+                    key=get_random_string(40),
+                    client=client
+                )
+            else:
+                client_token = ClientToken.objects.get(client=client)
+
+            # Return client details and token
+            return JsonResponse({
+                "uid": user_data["uid"],
+                "email": user_data.get("email"),
+                "name": f"{first_name} {last_name}",
+                "photoURL": photo_url,
+                "client_id": client.pk,
+                "token": client_token.key,
+            })
+
+        except Exception as e:
+            logger.error(f"Unexpected error during login: {str(e)}", exc_info=True)
+            return JsonResponse({"error": "An unexpected error occurred"}, status=500)
 
     return JsonResponse({"error": "Invalid method"}, status=405)
+
+
+
+
 
 
 from django.core.files.base import ContentFile
 import requests
 
-def link_firebase_user(firebase_user_data):
-    email = firebase_user_data.get("email")
-    uid = firebase_user_data["uid"]
-    name = firebase_user_data.get("name", "").split(" ", 1)  # Split full name into first and last name
-    first_name = name[0] if len(name) > 0 else ""  # Extract first name
-    last_name = name[1] if len(name) > 1 else ""  # Extract last name
-    profile_picture_url = firebase_user_data.get("photoUrl")  # Firebase might have `photoUrl`
 
-    # Create or get the user
-    user, created = Client.objects.get_or_create(
-        username= first_name + uid,
-        defaults={
-            "email": email,
-            "first_name": first_name,
-            "last_name": last_name,
-        },
-    )
-
-    # Handle profile picture
-    if created and profile_picture_url:  # Only download if the user is newly created
-        try:
-            response = requests.get(profile_picture_url)
-            if response.status_code == 200:
-                user.profile_picture.save(
-                    f"{uid}_profile.jpg", ContentFile(response.content), save=True
-                )
-        except requests.RequestException:
-            pass  # Handle errors silently (optional: log the error)
-
-    return user
-         
 
 logger = logging.getLogger(__name__)
 

@@ -51,9 +51,17 @@ const Login = () => {
       console.log('Google Login Successful:', user);
 
       // Optional: Send user info to backend
-      const token = await user.getIdToken();
-      await axios.post('http://localhost:8000/api/social-login/', { id_token: token });
-
+      const id_token = await user.getIdToken();
+      const response = await axios.post('http://localhost:8000/api/social-login/', {
+        id_token,
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+      });
+      // Store the back-end token in localStorage
+      const { token } = response.data; // Extract the token returned from the back-end
+      localStorage.setItem('token', token); 
 
     
 
@@ -67,15 +75,31 @@ const Login = () => {
 
   const handleFacebookLogin = async () => {
     try {
+      // Authenticate with Facebook
       const result = await signInWithPopup(auth, facebookProvider);
       const user = result.user;
       console.log('Facebook Login Successful:', user);
-
-      // Optional: Send user info to backend
+  
+      // Get the Firebase ID token
       const id_token = await user.getIdToken();
-      await axios.post('http://localhost:8000/api/social-login/', { id_token });
-
+  
+      // Send user info and id_token to the back-end
+      const response = await axios.post('http://localhost:8000/api/social-login/', {
+        id_token,
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+      });
+  
+      // Store the back-end token in localStorage
+      const { token } = response.data; // Extract the token returned from the back-end
+      localStorage.setItem('token', token);
+  
+      // Optionally store user data for UI purposes
       localStorage.setItem('user', JSON.stringify(user));
+  
+      // Redirect the user to the home page or another appropriate location
       window.location.href = "/";
     } catch (error) {
       console.error('Facebook Login Failed:', error);
