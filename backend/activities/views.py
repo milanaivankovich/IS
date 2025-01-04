@@ -62,10 +62,25 @@ def add_activity(request, client_id):
 
 @api_view(['GET'])
 def get_client_activities(request, client_id):
-    client = get_object_or_404(Client, id=client_id)
-    activities = Activities.objects.filter(client=client)
-    serializer = ActivitiesSerializer(activities, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+  #  client = get_object_or_404(Client, id=client_id)
+   # activities = Activities.objects.filter(client=client)
+  #  serializer = ActivitiesSerializer(activities, many=True)
+  #  return Response(serializer.data, status=status.HTTP_200_OK)
+    now = datetime.now()
+
+    activities = Activities.objects.filter(
+        client_id = client_id,
+        is_deleted = False,
+        date__gt = now
+    )
+
+    if activities.exists():
+        serializer = ActivitiesSerializer(activities, many=True)
+        return Response(serializer.data)
+    else:
+        return Response({'error': 'No advertisements found for this business subject'}, status=404)
+    
+
 
 
 @api_view(['GET'])
