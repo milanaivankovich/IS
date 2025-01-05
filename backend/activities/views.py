@@ -195,3 +195,15 @@ def activities_by_username(request, username):
         serializer = ActivitiesSerializer(activities, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response({'error': 'No activities found for this username'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def activities_by_field(request, field_id):
+    """
+    Filtrira aktivnosti na osnovu ID-a terena.
+    """
+    activities = Activities.objects.filter(field_id=field_id, is_deleted=False, date__gt=now())
+    if activities.exists():
+        serializer = ActivitiesSerializer(activities, many=True)
+        return Response(serializer.data, status=200)
+    else:
+        return Response({'error': 'No activities found for this field.'}, status=404)

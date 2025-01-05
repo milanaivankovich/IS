@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SponsoredEventCard from '../components/SponsoredEventCard';
+import ActivityCard from '../components/ActivityCard';
 import './UserProfile.css';
 import './BusinessSubjectProfile.css';
 import MenuBar from "../components/MenuBar.js";
@@ -15,6 +16,7 @@ import { FaRegHeart, FaHeart } from "react-icons/fa";
 const TerenProfil = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [activities, setActivities] = useState([]);
   const [idField, setIdField]=useState({
     "id": -1
   });
@@ -192,6 +194,8 @@ const TerenProfil = () => {
         const eventsResponse = await axios.get(`http://localhost:8000/api/advertisements/field/${idField.id}/`);
         setEventsData(eventsResponse.data);
 
+        const activitiesResponse = await axios.get(`http://localhost:8000/activities/field/${idField.id}/`);
+        setActivities(activitiesResponse.data);
         const reviewsResponse = await axios.get(`http://localhost:8000/api/reviews/${idField.id}/`);
         setReviews(reviewsResponse.data);
       } catch (error) {
@@ -256,6 +260,10 @@ const TerenProfil = () => {
                   {Array.isArray(eventsData) && eventsData.map((activity) => (
                     <SponsoredEventCard key={activity.id} event={activity} />
                   ))}
+                    {/* Prikaz običnih aktivnosti */}
+                    {Array.isArray(activities) && activities.map((activity) => (
+                    <ActivityCard key={activity.id} activity={activity} />
+                    ))}
                 </div>
               </div>
             )}
