@@ -906,15 +906,15 @@ def get_client_by_username(request, username):
 def get_business_by_name(request, business_name):
     try:
         # Get business by business_name
-        business = get_object_or_404(Business, business_name=business_name)
+        business = get_object_or_404(BusinessSubject, business_name=business_name)
         
         # Serialize the business data
-        serializer = BusinessSerializer(business)
+        serializer = BusinessSubjectSerializer(business)
         
         # Return the serialized data as JSON response
         return Response(serializer.data, status=200)
     
-    except Business.DoesNotExist:
+    except BusinessSubject.DoesNotExist:
         return JsonResponse({'error': 'Business not found'}, status=404)    
 
 @api_view(['GET'])
