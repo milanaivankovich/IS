@@ -83,7 +83,9 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
           fetchSport();
         }
       }, [sport]); 
-      
+       const handleLocationClick = (fieldId) => {
+        window.location.href = `/teren-profil/${fieldId}`;
+      };
 
   return (
     <div className="SponsoredEventCard-Okvir">
@@ -101,7 +103,19 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
           <p><strong>Sport:</strong> {sports}</p>
           <p><strong>Datum:</strong> {dateOnly}</p>
           <p><strong>Vrijeme:</strong> {timeOnly}</p>
-          <p><strong>Lokacija:</strong> {location} - {preciseLocation}</p>
+          <p>
+           <strong>Lokacija:</strong>{" "}
+             {location ? (
+            <span
+               className="clickable-location"
+              onClick={() => handleLocationClick(field)}
+            >
+           {location}- {preciseLocation}
+            </span>
+   ) : (
+    "Učitavanje..."
+  )}
+          </p>
         </div>
         <div className="EventCard-buttons">
           <button className="EventCard-button">Pregled</button>
