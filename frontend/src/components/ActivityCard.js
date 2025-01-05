@@ -2,14 +2,36 @@ import React, { useEffect, useState } from "react";
 import "./ActivityCard.css";
 
 const ActivityCard = ({ activity }) => {
-  const { description, date, field, titel, sport, id, NumberOfParticipants } = activity;
+  const {description, date, field, titel, sport, id, NumberOfParticipants } = activity;
   const [location, setLocation] = useState("");
   const [sports, setSport] = useState("");
   const [remainingSlots, setRemainingSlots] = useState(NumberOfParticipants);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [username, setUsername] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  
+  
+    useEffect(() => {
+      const fetchUsername = async () => {
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:8000/api/client/${id}/username/`
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const data = await response.json();
+          setUsername(data.username);
+        } catch (error) {
+          console.error("Error fetching username:", error);
+        }
+      };
+  
+      fetchUsername();
+    }, [id]);
+   
   // Dohvaćanje lokacije na osnovu field ID-a
   useEffect(() => {
     const fetchLocation = async () => {
@@ -106,6 +128,7 @@ const ActivityCard = ({ activity }) => {
   return (
     <div className="activity-card">
       <h3 className="activity-card-title">{titel}</h3>
+      <p><strong>Kreirao oglas:</strong> {username || "Nepoznato"}</p>
       <p><strong>Opis:</strong> {description}</p>
       <p><strong>Sport:</strong> {sports}</p>
       <p><strong>Datum:</strong> {formattedDate}</p>

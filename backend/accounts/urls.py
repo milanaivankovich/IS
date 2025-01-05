@@ -23,7 +23,7 @@ urlpatterns = [
     path('api/client/<int:pk>/', views.get_client, name='get_client'),  # GET client by ID
     path('api/client/<int:pk>/edit/', views.edit_client, name='edit_client'),  # PUT/PATCH to edit client
     path('api/clients/', views.list_clients, name='list_clients'), #pregled registrovanih rekreativaca
-
+    path('api/client/<int:pk>/username/', views.get_username_by_id, name='get_username_by_id'),
     
 
      

@@ -1003,3 +1003,15 @@ def update_business_subject_favorite_fields(request, business_id):
     
     except Field.DoesNotExist:
         return Response({"detail": "Field not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+def get_username_by_id(request, pk):
+    """
+    Fetches the username of a Client based on their ID.
+    """
+    try:
+        client = Client.objects.get(pk=pk)  # Dohvata klijenta po ID-u
+        return Response({"username": client.username}, status=status.HTTP_200_OK)
+    except Client.DoesNotExist:
+        return Response({"error": "Client not found"}, status=status.HTTP_404_NOT_FOUND)
+
