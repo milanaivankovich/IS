@@ -134,3 +134,13 @@
 .add-photo-continue-button:hover {
     background-color: #e64a19;
 }
+.clickable-location {
+    color: #e64a19;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  .clickable-location:hover {
+    color:#e64a19;
+  }
+  

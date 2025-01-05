@@ -71,6 +71,13 @@ const ActivityCard = ({ activity }) => {
     }
   }, [sport]);
 
+  const handleUsernameClick = (username) => {
+    window.location.href = `http://localhost:3000/userprofile/${id}/`;
+  };
+  
+  const handleLocationClick = (fieldId) => {
+    window.location.href = `/teren-profil/${fieldId}`;
+  };
   // Funkcija za registraciju na aktivnost
   const handleRegister = async () => {
     if (!isLoggedIn) {
@@ -128,14 +135,40 @@ const ActivityCard = ({ activity }) => {
   return (
     <div className="activity-card">
       <h3 className="activity-card-title">{titel}</h3>
-      <p><strong>Kreirao oglas:</strong> {username || "Nepoznato"}</p>
+      <p>
+  <strong>Kreirao oglas:</strong>{" "}
+  {username ? (
+    <span
+      className="clickable-username"
+      onClick={() => handleUsernameClick(username)}
+    >
+      {username}
+    </span>
+  ) : (
+    "Nepoznato"
+  )}
+</p>
+
       <p><strong>Opis:</strong> {description}</p>
       <p><strong>Sport:</strong> {sports}</p>
       <p><strong>Datum:</strong> {formattedDate}</p>
       <p><strong>Vrijeme: </strong>{formattedTime}</p>
       <p><strong>Broj preostalih učesnika:</strong> {remainingSlots}</p>
-      <p><strong>Lokacija:</strong> {location}</p>
+      <p>
+  <strong>Lokacija:</strong>{" "}
+  {location ? (
+    <span
+      className="clickable-location"
+      onClick={() => handleLocationClick(field)}
+    >
+      {location}
+    </span>
+  ) : (
+    "Učitavanje..."
+  )}
+</p>
 
+     
       <div className="activity-card-buttons">
         <button
           className="button"

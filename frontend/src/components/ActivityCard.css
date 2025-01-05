@@ -89,3 +89,12 @@
   background-color: #ccc;
   cursor: not-allowed;
 }
+.clickable-username {
+  color:#e64a19;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.clickable-username:hover {
+  color: #e64a19;
+}
