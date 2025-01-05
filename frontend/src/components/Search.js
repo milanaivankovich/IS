@@ -35,25 +35,13 @@ const SearchComponent = () => {
 // Function to handle profile redirection after fetching data
 const handleProfileRedirect = async (id, type) => {
   try {
-    let response;
-
-    // Check the type and fetch the appropriate data
+   
     if (type === "client") {
-      // Fetch client data by username (id)
-      response = await axios.get(`http://localhost:8000/api/client/${id}/`);
-    } else if (type === "business-subject") {
-      // Fetch business subject data by business name (id)
-      response = await axios.get(`http://localhost:8000/api/business-subject/${id}/`);
-    } else {
-      console.error("Invalid type specified");
-      return;
+      window.location.href = `http://localhost:3000/userprofile/${id}/`;
+    } else if (type === "business") {
+      window.location.href = `http://localhost:3000/businessprofile/${id}/`;
     }
-
-    // OVO IZMIJENITI KADA SE NAPRAVI USER PROFILE PAGE
-    if (response && response.data) {
-      // Redirect to the UserProfile page with the data received
-      window.location.href = `/userprofile/${type}/${id}/`;  // Adjust the route based on your application setup
-    }
+  
   } catch (error) {
     console.error("Error fetching data:", error);
     alert("Error fetching profile data, please try again later.");
