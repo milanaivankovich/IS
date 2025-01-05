@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import SponsoredEventCard from '../components/SponsoredEventCard';
-import EventCard from '../components/EventCard';
 import MessageCard from '../components/MessageCard';
 import ActivityCard from '../components/ActivityCard';
-import './UserProfile.css';
 import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
 import CreatorImg from "../images/user.svg";
@@ -13,8 +10,52 @@ import { CiSettings } from "react-icons/ci";
 import { IoIosCloseCircle } from "react-icons/io";
 import FieldsCard from '../components/FieldsCard.js';
 import Spinner from 'react-bootstrap/Spinner';
-{/*proba za sponzorisane dogadjaje */ }
+//import "bootstrap/dist/css/bootstrap.min.css";
+//todo spinner.css bez ostalih stilova
+
+import './UserProfile.css';
+
 const UserProfile = () => {
+  const uri = 'http://localhost:8000';
+
+  //logika za prikaz bilo kog profila
+
+  const path = window.location.pathname;
+  const segments = path.split('/');
+  const [username, setUsername] = useState(segments[2]);
+
+  const [userData, setUserData] = useState({
+    "first_name": '',
+    "last_name": '',
+    "username": 'user',
+    "email": '',
+    "profile_picture": null
+  });
+
+  useEffect(() => {
+
+    const fetchUserData = async () => {
+      await axios.get(`${uri}/api/client/${username}/`
+      ).then(async response => {
+        await setUserData({
+          first_name: response.data.first_name,
+          last_name: response.data.last_name,
+          username: response.data.username,
+          email: response.data.email,
+          profile_picture: response.data.profile_picture ? uri + response.data.profile_picture : null,
+        })
+      }).catch(error => {
+        console.error('Error fetching data: ', error);
+        //alert('Error 404');
+      });
+    };
+    if (username)
+      fetchUserData();
+  }, [username]);
+
+  /////////
+
+
   const [isVisible, setIsVisible] = useState(false);
 
   const toggleFloatingWindow = () => {
@@ -27,36 +68,18 @@ const UserProfile = () => {
   const [activityHistory, setActivityHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  //podaci korisnika koji je trenutno ulogovan u slucaju da udje na svoj nalog
+
   const [id, setID] = useState({
     "id": -1,
     "type": ''
   });
-  const [userData, setUserData] = useState({
-    "first_name": 'Ime',
-    "last_name": 'Prezime',
-    "username": 'username',
-    "email": '',
-    "profile_picture": null
-  });
+
+  const [currentUserData, setCurrentUserData] = useState({});
 
   useEffect(() => {
     const fetchIDType = async () => {
-      await axios.get('http://localhost:8000/api/get-user-type-and-id/', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      })
-        .then((request) => {
-          if (request.data.type === 'BusinessSubject')
-            window.location.replace("/userprofile1");
-          setID(request.data);
-        })
-        .catch((error) => {
-          console.error("Error getting ID: ", error);
-          alert("Neuspjesna autorizacija. Molimo ulogujte se ponovo... ");
-          {/*window.location.replace("/login");*/ }
-        });
-    };
-    const fetchID = async () => {
-      await axios.get('http://localhost:8000/api/get-client-id/', {
+      await axios.get(`${uri}/api/get-user-type-and-id/`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       })
         .then((request) => {
@@ -64,55 +87,64 @@ const UserProfile = () => {
         })
         .catch((error) => {
           console.error("Error getting ID: ", error);
-          alert("Neuspjesna autorizacija. Molimo ulogujte se ponovo... ");
-          {/*window.location.replace("/login");*/ }
+          alert("Neuspjesna autorizacija. Molimo ulogujte se... ");
+          window.location.replace("/login"); //todo probati /usertype1
         });
     };
 
     fetchIDType();
   }, []);
 
-
-
-  
   useEffect(() => {
-
-    const fetchUserData = async () => {
-      await axios.get('http://localhost:8000/api/client/' + id.id + '/'
-      ).then(async response => {
-        await setUserData({
-          first_name: response.data.first_name,
-          last_name: response.data.last_name,
-          username: response.data.username,
-          email: response.data.email,
-          profile_picture: response.data.profile_picture ? 'http://localhost:8000' + response.data.profile_picture : null,
+    const fetchSubjectData = async () => {
+      if (window.location.pathname === '/userprofile' && id.type === 'BusinessSubject')
+        window.location.replace("/userprofile1");
+      await axios.get(`${uri}/api/business-subject/${id.id}/`)
+        .then(async response => {
+          await setCurrentUserData({
+            nameSportOrganization: response.data.nameSportOrganization,
+            description: response.data.description,
+            email: response.data.email,
+            profile_picture: response.data.profile_picture ? uri + response.data.profile_picture : null,
+          });
         })
-      })
-        //const imageResponse = await axios.get(response.data.profile_picture, { responseType: 'file' });
-
-
         .catch(error => {
           console.error('Error fetching data: ', error);
           alert('Error 404');
         });
     };
+    const fetchCurrentUserData = async () => {
+      await axios.get(`${uri}/api/client/${id.id}/`)
+        .then(async response => {
+          await setCurrentUserData({
+            first_name: response.data.first_name,
+            last_name: response.data.last_name,
+            username: response.data.username,
+            email: response.data.email,
+            profile_picture: response.data.profile_picture ? uri + response.data.profile_picture : null,
+          })
+          if (window.location.pathname === '/userprofile' && id.type === 'Client')
+            setUsername(response.data.username);
+        }).catch(error => {
+          console.error('Error fetching data: ', error);
+          alert('Error 404');
+        });
+    };
 
-    if (id.id !== -1)
-      fetchUserData();
+    if (id.id !== -1) {
+      if (id.type === 'Client')
+        fetchCurrentUserData();
+      else if (id.type === 'BusinessSubject')
+        fetchSubjectData();
+      else alert('Unsupported client type.');
+    }
   }, [id]);
 
-  /*useEffect(() => {
-    return () => {
-      if (userData.profile_picture) {
-        URL.revokeObjectURL(userData.profile_picture);
-      }
-    };
-  }, [userData]); */
 
   const [eventsData, setEventsData] = useState([]);
   const [selectionTitle, setSelectionTitle] = useState('Događaji');
   const [selectionSubtitle, setSelectionSubtitle] = useState('Događaji koje je kreirao korisnik');
-  //napraviti chain sa fetch
+
   // Funkcija za dohvaćanje podataka za različite kartice
   useEffect(() => {
     const fetchData = async () => {
@@ -120,23 +152,23 @@ const UserProfile = () => {
       try {
         switch (activeTab) {
           case "events":
-            const eventsResponse = await axios.get('http://localhost:8000/clients/' + id.id + '/activities/');
+            const eventsResponse = await axios.get(`${uri}/activities/username/${username}/`);
             setEventsData(eventsResponse.data);
             break;
-          case "favorites":
-            const favoritesResponse = await axios.get('http://localhost:8000/api/client/favorite-fields/'+ id.id + '/', {
+          case "favorites": //todo
+            const favoritesResponse = await axios.get(`${uri}/api/client/favorite-fields/${username}/`, {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setFavorites(favoritesResponse.data);
             break;
-          case "messages":
+          case "messages": //todo
             const messagesResponse = await axios.get('http://localhost:8000/api/user/messages', {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setMessages(messagesResponse.data);
             break;
-          case "activity":
-            const activityResponse = await axios.get('http://localhost:8000/api/user/activity', {
+          case "activity": //todo
+            const activityResponse = await axios.get(`${uri}/api/user/activity`, {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setActivityHistory(activityResponse.data);
@@ -153,10 +185,10 @@ const UserProfile = () => {
 
     if (id.id !== -1)
       fetchData();
-  }, [id, activeTab]);
+  }, [activeTab, username]);
 
   return (
-    <body>
+    <body className='user-profile-page'>
       <header className="userprofile-menu">
         <MenuBar variant={[id.id !== -1 ? "registered" : "unregistered"]} search={true} />
       </header>
@@ -168,27 +200,29 @@ const UserProfile = () => {
             <h0 className="userprofile-name">{userData.first_name} {userData.last_name}</h0>
             <h1 className="userprofile-subtitle">@{userData.username}</h1>
           </div>
-          <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/edituserprofile')} />
+          {((id.type === 'Client') && (currentUserData.username === username)) ? (
+            <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/edituserprofile')} />
+          ) : null}
         </div>
         <div>
           <nav className="profile-tabs">
-            <button className={`tab-button ${activeTab === "events" ? "active" : ""}`}
+            <button className={`tab - button ${activeTab === "events" ? "active" : ""}`}
               onClick={() => {
                 setSelectionTitle('Događaji');
                 setSelectionSubtitle('Događaji koje je kreirao korisnik');
                 setActiveTab("events");
               }}>Događaji</button>
-            <button className={`tab-button ${activeTab === "favorites" ? "active" : ""}`} onClick={() => {
-              setSelectionTitle('Omiljeno'); setSelectionSubtitle('Vaši omiljeni tereni');
+            <button className={`tab - button ${activeTab === "favorites" ? "active" : ""} `} onClick={() => {
+              setSelectionTitle('Omiljeno'); setSelectionSubtitle('Omiljeni tereni korisnika');
               setActiveTab("favorites")
             }}>Omiljeno</button>
-            <button className={`tab-button ${activeTab === "messages" ? "active" : ""}`} onClick={() => {
+            {/*<button className={`tab - button ${activeTab === "messages" ? "active" : ""} `} onClick={() => {
               setSelectionTitle('Poruke'); setSelectionSubtitle('');
               setActiveTab("messages")
             }
 
-            }>Poruke</button>
-            <button className={`tab-button ${activeTab === "activity" ? "active" : ""}`} onClick={() => {
+            }>Poruke</button>*/}
+            <button className={`tab - button ${activeTab === "activity" ? "active" : ""} `} onClick={() => {
               setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Događaji kojima se korisnik pridružio');
               setActiveTab("activity")
             }}>Istorija Aktivnosti</button>
@@ -209,7 +243,7 @@ const UserProfile = () => {
                         <ActivityCard key={activity.id} activity={activity} />
                       ))}
                     </div>
-                    {(id.id !== -1) ? (
+                    {((id.type === 'Client') && (currentUserData.username === username)) ? (
                       <button className="create-event-button" onClick={() => toggleFloatingWindow()}>
                         + Novi događaj
                       </button>
@@ -224,20 +258,21 @@ const UserProfile = () => {
                 )}
 
                 {activeTab === "favorites" && (
-                <div className="scroll-bar-user-profile">
-                {favorites.map((favorite) => (
-                 <FieldsCard key={favorite.id} field={favorite} userId={id.id} userType={id.type}/>
-                ))}
-                </div>
-                )}
-
-                {activeTab === "messages" && (
-                  <div className="messages-cards-container">
-                    {messages.map((message) => (
-                      <MessageCard key={message.id} sender={message.sender} content={message.content} />
+                  <div className="scroll-bar-user-profile">
+                    {favorites.map((favorite) => (
+                      <FieldsCard key={favorite.id} field={favorite} userId={id.id} userType={id.type} />
                     ))}
                   </div>
                 )}
+
+                {//todo
+                  activeTab === "messages" && (
+                    <div className="messages-cards-container">
+                      {messages.map((message) => (
+                        <MessageCard key={message.id} sender={message.sender} content={message.content} />
+                      ))}
+                    </div>
+                  )}
 
                 {activeTab === "activity" && (
                   <div className="scroll-bar-user-profile">
