@@ -40,10 +40,10 @@ const handleProfileRedirect = async (id, type) => {
     // Check the type and fetch the appropriate data
     if (type === "client") {
       // Fetch client data by username (id)
-      response = await axios.get(`/api/client/${id}/`);
+      response = await axios.get(`http://localhost:8000/api/client/${id}/`);
     } else if (type === "business-subject") {
       // Fetch business subject data by business name (id)
-      response = await axios.get(`/api/business-subject/${id}/`);
+      response = await axios.get(`http://localhost:8000/api/business-subject/${id}/`);
     } else {
       console.error("Invalid type specified");
       return;
