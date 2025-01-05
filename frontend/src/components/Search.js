@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Search.css";
 import Icon from "../images/iconMagnifier.svg";
+import axios from 'axios';
 
 const SearchComponent = () => {
   const [query, setQuery] = useState(""); // Drži upit koji korisnik unosi
@@ -29,14 +30,35 @@ const SearchComponent = () => {
     }
   };
 
-  // Funkcija za preusmeravanje na profil korisnika koristeći window.location
-  const handleProfileRedirect = (pk, type) => {
+
+
+// Function to handle profile redirection after fetching data
+const handleProfileRedirect = async (id, type) => {
+  try {
+    let response;
+
+    // Check the type and fetch the appropriate data
     if (type === "client") {
-      window.location.href = `/api/client/${pk}/`; // Preusmeravanje na profil korisnika
+      // Fetch client data by username (id)
+      response = await axios.get(`/api/client/${id}/`);
     } else if (type === "business-subject") {
-      window.location.href = `/api/business-subject/${pk}/`; // Preusmeravanje na profil poslovnog subjekta
+      // Fetch business subject data by business name (id)
+      response = await axios.get(`/api/business-subject/${id}/`);
+    } else {
+      console.error("Invalid type specified");
+      return;
     }
-  };
+
+    // OVO IZMIJENITI KADA SE NAPRAVI USER PROFILE PAGE
+    if (response && response.data) {
+      // Redirect to the UserProfile page with the data received
+      window.location.href = `/userprofile/${type}/${id}/`;  // Adjust the route based on your application setup
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    alert("Error fetching profile data, please try again later.");
+  }
+};
 
   return (
     <div>
@@ -70,7 +92,7 @@ const SearchComponent = () => {
                 {results.clients.map((client) => (
                   <li
                     key={client.username}
-                    onClick={() => handleProfileRedirect(client.username, "client")}
+                    onClick={() => handleProfileRedirect(client.id, "client")}
                   >
                     {client.first_name} {client.last_name}
                   </li>
@@ -87,7 +109,7 @@ const SearchComponent = () => {
                 {results.business_profiles.map((business) => (
                   <li
                     key={business.nameSportOrganization}
-                    onClick={() => handleProfileRedirect(business.nameSportOrganization, "business")}
+                    onClick={() => handleProfileRedirect(business.id, "business")}
                   >
                     {business.nameSportOrganization}
                   </li>

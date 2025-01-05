@@ -72,6 +72,9 @@ const UserProfile = () => {
     fetchIDType();
   }, []);
 
+
+
+  
   useEffect(() => {
 
     const fetchUserData = async () => {

@@ -863,8 +863,7 @@ def search_users(request):
     for client in client_results:
         client_data = ClientSerializer(client).data
         
-        # Remove the 'id' field
-        client_data.pop('id', None)
+        client_data['id'] = client.username
         
         # Add client data to the results
         serialized_clients.append(client_data)
@@ -874,8 +873,7 @@ def search_users(request):
     for business in business_results:
         business_data = BusinessSubjectSerializer(business).data
         
-        # Remove the 'id' field
-        business_data.pop('id', None)
+        business_data['id'] = business.business_name
         
         # Add client data to the results
         serialized_business_profiles.append(business_data)
@@ -888,6 +886,36 @@ def search_users(request):
     }
 
     return Response(result, status=status.HTTP_200_OK)
+
+# Function to get client data by username
+def get_client_by_username(request, username):
+    try:
+        client = get_object_or_404(Client, username=username)  # Get client by username
+        response_data = {
+            'first_name': client.first_name,
+            'last_name': client.last_name,
+            'username': client.username,
+            'email': client.email,
+            'profile_picture': client.profile_picture.url if client.profile_picture else None
+        }
+        return JsonResponse(response_data, status=200)
+    except ObjectDoesNotExist:
+        return JsonResponse({'error': 'Client not found'}, status=404)
+
+@api_view(['GET'])
+def get_business_by_name(request, business_name):
+    try:
+        # Get business by business_name
+        business = get_object_or_404(Business, business_name=business_name)
+        
+        # Serialize the business data
+        serializer = BusinessSerializer(business)
+        
+        # Return the serialized data as JSON response
+        return Response(serializer.data, status=200)
+    
+    except Business.DoesNotExist:
+        return JsonResponse({'error': 'Business not found'}, status=404)    
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser])

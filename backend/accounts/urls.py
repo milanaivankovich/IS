@@ -29,6 +29,9 @@ urlpatterns = [
      
     path("api/get-client-id/", views.get_user_pk_by_token, name="get_user_pk_by_token"),
 
+    path('api/client/<str:username>/', views.get_client_by_username, name='get_client_by_username'),
+    path('api/business/<str:business_name>/', views.get_business_by_name, name='get_business_by_name'),
+
     # Business Subject Endpoints
     path('api/business-subject/', views.register_business_subject, name='register_business_subject'),  # POST to create new
     path('api/business-subject/<int:pk>/', views.get_business_subject, name='get_business_subject'),  # GET by ID
