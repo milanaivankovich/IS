@@ -79,3 +79,28 @@
   padding: 10px;
   text-align: center;
 }
+.react-select__control {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  padding: 5px;
+  box-shadow: none;
+}
+
+.react-select__menu {
+  z-index: 10;
+}
+
+.react-select__option {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.react-select__option--is-selected {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.react-select__option--is-focused {
+  background-color: #e6f7ff;
+}
