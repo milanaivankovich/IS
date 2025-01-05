@@ -55,7 +55,7 @@ function RegisterRekreativac() {
     password: "",
     confirmPassword: "",
     email: "",
-    profile_picture:"",
+    image:null,
   });
 
   const [passwordCriteria, setPasswordCriteria] = useState({
@@ -269,7 +269,7 @@ const handleSocialSignIn = async () => {
           password: "",
           confirmPassword: "",
           email: "",
-          profile_picture:""
+          image:""
         });
         setCurrentStep(0);
       } catch (error) {
