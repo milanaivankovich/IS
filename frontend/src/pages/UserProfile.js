@@ -183,9 +183,9 @@ const UserProfile = () => {
       }
     };
 
-    if (id.id !== -1)
+    if (username)
       fetchData();
-  }, [activeTab, username]);
+  }, [activeTab, username, id]);
 
   return (
     <body className='user-profile-page'>

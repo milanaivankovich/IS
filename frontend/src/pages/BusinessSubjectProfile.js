@@ -12,8 +12,47 @@ import NewAdvertisementCard from "../components/NewAdvertisementCard.js";
 import { CiSettings } from "react-icons/ci";
 import { IoIosCloseCircle } from "react-icons/io";
 import FieldsCard from '../components/FieldsCard.js';
-{/*proba za sponzorisane dogadjaje */ }
+
 const BusinessSubjectProfile = () => {
+
+  const uri = 'http://localhost:8000';
+
+  //logika za prikaz bilo kog profila poslovnog
+
+  const path = window.location.pathname;
+  const segments = path.split('/');
+  const [username, setUsername] = useState(segments[2]);
+
+  const [subjectData, setSubjectData] = useState({
+    "nameSportOrganization": "Sport organization",
+    "profile_picture": null,
+    "description": "",
+    "email": "email",
+  });
+
+  useEffect(() => {
+
+    const fetchUserData = async () => {
+      await axios.get(`${uri}/api/business-subject/${username}/`
+      ).then(async response => {
+        await setSubjectData({
+          nameSportOrganization: response.data.nameSportOrganization,
+          description: response.data.description,
+          email: response.data.email,
+          profile_picture: response.data.profile_picture ? uri + response.data.profile_picture : null,
+        })
+      }).catch(error => {
+        console.error('Error fetching data: ', error);
+        //alert('Error 404');
+      });
+    };
+    if (username)
+      fetchUserData();
+  }, [username]);
+
+  /////////
+
+
   const [isVisible, setIsVisible] = useState(false);
 
   const toggleFloatingWindow = () => {
@@ -26,31 +65,27 @@ const BusinessSubjectProfile = () => {
   const [activityHistory, setActivityHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
+
+  //trenutni korisnik
+
   const [id, setID] = useState({
     "id": -1,
     "type": ''
   });
-  const [subjectData, setSubjectData] = useState({
-    "nameSportOrganization": "Sport organization",
-    "profile_picture": null,
-    "description": "",
-    "email": "email",
-  });
+  const [currentUserData, setCurrentUserData] = useState({});
 
   useEffect(() => {
     const fetchIDType = async () => {
-      await axios.get('http://localhost:8000/api/get-user-type-and-id/', {
+      await axios.get(`${uri}/api/get-user-type-and-id/`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       })
         .then((request) => {
-          if (request.data.type === 'Client')
-            window.location.replace("/userprofile");
           setID(request.data);
         })
         .catch((error) => {
           console.error("Error getting ID: ", error);
-          alert("Neuspjesna autorizacija. Molimo ulogujte se ponovo... ");
-          {/*window.location.replace("/login");*/ }
+          alert("Neuspjesna autorizacija. Molimo ulogujte se... ");
+          window.location.replace("/login"); //todo probati /usertype1
         });
     };
 
@@ -58,25 +93,48 @@ const BusinessSubjectProfile = () => {
   }, []);
 
   useEffect(() => {
-
-    const fetchUserData = async () => {
-      await axios.get('http://localhost:8000/api/business-subject/' + id.id + '/')
+    const fetchSubjectData = async () => {
+      await axios.get(`${uri}/api/business-subject/${id.id}/`)
         .then(async response => {
-          await setSubjectData({
+          await setCurrentUserData({
             nameSportOrganization: response.data.nameSportOrganization,
             description: response.data.description,
             email: response.data.email,
-            profile_picture: response.data.profile_picture ? 'http://localhost:8000' + response.data.profile_picture : null,
-          })
+            profile_picture: response.data.profile_picture ? uri + response.data.profile_picture : null,
+          });
+          if (window.location.pathname === '/userprofile1' && id.type === 'BusinessSubject')
+            setUsername(response.data.nameSportOrganization);
         })
         .catch(error => {
           console.error('Error fetching data: ', error);
-          alert('Error fetching data');
+          alert('Error 404');
+        });
+    };
+    const fetchCurrentUserData = async () => {
+      if (window.location.pathname === '/userprofile1' && id.type === 'Client')
+        window.location.replace("/userprofile");
+      await axios.get(`${uri}/api/client/${id.id}/`)
+        .then(async response => {
+          await setCurrentUserData({
+            first_name: response.data.first_name,
+            last_name: response.data.last_name,
+            username: response.data.username,
+            email: response.data.email,
+            profile_picture: response.data.profile_picture ? uri + response.data.profile_picture : null,
+          })
+        }).catch(error => {
+          console.error('Error fetching data: ', error);
+          alert('Error 404');
         });
     };
 
-    if (id.id !== -1)
-      fetchUserData();
+    if (id.id !== -1) {
+      if (id.type === 'Client')
+        fetchCurrentUserData();
+      else if (id.type === 'BusinessSubject')
+        fetchSubjectData();
+      else alert('Unsupported client type.');
+    }
   }, [id]);
 
   const [eventsData, setEventsData] = useState([]);
@@ -90,11 +148,11 @@ const BusinessSubjectProfile = () => {
       try {
         switch (activeTab) {
           case "events":
-            const eventsResponse = await axios.get('http://localhost:8000/api/advertisements/businesssubject/' + id.id + '/');
+            const eventsResponse = await axios.get(`${uri}/api/advertisements/businesssubject/${username}/`); //todo
             setEventsData(eventsResponse.data);
             break;
           case "favorites":
-            const favoritesResponse = await axios.get('http://localhost:8000/api/business-subject/favorite-fields/'+ id.id + '/', {
+            const favoritesResponse = await axios.get(`${uri}/api/business-subject/favorite-fields/${username}/`, { //todo
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setFavorites(favoritesResponse.data);
@@ -106,7 +164,7 @@ const BusinessSubjectProfile = () => {
             setMessages(messagesResponse.data);
             break;
           case "activity":
-            const activityResponse = await axios.get('http://127.0.0.1:8000/api/advertisementspast/businesssubject/' + id.id + '/', {
+            const activityResponse = await axios.get(`${uri}/api/advertisementspast/businesssubject/${username}/`, { //todo
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setActivityHistory(activityResponse.data);
@@ -121,9 +179,9 @@ const BusinessSubjectProfile = () => {
       }
     };
 
-    if (id.id !== -1)
+    if (username)
       fetchData();
-  }, [id, activeTab]);
+  }, [id, activeTab, username]);
 
   return (
     <body>
@@ -138,7 +196,9 @@ const BusinessSubjectProfile = () => {
             <h0 className="userprofile-name">{subjectData.nameSportOrganization}</h0>
             <h1 className="userprofile-subtitle">{subjectData.description}</h1>
           </div>
-          <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/editbusinessprofile')} />
+          {((id.type === 'BusinessSubject') && (currentUserData.nameSportOrganization === username)) ? (
+            <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/edituserprofile1')} />
+          ) : null}
         </div>
         <div>
           <nav className="profile-tabs">
@@ -152,12 +212,12 @@ const BusinessSubjectProfile = () => {
               setSelectionTitle('Omiljeno'); setSelectionSubtitle('Vaši omiljeni tereni');
               setActiveTab("favorites")
             }}>Omiljeno</button>
-            <button className={`tab-button ${activeTab === "messages" ? "active" : ""}`} onClick={() => {
+            {/*<button className={`tab-button ${activeTab === "messages" ? "active" : ""}`} onClick={() => {
               setSelectionTitle('Poruke'); setSelectionSubtitle('');
               setActiveTab("messages")
             }
 
-            }>Poruke</button>
+            }>Poruke</button>*/}
             <button className={`tab-button ${activeTab === "activity" ? "active" : ""}`} onClick={() => {
               setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Stari događaji koje je kreirao korisnik');
               setActiveTab("activity")
@@ -176,10 +236,10 @@ const BusinessSubjectProfile = () => {
                   <div className="events-section">
                     <div className="scroll-bar-user-profile">
                       {Array.isArray(eventsData) && eventsData.map((activity) => (
-                        <SponsoredEventCardForBusinessSubject user={subjectData} event={activity}/>
+                        <SponsoredEventCardForBusinessSubject user={subjectData} event={activity} />
                       ))}
                     </div>
-                    {(id.id !== -1) ? (
+                    {((id.type === 'BusinessSubject') && (currentUserData.nameSportOrganization === username)) ? (
                       <button className="create-event-button" onClick={() => toggleFloatingWindow()}>
                         + Novi događaj
                       </button>
@@ -193,13 +253,13 @@ const BusinessSubjectProfile = () => {
                   </div>
                 )}
 
-              {activeTab === "favorites" && (
-              <div className="scroll-bar-user-profile">
-              {favorites.map((favorite) => (
-                <FieldsCard key={favorite.id} field={favorite} userId={id.id} userType={id.type}/>
-              ))}
-              </div>
-               )}
+                {activeTab === "favorites" && (
+                  <div className="scroll-bar-user-profile">
+                    {favorites.map((favorite) => (
+                      <FieldsCard key={favorite.id} field={favorite} userId={id.id} userType={id.type} />
+                    ))}
+                  </div>
+                )}
 
                 {activeTab === "messages" && (
                   <div className="messages-cards-container">
@@ -208,13 +268,13 @@ const BusinessSubjectProfile = () => {
                     ))}
                   </div>
                 )}
-               
-               {activeTab === "activity" && (
-                <div className="scroll-bar-user-profile">
-                 {Array.isArray(activityHistory) && activityHistory.map((activity) => (
-                   <SponsoredEventCard key={activity.id} event={activity} />
-                 ))}
-                </div>
+
+                {activeTab === "activity" && (
+                  <div className="scroll-bar-user-profile">
+                    {Array.isArray(activityHistory) && activityHistory.map((activity) => (
+                      <SponsoredEventCard key={activity.id} event={activity} />
+                    ))}
+                  </div>
                 )}
               </div>
             )}
@@ -222,7 +282,7 @@ const BusinessSubjectProfile = () => {
         </div>
       </div>
       <Footer />
-    </body>
+    </body >
   );
 };
 

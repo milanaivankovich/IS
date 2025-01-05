@@ -32,21 +32,21 @@ const SearchComponent = () => {
 
 
 
-// Function to handle profile redirection after fetching data
-const handleProfileRedirect = async (id, type) => {
-  try {
-   
-    if (type === "client") {
-      window.location.href = `http://localhost:3000/userprofile/${id}/`;
-    } else if (type === "business") {
-      window.location.href = `http://localhost:3000/businessprofile/${id}/`;
+  // Function to handle profile redirection after fetching data
+  const handleProfileRedirect = async (id, type) => {
+    try {
+
+      if (type === "client") {
+        window.location.href = `http://localhost:3000/userprofile/${id}/`;
+      } else if (type === "business") {
+        window.location.href = `http://localhost:3000/userprofile1/${id}/`;
+      }
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      alert("Error fetching profile data, please try again later.");
     }
-  
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    alert("Error fetching profile data, please try again later.");
-  }
-};
+  };
 
   return (
     <div>
