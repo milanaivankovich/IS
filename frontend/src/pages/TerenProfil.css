@@ -51,3 +51,29 @@
 .fav-field-like-button:hover {
     color: #e64a19;
 }
+
+.events-section {
+  display: flex;
+  flex-direction: column; /* Obezbeđuje vertikalni raspored */
+  gap: 20px; /* Razmak između pojedinačnih elemenata */
+  width: 100%; /* Obezbeđuje da sekcija zauzima punu širinu */
+}
+
+.sponsored-events-section, 
+.activities-section {
+  display: flex;
+  flex-direction: column; /* Osigurava vertikalni raspored unutar sekcije */
+  gap: 15px; /* Razmak između elemenata unutar sekcije */
+  width: 100%; /* Širina sekcije */
+  padding: 15px; /* Dodaje unutrašnji razmak */
+  background-color: #f9f9f9; /* Pozadina sekcije */
+  border-radius: 8px; /* Zaobljeni uglovi */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Blaga senka za vizuelni efekat */
+}
+
+.scroll-bar-user-profile {
+  display: flex;
+  flex-direction: column; /* Vertikalni raspored za sve sadržaje unutar sekcije */
+  width: 100%;
+  gap: 20px; /* Razmak između sekcija */
+}

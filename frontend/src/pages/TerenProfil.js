@@ -254,18 +254,39 @@ const TerenProfil = () => {
                 <p>Učitavanje...</p>
                 ) : (
               <div>
-                {activeTab === "events" && (
-                  <div className="events-section">
-                  <div className="scroll-bar-user-profile">
-                  {Array.isArray(eventsData) && eventsData.map((activity) => (
-                    <SponsoredEventCard key={activity.id} event={activity} />
-                  ))}
-                    {/* Prikaz običnih aktivnosti */}
-                    {Array.isArray(activities) && activities.map((activity) => (
-                    <ActivityCard key={activity.id} activity={activity} />
-                    ))}
-                </div>
-              </div>
+         {activeTab === "events" && (
+         <div className="events-section">
+           <div className="scroll-bar-user-profile">
+      
+             {/* Sponzorisani događaji */}
+         <div className="sponsored-events-section">
+            <h2 className="section-title">Sponzorisani događaji</h2>
+             {Array.isArray(eventsData) && eventsData.length > 0 ? (
+              eventsData.map((event) => (
+                <SponsoredEventCard key={event.id} event={event} />
+          ))
+        ) : (
+          <p className="no-events-message">Nema sponzorisanih događaja.</p>
+        )}
+      </div>
+
+      {/* Razmak između sekcija */}
+      <div className="section-divider"></div>
+
+      {/* Aktivnosti */}
+      <div className="activities-section">
+        <h2 className="section-title">Aktivnosti</h2>
+        {Array.isArray(activities) && activities.length > 0 ? (
+          activities.map((activity) => (
+            <ActivityCard key={activity.id} activity={activity} />
+          ))
+        ) : (
+          <p className="no-events-message">Nema aktivnosti na terenu.</p>
+        )}
+      </div>
+
+    </div>
+    </div>
             )}
 
             {activeTab === "reviews" && (
