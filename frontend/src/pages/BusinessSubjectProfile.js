@@ -197,7 +197,7 @@ const BusinessSubjectProfile = () => {
             <h1 className="userprofile-subtitle">{subjectData.description}</h1>
           </div>
           {((id.type === 'BusinessSubject') && (currentUserData.nameSportOrganization === username)) ? (
-            <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/edituserprofile1')} />
+            <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/editbusinessprofile')} />
           ) : null}
         </div>
         <div>

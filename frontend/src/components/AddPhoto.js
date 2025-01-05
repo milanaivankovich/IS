@@ -26,8 +26,6 @@ const AddPhoto = ({ userId }) => {
     setCropping(false);
   };
 
-
-
   const onCropComplete = (croppedArea, croppedAreaPixels) => {
     setCrop(croppedAreaPixels);
   };
@@ -40,7 +38,7 @@ const AddPhoto = ({ userId }) => {
       return;
     }
     const picture = new FormData();
-    const imageFile = new File([formData.image], "${userId.id}.jpeg", { type: "image/jpeg" });
+    const imageFile = new File([formData.image], `${userId.id}.jpeg`, { type: "image/jpeg" });
     picture.append("profile_picture", imageFile);
     let uri;
     if (userId.type === 'BusinessSubject')
