@@ -928,9 +928,9 @@ def list_clients(request):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
-def get_client_favorite_fields(request, user_id):
+def get_client_favorite_fields(request, username):
     try:
-        user = Client.objects.get(id=user_id)
+        user = Client.objects.get(username=username)
         favorite_fields = user.favorite_fields.all()
         serializer = FieldSerializer(favorite_fields, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -939,9 +939,9 @@ def get_client_favorite_fields(request, user_id):
         return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
     
 @api_view(['GET'])
-def get_business_subject_favorite_fields(request, business_id):
+def get_business_subject_favorite_fields(request, business_name):
     try:
-        business_subject = BusinessSubject.objects.get(id=business_id)
+        business_subject = BusinessSubject.objects.get(business_name=business_name)
         favorite_fields = business_subject.favorite_fields.all()
         serializer = FieldSerializer(favorite_fields, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

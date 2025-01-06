@@ -63,8 +63,8 @@ urlpatterns = [
 
     path('api/social-login/', views.social_login, name='social_login'),
    
-    path('api/client/favorite-fields/<int:user_id>/', views.get_client_favorite_fields, name='client-favorite-fields'),
-    path('api/business-subject/favorite-fields/<int:business_id>/', get_business_subject_favorite_fields, name='business-subject-favorite-fields'),
+    path('api/client/favorite-fields/<str:username>/', views.get_client_favorite_fields, name='client-favorite-fields'),
+    path('api/business-subject/favorite-fields/<str:business_name>/', get_business_subject_favorite_fields, name='business-subject-favorite-fields'),
     path('api/client/update-favorite-fields/<int:user_id>/', update_client_favorite_fields, name='update-client-favorite-fields'),
     path('api/business-subject/update-favorite-fields/<int:business_id>/', update_business_subject_favorite_fields, name='update-business-subject-favorite-fields'),
 
