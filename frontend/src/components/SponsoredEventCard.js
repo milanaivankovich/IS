@@ -110,7 +110,7 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
                className="clickable-location"
               onClick={() => handleLocationClick(field)}
             >
-           {location}- {preciseLocation}
+           {location} - {preciseLocation}
             </span>
    ) : (
     "Učitavanje..."

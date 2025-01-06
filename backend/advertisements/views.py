@@ -180,14 +180,22 @@ def delete_advertisement(request, pk):
     return Response({'message': 'Advertisement marked as deleted'}, status=200)
 
 @api_view(['GET'])
-def get_past_advertisements_by_business_subject(request, business_subject_id):
+def get_past_advertisements_by_business_subject(request, business_name):
+    now = datetime.now()
+
+    try:
+        business_subject = BusinessSubject.objects.get(business_name=business_name)
+    except BusinessSubject.DoesNotExist:
+        return Response({'error': 'Business subject not found'}, status=404)
+    
     advertisements = Advertisement.objects.filter(
-        business_subject=business_subject_id,
+        business_subject=business_subject,
         is_deleted=False,
-        date__lt=now()  
+        date__lt=now
     )
+    
     if advertisements.exists():
         serializer = AdvertisementSerializer(advertisements, many=True)
         return Response(serializer.data)
     else:
-        return Response({'error': 'No past advertisements found for this business subject'}, status=404)
+        return Response({'error': 'No advertisements found for this business subject'}, status=404)

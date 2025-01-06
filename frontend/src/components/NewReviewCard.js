@@ -26,7 +26,7 @@ const NewReviewCard = ({ user, pk }) => {
           if (response.data.type === 'BusinessSubject') {
             setIsBusinessSubject(true); 
             alert("Recenzije mogu ostavljati samo klijenti...");
-            window.location.replace("/tereni");
+            window.location.reload();
           } else {
             setID(response.data);
           }

@@ -78,5 +78,15 @@
         "field_id": 2,
         "sport_id": 3,
         "is_deleted": true
+    },
+    {
+        "id": 9,
+        "name": "oglas555",
+        "description": "opis555opis555",
+        "date": "2025-01-22",
+        "business_subject_id": 3,
+        "field_id": 6,
+        "sport_id": 4,
+        "is_deleted": false
     }
 ]
