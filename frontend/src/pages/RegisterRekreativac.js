@@ -252,12 +252,31 @@ const handleSocialSignIn = async () => {
     if (isStepValid()) {
       setIsSubmitting(true);
       try {
-        const response = await axios.post(
-          "http://localhost:8000/api/client/",
-          formData
-        );
+        // Kreiranje FormData objekta
+        const formDataToSend = new FormData();
+        formDataToSend.append("first_name", formData.first_name);
+        formDataToSend.append("last_name", formData.last_name);
+        formDataToSend.append("username", formData.username);
+        formDataToSend.append("password", formData.password);
+        formDataToSend.append("confirmPassword", formData.confirmPassword);
+        formDataToSend.append("email", formData.email);
+  
+        // Dodaj sliku samo ako postoji
+        if (formData.profile_picture instanceof Blob) {
+          formDataToSend.append("profile_picture", formData.profile_picture, "profile_picture.jpg");
+        }
+  
+        // Post zahtjev
+        const response = await axios.post("http://localhost:8000/api/client/", formDataToSend, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+  
         console.log(response.data);
         alert("Registracija uspješna! Verifikujte email.");
+        
+        // Reset forme
         setFormData({
           first_name: "",
           last_name: "",
@@ -265,7 +284,7 @@ const handleSocialSignIn = async () => {
           password: "",
           confirmPassword: "",
           email: "",
-          profile_picture:""
+          profile_picture: "",
         });
         setCurrentStep(0);
       } catch (error) {
@@ -276,6 +295,7 @@ const handleSocialSignIn = async () => {
       }
     }
   };
+  
 
   return (
     <div className="register-container">

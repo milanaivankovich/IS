@@ -127,20 +127,39 @@ function RegisterPoslovni() {
 
   const submitForm = async () => {
     if (isStepValid()) {
-      setIsSubmitting(true); 
+      setIsSubmitting(true);
       try {
-        const response =await axios.post("http://localhost:8000/api/business-subject/", formData);
-        console.log(response.data); 
+        // Kreiraj FormData objekt
+        const data = new FormData();
+        data.append("nameSportOrganization", formData.nameSportOrganization);
+        data.append("password", formData.password);
+        data.append("confirmPassword", formData.confirmPassword);
+        data.append("email", formData.email);
+  
+        // Dodaj sliku, ako postoji
+        if (formData.profile_picture) {
+          data.append("profile_picture", formData.profile_picture, formData.profile_picture.name || "profile_picture.jpg");
+        }
+  
+        // Pošalji zahtjev
+        const response = await axios.post("http://localhost:8000/api/business-subject/", data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        
+        console.log(response.data);
         alert("Registracija uspješna! Verifikujte email.");
         setFormData({
           nameSportOrganization: "",
           password: "",
           confirmPassword: "",
           email: "",
+          profile_picture: null,
         });
         setCurrentStep(0);
       } catch (error) {
-        console.error("Greška prilikom registracije:", error);
+        console.error("Greška prilikom registracije:", error.response?.data || error.message);
         alert("Došlo je do greške prilikom registracije. Molimo pokušajte ponovo.");
       } finally {
         setIsSubmitting(false);
