@@ -69,7 +69,11 @@ const EditUserProfile = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    await axios.put('http://localhost:8000/api/business-subject/' + id.id + '/edit/', subjectData, {
+    await axios.put('http://localhost:8000/api/business-subject/' + id.id + '/edit/', {
+      nameSportOrganization: subjectData.nameSportOrganization,
+      description: subjectData.description,
+      email: subjectData.email,
+    }, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
       .then((response) => {
