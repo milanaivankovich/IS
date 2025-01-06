@@ -39,7 +39,7 @@ function RegisterRekreativac() {
       setFinalImage(croppedUrl); 
       setFormData((prevFormData) => ({
         ...prevFormData,
-        image: croppedBlob, 
+        profile_picture: croppedBlob, 
       }));
       setCropping(false); 
     } catch (error) {
@@ -55,7 +55,7 @@ function RegisterRekreativac() {
     password: "",
     confirmPassword: "",
     email: "",
-    image:""
+    profile_picture:""
   });
 
   const [passwordCriteria, setPasswordCriteria] = useState({
@@ -269,7 +269,7 @@ const handleSocialSignIn = async () => {
           password: "",
           confirmPassword: "",
           email: "",
-          image:""
+          profile_picture:""
         });
         setCurrentStep(0);
       } catch (error) {
@@ -401,7 +401,7 @@ const handleSocialSignIn = async () => {
             <input
             type="file"
             id="profileImage"
-            accept="image/*"
+            accept="profile_picture/*"
             onChange={(e) => {
               const file = e.target.files[0];
               if (file) {

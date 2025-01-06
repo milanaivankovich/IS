@@ -37,7 +37,7 @@ function RegisterPoslovni() {
       setFinalImage(croppedUrl); 
       setFormData((prevFormData) => ({
         ...prevFormData,
-        image: croppedBlob, 
+        profile_picture: croppedBlob, 
       }));
       setCropping(false); 
     } catch (error) {
@@ -51,7 +51,7 @@ function RegisterPoslovni() {
     password: "",
     confirmPassword: "",
     email: "",
-    image: null,
+    profile_picture: null,
   });
 
   const goToStep = (stepIndex) => {
@@ -243,7 +243,7 @@ function RegisterPoslovni() {
             <input
             type="file"
             id="profileImage"
-            accept="image/*"
+            accept="profile_picture/*"
             onChange={(e) => {
               const file = e.target.files[0];
               if (file) {
@@ -317,7 +317,7 @@ function RegisterPoslovni() {
         <div className="login-prompt">
           <p>
             Imate nalog?{" "}
-            <a href="/login" className="login-link">
+            <a href="/login1" className="login-link">
               Prijavite se!
             </a>
           </p>
