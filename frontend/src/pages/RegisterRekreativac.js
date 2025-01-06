@@ -203,20 +203,16 @@ const handleSocialSignIn = async () => {
       console.log("Facebook Access Token:", facebookAccessToken);
   
       // Use the Facebook Graph API to fetch the user's email
-      const graphUrl = `https://graph.facebook.com/v11.0/me?fields=email&access_token=${facebookAccessToken}`;
+      const graphUrl = `https://graph.facebook.com/v11.0/me?fields=email,picture&access_token=${facebookAccessToken}`;
       const facebookResponse = await axios.get(graphUrl);
   
       // Extract the email from the Graph API response
       const email = facebookResponse.data.email;
       console.log("Facebook Email:", email);
+
+      const photo = facebookResponse.data.picture;
   
-      // Prepare the user data to send to the backend
-      const userData = {
-        uid: result.user.uid,
-        email: email,
-        displayName: result.user.displayName,
-        photoURL: result.user.photoURL,
-      };
+    
   
       // Send data to the backend using axios
       const response = await axios.post("http://localhost:8000/api/social-login/", {
@@ -224,7 +220,7 @@ const handleSocialSignIn = async () => {
         uid: result.user.uid,
         email: email,
         displayName: result.user.displayName,
-        photoURL: result.user.photoURL,
+        photoURL: photo,
       });
   
       // Check the response from the backend

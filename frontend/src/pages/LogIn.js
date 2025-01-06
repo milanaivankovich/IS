@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { auth, googleProvider, facebookProvider, signInWithPopup } from "../components/Firebase.js"; 
+import { auth, googleProvider, FacebookAuthProvider, facebookProvider, signInWithPopup } from "../components/Firebase.js"; 
 import './LogIn.css';
 import logo from '../images/logo.png';
 import kosarkas from '../images/kosarkas.jpeg';
@@ -82,6 +82,21 @@ const Login = () => {
   
       // Get the Firebase ID token
       const id_token = await user.getIdToken();
+
+      // Extract the Facebook access token from the result
+      const credential = FacebookAuthProvider.credentialFromResult(result);
+      const facebookAccessToken = credential.accessToken;
+      console.log("Facebook Access Token:", facebookAccessToken);
+  
+      // Use the Facebook Graph API to fetch the user's email
+      const graphUrl = `https://graph.facebook.com/v11.0/me?fields=email,picture&access_token=${facebookAccessToken}`;
+      const facebookResponse = await axios.get(graphUrl);
+  
+      // Extract the email from the Graph API response
+      const email = facebookResponse.data.email;
+      console.log("Facebook Email:", email);
+
+      const photo = facebookResponse.data.picture;
   
       // Send user info and id_token to the back-end
       const response = await axios.post('http://localhost:8000/api/social-login/', {
@@ -89,7 +104,7 @@ const Login = () => {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
-        photoURL: user.photoURL,
+        photoURL: photo,
       });
   
       // Store the back-end token in localStorage
