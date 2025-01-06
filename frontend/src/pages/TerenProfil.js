@@ -243,10 +243,11 @@ const TerenProfil = () => {
         const eventsResponse = await axios.get(`http://localhost:8000/api/advertisements/field/${idField.id}/`);
         setEventsData(eventsResponse.data);
 
-        const activitiesResponse = await axios.get(`http://localhost:8000/activities/field/${idField.id}/`);
-        setActivities(activitiesResponse.data);
         const reviewsResponse = await axios.get(`http://localhost:8000/api/reviews/${idField.id}/`);
         setReviews(reviewsResponse.data);
+
+        const activitiesResponse = await axios.get(`http://localhost:8000/activities/field/${idField.id}/`);
+        setActivities(activitiesResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -256,7 +257,7 @@ const TerenProfil = () => {
 
     fetchData();
   }, [idField]); 
-  
+
   return (
     <body>
       <header className="userprofile-menu">
