@@ -17,6 +17,22 @@ const TerenProfil = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
   const [activities, setActivities] = useState([]);
+  const [user, setUser] = useState({
+    "first_name": "",
+    "last_name": "",
+    "username": "",
+    "email": "email",
+    "profile_picture": null
+  });
+
+  const [businessSubject, setBusinessSubject] = useState({
+    "nameSportOrganization": "",
+    "profile_picture": null,
+    "description": "",
+    "email": "",
+    "password": ""
+  });
+
   const [idField, setIdField]=useState({
     "id": -1
   });
@@ -42,21 +58,62 @@ const TerenProfil = () => {
 
   const checkIfFavorited = async () => {
     if (!userId) return; 
-    
-    const url = id.type === 'Client' 
-      ? `http://127.0.0.1:8000/api/client/favorite-fields/${userId}/`
-      : `http://127.0.0.1:8000/api/business-subject/favorite-fields/${userId}/`; 
   
     try {
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      const isFieldFavorited = response.data.some(field => field.id === idField.id);
-      setIsFavorited(isFieldFavorited);
+      if (id.type === 'BusinessSubject') {
+        const businessSubjectUrl = `http://127.0.0.1:8000/api/business-subject/${userId}/`;
+        const businessResponse = await axios.get(businessSubjectUrl, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+  
+        setBusinessSubject({
+          nameSportOrganization: businessResponse.data.nameSportOrganization,
+          profile_picture: businessResponse.data.profile_picture,
+          description: businessResponse.data.description,
+          email: businessResponse.data.email,
+          password: businessResponse.data.password,
+        });
+  
+        const url = `http://127.0.0.1:8000/api/business-subject/favorite-fields/${businessResponse.data.nameSportOrganization}/`; 
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        const isFieldFavorited = response.data.some(field => field.id === idField.id);
+        setIsFavorited(isFieldFavorited);
+      }
+  
+      if (id.type === 'Client') {
+        const userUrl = `http://127.0.0.1:8000/api/client/${userId}/`;
+        const userResponse = await axios.get(userUrl, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+  
+        setUser({
+          first_name: userResponse.data.first_name,
+          last_name: userResponse.data.last_name,
+          username: userResponse.data.username,
+          email: userResponse.data.email,
+          profile_picture: userResponse.data.profile_picture,
+        });
+  
+        const favoriteFieldsUrl = `http://127.0.0.1:8000/api/client/favorite-fields/${userResponse.data.username}/`;
+        const favoriteResponse = await axios.get(favoriteFieldsUrl, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        const isFieldFavorited = favoriteResponse.data.some(field => field.id === idField.id);
+        setIsFavorited(isFieldFavorited);
+      }
+  
     } catch (error) {
-      console.error('Greška prilikom provjere omiljenih terena:', error);
+      console.error('Greška prilikom dohvaćanja podataka:', error);
     }
   };
 
@@ -71,11 +128,11 @@ const TerenProfil = () => {
     const action = !isFavorited ? 'add' : 'remove';  
     setIsFavorited(!isFavorited); 
     
-    if (!userId) return; // Ensure userId is valid
+    if (!userId) return;
     
     const url = id.type === 'Client' 
       ? `http://127.0.0.1:8000/api/client/update-favorite-fields/${userId}/`
-      : `http://127.0.0.1:8000/api/business-subject/update-favorite-fields/${userId}/`; // Adjust URL based on user type
+      : `http://127.0.0.1:8000/api/business-subject/update-favorite-fields/${userId}/`; 
   
     try {
       await axios.post(url, 
@@ -104,14 +161,6 @@ const TerenProfil = () => {
   const [reviews, setReviews] = useState([]);
   const [information, setInformation] = useState([]);
   const [loading, setLoading] = useState(true);
-
-    const [user, setUser] = useState({
-      "first_name": "",
-      "last_name": "",
-      "username": "",
-      "email": "email",
-      "profile_picture": null
-    });
 
   const [fieldData, setFieldData] = useState({
     "id": -1,

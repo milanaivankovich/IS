@@ -148,11 +148,11 @@ const BusinessSubjectProfile = () => {
       try {
         switch (activeTab) {
           case "events":
-            const eventsResponse = await axios.get(`${uri}/api/advertisements/businesssubject/${username}/`); //todo
+            const eventsResponse = await axios.get(`${uri}/api/advertisements/businesssubject/${username}/`); 
             setEventsData(eventsResponse.data);
             break;
           case "favorites":
-            const favoritesResponse = await axios.get(`${uri}/api/business-subject/favorite-fields/${username}/`, { //todo
+            const favoritesResponse = await axios.get(`${uri}/api/business-subject/favorite-fields/${username}/`, { 
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setFavorites(favoritesResponse.data);
@@ -164,7 +164,7 @@ const BusinessSubjectProfile = () => {
             setMessages(messagesResponse.data);
             break;
           case "activity":
-            const activityResponse = await axios.get(`${uri}/api/advertisementspast/businesssubject/${username}/`, { //todo
+            const activityResponse = await axios.get(`${uri}/api/advertisementspast/businesssubject/${username}/`, {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setActivityHistory(activityResponse.data);
