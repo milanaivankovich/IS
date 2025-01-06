@@ -260,7 +260,6 @@ const TerenProfil = () => {
       
              {/* Sponzorisani događaji */}
          <div className="sponsored-events-section">
-            <h2 className="section-title">Sponzorisani događaji</h2>
              {Array.isArray(eventsData) && eventsData.length > 0 ? (
               eventsData.map((event) => (
                 <SponsoredEventCard key={event.id} event={event} />
@@ -275,7 +274,6 @@ const TerenProfil = () => {
 
       {/* Aktivnosti */}
       <div className="activities-section">
-        <h2 className="section-title">Aktivnosti</h2>
         {Array.isArray(activities) && activities.length > 0 ? (
           activities.map((activity) => (
             <ActivityCard key={activity.id} activity={activity} />
@@ -297,7 +295,7 @@ const TerenProfil = () => {
                reviewDate.setHours(reviewDate.getHours() + 1); // Dodajemo 1 sat na vrijeme
 
                return (
-               <div key={review.id} className="activity-card">
+               <div key={review.id} className="activity-card-review">
                <ReviewCard clientId={review.client} />
                <p className="size"><strong>Ocjena: </strong>{review.rating}</p>
                <p className="size"><strong>Komentar: </strong>{review.description}</p>

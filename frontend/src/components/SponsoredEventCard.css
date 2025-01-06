@@ -15,6 +15,10 @@
     border-radius: 8px;
 }
 
+.Naslov{
+    font-size: 20px;
+}
+
 .Opis {
     /* text */
     color: #666666;
@@ -81,6 +85,7 @@
 }
 
 .createdBy {
+    margin-top: 10px;
     color:#666666;
 }
 

@@ -21,6 +21,7 @@
   position: relative; 
   top: 150px; 
   margin-left: -250px;
+  margin-top:15px;
 }
 
 .information-text strong {
@@ -62,13 +63,30 @@
 .sponsored-events-section, 
 .activities-section {
   display: flex;
-  flex-direction: column; /* Osigurava vertikalni raspored unutar sekcije */
-  gap: 15px; /* Razmak između elemenata unutar sekcije */
+  flex-direction: row; /* Osigurava vertikalni raspored unutar sekcije */
+  gap: 10px; /* Razmak između elemenata unutar sekcije */
   width: 100%; /* Širina sekcije */
   padding: 15px; /* Dodaje unutrašnji razmak */
-  background-color: #f9f9f9; /* Pozadina sekcije */
   border-radius: 8px; /* Zaobljeni uglovi */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Blaga senka za vizuelni efekat */
+  margin-left: -20px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.activity-card-review {
+  flex: 1 0 300px;
+  max-width: 300px;
+  min-height: 280px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: auto;
+  transition: box-shadow 0.2s ease;
 }
 
 .scroll-bar-user-profile {
@@ -76,4 +94,8 @@
   flex-direction: column; /* Vertikalni raspored za sve sadržaje unutar sekcije */
   width: 100%;
   gap: 20px; /* Razmak između sekcija */
+}
+
+.no-events-message {
+  margin-left: 5px;
 }

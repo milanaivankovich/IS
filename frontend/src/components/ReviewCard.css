@@ -4,6 +4,7 @@
   align-items: flex-start; /* Poravnava sve elemente prema vrhu */
   gap: 20px;
   width: 100%;
+  margin-top: 10px;
 }
 
 .userprofilepreview-image-review {
@@ -14,16 +15,17 @@
   height: 50px;
   background: #C4C4C4;
   margin-left: 10px;
+  margin-top:-3px;
 }
 
 .naslov-review {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Pomakne sadržaj prema vrhu */
+  justify-content: flex-start;
 }
 
 .createdBy-review {
+  margin-top: -8px;
   color: #666666;
   font-size: 14px;
-  margin-top: 5px;
 }
