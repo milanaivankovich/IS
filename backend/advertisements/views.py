@@ -120,12 +120,18 @@ def get_advertisement_by_id(request, id):
     except Field.DoesNotExist:
         return Response(status=404)
     
+    
 @api_view(['GET'])
-def get_advertisements_by_business_subject(request, business_subject_id):
+def get_advertisements_by_business_subject(request, business_name):
     now = datetime.now()
 
+    try:
+        business_subject = BusinessSubject.objects.get(business_name=business_name)
+    except BusinessSubject.DoesNotExist:
+        return Response({'error': 'Business subject not found'}, status=404)
+    
     advertisements = Advertisement.objects.filter(
-        business_subject=business_subject_id,
+        business_subject=business_subject,
         is_deleted=False,
         date__gt=now
     )
@@ -135,6 +141,7 @@ def get_advertisements_by_business_subject(request, business_subject_id):
         return Response(serializer.data)
     else:
         return Response({'error': 'No advertisements found for this business subject'}, status=404)
+    
     
 @api_view(['GET'])
 def advertisements_by_field(request, field):

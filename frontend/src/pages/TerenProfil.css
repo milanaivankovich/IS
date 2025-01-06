@@ -54,8 +54,7 @@
 }
 
 .events-section {
-  display: flex;
-  flex-direction: column; /* Obezbeđuje vertikalni raspored */
+  flex-direction: row; 
   gap: 20px; /* Razmak između pojedinačnih elemenata */
   width: 100%; /* Obezbeđuje da sekcija zauzima punu širinu */
 }
@@ -91,7 +90,7 @@
 
 .scroll-bar-user-profile {
   display: flex;
-  flex-direction: column; /* Vertikalni raspored za sve sadržaje unutar sekcije */
+  flex-direction: row; 
   width: 100%;
   gap: 20px; /* Razmak između sekcija */
 }

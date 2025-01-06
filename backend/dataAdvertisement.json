@@ -52,11 +52,11 @@
     {
         "id": 6,
         "name": "oglas222",
-        "description": "opis222opis333",
-        "date": "2025-01-31",
+        "description": "opis222opis222",
+        "date": "2025-01-29",
         "business_subject_id": 3,
-        "field_id": 2,
-        "sport_id": 2,
+        "field_id": 4,
+        "sport_id": 1,
         "is_deleted": false
     },
     {
@@ -77,6 +77,6 @@
         "business_subject_id": 3,
         "field_id": 2,
         "sport_id": 3,
-        "is_deleted": false
+        "is_deleted": true
     }
 ]
