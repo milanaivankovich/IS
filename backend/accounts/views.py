@@ -529,10 +529,27 @@ def register_business_subject(request):
     if serializer.is_valid():
         business_profile = serializer.save()
 
+        # Construct the verification link
+        verification_url = f"http://localhost:3000/login1"
+
+        # Send the email with the verification link
+        send_email_via_gmail(
+            to_email=business_profile.email,
+            subject="Verifikujte Vašu mail adresu",
+            message = (
+            f"Hvala Vam što ste se registrovali. Molimo Vas da kliknete na link ispod da biste verifikovali Vašu mail adresu:\n\n"
+            f"{verification_url}\n\n"
+            "S poštovanjem,\n"
+             "Vaš tim"
+)
+        )
+
         return Response({
-            "profile": BusinessSubjectSerializer(business_profile).data  # Return the user's profile data
+            "profile": BusinessSubjectSerializer(business_profile).data ,
+            "message": "Registration successful. Please check your email to verify your account." # Return the user's profile data
         }, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 def register_client(request):
@@ -541,15 +558,32 @@ def register_client(request):
     
     if serializer.is_valid():
         # Save the user data and create the user profile
-        client_profile = serializer.save() 
+        client_profile = serializer.save()
+
+       
+
+        # Construct the verification link
+        verification_url = f"http://localhost:3000/login"
+
+        # Send the email with the verification link
+        send_email_via_gmail(
+            to_email=client_profile.email,
+            subject="Verifikujte Vašu mail adresu",
+            message = (
+            f"Hvala Vam što ste se registrovali. Molimo Vas da kliknete na link ispod da biste verifikovali Vašu mail adresu:\n\n"
+            f"{verification_url}\n\n"
+            "S poštovanjem,\n"
+             "Vaš tim"
+)
+        )
 
         return Response({
-            "profile": ClientSerializer(client_profile).data  # Return the user's profile data
+            "profile": ClientSerializer(client_profile).data,  # Return the user's profile data
+            "message": "Registration successful. Please check your email to verify your account."
         }, status=status.HTTP_201_CREATED)
     
     # If the data isn't valid, return an error response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 # Get logger for debugging
 logger = logging.getLogger(__name__)
