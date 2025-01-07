@@ -27,6 +27,21 @@ class BusinessSubjectSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("A user with this email already exists.")
         return value
 
+    def validate_nameSportOrganization(self, value):
+        # Ensure the name is unique if required
+        instance = self.instance
+        if instance and instance.business_name == value:
+            return value  # Skip validation if the name hasn't changed
+
+        # Check if the business name is unique
+        if BusinessSubject.objects.filter(business_name=value).exists():
+            raise serializers.ValidationError("A business with this name already exists.")
+        
+        # Add any other custom validation here, e.g., length or prohibited characters
+        if len(value) < 3:
+            raise serializers.ValidationError("The business name must be at least 3 characters long.")
+        return value    
+
     def update(self, instance, validated_data):
         # Handle password update separately if provided
         password = validated_data.pop('password', None)
