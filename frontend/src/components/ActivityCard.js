@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./ActivityCard.css";
 
 const ActivityCard = ({ activity }) => {
-  const {description, date, field, titel, sport, id, NumberOfParticipants } = activity;
+  const { description, date, field, titel, sport, id, NumberOfParticipants } = activity;
   const [location, setLocation] = useState("");
   const [sports, setSport] = useState("");
   const [remainingSlots, setRemainingSlots] = useState(NumberOfParticipants);
@@ -11,27 +11,27 @@ const ActivityCard = ({ activity }) => {
   const [username, setUsername] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  
-  
-    useEffect(() => {
-      const fetchUsername = async () => {
-        try {
-          const response = await fetch(
-            `http://127.0.0.1:8000/api/client/${id}/username/`
-          );
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          const data = await response.json();
-          setUsername(data.username);
-        } catch (error) {
-          console.error("Error fetching username:", error);
+
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/client/${id}/username/`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-      };
-  
-      fetchUsername();
-    }, [id]);
-   
+        const data = await response.json();
+        setUsername(data.username);
+      } catch (error) {
+        console.error("Error fetching username:", error);
+      }
+    };
+
+    fetchUsername();
+  }, [id]);
+
   // Dohvaćanje lokacije na osnovu field ID-a
   useEffect(() => {
     const fetchLocation = async () => {
@@ -74,7 +74,7 @@ const ActivityCard = ({ activity }) => {
   const handleUsernameClick = (username) => {
     window.location.href = `http://localhost:3000/userprofile/${id}/`;
   };
-  
+
   const handleLocationClick = (fieldId) => {
     window.location.href = `/teren-profil/${fieldId}`;
   };
@@ -91,6 +91,8 @@ const ActivityCard = ({ activity }) => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/activities/${id}/register/`, {
         method: "POST",
+      }, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
 
       if (!response.ok) {
@@ -136,18 +138,18 @@ const ActivityCard = ({ activity }) => {
     <div className="activity-card">
       <h3 className="activity-card-title">{titel}</h3>
       <p>
-  <strong>Kreirao oglas:</strong>{" "}
-  {username ? (
-    <span
-      className="clickable-username"
-      onClick={() => handleUsernameClick(username)}
-    >
-      {username}
-    </span>
-  ) : (
-    "Nepoznato"
-  )}
-</p>
+        <strong>Kreirao oglas:</strong>{" "}
+        {username ? (
+          <span
+            className="clickable-username"
+            onClick={() => handleUsernameClick(username)}
+          >
+            {username}
+          </span>
+        ) : (
+          "Nepoznato"
+        )}
+      </p>
 
       <p><strong>Opis:</strong> {description}</p>
       <p><strong>Sport:</strong> {sports}</p>
@@ -155,20 +157,20 @@ const ActivityCard = ({ activity }) => {
       <p><strong>Vrijeme: </strong>{formattedTime}</p>
       <p><strong>Broj preostalih učesnika:</strong> {remainingSlots}</p>
       <p>
-  <strong>Lokacija:</strong>{" "}
-  {location ? (
-    <span
-      className="clickable-location"
-      onClick={() => handleLocationClick(field)}
-    >
-      {location}
-    </span>
-  ) : (
-    "Učitavanje..."
-  )}
-</p>
+        <strong>Lokacija:</strong>{" "}
+        {location ? (
+          <span
+            className="clickable-location"
+            onClick={() => handleLocationClick(field)}
+          >
+            {location}
+          </span>
+        ) : (
+          "Učitavanje..."
+        )}
+      </p>
 
-     
+
       <div className="activity-card-buttons">
         <button
           className="button"
