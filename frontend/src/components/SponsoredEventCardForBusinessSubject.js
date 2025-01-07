@@ -13,7 +13,7 @@ const SponsoredEventCardForBusinessSubject = ({user, event}) => {
   const [sports, setSport] = useState("");
   const [menuVisible, setMenuVisible] = useState(false);
   const [isEditVisible, setIsEditVisible] = useState(false);
-
+  const [picture, setPicture] = useState("");
   const formattedDate = new Date(date);
 
 formattedDate.setHours(formattedDate.getHours() - 1);
@@ -130,12 +130,29 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
       window.location.href = `/teren-profil/${fieldId}`;
     };
 
+   //Dohvacanje slike business-subjecta
+  useEffect(() => {
+    const fetchPicture = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/business-subject/${business_subject}/`);
+        const data = await response.json();
+        setPicture(`http://127.0.0.1:8000` + data.profile_picture); 
+      } catch (error) {
+        console.error("Error fetching picture:", error);
+      }
+    };
+
+    if (business_subject) {
+      fetchPicture();
+    }
+  }, [business_subject]);
+
   return (
     <div className="SponsoredEventCard-Okvir-bs">
       <header className="SponsoredEventCard-Header-bs" />
       <div className="SponsoredEventCard-body-bs">
         <div className="SponsoredEventCard-user">
-          <img src={CreatorImg} className="creator-image" alt="Creator" />
+          <img src={picture || CreatorImg} className="creator-image" alt="Creator" />
           <div className="Naslov">
             {name}
             <div className="createdBy"> by @{name1}</div>
