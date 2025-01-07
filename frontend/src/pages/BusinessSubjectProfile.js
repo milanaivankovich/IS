@@ -43,7 +43,7 @@ const BusinessSubjectProfile = () => {
         })
       }).catch(error => {
         console.error('Error fetching data: ', error);
-        //alert('Error 404');
+        alert('Error 404');
       });
     };
     if (username)
@@ -107,7 +107,7 @@ const BusinessSubjectProfile = () => {
         })
         .catch(error => {
           console.error('Error fetching data: ', error);
-          alert('Error 404');
+          //alert('Error 404');
         });
     };
     const fetchCurrentUserData = async () => {
@@ -124,7 +124,7 @@ const BusinessSubjectProfile = () => {
           })
         }).catch(error => {
           console.error('Error fetching data: ', error);
-          alert('Error 404');
+          //alert('Error 404');
         });
     };
 
@@ -148,11 +148,11 @@ const BusinessSubjectProfile = () => {
       try {
         switch (activeTab) {
           case "events":
-            const eventsResponse = await axios.get(`${uri}/api/advertisements/businesssubject/${username}/`); 
+            const eventsResponse = await axios.get(`${uri}/api/advertisements/businesssubject/${username}/`);
             setEventsData(eventsResponse.data);
             break;
           case "favorites":
-            const favoritesResponse = await axios.get(`${uri}/api/business-subject/favorite-fields/${username}/`, { 
+            const favoritesResponse = await axios.get(`${uri}/api/business-subject/favorite-fields/${username}/`, {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setFavorites(favoritesResponse.data);

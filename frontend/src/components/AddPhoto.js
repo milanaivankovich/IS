@@ -34,7 +34,7 @@ const AddPhoto = ({ userId }) => {
 
   const handlePhotoUpdate = async () => {
     if (!selectedImage) {
-      alert("Please select a file!");
+      alert("Molimo izaberite sliku!");
       return;
     }
     const picture = new FormData();
@@ -47,7 +47,7 @@ const AddPhoto = ({ userId }) => {
       uri = 'http://localhost:8000/api/client/'
     else {
       console.error('Invalid user type:', userId.type);
-      throw new Error('Error 404');
+      throw new Error('Invalid user type!');
     }
 
     await axios.put(uri + userId.id + '/edit/',
@@ -61,7 +61,8 @@ const AddPhoto = ({ userId }) => {
       })
       .catch((error) => {
         console.error("There was an error updating the data:", error);
-        alert("Doslo je do greške prilikom ažuriranja...");
+        window.location.reload();
+        //alert("Doslo je do greške prilikom ažuriranja...");
       });
   };
 
@@ -94,11 +95,11 @@ const AddPhoto = ({ userId }) => {
                 accept="image/*"
                 onChange={(e) => {
                   const file = e.target.files[0];
-                  if (file) {
+                  if (file && file.type.startsWith("image/")) {
                     setSelectedImage(file);
                     setImageSrc(URL.createObjectURL(file)); // Postavlja URL slike
                     setCropping(true); // Aktivira crop funkcionalnost
-                  }
+                  } else alert("Molimo izaberite sliku (.png .jpg .jpeg)");
                 }}
                 autoFocus
               />

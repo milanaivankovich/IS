@@ -46,7 +46,7 @@ const UserProfile = () => {
         })
       }).catch(error => {
         console.error('Error fetching data: ', error);
-        //alert('Error 404');
+        alert('Error 404');
       });
     };
     if (username)
@@ -110,7 +110,7 @@ const UserProfile = () => {
         })
         .catch(error => {
           console.error('Error fetching data: ', error);
-          alert('Error 404');
+          //alert('Error 404');
         });
     };
     const fetchCurrentUserData = async () => {
@@ -127,7 +127,7 @@ const UserProfile = () => {
             setUsername(response.data.username);
         }).catch(error => {
           console.error('Error fetching data: ', error);
-          alert('Error 404');
+          //alert('Error 404');
         });
     };
 
