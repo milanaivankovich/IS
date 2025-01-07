@@ -115,7 +115,7 @@ const EditEventCard = ({ user, pk }) => {
                 required
                 onChange={(e) => setEventData(prevData => ({ ...prevData, titel: e.target.value }))}
               />
-              <div className="createdBy"> by @{user.username}</div>
+              <div className="created"> by @{user.username}</div>
             </div>
           </div>
 

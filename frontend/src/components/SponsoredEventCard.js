@@ -109,7 +109,7 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
       <header className="SponsoredEventCard-Header" />
       <div className="SponsoredEventCard-body">
         <div className="SponsoredEventCard-user">
-          <img src={picture || CreatorImg} className="creator-image" alt="Creator" />
+          <img src={picture !== null ? picture : CreatorImg} className="creator-image" alt="Creator" />
           <div className="Naslov">
             {name}
             <div className="createdBy"> by @{name1}</div>

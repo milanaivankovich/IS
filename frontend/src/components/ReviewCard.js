@@ -4,7 +4,7 @@ import './ReviewCard.css';
 
 const ReviewCard = ({ clientId }) => {
   const [name, setName] = useState("");
-  const[picture, setPicture]= useState(null);
+  const[clientPicture, setClientPicture]= useState(null);
 
   // Dohvaćanje imena klijenta na osnovu njegovog ID-a
   useEffect(() => {
@@ -34,7 +34,7 @@ const ReviewCard = ({ clientId }) => {
   }, [clientId]);
 
   useEffect(() => {
-    const fetchPicture = async () => {
+    const fetchClientPicture = async () => {
       try {
         const token = localStorage.getItem("token"); 
         const response = await fetch(`http://127.0.0.1:8000/api/client/${clientId}/`, {
@@ -48,14 +48,14 @@ const ReviewCard = ({ clientId }) => {
         }
 
         const data = await response.json();
-        setPicture(data.profile_picture);
+        setClientPicture(`http://127.0.0.1:8000` + data.profile_picture);
       } catch (error) {
         console.error("Error fetching picture:", error);
       }
     };
 
     if (clientId) {
-      fetchPicture();
+      fetchClientPicture();
     }
   }, [clientId]);
 
@@ -63,7 +63,7 @@ const ReviewCard = ({ clientId }) => {
     <div className="naslov-review">
       <div className="userprofile-header-review">
         <img
-          src={picture !== null ? picture : CreatorImg}
+          src={clientPicture !== null ? clientPicture : CreatorImg}
           className="userprofilepreview-image-review"
           alt="Creator"
         />

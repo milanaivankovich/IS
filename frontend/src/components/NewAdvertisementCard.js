@@ -221,7 +221,7 @@ const EditEventCard = ({ user, pk, eventId }) => {
                   }))
                 }
               />
-              <div className="createdBy"> by {user.nameSportOrganization}</div>
+              <div className="created"> by @{user.nameSportOrganization}</div>
             </div>
           </div>
 

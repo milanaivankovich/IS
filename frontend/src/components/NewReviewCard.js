@@ -9,7 +9,7 @@ const NewReviewCard = ({ user, pk }) => {
   const [rating, setRating] = useState(null);
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
-  const [picture, setPicture] = useState(null);
+  const [clientPicture, setClientPicture] = useState(null);
   const [isBusinessSubject, setIsBusinessSubject] = useState(false);
   const [id, setID]=useState({
       "id": -1,
@@ -67,7 +67,7 @@ const NewReviewCard = ({ user, pk }) => {
   }, [pk]);
 
   useEffect(() => {
-    const fetchPicture = async () => {
+    const fetchClientPicture = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(`http://127.0.0.1:8000/api/client/${pk}/`, {
@@ -80,7 +80,7 @@ const NewReviewCard = ({ user, pk }) => {
 
         const data = await response.json();
         if(!isBusinessSubject){
-          setPicture(data.profile_picture);
+          setClientPicture(`http://127.0.0.1:8000/` + data.profile_picture);
         }
       } catch (error) {
         console.error("Error fetching picture:", error);
@@ -88,7 +88,7 @@ const NewReviewCard = ({ user, pk }) => {
     };
 
     if (pk) {
-      fetchPicture();
+      fetchClientPicture();
     }
   }, [pk]);
 
@@ -198,7 +198,7 @@ const NewReviewCard = ({ user, pk }) => {
         <div className="EditEventCard-body-review">
           <div className="EditEventCard-user-review">
             <img
-              src={picture !== null ? picture : CreatorImg}
+              src={clientPicture !== null ? clientPicture : CreatorImg}
               className="creator-image-review"
               alt="Creator"
             />
