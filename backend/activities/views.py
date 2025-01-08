@@ -11,6 +11,7 @@ from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.db.models.functions import TruncDate
 from django.utils.timezone import now
+from datetime import datetime
 
 class ActivitiesCreateView(CreateView):
     model = Activities
@@ -85,8 +86,15 @@ def get_client_activities(request, client_id):
 
 @api_view(['GET'])
 def activities_by_date(request, date):
-    activities = Activities.objects.annotate(date_only=TruncDate('date')).filter(date_only=date, is_deleted=False, date__gt=now())
-    if activities.exists():
+    try:
+        valid_date = datetime.strptime(date, "%Y-%m-%d").date()
+    except ValueError:
+        return Response({'error': 'Invalid date format. Use YYYY-MM-DD.'}, status=400)
+
+    activities = Activities.objects.filter(is_deleted=False, date__gt=now())
+    activities = [a for a in activities if a.date.date() == valid_date]
+
+    if activities:
         serializer = ActivitiesSerializer(activities, many=True)
         return Response(serializer.data)
     else:
@@ -128,13 +136,24 @@ def activities_by_location(request, location):
 
 @api_view(['GET'])
 def activities_by_date_and_location(request, date, location):
-    activities = Activities.objects.annotate(date_only=TruncDate('date')) \
-                                           .filter(date_only=date, field__location__icontains=location, is_deleted=False, date__gt=now())
-    if activities.exists():
-        serializer = ActivitiesSerializer(activities, many = True)
-        return Response(serializer.data)
-    return Response({'error': 'No activities found for this date and location'}, status=404)
+    try:
+        # Validate the date format
+        valid_date = datetime.strptime(date, "%Y-%m-%d").date()
+    except ValueError:
+        return Response({'error': 'Invalid date format. Use YYYY-MM-DD.'}, status=400)
 
+    # Fetch activities and filter further in Python
+    activities = Activities.objects.filter(is_deleted=False, date__gt=now())
+    filtered_activities = [
+        a for a in activities
+        if a.date.date() == valid_date and location.lower() in a.field.location.lower()
+    ]
+
+    if filtered_activities:
+        serializer = ActivitiesSerializer(filtered_activities, many=True)
+        return Response(serializer.data)
+    else:
+        return Response({'error': 'No activities found for this date and location.'}, status=404)
 
 @api_view(['GET'])
 def get_location_by_field_id(request, field_id):
