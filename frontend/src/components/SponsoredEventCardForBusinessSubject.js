@@ -5,7 +5,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import NewAdvertisementCard from "./NewAdvertisementCard";
 import { IoIosCloseCircle } from "react-icons/io";
 
-const SponsoredEventCardForBusinessSubject = ({user, event}) => {
+const SponsoredEventCardForBusinessSubject = ({user, event, currentUser}) => {
   const { id, name, description, date, field, business_subject, sport } = event;
   const [location, setLocation] = useState("");
   const [preciseLocation, setPreciseLocation] = useState("");
@@ -106,7 +106,8 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
 
     // Funkcija za brisanje oglasa
     const deleteEvent = async () => {
-      try {
+      if(user.nameSportOrganization === (currentUser.nameSportOrganization || currentUser.username)) {
+       try {
         const response = await fetch(`http://127.0.0.1:8000/api/advertisement/delete/${id}/`, {
           method: "DELETE",
         });
@@ -120,10 +121,19 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
       } catch (error) {
         console.error("Error deleting event:", error);
       }
+     } else {
+      alert("Nemate dozvolu za brisanje.");
+      window.location.reload();
+     }
     };
 
     const showEvent = () => {
+      if(user.nameSportOrganization === (currentUser.nameSportOrganization || currentUser.username)) {
       setIsEditVisible(true);
+      } else {
+        alert("Nemate dozvolu za uređivanje.");
+        window.location.reload();
+      }
     };  
 
     const handleLocationClick = (fieldId) => {

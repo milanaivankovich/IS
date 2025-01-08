@@ -236,7 +236,7 @@ const BusinessSubjectProfile = () => {
                   <div className="events-section">
                     <div className="scroll-bar-user-profile">
                       {Array.isArray(eventsData) && eventsData.map((activity) => (
-                        <SponsoredEventCardForBusinessSubject user={subjectData} event={activity} />
+                        <SponsoredEventCardForBusinessSubject user={subjectData} event={activity} currentUser={currentUserData}/>
                       ))}
                     </div>
                     {((id.type === 'BusinessSubject') && (currentUserData.nameSportOrganization === username)) ? (
