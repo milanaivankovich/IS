@@ -928,12 +928,14 @@ def search_users(request):
     client_results = Client.objects.filter(
         Q(first_name__icontains=query) | 
         Q(last_name__icontains=query) |
-        Q(username__icontains=query)  # Assuming you have a 'username' field for Client
+        Q(username__icontains=query),
+        is_active=True  # Assuming you have a 'username' field for Client
     ).distinct()  # Avoid duplicate clients in case of multiple matches
 
     # Search for business profiles
     business_results = BusinessSubject.objects.filter(
-        Q(business_name__icontains=query)
+        Q(business_name__icontains=query),
+        is_active=True
     ).distinct()  # Search businesses by company name
 
     # Serialize client results
