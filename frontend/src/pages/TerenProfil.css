@@ -87,9 +87,10 @@
   transition: box-shadow 0.2s ease;
 }
 
-.scroll-bar-user-profile {
+.scroll-bar-field-profile {
+  margin-top: 20px;
   display: flex;
-  flex-direction: row; 
+  flex-direction: column; 
   width: 100%;
   gap: 20px; /* Razmak između sekcija */
 }

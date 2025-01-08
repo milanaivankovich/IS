@@ -57,7 +57,7 @@
         "business_subject_id": 3,
         "field_id": 4,
         "sport_id": 1,
-        "is_deleted": false
+        "is_deleted": true
     },
     {
         "id": 7,

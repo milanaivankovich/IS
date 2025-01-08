@@ -306,7 +306,7 @@ const TerenProfil = () => {
               <div>
          {activeTab === "events" && (
          <div className="events-section">
-           <div className="scroll-bar-user-profile">
+           <div className="scroll-bar-field-profile">
       
              {/* Sponzorisani događaji */}
          <div className="sponsored-events-section">

@@ -50,7 +50,7 @@
         "description": "testtestestestset",
         "date": "2025-01-24",
         "field_id": 1,
-        "NumberOfParticipants": 5,
+        "NumberOfParticipants": 4,
         "sport_id": 1,
         "is_deleted": false
     }
