@@ -136,7 +136,7 @@ const SearchComponent = () => {
       )}
 
       {/* Ako nema rezultata za pretragu */}
-      {results.clients.length === 0 && results.business_profiles.length === 0 && showResults && (
+      {results.clients.length === 0 && results.business_profiles.length === 0 && query && (
         <div className="searchResults">
           <h3>Nema rezultata za pretragu.</h3>
         </div>
