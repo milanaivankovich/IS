@@ -2,7 +2,7 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
 from .models import Activities
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from accounts.models import Client
 from .serializers import ActivitiesSerializer
 from rest_framework import status
@@ -12,6 +12,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.functions import TruncDate
 from django.utils.timezone import now
 from datetime import datetime
+from rest_framework.permissions import IsAuthenticated
 
 class ActivitiesCreateView(CreateView):
     model = Activities
@@ -100,30 +101,6 @@ def activities_by_date(request, date):
     else:
         return Response({'error': 'No advertisements found for this date'}, status=404)
 
-#@api_view(['GET'])
-#def activities_by_date(request, date):
-    # Validacija formata datuma
- #   try:
-   #     valid_date = datetime.strptime(date, "%Y-%m-%d").date()
-  #  except ValueError:
- #       return Response({'error': 'Invalid date format. Use YYYY-MM-DD.'}, status=400)
-  #  
-  #  activities = Activities.objects.filter(date=valid_date)
-   # if activities.exists():
-   #     serializer = ActivitiesSerializer(activities, many=True)
-   #     return Response(serializer.data)
-
-  #  return Response({'error': 'No activities found for this date'}, status=404)
-
-#@api_view(['GET'])
-#def activities_by_date(request, date):
-#    activities = Activities.objects.filter(datum=date)
-#    if activities.exists():
-#        serializer = ActivitiesSerializer(activities, many = True)
-#        return Response(serializer.data)
-#    return Response({'error': 'No activities found for this date'}, status=404)
-
-
 @api_view(['GET'])
 def activities_by_location(request, location):
     activities = Activities.objects.filter(field__location__icontains=location, is_deleted=False, date__gt=now())
@@ -187,23 +164,48 @@ def get_type_of_sport_by_field_id(request, field_id):
         return Response({'type_of_sport': field.type_of_sport})
     except Field.DoesNotExist:
         return Response({'error': 'Field not found'}, status=404)
-
+    
 @api_view(['POST'])
 def register_to_activity(request, activity_id):
     """
-    Smanjuje broj učesnika za aktivnost ako su mjesta dostupna.
+    Registruje korisnika na aktivnost ako ima slobodnih mesta
+    i ako nije već prijavljen.
     """
     activity = get_object_or_404(Activities, id=activity_id)
+
+    # Parsiranje korisničkih podataka iz tela zahteva
+    username = request.data.get('username')  # Dobijamo username iz requesta
+
+    if not username:
+        return Response({'error': 'Nedostaje korisničko ime.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Provera da li je korisnik već prijavljen
+    if activity.client and activity.client.username == username:
+        return Response({'error': 'Već ste prijavljeni na ovu aktivnost.'}, status=status.HTTP_400_BAD_REQUEST)
+
     try:
-        activity.register_participant()
+        activity.register_participant()  # Smanjuje broj učesnika
+        activity.client = Client.objects.get(username=username)  # Povezuje korisnika sa aktivnošću
+        activity.save()
         return Response(
-             {'message': 'Uspješno ste se prijavili na aktivnost!', 'remaining_slots': activity.NumberOfParticipants},
+            {'message': 'Uspješno ste se prijavili na aktivnost!', 'remaining_slots': activity.NumberOfParticipants},
             status=status.HTTP_200_OK
         )
     except ValidationError as e:
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
-    
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_registered_events(request):
+    """
+    Vraća događaje na koje je prijavljen trenutni korisnik.
+    """
+    user = request.user
+    registered_events = Activities.objects.filter(participants=user).exclude(creator=user)  # Događaji gde je učesnik, ali nije kreator
+    serializer = ActivitiesSerializer(registered_events, many=True)
+    return Response(serializer.data)
+
 @api_view(['GET'])
 def activities_by_username(request, username):
     """

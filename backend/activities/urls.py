@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from rest_framework.routers import DefaultRouter
-from .views import get_location_by_field_id
+from .views import get_location_by_field_id, get_registered_events
 
 urlpatterns = [
     #path('dodaj/', AktivnostCreateView.as_view(), name='dodaj-aktivnost'),
@@ -26,8 +26,8 @@ urlpatterns = [
     path('activities/<int:activity_id>/register/', views.register_to_activity, name='register_to_activity'),
     #pretraga na onsovu username
     path('activities/username/<str:username>/', views.activities_by_username, name='activities_by_username'),
-   # Filtracija aktivnosti po ID-u terena
-   path('activities/field/<int:field_id>/', views.activities_by_field, name='activities_by_field'),
-
+    # Filtracija aktivnosti po ID-u terena
+    path('activities/field/<int:field_id>/', views.activities_by_field, name='activities_by_field'),
+    path('api/registered-events/', views.get_registered_events, name='registered-events'),
 
 ]
