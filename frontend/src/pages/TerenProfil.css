@@ -1,15 +1,15 @@
 .information-container {
-  display: flex; 
-  align-items: flex-start; 
+  display: flex;
+  align-items: flex-start;
 }
 
 .image-container {
-  width: 60%; 
+  width: 60%;
   margin-top: 80px;
 }
 
 .image-container img {
-  width: 80%; 
+  width: 80%;
   height: auto;
   border-radius: 10px;
   margin-left: -250px;
@@ -17,11 +17,11 @@
 
 .information-text {
   font-size: 20px;
-  color:black;
-  position: relative; 
-  top: 150px; 
+  color: black;
+  position: relative;
+  top: 150px;
   margin-left: -250px;
-  margin-top:15px;
+  margin-top: 15px;
 }
 
 .information-text strong {
@@ -40,33 +40,43 @@
 }
 
 .fav-field-like-button,
-.fav-field-like-button FaHeart,
-.fav-field-like-button FaRegHeart {
-    color: #F15A24;
-    margin-top: 73px;
-    margin-left: 10px;
-    
+.fav-field-like-button .FaHeart-icon,
+.fav-field-like-button .FaRegHeart-icon {
+  color: #F15A24;
+  position: absolute;
+  align-self: center;
+  margin-right: 30px;
+  right: 0px;
+  height: 30px;
+  width: 30px;
 }
 
 .fav-field-like-button:hover {
-    color: #e64a19;
+  color: #e64a19;
 }
 
 .events-section {
-  flex-direction: row; 
-  gap: 20px; /* Razmak između pojedinačnih elemenata */
-  width: 100%; /* Obezbeđuje da sekcija zauzima punu širinu */
+  flex-direction: row;
+  gap: 20px;
+  /* Razmak između pojedinačnih elemenata */
+  width: 100%;
+  /* Obezbeđuje da sekcija zauzima punu širinu */
 }
 
-.sponsored-events-section, 
+.sponsored-events-section,
 .activities-section {
   display: flex;
-  flex-direction: row; /* Osigurava vertikalni raspored unutar sekcije */
-  gap: 10px; /* Razmak između elemenata unutar sekcije */
-  width: 100%; /* Širina sekcije */
-  padding: 15px; /* Dodaje unutrašnji razmak */
-  border-radius: 8px; /* Zaobljeni uglovi */
-  margin-left: -20px; 
+  flex-direction: row;
+  /* Osigurava vertikalni raspored unutar sekcije */
+  gap: 10px;
+  /* Razmak između elemenata unutar sekcije */
+  width: 100%;
+  /* Širina sekcije */
+  padding: 15px;
+  /* Dodaje unutrašnji razmak */
+  border-radius: 8px;
+  /* Zaobljeni uglovi */
+  margin-left: -20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -90,9 +100,10 @@
 .scroll-bar-field-profile {
   margin-top: 20px;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   width: 100%;
-  gap: 20px; /* Razmak između sekcija */
+  gap: 20px;
+  /* Razmak između sekcija */
 }
 
 .no-events-message {
