@@ -29,5 +29,6 @@ urlpatterns = [
     # Filtracija aktivnosti po ID-u terena
     path('activities/field/<int:field_id>/', views.activities_by_field, name='activities_by_field'),
     path('api/registered-events/', views.get_registered_events, name='registered-events'),
+    path('api/events/history/<str:username>/', views.get_event_history, name='event-history'),
 
 ]

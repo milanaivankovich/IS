@@ -13,6 +13,8 @@ from django.db.models.functions import TruncDate
 from django.utils.timezone import now
 from datetime import datetime
 from rest_framework.permissions import IsAuthenticated
+from django.utils import timezone
+
 
 class ActivitiesCreateView(CreateView):
     model = Activities
@@ -195,27 +197,54 @@ def register_to_activity(request, activity_id):
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_registered_events(request):
-    """
-    Vraća događaje na koje je prijavljen trenutni korisnik.
-    """
-    user = request.user
-    registered_events = Activities.objects.filter(participants=user).exclude(creator=user)  # Događaji gde je učesnik, ali nije kreator
-    serializer = ActivitiesSerializer(registered_events, many=True)
-    return Response(serializer.data)
+#@api_view(['GET'])
+#@permission_classes([IsAuthenticated])
+#def get_registered_events(request):
+#    """
+#    Vraća događaje na koje je prijavljen trenutni korisnik.
+#    """
+#    user = request.user
+#    registered_events = Activities.objects.filter(participants=user).exclude(creator=user)  # Događaji gde je učesnik, ali nije kreator
+#    serializer = ActivitiesSerializer(registered_events, many=True)
+#    return Response(serializer.data)
 
+@api_view(['GET'])
+def get_registered_events(request, username):
+    """
+    Prikazuje aktivnosti na koje se korisnik prijavio.
+    """
+    try:
+        user = Client.objects.get(username=username)
+    except Client.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    registered_events = Activities.objects.filter(participants=user).exclude(client=user).distinct()
+    if registered_events.exists():
+        serializer = ActivitiesSerializer(registered_events, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response({'error': 'No registered events found for this user'}, status=status.HTTP_404_NOT_FOUND)
+
+#@api_view(['GET'])
+#def activities_by_username(request, username):
+#    """
+#    Pretražuje aktivnosti na osnovu username-a korisnika.
+#    """
+#    activities = Activities.objects.filter(client__username__icontains=username)
+#    if activities.exists():
+#        serializer = ActivitiesSerializer(activities, many=True)
+#        return Response(serializer.data, status=status.HTTP_200_OK)
+#    return Response({'error': 'No activities found for this username'}, status=status.HTTP_404_NOT_FOUND)
 @api_view(['GET'])
 def activities_by_username(request, username):
     """
-    Pretražuje aktivnosti na osnovu username-a korisnika.
+    Prikazuje aktivnosti koje je korisnik kreirao.
     """
-    activities = Activities.objects.filter(client__username__icontains=username)
+    activities = Activities.objects.filter(client__username=username, is_deleted=False)
     if activities.exists():
         serializer = ActivitiesSerializer(activities, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response({'error': 'No activities found for this username'}, status=status.HTTP_404_NOT_FOUND)
+    return Response({'error': 'No activities found created by this user'}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['GET'])
 def activities_by_field(request, field_id):
@@ -228,3 +257,23 @@ def activities_by_field(request, field_id):
         return Response(serializer.data, status=200)
     else:
         return Response({'error': 'No activities found for this field.'}, status=404)
+
+
+@api_view(['GET'])
+def get_event_history(request, username):
+    """
+    Prikazuje istoriju aktivnosti na koje se korisnik prijavio.
+    """
+    try:
+        user = Client.objects.get(username=username)
+    except Client.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Filtriraj aktivnosti na koje se korisnik prijavio i koje su završene (npr. datum < sadašnji datum)
+    now = timezone.now()
+    past_events = Activities.objects.filter(participants=user, date__lt=now).distinct()
+    
+    if past_events.exists():
+        serializer = ActivitiesSerializer(past_events, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response({'error': 'No past events found for this user'}, status=status.HTTP_404_NOT_FOUND)
