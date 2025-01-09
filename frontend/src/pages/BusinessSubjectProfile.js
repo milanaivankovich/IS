@@ -12,6 +12,7 @@ import NewAdvertisementCard from "../components/NewAdvertisementCard.js";
 import { CiSettings } from "react-icons/ci";
 import { IoIosCloseCircle } from "react-icons/io";
 import FieldsCard from '../components/FieldsCard.js';
+import Spinner from 'react-bootstrap/esm/Spinner.js';
 
 const BusinessSubjectProfile = () => {
 
@@ -202,13 +203,13 @@ const BusinessSubjectProfile = () => {
         </div>
         <div>
           <nav className="profile-tabs">
-            <button className={`tab-button ${activeTab === "events" ? "active" : ""}`}
+            <button className='userprofile-tab-button'
               onClick={() => {
                 setSelectionTitle('Događaji');
                 setSelectionSubtitle('Predstojeći događaji koje je kreirao korisnik');
                 setActiveTab("events");
               }}>Događaji</button>
-            <button className={`tab-button ${activeTab === "favorites" ? "active" : ""}`} onClick={() => {
+            <button className='userprofile-tab-button' onClick={() => {
               setSelectionTitle('Omiljeno'); setSelectionSubtitle('Vaši omiljeni tereni');
               setActiveTab("favorites")
             }}>Omiljeno</button>
@@ -218,7 +219,7 @@ const BusinessSubjectProfile = () => {
             }
 
             }>Poruke</button>*/}
-            <button className={`tab-button ${activeTab === "activity" ? "active" : ""}`} onClick={() => {
+            <button className='userprofile-tab-button' onClick={() => {
               setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Stari događaji koje je kreirao korisnik');
               setActiveTab("activity")
             }}>Istorija Aktivnosti</button>
@@ -229,7 +230,7 @@ const BusinessSubjectProfile = () => {
           <h2 className="userprofile-subtitle">{selectionSubtitle}</h2>
           <section className="tab-content">
             {loading ? (
-              <p>Učitavanje...</p>
+              <Spinner className='spinner-border' animation="border" />
             ) : (
               <div>
                 {activeTab === "events" && (

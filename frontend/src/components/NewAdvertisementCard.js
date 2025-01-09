@@ -10,11 +10,11 @@ const EditEventCard = ({ user, pk, eventId }) => {
   const [optionsSport, setOptionsSport] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedSport, setSelectedSport] = useState(null);
-  const[advertisementName, setAdvertisementName] = useState("");
-  const[advertisementDescription, setAdvertisementDescription] = useState("");
-  const[advertisementDate, setAdvertisementDate] = useState("");
-  const[advertisementField, setAdvertisementField] = useState("");
-  const[advertisementSport, setAdvertisementSport] = useState("");
+  const [advertisementName, setAdvertisementName] = useState("");
+  const [advertisementDescription, setAdvertisementDescription] = useState("");
+  const [advertisementDate, setAdvertisementDate] = useState("");
+  const [advertisementField, setAdvertisementField] = useState("");
+  const [advertisementSport, setAdvertisementSport] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [eventData, setEventData] = useState({
     id: eventId || -1,
@@ -99,24 +99,24 @@ const EditEventCard = ({ user, pk, eventId }) => {
 
 
   const createOrUpdateEvent = async (updatedEventData) => {
-    const isPost = updatedEventData.id === -1; 
+    const isPost = updatedEventData.id === -1;
     const url = isPost
       ? "http://127.0.0.1:8000/api/advertisement/"
       : `http://127.0.0.1:8000/api/advertisement/update/${updatedEventData.id}/`;
-  
+
     const payload = {
       id: updatedEventData.id,
       name: updatedEventData.name || advertisementName,
       description: updatedEventData.description || advertisementDescription,
       date: updatedEventData.date || advertisementDate,
       is_deleted: false,
-      business_subject: pk, 
+      business_subject: pk,
       field: updatedEventData.field || advertisementField,
       sport: updatedEventData.sport || advertisementSport,
     };
-  
+
     console.log("Payload being sent to API:", payload);
-  
+
     try {
       const response = await axios({
         method: isPost ? "post" : "put",
@@ -124,15 +124,15 @@ const EditEventCard = ({ user, pk, eventId }) => {
         data: payload,
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-  
+
       // Prikazivanje odgovarajuće poruke
       if (isPost) {
         alert("Događaj je uspješno dodan!");
       } else {
         alert("Događaj je uspješno ažuriran!");
       }
-  
-      window.location.reload(); 
+
+      window.location.reload();
     } catch (error) {
       console.error(
         "Greška pri spremanju događaja:",
@@ -141,7 +141,7 @@ const EditEventCard = ({ user, pk, eventId }) => {
       alert("Došlo je do greške prilikom spremanja događaja.");
     }
   };
-  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -156,7 +156,7 @@ const EditEventCard = ({ user, pk, eventId }) => {
       ...eventData,
       field: selectedLocation?.value || eventData.field,
       sport: selectedSport?.value || eventData.sport,
-      business_subject: pk, 
+      business_subject: pk,
     };
 
     console.log("updatedEventData prije slanja:", updatedEventData);
@@ -170,18 +170,18 @@ const EditEventCard = ({ user, pk, eventId }) => {
         (option) => option.value === advertisementField
       );
       if (selectedField) {
-        setSelectedLocation(selectedField); 
+        setSelectedLocation(selectedField);
       }
     }
   }, [advertisementField, optionsLocation]);
-  
+
   useEffect(() => {
     if (advertisementSport) {
       const selectedSportOption = optionsSport.find(
         (option) => option.value === advertisementSport
       );
       if (selectedSportOption) {
-        setSelectedSport(selectedSportOption); 
+        setSelectedSport(selectedSportOption);
       }
     }
   }, [advertisementSport, optionsSport]);
@@ -191,12 +191,26 @@ const EditEventCard = ({ user, pk, eventId }) => {
       const formattedDate = new Date(advertisementDate).toISOString().slice(0, 16);
       setEventData((prevData) => ({
         ...prevData,
-        date: formattedDate, 
+        date: formattedDate,
       }));
     }
   }, [advertisementDate]);
-  
-  
+
+  const colourOptions = {
+    control: (styles) => ({
+      ...styles,
+      borderColor: 'gray', // Border color for the dropdown
+      boxShadow: 'none',
+      '&:hover': { borderColor: 'gray' }, // Border color on hover
+    }),
+    option: (styles, { isFocused, isSelected }) => ({
+      ...styles,
+      backgroundColor: 'white',
+      color: isSelected ? '#F15A24' : 'gray', // Text color
+    }),
+  };
+
+
   return (
     <div className="dimmer">
       <form className="EditEventCard-form" onSubmit={handleSubmit}>
@@ -244,16 +258,18 @@ const EditEventCard = ({ user, pk, eventId }) => {
             <label className="EditEventLabel"> Lokacija: </label>
             <Select
               className="editeventcard-selectlocation"
+              styles={colourOptions}
               options={optionsLocation}
               onChange={setSelectedLocation}
               placeholder="Odaberi lokaciju terena..."
               isClearable
-              value={selectedLocation} 
+              value={selectedLocation}
             />
 
             <label className="EditEventLabel"> Sport: </label>
             <Select
               className="editeventcard-selectlocation"
+              styles={colourOptions}
               options={optionsSport}
               onChange={setSelectedSport}
               placeholder="Odaberi sport..."

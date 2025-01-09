@@ -58,6 +58,19 @@
   padding: 0px;
 }
 
+.userprofile-tab-button {
+  border: none;
+  color: #666666;
+  background-color: #fefefe;
+  padding: 15px 20px;
+  font-size: 17px;
+}
+
+.userprofile-tab-button:hover,
+.edituserprofile-button:hover {
+  color: #F15A24;
+}
+
 .edituserprofile-button {
   position: absolute;
   align-self: center;
@@ -91,8 +104,8 @@
 }
 
 .create-event-button {
-  margin-top: 20px;
-  background-color: #fa5c16;
+  margin-top: 10px;
+  background-color: #F15A24;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -102,9 +115,13 @@
   height: 40px;
 }
 
+.create-event-button:hover {
+  background-color: #e64a19;
+}
+
 .close-icon {
   z-index: 1001;
-  color: #fa5c16;
+  color: #F15A24;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -117,6 +134,24 @@
   width: 90vw;
   min-height: 260px;
   overflow: scroll;
-  padding: 20px 10px;
+  padding: 5px 0px;
   gap: 8px;
+}
+
+.spinner-border {
+  display: inline-block;
+  margin: 20px;
+  width: 2rem;
+  height: 2rem;
+  vertical-align: text-bottom;
+  border: 0.25em solid #666666;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spinner-border 0.75s linear infinite;
+}
+
+@keyframes spinner-border {
+  to {
+    transform: rotate(360deg);
+  }
 }
