@@ -7,7 +7,7 @@
     margin: 20px;
 
     width: 344px;
-    /*height: 400px;*/
+    max-height: 500px;
     overflow: hidden;
 
     background: #Fefefe;

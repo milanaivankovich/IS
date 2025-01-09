@@ -90,7 +90,13 @@ const ActivityCard = ({ activity }) => {
       type: ''
     };
     const uri = "http://localhost:8000"
-    let currentUserData = null;
+    let currentUserData = {
+      first_name: '',
+      last_name: '',
+      username: '',
+      email: '',
+      profile_picture: '',
+    };
 
     await axios.get(`${uri}/api/get-user-type-and-id/`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -128,8 +134,11 @@ const ActivityCard = ({ activity }) => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/activities/${id}/register/`, {
         method: "POST",
-      }, currentUserData, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(currentUserData),
       });
 
       if (!response.ok) {

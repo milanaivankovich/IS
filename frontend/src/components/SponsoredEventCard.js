@@ -134,9 +134,9 @@ const SponsoredEventCard = ({ event }) => {
             )}
           </p>
         </div>
-        <div className="EventCard-buttons">
+        {/*<div className="EventCard-buttons">
           <button className="EventCard-button">Pregled</button>
-        </div>
+        </div>*/}
       </div>
     </div>
   );

@@ -162,13 +162,13 @@ const UserProfile = () => {
             });
             setFavorites(favoritesResponse.data);
             break;
-          case "registered-activities": //todo
+          case "registered-activities":
             const messagesResponse = await axios.get(`${uri}/api/registered-events/${username}/`, {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setRegistered(messagesResponse.data);
             break;
-          case "activity": //todo
+          case "activity":
             const activityResponse = await axios.get(`${uri}/api/events/history/${username}/`, {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
@@ -260,16 +260,16 @@ const UserProfile = () => {
 
                 {activeTab === "favorites" && (
                   <div className="scroll-bar-user-profile">
-                    {favorites.map((favorite) => (
+                    {Array.isArray(favorites) && favorites.map((favorite) => (
                       <FieldsCard key={favorite.id} field={favorite} userId={id.id} userType={id.type} />
                     ))}
                   </div>
                 )}
 
-                {//todo
+                {
                   activeTab === "registered-activities" && (
-                    <div className="messages-cards-container">
-                      {registered.map((activity) => (
+                    <div className="scroll-bar-user-profile">
+                      {Array.isArray(registered) && registered.map((activity) => (
                         <ActivityCard key={activity.id} activity={activity} />
                       ))}
                     </div>
@@ -277,7 +277,7 @@ const UserProfile = () => {
 
                 {activeTab === "activity" && (
                   <div className="scroll-bar-user-profile">
-                    {activityHistory.map((activity) => (
+                    {Array.isArray(activityHistory) && activityHistory.map((activity) => (
                       <ActivityCard key={activity.id} activity={activity} />
                     ))}
                   </div>
