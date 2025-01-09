@@ -175,10 +175,12 @@ const EditUserProfile = () => {
   };
 
   const handleDeactivation = async () => {
-    await axios.post('http://localhost:8000/api/deactivate-business-subject/', subjectData.nameSportOrganization)
+    await axios.post('http://localhost:8000/api/deactivate-business-subject/', subjectData,
+      { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
       .then((response) => {
         console.log("Password updated successfully:", response.data);
-        alert("Nalog je deaktiviran" + response.data);
+        alert("Nalog je deaktiviran.");
+        handleLogout();
       })
       .catch((error) => {
         console.error("There was an error updating the data:", error);

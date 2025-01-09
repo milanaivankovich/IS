@@ -185,12 +185,12 @@ const EditUserProfile = () => {
   };
 
   const handleDeactivation = async () => {
-    //dodati neki message popup da se potvrdi deaktivacija i onda pozvati on button click
-    //sta sa poslovnim subjektom
-    await axios.post('http://localhost:8000/api/deactivate-client/', userData.username)
+    await axios.post('http://localhost:8000/api/deactivate-client/', userData,
+      { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
       .then((response) => {
-        console.log("Password updated successfully:", response.data);
-        alert("Nalog je deaktiviran" + response.data);
+        console.log("Account deactivated! " + response.data);
+        alert("Nalog je deaktiviran.");
+        handleLogout();
       })
       .catch((error) => {
         console.error("There was an error updating the data:", error);
