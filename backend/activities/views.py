@@ -207,6 +207,24 @@ def register_to_activity(request, activity_id):
 #    registered_events = Activities.objects.filter(participants=user).exclude(creator=user)  # Događaji gde je učesnik, ali nije kreator
 #    serializer = ActivitiesSerializer(registered_events, many=True)
 #    return Response(serializer.data)
+from django.shortcuts import render
+from .models import Activities
+
+def get_registered_activities(user):
+    """
+    Dohvata aktivnosti na koje je korisnik prijavljen.
+    """
+    from django.utils.timezone import now
+    return Activities.objects.filter(participants=user, date__gte=now).distinct()
+
+def user_profile(request):
+    """
+    Prikaz profila korisnika i njegovih aktivnosti.
+    """
+    user = request.user
+    registered_activities = get_registered_activities(user)
+    return render(request, 'profile.html', {'registered_activities': registered_activities})
+from django.http import JsonResponse
 
 @api_view(['GET'])
 def get_registered_events(request, username):
@@ -218,7 +236,11 @@ def get_registered_events(request, username):
     except Client.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    registered_events = Activities.objects.filter(participants=user).exclude(client=user).distinct()
+    #registered_events = Activities.objects.filter(participants=user).exclude(client=user).distinct()
+    registered_events = Activities.objects.filter(participants__username=username)
+    return JsonResponse({
+        "registered_events": list(registered_events.values())
+    })
     if registered_events.exists():
         serializer = ActivitiesSerializer(registered_events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -277,3 +299,28 @@ def get_event_history(request, username):
         serializer = ActivitiesSerializer(past_events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response({'error': 'No past events found for this user'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+def get_user_events(request, username):
+    """
+    Prikazuje aktivnosti koje je korisnik kreirao i na koje se prijavio.
+    """
+    try:
+        user = Client.objects.get(username=username)
+    except Client.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+    
+    # Događaji koje je korisnik kreirao
+    created_events = Activities.objects.filter(client=user, is_deleted=False)
+    created_serializer = ActivitiesSerializer(created_events, many=True)
+
+    # Događaji na koje se korisnik prijavio
+    registered_events = Activities.objects.filter(participants=user).exclude(client=user).distinct()
+    registered_serializer = ActivitiesSerializer(registered_events, many=True)
+
+    # Kombinovani odgovor
+    return Response({
+        'created_events': created_serializer.data,
+        'registered_events': registered_serializer.data
+    }, status=status.HTTP_200_OK)

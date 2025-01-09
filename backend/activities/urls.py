@@ -30,5 +30,9 @@ urlpatterns = [
     path('activities/field/<int:field_id>/', views.activities_by_field, name='activities_by_field'),
     path('api/registered-events/', views.get_registered_events, name='registered-events'),
     path('api/events/history/<str:username>/', views.get_event_history, name='event-history'),
+    path('profile/', views.user_profile, name='user_profile'),
+    path('api/user-events/<str:username>/', views.get_user_events, name='user-events'),
+    #path('api/registered-events/<str:username>/', get_registered_events, name='registered-events'),
+    path('api/registered-events/<str:username>/', get_registered_events, name='registered-events'),
 
 ]
