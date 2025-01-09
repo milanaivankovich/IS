@@ -207,23 +207,23 @@ const UserProfile = () => {
         </div>
         <div>
           <nav className="profile-tabs">
-            <button className={`tab - button ${activeTab === "events" ? "active" : ""}`}
+            <button className='userprofile-tab-button'
               onClick={() => {
                 setSelectionTitle('Događaji');
                 setSelectionSubtitle('Događaji koje je kreirao korisnik');
                 setActiveTab("events");
               }}>Događaji</button>
-            <button className={`tab - button ${activeTab === "favorites" ? "active" : ""} `} onClick={() => {
+            <button className='userprofile-tab-button' onClick={() => {
               setSelectionTitle('Omiljeno'); setSelectionSubtitle('Omiljeni tereni korisnika');
               setActiveTab("favorites")
             }}>Omiljeno</button>
-            {<button className={`tab - button ${activeTab === "registered-activities" ? "active" : ""} `} onClick={() => {
+            {<button className='userprofile-tab-button' onClick={() => {
               setSelectionTitle('Prijave na aktivnosti'); setSelectionSubtitle('Događaji na koje se korisnik prijavio');
               setActiveTab("registered-activities")
             }
 
             }>Prijave na aktivnosti</button>}
-            <button className={`tab - button ${activeTab === "activity" ? "active" : ""} `} onClick={() => {
+            <button className='userprofile-tab-button' onClick={() => {
               setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Događaji kojima se korisnik pridružio');
               setActiveTab("activity")
             }}>Istorija Aktivnosti</button>
@@ -234,7 +234,7 @@ const UserProfile = () => {
           <h2 className="userprofile-subtitle">{selectionSubtitle}</h2>
           <section className="tab-content">
             {loading ? (
-              <Spinner animation="border" />
+              <Spinner className='spinner-border' animation="border" />
             ) : (
               <div>
                 {activeTab === "events" && (

@@ -7,8 +7,8 @@
   margin: 20px;
   position: relative;
   width: 344px;
-  height: 400px;
-  overflow: visible;
+  /*height: 400px;*/
+  overflow: hidden;
 
   background: #Fefefe;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.3);
@@ -31,8 +31,10 @@
 }
 
 .Opis-bs p {
-  margin: 0; /* Uklanja defaultne margine */
-  margin-bottom: 10px; /* Minimalni razmak između paragrafa */
+  margin: 0;
+  /* Uklanja defaultne margine */
+  margin-bottom: 10px;
+  /* Minimalni razmak između paragrafa */
 }
 
 .SponsoredEventCard-Header-bs {
@@ -54,13 +56,15 @@
   /* Inside auto layout */
   flex: none;
   align-self: stretch;
-  
-  max-height: 159px ;
+
+  max-height: 159px;
 }
+
 .SponsoredEventCard-body-bs {
-  margin: 25px; 
+  margin: 25px;
 }
-.SponsoredEventCard-user-bs{
+
+.SponsoredEventCard-user-bs {
   /* card header */
   height: 80px;
   gap: 15px;
@@ -76,12 +80,13 @@
   margin: 5px;
   width: 40px;
   height: 40px;
-  border-radius: 50%; /* Makes the image circular */
+  border-radius: 50%;
+  /* Makes the image circular */
   object-fit: cover;
 }
 
 .createdBy {
-  color:#666666;
+  color: #666666;
 }
 
 .scroll-bar-user-profile {
@@ -90,22 +95,28 @@
   gap: 10px;
 }
 
-.scroll-bar-user-profile > * {
+.scroll-bar-user-profile>* {
   flex-shrink: 0;
 }
 
 .event-card-menu {
-  position: absolute; /* Omogućava precizno pozicioniranje unutar kartice */
-  top: 150px; /* Vertikalno poravnanje */
-  right: 30px; /* Pomjera tri tačke na desnu stranu */
-  cursor: pointer; /* Prikazuje ikonu ruke na hover */
+  position: absolute;
+  /* Omogućava precizno pozicioniranje unutar kartice */
+  top: 150px;
+  /* Vertikalno poravnanje */
+  right: 30px;
+  /* Pomjera tri tačke na desnu stranu */
+  cursor: pointer;
+  /* Prikazuje ikonu ruke na hover */
   color: #000000;
 }
 
 .dropdown-menu {
   position: absolute;
-  top: 25px; /* Postavlja meni ispod tri tačke */
-  right: -60px; /* Poravnava meni s desne strane tri tačke */
+  top: 25px;
+  /* Postavlja meni ispod tri tačke */
+  right: -60px;
+  /* Poravnava meni s desne strane tri tačke */
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
