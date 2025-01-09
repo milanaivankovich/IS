@@ -1,19 +1,33 @@
 /* RegisterRekreativac.css */
+.register-body {
+  margin: 0; /* Uklanja bijele margine */
+  padding: 0;
+  background-color: #22caff; /* Svijetloplava pozadina */
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Forma u centru */
+  box-sizing: border-box;
+  overflow: hidden; /* SpreÄava skrolovanje ako neÅ¡to izlazi van */
+}
 
 .register-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: Arial, sans-serif;
+  width: 100%; /* Å irina kontejnera */
 }
 
 .logo-container {
-  margin-top: 20px;
+  margin-top: 0; /* Smanjuje razmak na vrhu */
   margin-bottom: 20px;
 }
 
 .basket-logo {
-  width: 200px;
+  width: 160px; /* Prilagodite veliÄinu logotipa ako je potrebno */
+  max-width: 250px;
 }
 
 #welcome-title {
@@ -22,11 +36,12 @@
 }
 
 #form-container {
+  border: 3px solid #ff6600; 
   background: #f9f9f9;
   border-radius: 10px;
   padding: 20px;
   width: 100%;
-  max-width: 400px;
+  max-width: 400px; /* Fiksna Å¡irina forme */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -34,7 +49,7 @@ h1.welcome-title {
   font-size: 24px;
   text-align: center;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 label {
@@ -88,7 +103,7 @@ input:focus {
 }
 
 .password-criteria li.valid::before {
-  content: "✔";
+  content: "âœ”";
   color: green;
   position: absolute;
   left: 0;
@@ -96,7 +111,7 @@ input:focus {
 }
 
 .password-criteria li.invalid::before {
-  content: "✘";
+  content: "âœ˜";
   color: red;
   position: absolute;
   left: 0;
@@ -265,9 +280,9 @@ button.email-button:hover {
 }
 .crop-container {
   position: relative; /* Obavezno! */
-  width: 100%; /* Postavi širinu po potrebi */
+  width: 100%; /* Postavi Å¡irinu po potrebi */
   height: 400px; /* Visina za prikaz croppera */
-  overflow: hidden; /* Sprečava da sadržaj izlazi van */
+  overflow: hidden; /* SpreÄava da sadrÅ¾aj izlazi van */
 }
 
 .crop-buttons {

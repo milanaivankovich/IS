@@ -43,7 +43,7 @@ function RegisterRekreativac() {
       }));
       setCropping(false); 
     } catch (error) {
-      console.error("Greška pri izrezivanju slike:", error);
+      console.error("GreÅ¡ka pri izrezivanju slike:", error);
     }
   };
 
@@ -162,21 +162,21 @@ const handleSocialSignIn = async () => {
   
       // Check the response from the backend
       if (response.status === 200) {
-        console.log("Korisnik uspješno sinhronizovan s backendom");
-        alert("Prijava uspješna!");
+        console.log("Korisnik uspjeÅ¡no sinhronizovan s backendom");
+        alert("Prijava uspjeÅ¡na!");
       } else {
-        console.error("Greška sa servera:", response.data);
-        alert("Došlo je do greške pri sinhronizaciji s backendom.");
+        console.error("GreÅ¡ka sa servera:", response.data);
+        alert("DoÅ¡lo je do greÅ¡ke pri sinhronizaciji s backendom.");
       }
     } catch (error) {
-      console.error("Greška prilikom prijave:", error);
+      console.error("GreÅ¡ka prilikom prijave:", error);
       if (error.response) {
         // Handle backend error (e.g., 400 or 500 status)
-        console.error("Backend greška:", error.response.data);
-        alert(`Greška sa servera: ${error.response.data.message || "Pokušajte ponovo."}`);
+        console.error("Backend greÅ¡ka:", error.response.data);
+        alert(`GreÅ¡ka sa servera: ${error.response.data.message || "PokuÅ¡ajte ponovo."}`);
       } else {
         // Handle other errors (e.g., network or login errors)
-        alert("Došlo je do greške. Molimo pokušajte ponovo.");
+        alert("DoÅ¡lo je do greÅ¡ke. Molimo pokuÅ¡ajte ponovo.");
       }
     }
 };
@@ -225,22 +225,22 @@ const handleSocialSignIn = async () => {
   
       // Check the response from the backend
       if (response.status === 200) {
-        console.log("Korisnik uspješno sinhronizovan s backendom");
-        alert("Prijava uspješna!");
+        console.log("Korisnik uspjeÅ¡no sinhronizovan s backendom");
+        alert("Prijava uspjeÅ¡na!");
       } else {
-        console.error("Greška sa servera:", response.data);
-        alert("Došlo je do greške pri sinhronizaciji s backendom.");
+        console.error("GreÅ¡ka sa servera:", response.data);
+        alert("DoÅ¡lo je do greÅ¡ke pri sinhronizaciji s backendom.");
       }
     } catch (error) {
-      console.error("Greška prilikom prijave:", error);
+      console.error("GreÅ¡ka prilikom prijave:", error);
   
       // Handle errors from the backend (e.g., 400 or 500 status)
       if (error.response) {
-        console.error("Backend greška:", error.response.data);
-        alert(`Greška sa servera: ${error.response.data.message || "Pokušajte ponovo."}`);
+        console.error("Backend greÅ¡ka:", error.response.data);
+        alert(`GreÅ¡ka sa servera: ${error.response.data.message || "PokuÅ¡ajte ponovo."}`);
       } else {
         // Handle other errors (e.g., network or login errors)
-        alert("Došlo je do greške. Molimo pokušajte ponovo.");
+        alert("DoÅ¡lo je do greÅ¡ke. Molimo pokuÅ¡ajte ponovo.");
       }
     }
   };
@@ -274,7 +274,7 @@ const handleSocialSignIn = async () => {
         });
   
         console.log(response.data);
-        alert("Registracija uspješna! Verifikujte email.");
+        alert("Registracija uspjeÅ¡na! Verifikujte email.");
         
         // Reset forme
         setFormData({
@@ -288,8 +288,8 @@ const handleSocialSignIn = async () => {
         });
         setCurrentStep(0);
       } catch (error) {
-        console.error("Greška prilikom registracije:", error);
-        alert("Došlo je do greške prilikom registracije. Molimo pokušajte ponovo.");
+        console.error("GreÅ¡ka prilikom registracije:", error);
+        alert("DoÅ¡lo je do greÅ¡ke prilikom registracije. Molimo pokuÅ¡ajte ponovo.");
       } finally {
         setIsSubmitting(false);
       }
@@ -298,13 +298,14 @@ const handleSocialSignIn = async () => {
   
 
   return (
+    <div className="register-body">
     <div className="register-container">
       <a href="/" className="logo-container">
-        <img src={logo} alt="Oće neko na basket?" className="basket-logo" />
+        <img src={logo} alt="OÄ‡e neko na basket?" className="basket-logo" />
       </a>
 
       <div id="form-container">
-        <h1 className="welcome-title">Dobrodošli!</h1>
+        <h1 className="welcome-title">DobrodoÅ¡li!</h1>
         {currentStep === 0 && (
           <div className="form-step active">
             <p className="tekst-za-unos">Molimo unesite podatke</p>
@@ -321,12 +322,12 @@ const handleSocialSignIn = async () => {
             <input
               type="text"
               id="last_name"
-              placeholder="Marković"
+              placeholder="MarkoviÄ‡"
               value={formData.last_name}
               onChange={handleInputChange}
               required
             />
-            <label htmlFor="username">Korisničko ime:</label>
+            <label htmlFor="username">KorisniÄko ime:</label>
             <input
               type="text"
               id="username"
@@ -457,14 +458,14 @@ const handleSocialSignIn = async () => {
               onClick={handleCrop}
               className="save-button"
             >
-              Sačuvaj izrezanu sliku
+              SaÄuvaj izrezanu sliku
             </button>
             <button
               type="button"
               onClick={() => setCropping(false)}
               className="cancel-button"
             >
-              Otkaži
+              OtkaÅ¾i
             </button>
           </div>
         </div>
@@ -488,7 +489,7 @@ const handleSocialSignIn = async () => {
               required
             />
             <button className="continue-button" onClick={submitForm} disabled={isSubmitting}>
-              {isSubmitting ? "Slanje..." : "Završi registraciju"}
+              {isSubmitting ? "Slanje..." : "ZavrÅ¡i registraciju"}
             </button>
           </div>
         )}
@@ -534,6 +535,7 @@ const handleSocialSignIn = async () => {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 }
