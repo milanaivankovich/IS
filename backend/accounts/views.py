@@ -652,7 +652,11 @@ def login_business_subject(request):
 
         # Check if the user is active
         if not user.is_active:
-            return Response({"error": "Account is disabled"}, status=403)
+            # Set the user as active
+            user.is_active = True
+            user.save()
+            logger.info(f"Account '{email}' was reactivated during login.")
+           
 
         # Create or retrieve the token for the user (client or business subject)
         token, created = BusinessSubjectToken.objects.get_or_create(
@@ -696,7 +700,11 @@ def login_user(request):
 
         # Check if the user is active
         if not user.is_active:
-            return Response({"error": "Account is disabled"}, status=403)
+            # Set the user as active
+            user.is_active = True
+            user.save()
+            logger.info(f"Account '{username}' was reactivated during login.")
+            
 
         # Create or retrieve the token for the user (client or business subject)
         token, created = ClientToken.objects.get_or_create(
