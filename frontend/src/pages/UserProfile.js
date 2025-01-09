@@ -62,9 +62,10 @@ const UserProfile = () => {
     setIsVisible(!isVisible);
   };
 
+  //aktivnosti na razlicitim tabovima
   const [activeTab, setActiveTab] = useState("events");
   const [favorites, setFavorites] = useState([]);
-  const [messages, setMessages] = useState([]);
+  const [registered, setRegistered] = useState([]);
   const [activityHistory, setActivityHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -155,20 +156,20 @@ const UserProfile = () => {
             const eventsResponse = await axios.get(`${uri}/activities/username/${username}/`);
             setEventsData(eventsResponse.data);
             break;
-          case "favorites": //todo
+          case "favorites":
             const favoritesResponse = await axios.get(`${uri}/api/client/favorite-fields/${username}/`, {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setFavorites(favoritesResponse.data);
             break;
-          case "messages": //todo
-            const messagesResponse = await axios.get('http://localhost:8000/api/user/messages', {
+          case "registered-activities": //todo
+            const messagesResponse = await axios.get(`${uri}/api/registered-events/${username}/`, {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
-            setMessages(messagesResponse.data);
+            setRegistered(messagesResponse.data);
             break;
           case "activity": //todo
-            const activityResponse = await axios.get(`${uri}/api/user/activity`, {
+            const activityResponse = await axios.get(`${uri}/api/events/history/${username}/`, {
               headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
             setActivityHistory(activityResponse.data);
@@ -216,12 +217,12 @@ const UserProfile = () => {
               setSelectionTitle('Omiljeno'); setSelectionSubtitle('Omiljeni tereni korisnika');
               setActiveTab("favorites")
             }}>Omiljeno</button>
-            {/*<button className={`tab - button ${activeTab === "messages" ? "active" : ""} `} onClick={() => {
-              setSelectionTitle('Poruke'); setSelectionSubtitle('');
-              setActiveTab("messages")
+            {<button className={`tab - button ${activeTab === "registered-activities" ? "active" : ""} `} onClick={() => {
+              setSelectionTitle('Prijave na aktivnosti'); setSelectionSubtitle('Događaji na koje se korisnik prijavio');
+              setActiveTab("registered-activities")
             }
 
-            }>Poruke</button>*/}
+            }>Prijave na aktivnosti</button>}
             <button className={`tab - button ${activeTab === "activity" ? "active" : ""} `} onClick={() => {
               setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Događaji kojima se korisnik pridružio');
               setActiveTab("activity")
@@ -266,10 +267,10 @@ const UserProfile = () => {
                 )}
 
                 {//todo
-                  activeTab === "messages" && (
+                  activeTab === "registered-activities" && (
                     <div className="messages-cards-container">
-                      {messages.map((message) => (
-                        <MessageCard key={message.id} sender={message.sender} content={message.content} />
+                      {registered.map((activity) => (
+                        <ActivityCard key={activity.id} activity={activity} />
                       ))}
                     </div>
                   )}
