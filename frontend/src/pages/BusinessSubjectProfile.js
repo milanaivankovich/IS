@@ -246,7 +246,7 @@ const BusinessSubjectProfile = () => {
                     ) : null}
                     {isVisible ? (
                       <div>
-                        <NewAdvertisementCard user={subjectData} pk={id.id} className="new-event-card" />
+                        <NewAdvertisementCard user={currentUserData} pk={id.id} className="new-event-card" />
                         <IoIosCloseCircle className="close-icon-new-advertisement" onClick={() => toggleFloatingWindow()} />
                       </div>
                     ) : null}

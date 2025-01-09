@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./ActivityCard.css";
 
 const ActivityCard = ({ activity }) => {
-  const { description, date, field, titel, sport, id, NumberOfParticipants } = activity;
+  const { description, date, field, titel, sport, id, NumberOfParticipants, client } = activity;
   const [location, setLocation] = useState("");
   const [sports, setSport] = useState("");
   const [remainingSlots, setRemainingSlots] = useState(NumberOfParticipants);
@@ -17,7 +17,7 @@ const ActivityCard = ({ activity }) => {
     const fetchUsername = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:8000/api/client/${id}/username/`
+          `http://127.0.0.1:8000/api/client/${client}/username/`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
