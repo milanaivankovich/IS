@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./ActivityCard.css";
+import axios from "axios";
 
 const ActivityCard = ({ activity }) => {
   const { description, date, field, titel, sport, id, NumberOfParticipants, client } = activity;
@@ -81,7 +82,43 @@ const ActivityCard = ({ activity }) => {
   // Funkcija za registraciju na aktivnost
   const handleRegister = async () => {
     if (!isLoggedIn) {
-      alert("Morate biti prijavljeni da biste se prijavili na aktivnost.");
+      alert("Morate biti prijavljeni kao rekreativac da biste se prijavili na aktivnost.");
+      return;
+    }
+    let pk = {
+      id: -1,
+      type: ''
+    };
+    const uri = "http://localhost:8000"
+    let currentUserData = null;
+
+    await axios.get(`${uri}/api/get-user-type-and-id/`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    })
+      .then((request) => {
+        pk = request.data;
+      })
+      .catch((error) => {
+        console.error("Error getting ID: ", error);
+      });
+
+    if (pk.id !== -1 && pk.type === 'Client') {
+      await axios.get(`${uri}/api/client/${pk.id}/`)
+        .then(async response => {
+          currentUserData = {
+            first_name: response.data.first_name,
+            last_name: response.data.last_name,
+            username: response.data.username,
+            email: response.data.email,
+            profile_picture: response.data.profile_picture ? uri + response.data.profile_picture : null,
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data: ', error);
+          return;
+        });
+    } else {
+      alert("Morate biti prijavljeni kao rekreativac da biste se prijavili na aktivnost.");
       return;
     }
 
@@ -91,7 +128,7 @@ const ActivityCard = ({ activity }) => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/activities/${id}/register/`, {
         method: "POST",
-      }, {
+      }, currentUserData, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
 
