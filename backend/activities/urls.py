@@ -1,8 +1,7 @@
 from django.urls import path
 from . import views
 from rest_framework.routers import DefaultRouter
-from .views import get_location_by_field_id, check_user_registration, register_to_activity, login_user
-from rest_framework.authtoken.views import obtain_auth_token
+from .views import get_location_by_field_id
 
 urlpatterns = [
     #path('dodaj/', AktivnostCreateView.as_view(), name='dodaj-aktivnost'),
@@ -28,9 +27,7 @@ urlpatterns = [
     #pretraga na onsovu username
     path('activities/username/<str:username>/', views.activities_by_username, name='activities_by_username'),
    # Filtracija aktivnosti po ID-u terena
-    path('activities/field/<int:field_id>/', views.activities_by_field, name='activities_by_field'),
-    path('activities/<int:activity_id>/check-registration/<str:username>/', check_user_registration, name='check_user_registration'),
-    path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
-    path('login/', login_user, name='login'),
-    path('activities/<int:activity_id>/register/', register_to_activity, name='register_to_activity'),
+   path('activities/field/<int:field_id>/', views.activities_by_field, name='activities_by_field'),
+
+
 ]
