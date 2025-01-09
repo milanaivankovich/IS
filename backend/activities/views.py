@@ -187,22 +187,97 @@ def get_type_of_sport_by_field_id(request, field_id):
         return Response({'type_of_sport': field.type_of_sport})
     except Field.DoesNotExist:
         return Response({'error': 'Field not found'}, status=404)
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.core.exceptions import ValidationError
+from .models import Activities
+from django.contrib.auth.models import User
+
+from rest_framework.authtoken.models import Token
+import logging
+from django.utils.crypto import get_random_string
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth import authenticate
+from .models import ClientToken
+
+logger = logging.getLogger(__name__)
+
+
+@api_view(["POST"])
+def login_user(request):
+    try:
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        # Validacija ulaznih podataka
+        if not username or not password:
+            return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Autentifikacija korisnika
+        user = authenticate(username=username, password=password)
+
+        if not user:
+            logger.warning(f"Neuspešan pokušaj prijave za korisnika: {username}")
+            return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not user.is_active:
+            return Response({"error": "Account is disabled"}, status=status.HTTP_403_FORBIDDEN)
+
+        # Kreiraj ili preuzmi token za korisnika
+        token, created = ClientToken.objects.get_or_create(
+            client=user,
+            defaults={"key": get_random_string(40)}
+        )
+
+        return Response({"token": token.key}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.error(f"Neočekivana greška tokom prijave korisnika '{username}': {str(e)}", exc_info=True)
+        return Response({"error": "An unexpected error occurred"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 def register_to_activity(request, activity_id):
-    """
-    Smanjuje broj učesnika za aktivnost ako su mjesta dostupna.
-    """
     activity = get_object_or_404(Activities, id=activity_id)
+
+    # Dohvatanje tokena iz zaglavlja
+    token = request.headers.get('Authorization')
+    if not token or not token.startswith("Bearer "):
+        return Response({"error": "Authentication required."}, status=status.HTTP_401_UNAUTHORIZED)
+
+    token_key = token.split(' ')[1]
+
     try:
-        activity.register_participant()
+        # Validacija tokena
+        client_token = ClientToken.objects.get(key=token_key)
+        user = client_token.client
+    except ClientToken.DoesNotExist:
+        return Response({"error": "Invalid token."}, status=status.HTTP_401_UNAUTHORIZED)
+
+    try:
+        activity.register_participant(user)
         return Response(
-             {'message': 'Uspješno ste se prijavili na aktivnost!', 'remaining_slots': activity.NumberOfParticipants},
+            {"message": "Successfully registered for the activity!", "remaining_slots": activity.NumberOfParticipants},
             status=status.HTTP_200_OK
         )
     except ValidationError as e:
-        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def check_user_registration(request, activity_id, username):
+    """
+    Proverava da li je korisnik registrovan na aktivnost.
+    """
+    activity = get_object_or_404(Activities, id=activity_id)
+    user = get_object_or_404(User, username=username)
+
+    if activity.registered_users.filter(id=user.id).exists():
+        return Response({"registered": True}, status=status.HTTP_200_OK)
+    return Response({"registered": False}, status=status.HTTP_200_OK)
+
     
 @api_view(['GET'])
 def activities_by_username(request, username):
