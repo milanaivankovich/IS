@@ -5,7 +5,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import NewAdvertisementCard from "./NewAdvertisementCard";
 import { IoIosCloseCircle } from "react-icons/io";
 
-const SponsoredEventCardForBusinessSubject = ({user, event, currentUser}) => {
+const SponsoredEventCardForBusinessSubject = ({ user, event, currentUser }) => {
   const { id, name, description, date, field, business_subject, sport } = event;
   const [location, setLocation] = useState("");
   const [preciseLocation, setPreciseLocation] = useState("");
@@ -16,79 +16,79 @@ const SponsoredEventCardForBusinessSubject = ({user, event, currentUser}) => {
   const [picture, setPicture] = useState("");
   const formattedDate = new Date(date);
 
-formattedDate.setHours(formattedDate.getHours() - 1);
-const dateOnly = formattedDate.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
-const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', minute: '2-digit' }); // Format: HH:MMFormat: HH:MM
+  formattedDate.setHours(formattedDate.getHours() - 1);
+  const dateOnly = formattedDate.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
+  const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', minute: '2-digit' }); // Format: HH:MMFormat: HH:MM
 
-      // Dohvaćanje lokacije na temelju field ID-a
-      useEffect(() => {
-        const fetchLocation = async () => {
-          try {
-            const response = await fetch(`http://127.0.0.1:8000/api/advertisement/field/${field}/`);
-            const data = await response.json();
-            setLocation(data.location); 
-          } catch (error) {
-            console.error("Error fetching location:", error);
-          }
-        };
-    
-        if (field) {
-          fetchLocation();
-        }
-      }, [field]); 
+  // Dohvaćanje lokacije na temelju field ID-a
+  useEffect(() => {
+    const fetchLocation = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/advertisement/field/${field}/`);
+        const data = await response.json();
+        setLocation(data.location);
+      } catch (error) {
+        console.error("Error fetching location:", error);
+      }
+    };
 
-      //Dohvaćanje precizne lokacije na temelju field ID-a
-         useEffect(() => {
-            const fetchPreciseLocation = async () => {
-                try {
-                  const response = await fetch(`http://127.0.0.1:8000/api/advertisement/field/${field}/`);
-                  const data = await response.json();
-                  setPreciseLocation(data.precise_location); 
-                } catch (error) {
-                  console.error("Error fetching precise location:", error);
-                }
-             };
-          
-            if (field) {
-              fetchPreciseLocation();
-             }
-        }, [field]);
+    if (field) {
+      fetchLocation();
+    }
+  }, [field]);
 
-      // Dohvaćanje imena na temelju business_subject ID-a
-      useEffect(() => {
-        const fetchName = async () => {
-          try {
-            const response = await fetch(`http://127.0.0.1:8000/api/advertisement/businesssubject/${business_subject}/`);
-            const data = await response.json();
-            setName(data.business_name); 
-          } catch (error) {
-            console.error("Error fetching location:", error);
-          }
-        };
-    
-        if (business_subject) {
-          fetchName();
-        }
-      }, [business_subject]);
+  //Dohvaćanje precizne lokacije na temelju field ID-a
+  useEffect(() => {
+    const fetchPreciseLocation = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/advertisement/field/${field}/`);
+        const data = await response.json();
+        setPreciseLocation(data.precise_location);
+      } catch (error) {
+        console.error("Error fetching precise location:", error);
+      }
+    };
+
+    if (field) {
+      fetchPreciseLocation();
+    }
+  }, [field]);
+
+  // Dohvaćanje imena na temelju business_subject ID-a
+  useEffect(() => {
+    const fetchName = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/advertisement/businesssubject/${business_subject}/`);
+        const data = await response.json();
+        setName(data.business_name);
+      } catch (error) {
+        console.error("Error fetching location:", error);
+      }
+    };
+
+    if (business_subject) {
+      fetchName();
+    }
+  }, [business_subject]);
 
 
-      // Dohvaćanje sporta na temelju njegovog ID-a
-      useEffect(() => {
-        const fetchSport = async () => {
-          try {
-            const response = await fetch(`http://127.0.0.1:8000/api/sport/${sport}/`);
-            const data = await response.json();
-            setSport(data.sports); 
-          } catch (error) {
-            console.error("Error fetching type_of_sport:", error);
-          }
-        };
-    
-        if (sport) {
-          fetchSport();
-        }
-      }, [sport]); 
-      
+  // Dohvaćanje sporta na temelju njegovog ID-a
+  useEffect(() => {
+    const fetchSport = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/sport/${sport}/`);
+        const data = await response.json();
+        setSport(data.sports);
+      } catch (error) {
+        console.error("Error fetching type_of_sport:", error);
+      }
+    };
+
+    if (sport) {
+      fetchSport();
+    }
+  }, [sport]);
+
 
   const toggleMenu = () => setMenuVisible(!menuVisible);
   useEffect(() => {
@@ -97,21 +97,21 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
         setMenuVisible(false);
       }
     };
-  
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);  
+  }, []);
 
-    // Funkcija za brisanje oglasa
-    const deleteEvent = async () => {
-      if(user.nameSportOrganization === (currentUser.nameSportOrganization || currentUser.username)) {
-       try {
+  // Funkcija za brisanje oglasa
+  const deleteEvent = async () => {
+    if (user.nameSportOrganization === (currentUser.nameSportOrganization || currentUser.username)) {
+      try {
         const response = await fetch(`http://127.0.0.1:8000/api/advertisement/delete/${id}/`, {
           method: "DELETE",
         });
-  
+
         if (response.ok) {
           alert("Događaj je uspješno obrisan!");
           window.location.reload();
@@ -121,32 +121,32 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
       } catch (error) {
         console.error("Error deleting event:", error);
       }
-     } else {
+    } else {
       alert("Nemate dozvolu za brisanje.");
       window.location.reload();
-     }
-    };
+    }
+  };
 
-    const showEvent = () => {
-      if(user.nameSportOrganization === (currentUser.nameSportOrganization || currentUser.username)) {
+  const showEvent = () => {
+    if (user.nameSportOrganization === (currentUser.nameSportOrganization || currentUser.username)) {
       setIsEditVisible(true);
-      } else {
-        alert("Nemate dozvolu za uređivanje.");
-        window.location.reload();
-      }
-    };  
+    } else {
+      alert("Nemate dozvolu za uređivanje.");
+      window.location.reload();
+    }
+  };
 
-    const handleLocationClick = (fieldId) => {
-      window.location.href = `/teren-profil/${fieldId}`;
-    };
+  const handleLocationClick = (fieldId) => {
+    window.location.href = `/teren-profil/${fieldId}`;
+  };
 
-   //Dohvacanje slike business-subjecta
+  //Dohvacanje slike business-subjecta
   useEffect(() => {
     const fetchPicture = async () => {
       try {
         const response = await fetch(`http://127.0.0.1:8000/api/business-subject/${business_subject}/`);
         const data = await response.json();
-        setPicture(`http://127.0.0.1:8000` + data.profile_picture); 
+        setPicture(data.profile_picture ? `http://127.0.0.1:8000` + data.profile_picture : CreatorImg);
       } catch (error) {
         console.error("Error fetching picture:", error);
       }
@@ -171,9 +171,9 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
             <BsThreeDotsVertical className="menu-icon" onClick={toggleMenu} />
             {menuVisible && (
               <div className="dropdown-menu">
-              <button onClick={showEvent}>Uredi</button>
-              <button onClick={deleteEvent}>Obriši</button> 
-            </div>
+                <button onClick={showEvent}>Uredi</button>
+                <button onClick={deleteEvent}>Obriši</button>
+              </div>
             )}
           </div>
         </div>
@@ -183,17 +183,17 @@ const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', mi
           <p><strong>Datum:</strong> {dateOnly}</p>
           <p><strong>Vrijeme:</strong> {timeOnly}</p>
           <p>
-           <strong>Lokacija:</strong>{" "}
-             {location ? (
-            <span
-               className="clickable-location"
-              onClick={() => handleLocationClick(field)}
-            >
-           {location} - {preciseLocation}
-            </span>
-   ) : (
-    "Učitavanje..."
-  )}
+            <strong>Lokacija:</strong>{" "}
+            {location ? (
+              <span
+                className="clickable-location"
+                onClick={() => handleLocationClick(field)}
+              >
+                {location} - {preciseLocation}
+              </span>
+            ) : (
+              "Učitavanje..."
+            )}
           </p>
         </div>
         {isEditVisible && (
