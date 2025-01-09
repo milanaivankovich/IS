@@ -24,10 +24,10 @@ const BusinessSubjectProfile = () => {
   const [username, setUsername] = useState(segments[2]);
 
   const [subjectData, setSubjectData] = useState({
-    "nameSportOrganization": "Sport organization",
+    "nameSportOrganization": "",
     "profile_picture": null,
     "description": "",
-    "email": "email",
+    "email": "",
   });
 
   useEffect(() => {
@@ -236,7 +236,7 @@ const BusinessSubjectProfile = () => {
                   <div className="events-section">
                     <div className="scroll-bar-user-profile">
                       {Array.isArray(eventsData) && eventsData.map((activity) => (
-                        <SponsoredEventCardForBusinessSubject user={subjectData} event={activity} currentUser={currentUserData}/>
+                        <SponsoredEventCardForBusinessSubject user={subjectData} event={activity} currentUser={currentUserData} />
                       ))}
                     </div>
                     {((id.type === 'BusinessSubject') && (currentUserData.nameSportOrganization === username)) ? (
