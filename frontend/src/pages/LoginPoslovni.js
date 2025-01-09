@@ -34,7 +34,7 @@ const LoginPoslovni = () => {
     setLoading(true);
 
     try {
-      console.log('Å aljem podatke za prijavu:', formData);
+      console.log('Šaljem podatke za prijavu:', formData);
 
       const response = await axios.post('http://localhost:8000/api/login/business-subject/', formData);
       console.log('Login successful:', response.data);
@@ -47,13 +47,13 @@ const LoginPoslovni = () => {
       if (rememberMe) {
         localStorage.setItem('rememberedEmail', formData.email);
       } else {
-        localStorage.removeItem('rememberedEmail'); // Ukloni ako nije oznaÄen
+        localStorage.removeItem('rememberedEmail'); // Ukloni ako nije označen
       }
 
       window.location.href = '/dashboard'; 
     } catch (error) {
-      console.error('GreÅ¡ka pri prijavi:', error.response?.data || error.message);
-      setError('Neispravan email ili lozinka. PokuÅ¡ajte ponovo.');
+      console.error('Greška pri prijavi:', error.response?.data || error.message);
+      setError('Neispravan email ili lozinka. Pokušajte ponovo.');
     } finally {
       setLoading(false);
     }
@@ -63,7 +63,7 @@ const LoginPoslovni = () => {
       const savedEmail = localStorage.getItem('rememberedEmail');
       if (savedEmail) {
         setFormData((prev) => ({ ...prev, username: savedEmail }));
-        setRememberMe(true); // Automatski oznaÄiti checkbox ako je korisniÄko ime saÄuvano
+        setRememberMe(true); // Automatski označiti checkbox ako je korisničko ime sačuvano
       }
     }, []);
   
@@ -72,10 +72,10 @@ const LoginPoslovni = () => {
     setResetMessage('');
     try { /*endpoint nije dobar */
       await axios.post('http://localhost:8000/api/password-reset/', { email: resetEmail });
-      setResetMessage('Link za resetovanje lozinke je poslan na vaÅ¡u email adresu.');
+      setResetMessage('Link za resetovanje lozinke je poslan na vašu email adresu.');
     } catch (error) {
       console.error('Password reset failed:', error);
-      setResetMessage('DoÅ¡lo je do greÅ¡ke. Provjerite email i pokuÅ¡ajte ponovo.');
+      setResetMessage('Došlo je do greške. Provjerite email i pokušajte ponovo.');
     }
   };
   
@@ -84,10 +84,10 @@ const LoginPoslovni = () => {
     <div className="login-container">
       <div className="login-left">
         <a href="/">
-          <img src={logo} alt="OÄ‡e neko na basket?" className="login-logo" />
+          <img src={logo} alt="Oće neko na basket?" className="login-logo" />
         </a>
         <form className="login-form" onSubmit={handleSubmit}>
-        <h2 className="login-welcome">DOBRODOÅ LI!</h2>
+        <h2 className="login-welcome">DOBRODOŠLI!</h2>
         <p>Molimo unesite podatke za prijavu</p>
         <div className="form-group">
           <label htmlFor="email">Email</label>
@@ -138,7 +138,7 @@ const LoginPoslovni = () => {
       <div className="modal-overlay">
         <div className="modal-content">
           <h3>Resetujte lozinku</h3>
-          <p>Unesite vaÅ¡u email adresu da bismo vam poslali link za resetovanje lozinke.</p>
+          <p>Unesite vašu email adresu da bismo vam poslali link za resetovanje lozinke.</p>
           <input
             type="text"
             placeholder="adresa@gmail.com"
@@ -147,7 +147,7 @@ const LoginPoslovni = () => {
             className="modal-input"
           />
           <button onClick={handleResetPassword} className="modal-btn">
-            PoÅ¡alji link
+            Pošalji link
           </button>
           {resetMessage && <p className="reset-message">{resetMessage}</p>}
           <button onClick={() => setIsResetModalOpen(false)} className="modal-close-btn">

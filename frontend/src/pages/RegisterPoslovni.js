@@ -41,7 +41,7 @@ function RegisterPoslovni() {
       }));
       setCropping(false); 
     } catch (error) {
-      console.error("GreÅ¡ka pri izrezivanju slike:", error);
+      console.error("Greška pri izrezivanju slike:", error);
     }
   };
 
@@ -141,7 +141,7 @@ function RegisterPoslovni() {
           data.append("profile_picture", formData.profile_picture, formData.profile_picture.name || "profile_picture.jpg");
         }
   
-        // PoÅ¡alji zahtjev
+        // Pošalji zahtjev
         const response = await axios.post("http://localhost:8000/api/business-subject/", data, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -149,7 +149,7 @@ function RegisterPoslovni() {
         });
         
         console.log(response.data);
-        alert("Registracija uspjeÅ¡na! Verifikujte email.");
+        alert("Registracija uspješna! Verifikujte email.");
         setFormData({
           nameSportOrganization: "",
           password: "",
@@ -159,8 +159,8 @@ function RegisterPoslovni() {
         });
         setCurrentStep(0);
       } catch (error) {
-        console.error("GreÅ¡ka prilikom registracije:", error.response?.data || error.message);
-        alert("DoÅ¡lo je do greÅ¡ke prilikom registracije. Molimo pokuÅ¡ajte ponovo.");
+        console.error("Greška prilikom registracije:", error.response?.data || error.message);
+        alert("Došlo je do greške prilikom registracije. Molimo pokušajte ponovo.");
       } finally {
         setIsSubmitting(false);
       }
@@ -171,11 +171,11 @@ function RegisterPoslovni() {
     <div className="register-body">
     <div className="register-container">
       <a href="/" className="logo-container">
-        <img src={logo} alt="OÄ‡e neko na basket?" className="basket-logo" />
+        <img src={logo} alt="Oće neko na basket?" className="basket-logo" />
       </a>
 
       <div id="form-container">
-        <h1 className="welcome-title">DobrodoÅ¡li!</h1>
+        <h1 className="welcome-title">Dobrodošli!</h1>
         {currentStep === 0 && (
           <div className="form-step active">
             <p className="tekst-za-unos">Molimo unesite podatke</p>
@@ -303,14 +303,14 @@ function RegisterPoslovni() {
               onClick={handleCrop}
               className="save-button"
             >
-              SaÄuvaj izrezanu sliku
+              Sačuvaj izrezanu sliku
             </button>
             <button
               type="button"
               onClick={() => setCropping(false)}
               className="cancel-button"
             >
-              OtkaÅ¾i
+              Otkaži
             </button>
           </div>
         </div>
@@ -327,7 +327,7 @@ function RegisterPoslovni() {
             <label htmlFor="email">Email adresa:</label>
             <input type="email" id="email" value={formData.email} onChange={handleInputChange} required />
             <button className="continue-button" onClick={submitForm} disabled={isSubmitting}>
-              {isSubmitting ? "Slanje..." : "ZavrÅ¡i registraciju"}
+              {isSubmitting ? "Slanje..." : "Završi registraciju"}
             </button>
           </div>
         )}

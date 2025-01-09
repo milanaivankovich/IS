@@ -49,28 +49,28 @@ const Login = () => {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
 
-      // Ako je checkbox oznaÄen, saÄuvaj korisniÄko ime u localStorage
+      // Ako je checkbox označen, sačuvaj korisničko ime u localStorage
       if (rememberMe) {
         localStorage.setItem('rememberedUsername', formData.username);
       } else {
-        localStorage.removeItem('rememberedUsername'); // Ukloni ako nije oznaÄen
+        localStorage.removeItem('rememberedUsername'); // Ukloni ako nije označen
       }
 
       window.location.href = "/";
     } catch (error) {
       console.error('Login failed:', error);
-      setError('Neispravno korisniÄko ime ili lozinka. PokuÅ¡ajte ponovo.');
+      setError('Neispravno korisničko ime ili lozinka. Pokušajte ponovo.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Prilikom uÄitavanja stranice, provjeriti da li postoji saÄuvano korisniÄko ime
+  // Prilikom učitavanja stranice, provjeriti da li postoji sačuvano korisničko ime
   useEffect(() => {
     const savedUsername = localStorage.getItem('rememberedUsername');
     if (savedUsername) {
       setFormData((prev) => ({ ...prev, username: savedUsername }));
-      setRememberMe(true); // Automatski oznaÄiti checkbox ako je korisniÄko ime saÄuvano
+      setRememberMe(true); // Automatski označiti checkbox ako je korisničko ime sačuvano
     }
   }, []);
 
@@ -99,7 +99,7 @@ const Login = () => {
       window.location.href = "/";
     } catch (error) {
       console.error('Google Login Failed:', error);
-      setError('Neuspjela prijava putem Google-a. PokuÅ¡ajte ponovo.');
+      setError('Neuspjela prijava putem Google-a. Pokušajte ponovo.');
     }
   };
 
@@ -148,7 +148,7 @@ const Login = () => {
       window.location.href = "/";
     } catch (error) {
       console.error('Facebook Login Failed:', error);
-      setError('Neuspjela prijava putem Facebook-a. PokuÅ¡ajte ponovo.');
+      setError('Neuspjela prijava putem Facebook-a. Pokušajte ponovo.');
     }
   };
 
@@ -165,10 +165,10 @@ const Login = () => {
       const response = await axios.post('http://localhost:8000/api/request-password-reset/', {
         email: resetEmail,
       });
-      setResetMessage('Link za resetovanje lozinke je poslan na vaÅ¡u email adresu.');
+      setResetMessage('Link za resetovanje lozinke je poslan na vašu email adresu.');
     } catch (error) {
       console.error('Password reset failed:', error);
-      setResetMessage('DoÅ¡lo je do greÅ¡ke. PokuÅ¡ajte ponovo.');
+      setResetMessage('Došlo je do greške. Pokušajte ponovo.');
     }
   };
 
@@ -176,19 +176,19 @@ const Login = () => {
     <div className="login-container">
       <div className="login-left">
         <a href="/">
-          <img src={logo} alt="OÄ‡e neko na basket?" className="login-logo" />
+          <img src={logo} alt="Oće neko na basket?" className="login-logo" />
         </a>
         <form className="login-form" onSubmit={handleSubmit}>
-          <h2 className="login-welcome">DOBRODOÅ LI!</h2>
+          <h2 className="login-welcome">DOBRODOŠLI!</h2>
           <p className="tekst-za-unos">Molimo unesite podatke za prijavu</p>
 
           <div className="form-group">
-            <label htmlFor="username">KorisniÄko ime</label>
+            <label htmlFor="username">Korisničko ime</label>
             <input
               id="username"
               type="text"
               name="username"
-              placeholder="KorisniÄko ime"
+              placeholder="Korisničko ime"
               className="login-input"
               value={formData.username}
               onChange={handleInputChange}
@@ -242,7 +242,7 @@ const Login = () => {
         <div className="modal-overlay">
           <div className="modal-content">
             <h3>Resetujte lozinku</h3>
-            <p>Unesite VaÅ¡ email da bismo vam poslali link za resetovanje lozinke.</p>
+            <p>Unesite Vaš email da bismo vam poslali link za resetovanje lozinke.</p>
             <input
               type="text"
               placeholder="Email"
@@ -251,7 +251,7 @@ const Login = () => {
               className="modal-input"
             />
             <button onClick={handleResetPassword} className="modal-btn">
-              PoÅ¡alji link
+              Pošalji link
             </button>
             {resetMessage && <p className="reset-message">{resetMessage}</p>}
             <button onClick={() => setIsResetModalOpen(false)} className="modal-close-btn">
