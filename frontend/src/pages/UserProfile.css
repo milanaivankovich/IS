@@ -68,7 +68,7 @@
 
 .userprofile-tab-button:hover,
 .edituserprofile-button:hover {
-  color: #fa5c16;
+  color: #F15A24;
 }
 
 .edituserprofile-button {
@@ -105,7 +105,7 @@
 
 .create-event-button {
   margin-top: 10px;
-  background-color: #fa5c16;
+  background-color: #F15A24;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -121,7 +121,7 @@
 
 .close-icon {
   z-index: 1001;
-  color: #fa5c16;
+  color: #F15A24;
   position: fixed;
   top: 50%;
   left: 50%;

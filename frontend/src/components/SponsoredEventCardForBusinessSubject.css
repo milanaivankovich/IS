@@ -115,7 +115,7 @@
   position: absolute;
   top: 25px;
   /* Postavlja meni ispod tri tačke */
-  right: -60px;
+  right: 0px;
   /* Poravnava meni s desne strane tri tačke */
   background: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
