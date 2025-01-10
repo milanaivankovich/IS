@@ -31,6 +31,9 @@ const BusinessSubjectProfile = () => {
     "email": "",
   });
 
+
+  const [loadingUser, setLoadingUser] = useState(true);
+
   useEffect(() => {
 
     const fetchUserData = async () => {
@@ -109,7 +112,7 @@ const BusinessSubjectProfile = () => {
         .catch(error => {
           console.error('Error fetching data: ', error);
           //alert('Error 404');
-        });
+        }).finally(() => setLoadingUser(false));
     };
     const fetchCurrentUserData = async () => {
       if (window.location.pathname === '/userprofile1' && id.type === 'Client')
@@ -126,7 +129,7 @@ const BusinessSubjectProfile = () => {
         }).catch(error => {
           console.error('Error fetching data: ', error);
           //alert('Error 404');
-        });
+        }).finally(() => setLoadingUser(false));
     };
 
     if (id.id !== -1) {
@@ -187,101 +190,103 @@ const BusinessSubjectProfile = () => {
   return (
     <body>
       <header className="userprofile-menu">
-        <MenuBar variant={[id.id !== -1 ? "registered" : "unregistered"]} search={true} />
+        <MenuBar variant={"registered"} search={true} />
       </header>
-      <div className="userprofile-body">
-        <div className="userprofile-header">
-          <img src={subjectData.profile_picture ? subjectData.profile_picture : CreatorImg}
-            className="userprofilepreview-image" alt="Creator" />
-          <div className='name-surname-username'>
-            <h0 className="userprofile-name">{subjectData.nameSportOrganization}</h0>
-            <h1 className="userprofile-subtitle">{subjectData.description}</h1>
-          </div>
-          {((id.type === 'BusinessSubject') && (currentUserData.nameSportOrganization === username)) ? (
-            <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/editbusinessprofile')} />
-          ) : null}
-        </div>
-        <div>
-          <nav className="profile-tabs">
-            <button className='userprofile-tab-button'
-              onClick={() => {
-                setSelectionTitle('Događaji');
-                setSelectionSubtitle('Predstojeći događaji koje je kreirao korisnik');
-                setActiveTab("events");
-              }}>Događaji</button>
-            <button className='userprofile-tab-button' onClick={() => {
-              setSelectionTitle('Omiljeno'); setSelectionSubtitle('Vaši omiljeni tereni');
-              setActiveTab("favorites")
-            }}>Omiljeno</button>
-            {/*<button className={`tab-button ${activeTab === "messages" ? "active" : ""}`} onClick={() => {
+      {loadingUser ?
+        (<div className='loading-line'></div>) : (
+          <div className="userprofile-body">
+            <div className="userprofile-header">
+              <img src={subjectData.profile_picture ? subjectData.profile_picture : CreatorImg}
+                className="userprofilepreview-image" alt="Creator" />
+              <div className='name-surname-username'>
+                <h0 className="userprofile-name">{subjectData.nameSportOrganization}</h0>
+                <h1 className="userprofile-subtitle">{subjectData.description}</h1>
+              </div>
+              {((id.type === 'BusinessSubject') && (currentUserData.nameSportOrganization === username)) ? (
+                <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/editbusinessprofile')} />
+              ) : null}
+            </div>
+            <div>
+              <nav className="profile-tabs">
+                <button className='userprofile-tab-button'
+                  onClick={() => {
+                    setSelectionTitle('Događaji');
+                    setSelectionSubtitle('Predstojeći događaji koje je kreirao korisnik');
+                    setActiveTab("events");
+                  }}>Događaji</button>
+                <button className='userprofile-tab-button' onClick={() => {
+                  setSelectionTitle('Omiljeno'); setSelectionSubtitle('Vaši omiljeni tereni');
+                  setActiveTab("favorites")
+                }}>Omiljeno</button>
+                {/*<button className={`tab-button ${activeTab === "messages" ? "active" : ""}`} onClick={() => {
               setSelectionTitle('Poruke'); setSelectionSubtitle('');
               setActiveTab("messages")
             }
 
             }>Poruke</button>*/}
-            <button className='userprofile-tab-button' onClick={() => {
-              setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Stari događaji koje je kreirao korisnik');
-              setActiveTab("activity")
-            }}>Istorija Aktivnosti</button>
-          </nav></div>
+                <button className='userprofile-tab-button' onClick={() => {
+                  setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Stari događaji koje je kreirao korisnik');
+                  setActiveTab("activity")
+                }}>Istorija Aktivnosti</button>
+              </nav></div>
 
-        <div className="userprofile-selection">
-          <h1 className="userprofile-name">{selectionTitle}</h1>
-          <h2 className="userprofile-subtitle">{selectionSubtitle}</h2>
-          <section className="tab-content">
-            {loading ? (
-              <Spinner className='spinner-border' animation="border" />
-            ) : (
-              <div>
-                {activeTab === "events" && (
-                  <div className="events-section">
-                    <div className="scroll-bar-user-profile">
-                      {Array.isArray(eventsData) && eventsData.map((activity) => (
-                        <SponsoredEventCardForBusinessSubject user={subjectData} event={activity} currentUser={currentUserData} />
-                      ))}
-                    </div>
-                    {((id.type === 'BusinessSubject') && (currentUserData.nameSportOrganization === username)) ? (
-                      <button className="create-event-button" onClick={() => toggleFloatingWindow()}>
-                        + Novi događaj
-                      </button>
-                    ) : null}
-                    {isVisible ? (
-                      <div>
-                        <NewAdvertisementCard user={currentUserData} pk={id.id} className="new-event-card" />
-                        <IoIosCloseCircle className="close-icon-new-advertisement" onClick={() => toggleFloatingWindow()} />
+            <div className="userprofile-selection">
+              <h1 className="userprofile-name">{selectionTitle}</h1>
+              <h2 className="userprofile-subtitle">{selectionSubtitle}</h2>
+              <section className="tab-content">
+                {loading ? (
+                  <Spinner className='spinner-border' animation="border" />
+                ) : (
+                  <div>
+                    {activeTab === "events" && (
+                      <div className="events-section">
+                        <div className="scroll-bar-user-profile">
+                          {Array.isArray(eventsData) && eventsData.map((activity) => (
+                            <SponsoredEventCardForBusinessSubject user={subjectData} event={activity} currentUser={currentUserData} />
+                          ))}
+                        </div>
+                        {((id.type === 'BusinessSubject') && (currentUserData.nameSportOrganization === username)) ? (
+                          <button className="create-event-button" onClick={() => toggleFloatingWindow()}>
+                            + Novi događaj
+                          </button>
+                        ) : null}
+                        {isVisible ? (
+                          <div>
+                            <NewAdvertisementCard user={currentUserData} pk={id.id} className="new-event-card" />
+                            <IoIosCloseCircle className="close-icon-new-advertisement" onClick={() => toggleFloatingWindow()} />
+                          </div>
+                        ) : null}
                       </div>
-                    ) : null}
-                  </div>
-                )}
+                    )}
 
-                {activeTab === "favorites" && (
-                  <div className="scroll-bar-user-profile">
-                    {favorites.map((favorite) => (
-                      <FieldsCard key={favorite.id} field={favorite} userId={id.id} userType={id.type} />
-                    ))}
-                  </div>
-                )}
+                    {activeTab === "favorites" && (
+                      <div className="scroll-bar-user-profile">
+                        {favorites.map((favorite) => (
+                          <FieldsCard key={favorite.id} field={favorite} userId={id.id} userType={id.type} />
+                        ))}
+                      </div>
+                    )}
 
-                {activeTab === "messages" && (
-                  <div className="messages-cards-container">
-                    {messages.map((message) => (
-                      <MessageCard key={message.id} sender={message.sender} content={message.content} />
-                    ))}
-                  </div>
-                )}
+                    {activeTab === "messages" && (
+                      <div className="messages-cards-container">
+                        {messages.map((message) => (
+                          <MessageCard key={message.id} sender={message.sender} content={message.content} />
+                        ))}
+                      </div>
+                    )}
 
-                {activeTab === "activity" && (
-                  <div className="scroll-bar-user-profile">
-                    {Array.isArray(activityHistory) && activityHistory.map((activity) => (
-                      <SponsoredEventCard key={activity.id} event={activity} />
-                    ))}
+                    {activeTab === "activity" && (
+                      <div className="scroll-bar-user-profile">
+                        {Array.isArray(activityHistory) && activityHistory.map((activity) => (
+                          <SponsoredEventCard key={activity.id} event={activity} />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
-            )}
-          </section>
-        </div>
-      </div>
+              </section>
+            </div>
+          </div>)}
       <Footer />
     </body >
   );

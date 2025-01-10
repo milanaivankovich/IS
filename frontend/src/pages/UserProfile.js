@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import MessageCard from '../components/MessageCard';
 import ActivityCard from '../components/ActivityCard';
 import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
@@ -31,6 +30,8 @@ const UserProfile = () => {
     "email": '',
     "profile_picture": null
   });
+
+  const [loadingUser, setLoadingUser] = useState(true);
 
   useEffect(() => {
 
@@ -112,7 +113,7 @@ const UserProfile = () => {
         .catch(error => {
           console.error('Error fetching data: ', error);
           //alert('Error 404');
-        });
+        }).finally(() => setLoadingUser(false));
     };
     const fetchCurrentUserData = async () => {
       await axios.get(`${uri}/api/client/${id.id}/`)
@@ -129,7 +130,7 @@ const UserProfile = () => {
         }).catch(error => {
           console.error('Error fetching data: ', error);
           //alert('Error 404');
-        });
+        }).finally(() => setLoadingUser(false));
     };
 
     if (id.id !== -1) {
@@ -139,6 +140,7 @@ const UserProfile = () => {
         fetchSubjectData();
       else alert('Unsupported client type.');
     }
+
   }, [id]);
 
 
@@ -191,102 +193,106 @@ const UserProfile = () => {
   return (
     <body className='user-profile-page'>
       <header className="userprofile-menu">
-        <MenuBar variant={[id.id !== -1 ? "registered" : "unregistered"]} search={true} />
+        <MenuBar variant={"registered"} search={true} />
       </header>
-      <div className="userprofile-body">
-        <div className="userprofile-header">
-          <img src={userData.profile_picture ? userData.profile_picture : CreatorImg}
-            className="userprofilepreview-image" alt="profile photo" />
-          <div className='name-surname-username'>
-            <h0 className="userprofile-name">{userData.first_name} {userData.last_name}</h0>
-            <h1 className="userprofile-subtitle">@{userData.username}</h1>
+      {loadingUser ?
+        (<div className='loading-line'></div>) :
+
+        (<div className="userprofile-body">
+          <div className="userprofile-header">
+            <img src={userData.profile_picture ? userData.profile_picture : CreatorImg}
+              className="userprofilepreview-image" alt="profile photo" />
+            <div className='name-surname-username'>
+              <h0 className="userprofile-name">{userData.first_name} {userData.last_name}</h0>
+              <h1 className="userprofile-subtitle">@{userData.username}</h1>
+            </div>
+            {((id.type === 'Client') && (currentUserData.username === username)) ? (
+              <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/edituserprofile')} />
+            ) : null}
           </div>
-          {((id.type === 'Client') && (currentUserData.username === username)) ? (
-            <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/edituserprofile')} />
-          ) : null}
-        </div>
-        <div>
-          <nav className="profile-tabs">
-            <button className='userprofile-tab-button'
-              onClick={() => {
-                setSelectionTitle('Događaji');
-                setSelectionSubtitle('Događaji koje je kreirao korisnik');
-                setActiveTab("events");
-              }}>Događaji</button>
-            <button className='userprofile-tab-button' onClick={() => {
-              setSelectionTitle('Omiljeno'); setSelectionSubtitle('Omiljeni tereni korisnika');
-              setActiveTab("favorites")
-            }}>Omiljeno</button>
-            {<button className='userprofile-tab-button' onClick={() => {
-              setSelectionTitle('Prijave na aktivnosti'); setSelectionSubtitle('Događaji na koje se korisnik prijavio');
-              setActiveTab("registered-activities")
-            }
+          <div>
+            <nav className="profile-tabs">
+              <button className='userprofile-tab-button'
+                onClick={() => {
+                  setSelectionTitle('Događaji');
+                  setSelectionSubtitle('Događaji koje je kreirao korisnik');
+                  setActiveTab("events");
+                }}>Događaji</button>
+              <button className='userprofile-tab-button' onClick={() => {
+                setSelectionTitle('Omiljeno'); setSelectionSubtitle('Omiljeni tereni korisnika');
+                setActiveTab("favorites")
+              }}>Omiljeno</button>
+              {<button className='userprofile-tab-button' onClick={() => {
+                setSelectionTitle('Prijave na aktivnosti'); setSelectionSubtitle('Događaji na koje se korisnik prijavio');
+                setActiveTab("registered-activities")
+              }
 
-            }>Prijave na aktivnosti</button>}
-            <button className='userprofile-tab-button' onClick={() => {
-              setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Događaji kojima se korisnik pridružio');
-              setActiveTab("activity")
-            }}>Istorija Aktivnosti</button>
-          </nav></div>
+              }>Prijave na aktivnosti</button>}
+              <button className='userprofile-tab-button' onClick={() => {
+                setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Događaji kojima se korisnik pridružio');
+                setActiveTab("activity")
+              }}>Istorija Aktivnosti</button>
+            </nav></div>
 
-        <div className="userprofile-selection">
-          <h1 className="userprofile-name">{selectionTitle}</h1>
-          <h2 className="userprofile-subtitle">{selectionSubtitle}</h2>
-          <section className="tab-content">
-            {loading ? (
-              <Spinner className='spinner-border' animation="border" />
-            ) : (
-              <div>
-                {activeTab === "events" && (
-                  <div className="events-section">
-                    <div className="scroll-bar-user-profile">
-                      {Array.isArray(eventsData) && eventsData.map((activity) => (
-                        <ActivityCard key={activity.id} activity={activity} />
-                      ))}
-                    </div>
-                    {((id.type === 'Client') && (currentUserData.username === username)) ? (
-                      <button className="create-event-button" onClick={() => toggleFloatingWindow()}>
-                        + Novi događaj
-                      </button>
-                    ) : null}
-                    {isVisible ? (
-                      <div>
-                        <EditEventCard user={currentUserData} pk={id} className="new-event-card" />
-                        <IoIosCloseCircle className="close-icon" onClick={() => toggleFloatingWindow()} />
+          <div className="userprofile-selection">
+            <h1 className="userprofile-name">{selectionTitle}</h1>
+            <h2 className="userprofile-subtitle">{selectionSubtitle}</h2>
+            <section className="tab-content">
+              {loading ? (
+                <Spinner className='spinner-border' animation="border" />
+              ) : (
+                <div>
+                  {activeTab === "events" && (
+                    <div className="events-section">
+                      <div className="scroll-bar-user-profile">
+                        {Array.isArray(eventsData) && eventsData.map((activity) => (
+                          <ActivityCard key={activity.id} activity={activity} />
+                        ))}
                       </div>
-                    ) : null}
-                  </div>
-                )}
+                      {((id.type === 'Client') && (currentUserData.username === username)) ? (
+                        <button className="create-event-button" onClick={() => toggleFloatingWindow()}>
+                          + Novi događaj
+                        </button>
+                      ) : null}
+                      {isVisible ? (
+                        <div>
+                          <EditEventCard user={currentUserData} pk={id} className="new-event-card" />
+                          <IoIosCloseCircle className="close-icon" onClick={() => toggleFloatingWindow()} />
+                        </div>
+                      ) : null}
+                    </div>
+                  )}
 
-                {activeTab === "favorites" && (
-                  <div className="scroll-bar-user-profile">
-                    {Array.isArray(favorites) && favorites.map((favorite) => (
-                      <FieldsCard key={favorite.id} field={favorite} userId={id.id} userType={id.type} />
-                    ))}
-                  </div>
-                )}
-
-                {
-                  activeTab === "registered-activities" && (
+                  {activeTab === "favorites" && (
                     <div className="scroll-bar-user-profile">
-                      {Array.isArray(registered) && registered.map((activity) => (
-                        <ActivityCard key={activity.id} activity={activity} />
+                      {Array.isArray(favorites) && favorites.map((favorite) => (
+                        <FieldsCard key={favorite.id} field={favorite} userId={id.id} userType={id.type} />
                       ))}
                     </div>
                   )}
 
-                {activeTab === "activity" && (
-                  <div className="scroll-bar-user-profile">
-                    {Array.isArray(activityHistory) && activityHistory.map((activity) => (
-                      <ActivityCard key={activity.id} activity={activity} />
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </section>
-        </div>
-      </div >
+                  {
+                    activeTab === "registered-activities" && (
+                      <div className="scroll-bar-user-profile">
+                        {Array.isArray(registered) && registered.map((activity) => (
+                          <ActivityCard key={activity.id} activity={activity} />
+                        ))}
+                      </div>
+                    )}
+
+                  {activeTab === "activity" && (
+                    <div className="scroll-bar-user-profile">
+                      {Array.isArray(activityHistory) && activityHistory.map((activity) => (
+                        <ActivityCard key={activity.id} activity={activity} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </section>
+          </div>
+        </div >)
+      }
       <Footer />
     </body >
   );

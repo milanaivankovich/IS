@@ -103,6 +103,32 @@
   flex-wrap: wrap;
 }
 
+.loading-line {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, #F15A24, white);
+  background-size: 200% 100%;
+  /* Double the size for animation */
+  animation: loading-animation 2s infinite linear;
+  /* Smooth animation */
+}
+
+@keyframes loading-animation {
+  0% {
+    background-position: 100% 0;
+  }
+
+  50% {
+    background-position: 0 0;
+    /* Fully animated to the left */
+  }
+
+  100% {
+    background-position: 100% 0;
+    /* Reset back to the start */
+  }
+}
+
 .create-event-button {
   margin-top: 10px;
   background-color: #F15A24;
