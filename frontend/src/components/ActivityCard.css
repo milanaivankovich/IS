@@ -97,3 +97,24 @@
 .clickable-username:hover {
   color: #e64a19;
 }
+
+.activity-card-buttons .unregister-button {
+  background-color: #757575; /* Siva boja */
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+
+.activity-card-buttons .unregister-button:hover {
+  background-color: #616161; /* Tamnija nijansa sive */
+}
+
+.activity-card-buttons .unregister-button:disabled {
+  background-color: #ccc; /* Svetlija nijansa sive */
+  cursor: not-allowed;
+}

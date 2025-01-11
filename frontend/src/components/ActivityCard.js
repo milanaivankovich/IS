@@ -72,6 +72,40 @@ const ActivityCard = ({ activity }) => {
     }
   }, [sport]);
 
+  const handleUnregister = async () => {
+    if (!isLoggedIn) {
+      alert("Morate biti prijavljeni da biste se odjavili sa aktivnosti.");
+      return;
+    }
+  
+    setIsLoading(true);
+    setError(null);
+  
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/activities/${id}/unregister/`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+  
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to unregister from the activity");
+      }
+  
+      const data = await response.json();
+      setRemainingSlots(data.remaining_slots); // Ažuriranje broja preostalih mesta
+      alert(data.message);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+
   const handleUsernameClick = (username) => {
     window.location.href = `http://localhost:3000/userprofile/${id}/`;
   };
@@ -225,6 +259,13 @@ const ActivityCard = ({ activity }) => {
         >
           {isLoading ? "Prijava u toku..." : "Prijavi se"}
         </button>
+        <button
+    className="button unregister-button"
+    onClick={handleUnregister}
+    disabled={isLoading || !isLoggedIn}
+  >
+    {isLoading && remainingSlots ? "Odjava u toku..." : "Odjavi se"}
+  </button>
       </div>
 
       {!isLoggedIn && <p className="error-message">Morate biti prijavljeni da biste se prijavili na aktivnost.</p>}
