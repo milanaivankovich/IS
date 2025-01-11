@@ -5,7 +5,7 @@ from django.utils.timezone import localtime
 
 class Activities(models.Model):
     id = models.AutoField(primary_key=True)
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='activities', null=True)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='activities')
     titel = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)   
     date = models.DateTimeField()
@@ -13,9 +13,9 @@ class Activities(models.Model):
     NumberOfParticipants = models.IntegerField(null=True)
     sport = models.ForeignKey('fields.Sport', on_delete=models.CASCADE, null=True)
     is_deleted = models.BooleanField(default=False)
-    participants = models.ManyToManyField(Client, related_name='activities_participated')
-
-    def clean(self):
+    participants = models.ManyToManyField(Client, related_name='activities_participated', blank=True)
+    #participants = models.ManyToManyField(Client, related_name='joined_activities')
+    """ def clean(self):
         if self.date is None:
             raise ValidationError("Datum ne može biti prazan.")
         if self.field and self.field.is_suspended:
@@ -23,6 +23,15 @@ class Activities(models.Model):
         sports_on_teren = self.field.sports.all()
         if self.sport not in sports_on_teren:
             raise ValidationError(f"Sport '{self.sport.name}' nije dostupan na terenu '{self.field.location}'.")
+        if self.NumberOfParticipants is not None and self.NumberOfParticipants < 0:
+            raise ValidationError("Broj učesnika ne može biti negativan.")
+        super().clean()
+ """
+    def clean(self):
+        if self.date is None:
+            raise ValidationError("Datum ne može biti prazan.")
+        if self.field and self.field.is_suspended:
+            raise ValidationError('Teren je suspendovan.')
         if self.NumberOfParticipants is not None and self.NumberOfParticipants < 0:
             raise ValidationError("Broj učesnika ne može biti negativan.")
         super().clean()
