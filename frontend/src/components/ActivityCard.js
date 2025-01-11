@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./ActivityCard.css";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock, faCalendarAlt, faMapMarkerAlt, faRunning, faUser } from "@fortawesome/free-solid-svg-icons";
 
 const ActivityCard = ({ activity }) => {
   const { description, date, field, titel, sport, id, NumberOfParticipants, client } = activity;
@@ -72,38 +74,7 @@ const ActivityCard = ({ activity }) => {
     }
   }, [sport]);
 
-  const handleUnregister = async () => {
-    if (!isLoggedIn) {
-      alert("Morate biti prijavljeni da biste se odjavili sa aktivnosti.");
-      return;
-    }
   
-    setIsLoading(true);
-    setError(null);
-  
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/activities/${id}/unregister/`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-  
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Failed to unregister from the activity");
-      }
-  
-      const data = await response.json();
-      setRemainingSlots(data.remaining_slots); // Ažuriranje broja preostalih mesta
-      alert(data.message);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
   
 
   const handleUsernameClick = (username) => {
@@ -189,6 +160,81 @@ const ActivityCard = ({ activity }) => {
       setIsLoading(false);
     }
   };
+  const handleUnregister = async () => {
+    if (!isLoggedIn) {
+      alert("Morate biti prijavljeni kao rekreativac da biste se prijavili na aktivnost.");
+      return;
+    }
+    let pk = {
+      id: -1,
+      type: ''
+    };
+    const uri = "http://localhost:8000"
+    let currentUserData = {
+      first_name: '',
+      last_name: '',
+      username: '',
+      email: '',
+      profile_picture: '',
+    };
+
+    await axios.get(`${uri}/api/get-user-type-and-id/`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    })
+      .then((request) => {
+        pk = request.data;
+      })
+      .catch((error) => {
+        console.error("Error getting ID: ", error);
+      });
+
+    if (pk.id !== -1 && pk.type === 'Client') {
+      await axios.get(`${uri}/api/client/${pk.id}/`)
+        .then(async response => {
+          currentUserData = {
+            first_name: response.data.first_name,
+            last_name: response.data.last_name,
+            username: response.data.username,
+            email: response.data.email,
+            profile_picture: response.data.profile_picture ? uri + response.data.profile_picture : null,
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data: ', error);
+          return;
+        });
+    } else {
+      alert("Morate biti prijavljeni kao rekreativac da biste se prijavili na aktivnost.");
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/activities/${id}/unregister/`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(currentUserData),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to register for the activity");
+      }
+
+      const data = await response.json();
+      setRemainingSlots(data.remaining_slots);
+      alert(data.message);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   ///datetime
   const parseDateTime = (dateString) => {
@@ -216,39 +262,49 @@ const ActivityCard = ({ activity }) => {
 
   return (
     <div className="activity-card">
-      <h3 className="activity-card-title">{titel}</h3>
-      <p>
-        <strong>Kreirao oglas:</strong>{" "}
-        {username ? (
-          <span
-            className="clickable-username"
-            onClick={() => handleUsernameClick(username)}
-          >
-            {username}
-          </span>
-        ) : (
-          "Nepoznato"
-        )}
-      </p>
-
-      <p><strong>Opis:</strong> {description}</p>
-      <p><strong>Sport:</strong> {sports}</p>
-      <p><strong>Datum:</strong> {formattedDate}</p>
-      <p><strong>Vrijeme: </strong>{formattedTime}</p>
-      <p><strong>Broj preostalih učesnika:</strong> {remainingSlots}</p>
-      <p>
-        <strong>Lokacija:</strong>{" "}
-        {location ? (
+    <h3 className="activity-card-title">{titel}</h3>
+  
+    <p>
+      <FontAwesomeIcon icon={faUser} /> <strong>Kreirao oglas:</strong>{" "}
+      {username ? (
+        <span
+          className="clickable-username"
+          onClick={() => handleUsernameClick(username)}
+        >
+          {username}
+        </span>
+      ) : (
+        "Nepoznato"
+      )}
+    </p>
+  
+    <p>
+      <FontAwesomeIcon icon={faRunning} /> <strong>Opis:</strong> {description}
+    </p>
+  
+    <div className="activity-card-footer">
+      <div className="activity-card-footer-left">
+        <p>
+          <FontAwesomeIcon icon={faCalendarAlt} />  {formattedDate}
+        </p>
+        <p>
+          <FontAwesomeIcon icon={faClock} />  {formattedTime}
+        </p>
+      </div>
+      <div className="activity-card-footer-right">
+        <p>
+          <FontAwesomeIcon icon={faMapMarkerAlt} />{" "}
           <span
             className="clickable-location"
             onClick={() => handleLocationClick(field)}
           >
-            {location}
+            {location || "Učitavanje..."}
           </span>
-        ) : (
-          "Učitavanje..."
-        )}
-      </p>
+        </p>
+      </div>
+    </div>
+ 
+  
 
 
       <div className="activity-card-buttons">
