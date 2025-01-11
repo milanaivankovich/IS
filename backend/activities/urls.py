@@ -33,6 +33,6 @@ urlpatterns = [
     path('profile/', views.user_profile, name='user_profile'),
     path('api/user-events/<str:username>/', views.get_user_events, name='user-events'),
     #path('api/registered-events/<str:username>/', get_registered_events, name='registered-events'),
-    path('api/registered-events/<str:username>/', get_registered_events, name='registered-events'),
-
+    path('api/registered-events/<str:username>/', views.get_registered_events, name='registered-events'),
+    path('activities/<int:activity_id>/unregister/', views.unregister_activity, name='unregister_activity'),
 ]

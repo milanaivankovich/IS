@@ -2,6 +2,7 @@ from django.db import models
 from accounts.models import Client
 from django.core.exceptions import ValidationError
 from django.utils.timezone import localtime
+from django.utils.timezone import now
 
 class Activities(models.Model):
     id = models.AutoField(primary_key=True)
@@ -41,6 +42,17 @@ class Activities(models.Model):
         if self.NumberOfParticipants <= 0:
             raise ValidationError("Nema više dostupnih mesta za ovu aktivnost.")
         self.NumberOfParticipants -= 1
+        self.save()
+
+    def unregister_participant(self, user):
+        """Uklanja korisnika sa liste učesnika."""
+        if user not in self.participants.all():
+            raise ValidationError("Korisnik nije prijavljen na ovu aktivnost.")
+        if self.date <= now():
+            raise ValidationError("Ne možete se odjaviti nakon početka aktivnosti.")
+        self.participants.remove(user)
+        if self.NumberOfParticipants is not None:
+            self.NumberOfParticipants += 1
         self.save()
 
     def __str__(self):

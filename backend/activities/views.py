@@ -311,6 +311,20 @@ def register_to_activity(request, activity_id):
         status=status.HTTP_200_OK
     )
 
+@api_view(['POST'])
+def unregister_activity(request, activity_id):
+    """
+    Odjava korisnika sa aktivnosti.
+    """
+    user = request.user
+    activity = get_object_or_404(Activities, id=activity_id)
+
+    try:
+        activity.unregister_participant(user)
+        return Response({"message": "Uspešno ste se odjavili sa aktivnosti."}, status=status.HTTP_200_OK)
+    except ValidationError as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 #@api_view(['GET'])
 #@permission_classes([IsAuthenticated])
