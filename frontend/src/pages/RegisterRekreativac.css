@@ -9,7 +9,7 @@
   align-items: center;
   height: 100vh; /* Forma u centru */
   box-sizing: border-box;
-  overflow: hidden; /* SpreÄava skrolovanje ako neÅ¡to izlazi van */
+  overflow: hidden; /* Sprečava skrolovanje ako nešto izlazi van */
 }
 
 .register-container {
@@ -17,7 +17,7 @@
   flex-direction: column;
   align-items: center;
   font-family: Arial, sans-serif;
-  width: 100%; /* Å irina kontejnera */
+  width: 100%; /* Širina kontejnera */
 }
 
 .logo-container {
@@ -26,7 +26,7 @@
 }
 
 .basket-logo {
-  width: 160px; /* Prilagodite veliÄinu logotipa ako je potrebno */
+  width: 160px; /* Prilagodite veličinu logotipa ako je potrebno */
   max-width: 250px;
 }
 
@@ -41,7 +41,7 @@
   border-radius: 10px;
   padding: 20px;
   width: 100%;
-  max-width: 400px; /* Fiksna Å¡irina forme */
+  max-width: 400px; /* Fiksna širina forme */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -103,7 +103,7 @@ input:focus {
 }
 
 .password-criteria li.valid::before {
-  content: "âœ”";
+  content: "✔";
   color: green;
   position: absolute;
   left: 0;
@@ -111,7 +111,7 @@ input:focus {
 }
 
 .password-criteria li.invalid::before {
-  content: "âœ˜";
+  content: "✘";
   color: red;
   position: absolute;
   left: 0;
@@ -280,9 +280,9 @@ button.email-button:hover {
 }
 .crop-container {
   position: relative; /* Obavezno! */
-  width: 100%; /* Postavi Å¡irinu po potrebi */
+  width: 100%; /* Postavi širinu po potrebi */
   height: 400px; /* Visina za prikaz croppera */
-  overflow: hidden; /* SpreÄava da sadrÅ¾aj izlazi van */
+  overflow: hidden; /* Sprečava da sadržaj izlazi van */
 }
 
 .crop-buttons {
