@@ -86,5 +86,29 @@
         "client_id": 10,
         "field_id": 2,
         "date": "2025-01-06"
+    },
+    {
+        "id": 12,
+        "rating": 2,
+        "description": "recenzija1111",
+        "client_id": 10,
+        "field_id": 6,
+        "date": "2025-01-11"
+    },
+    {
+        "id": 13,
+        "rating": 4,
+        "description": "recenzija2222",
+        "client_id": 10,
+        "field_id": 6,
+        "date": "2025-01-11"
+    },
+    {
+        "id": 14,
+        "rating": 4,
+        "description": "opis1111opis111",
+        "client_id": 10,
+        "field_id": 5,
+        "date": "2025-01-11"
     }
 ]

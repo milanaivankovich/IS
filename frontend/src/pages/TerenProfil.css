@@ -109,3 +109,20 @@
 .no-events-message {
   margin-left: 5px;
 }
+
+.rating-stars {
+  display: flex;
+  gap: 5px;
+  margin-top: 10px;
+  margin-left: 100px;
+  margin-bottom: 10px;
+}
+
+.star {
+  font-size: 24px;
+  color: lightgray;
+}
+
+.star.filled {
+  color: #e64a19; 
+}

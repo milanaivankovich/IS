@@ -6,12 +6,13 @@ import './UserProfile.css';
 import './BusinessSubjectProfile.css';
 import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
-import { CiSettings } from "react-icons/ci";
 import './TerenProfil.css';
 import NewReviewCard from '../components/NewReviewCard.js';
 import { IoIosCloseCircle } from "react-icons/io";
 import ReviewCard from '../components/ReviewCard.js';
 import { FaRegHeart, FaHeart } from "react-icons/fa";
+import { FaStar, FaRegStar } from 'react-icons/fa';
+
 
 const TerenProfil = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -343,13 +344,32 @@ const TerenProfil = () => {
                         const reviewDate = new Date(review.date);
                         reviewDate.setHours(reviewDate.getHours() + 1); // Dodajemo 1 sat na vrijeme
 
+                        const renderStars = (rating) => {
+                          const stars = [];
+                          for (let i = 1; i <= 5; i++) {
+                            if (i <= rating) {
+                              stars.push(
+                                <FaStar key={i} className="star filled" />
+                              );
+                            } else {
+                              stars.push(
+                                <FaRegStar key={i} className="star" />
+                              );
+                            }
+                          }
+                          return stars;
+                        };
+                        
+
                         return (
                           <div key={review.id} className="activity-card-review">
                             <ReviewCard clientId={review.client} />
-                            <p className="size"><strong>Ocjena: </strong>{review.rating}</p>
                             <p className="size"><strong>Komentar: </strong>{review.description}</p>
                             <p className="size"><strong>Datum: </strong>{reviewDate.toISOString().split('T')[0]}</p>
                             <p className="size"><strong>Vrijeme: </strong>{reviewDate.toISOString().split('T')[1].split(':').slice(0, 2).join(':')}</p>
+                            <div className="rating-stars">
+                              {renderStars(review.rating)}
+                            </div>
                           </div>
                         );
                       })}

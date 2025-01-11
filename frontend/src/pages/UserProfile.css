@@ -137,8 +137,9 @@
   border: none;
   cursor: pointer;
   border-radius: 5px;
-  width: 200px;
+  width: 180px;
   height: 40px;
+  margin-left: 20px;
 }
 
 .create-event-button:hover {
