@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./SponsoredEventCard.css";
 import CreatorImg from "../images/user.svg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarAlt, faClock,faRunning, faMapMarkerAlt, faFutbol, faUser } from "@fortawesome/free-solid-svg-icons";
 
 const SponsoredEventCard = ({ event }) => {
   const { name, description, date, field, business_subject, sport } = event;
@@ -112,16 +114,23 @@ const SponsoredEventCard = ({ event }) => {
           <img src={picture !== null ? picture : CreatorImg} className="creator-image" alt="Creator" />
           <div className="Naslov">
             {name}
-            <div className="createdBy"> by @{name1}</div>
+            <div className="createdBy">
+              <FontAwesomeIcon icon={faUser} /> by @{name1}
+            </div>
           </div>
         </div>
         <div className="Opis">
-          <p><strong>Opis:</strong> {description}</p>
-          <p><strong>Sport:</strong> {sports}</p>
-          <p><strong>Datum:</strong> {dateOnly}</p>
-          <p><strong>Vrijeme:</strong> {timeOnly}</p>
           <p>
-            <strong>Lokacija:</strong>{" "}
+            <FontAwesomeIcon icon={faFutbol} /> <strong>Sport:</strong> {sports || "Učitavanje..."}
+          </p>
+          <p>
+            <FontAwesomeIcon icon={faCalendarAlt} /> <strong>Datum:</strong> {dateOnly}
+          </p>
+          <p>
+            <FontAwesomeIcon icon={faClock} /> <strong>Vrijeme:</strong> {timeOnly}
+          </p>
+          <p>
+            <FontAwesomeIcon icon={faMapMarkerAlt} /> <strong>Lokacija:</strong>{" "}
             {location ? (
               <span
                 className="clickable-location"
@@ -133,13 +142,15 @@ const SponsoredEventCard = ({ event }) => {
               "Učitavanje..."
             )}
           </p>
+          <p>
+            <FontAwesomeIcon icon={faRunning} /> <strong>Opis:</strong> {description}
+          </p>
         </div>
-        {/*<div className="EventCard-buttons">
-          <button className="EventCard-button">Pregled</button>
-        </div>*/}
+        
       </div>
     </div>
   );
+  
 };
 
 export default SponsoredEventCard;
