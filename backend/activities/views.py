@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view,permission_classes
 from accounts.models import Client
 from .serializers import ActivitiesSerializer
 from rest_framework import status
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from datetime import datetime
 from django.core.exceptions import ValidationError
 from django.db.models.functions import TruncDate
@@ -26,18 +26,11 @@ class ActivitiesCreateView(CreateView):
     template_name = 'activities/aktivnost_form.html'    
     success_url = reverse_lazy('aktivnost-success')
 
-#@api_view(['GET'])
-#def getData(request):
-#    activities = Activities.objects.all()
-#    serializer = ActivitiesSerializer(activities, many=True)
-#    return Response(serializer.data)
-
 @api_view(['GET'])
 def getData(request):
     activiti = Activities.objects.filter(is_deleted=False)  # Prikaz svih aktivnosti
     serializer = ActivitiesSerializer(activiti, many=True)
     return Response(serializer.data)
-
 
 @api_view(['POST'])
 def setData(request):
@@ -49,25 +42,12 @@ def setData(request):
         print(serializer.errors)  # Ovo će ispisati greške u konzoli
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['GET'])
 def client_activities(request, client_id):
     client = Client.objects.get(id=client_id)
     activities = client.activities.all()
     data = [{"name": a.name, "descritption": a.descritption, } for a in activities]
     return Response(data)
-""" 
-@api_view(['POST'])
-def add_activity(request, client_id):
-    client = get_object_or_404(Client, id=client_id)
-    data = request.data.copy()
-    data['client'] = client.id
-    seriallizer = ActivitiesSerializer(data=data)    
-    if seriallizer.is_valid():
-        seriallizer.save()
-        return Response(seriallizer.data, status=status.HTTP_201_CREATED)
-    return Response(seriallizer.errors, status=status.HTTP_400_BAD_REQUEST)
- """
 
 @api_view(['POST'])
 def add_activity(request, client_id):
@@ -85,42 +65,6 @@ def add_activity(request, client_id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-#@api_view(['POST'])
-#def add_activity(request, client_id):
-#    client = get_object_or_404(Client, id=client_id)
-#    data = request.data.copy()
-#    data['client'] = client.id
-
-#    serializer = ActivitiesSerializer(data=data)
-#    if serializer.is_valid():
-#        serializer.save()
-#        return Response(serializer.data, status=status.HTTP_201_CREATED)
-#    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-""" @api_view(['GET'])
-def get_client_activities(request, client_id):
-  #  client = get_object_or_404(Client, id=client_id)
-   # activities = Activities.objects.filter(client=client)
-  #  serializer = ActivitiesSerializer(activities, many=True)
-  #  return Response(serializer.data, status=status.HTTP_200_OK)
-    now = datetime.now()
-
-    activities = Activities.objects.filter(
-        client_id = client_id,
-        is_deleted = False,
-        date__gt = now
-    )
-
-    if activities.exists():
-        serializer = ActivitiesSerializer(activities, many=True)
-        return Response(serializer.data)
-    else:
-        return Response({'error': 'No advertisements found for this business subject'}, status=404)
-    
-
- """
-
 @api_view(['GET'])
 def get_client_activities(request, client_id):
     now = datetime.now()
@@ -136,7 +80,6 @@ def get_client_activities(request, client_id):
         return Response(serializer.data, status=status.HTTP_200_OK)
     else:
         return Response({'error': 'Nema dostupnih aktivnosti za ovog korisnika.'}, status=status.HTTP_404_NOT_FOUND)
-
 
 @api_view(['GET'])
 def activities_by_date(request, date):
@@ -161,8 +104,6 @@ def activities_by_location(request, location):
         serializer = ActivitiesSerializer(activities, many=True)
         return Response(serializer.data)
     return Response({'error': 'No activities found for this location'}, status=404)
-
-
 
 @api_view(['GET'])
 def activities_by_date_and_location(request, date, location):
@@ -218,67 +159,6 @@ def get_type_of_sport_by_field_id(request, field_id):
     except Field.DoesNotExist:
         return Response({'error': 'Field not found'}, status=404)
     
-# @api_view(['POST'])
-# def register_to_activity(request, activity_id):
-#     """
-#     Registruje korisnika na aktivnost ako ima slobodnih mesta
-#     i ako nije već prijavljen.
-#     """
-#     activity = get_object_or_404(Activities, id=activity_id)
-
-#     # Parsiranje korisničkih podataka iz tela zahteva
-#     username = request.data.get('username')  # Dobijamo username iz requesta
-
-#     if not username:
-#         return Response({'error': 'Nedostaje korisničko ime.'}, status=status.HTTP_400_BAD_REQUEST)
-
-#     # Provera da li je korisnik već prijavljen
-#     if activity.client and activity.client.username == username:
-#         return Response({'error': 'Već ste prijavljeni na ovu aktivnost.'}, status=status.HTTP_400_BAD_REQUEST)
-
-#     try:
-#         activity.register_participant()  # Smanjuje broj učesnika
-#         activity.client = Client.objects.get(username=username)  # Povezuje korisnika sa aktivnošću
-#         activity.save()
-#         return Response(
-#             {'message': 'Uspješno ste se prijavili na aktivnost!', 'remaining_slots': activity.NumberOfParticipants},
-#             status=status.HTTP_200_OK
-#         )
-#     except ValidationError as e:
-#         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-""" @api_view(['POST'])
-def register_to_activity(request, activity_id):
-    
-    activity = get_object_or_404(Activities, id=activity_id)
-    username = request.data.get('username')
-
-    if not username:
-        return Response({'error': 'Nedostaje korisničko ime.'}, status=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        user = Client.objects.get(username=username)
-    except Client.DoesNotExist:
-        return Response({'error': 'Korisnik nije pronađen.'}, status=status.HTTP_404_NOT_FOUND)
-
-    # Provera da li je korisnik već prijavljen
-    if user in activity.participants.all():
-        return Response({'error': 'Već ste prijavljeni na ovu aktivnost.'}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Provera dostupnih mesta
-    if activity.participants.count() >= activity.NumberOfParticipants:
-        return Response({'error': 'Nema slobodnih mesta.'}, status=status.HTTP_400_BAD_REQUEST)
-
-    # Dodavanje korisnika kao učesnika
-    activity.participants.add(user)
-    activity.save()
-
-    return Response(
-        {'message': 'Uspješno ste se prijavili na aktivnost!', 'remaining_slots': activity.NumberOfParticipants - activity.participants.count()},
-        status=status.HTTP_200_OK
-    )
- """
 @api_view(['POST'])
 def register_to_activity(request, activity_id):
     activity = get_object_or_404(Activities, id=activity_id)
@@ -336,34 +216,12 @@ def unregister_activity(request, activity_id):
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-#@api_view(['GET'])
-#@permission_classes([IsAuthenticated])
-#def get_registered_events(request):
-#    """
-#    Vraća događaje na koje je prijavljen trenutni korisnik.
-#    """
-#    user = request.user
-#    registered_events = Activities.objects.filter(participants=user).exclude(creator=user)  # Događaji gde je učesnik, ali nije kreator
-#    serializer = ActivitiesSerializer(registered_events, many=True)
-#    return Response(serializer.data)
-from django.shortcuts import render
-from .models import Activities
-
 def get_registered_activities(user):
     """
     Dohvata aktivnosti na koje je korisnik prijavljen.
     """
     from django.utils.timezone import now
     return Activities.objects.filter(participants=user, date__gte=now).distinct()
-
-# def user_profile(request):
-#     """
-#     Prikaz profila korisnika i njegovih aktivnosti.
-#     """
-#     user = request.user
-#     registered_activities = get_registered_activities(user)
-#     return render(request, 'profile.html', {'registered_activities': registered_activities})
-# from django.http import JsonResponse
 
 def user_profile(request):
     user = request.user

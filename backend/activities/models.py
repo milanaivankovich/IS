@@ -15,19 +15,7 @@ class Activities(models.Model):
     sport = models.ForeignKey('fields.Sport', on_delete=models.CASCADE, null=True)
     is_deleted = models.BooleanField(default=False)
     participants = models.ManyToManyField(Client, related_name='activities_participated', blank=True)
-    #participants = models.ManyToManyField(Client, related_name='joined_activities')
-    """ def clean(self):
-        if self.date is None:
-            raise ValidationError("Datum ne može biti prazan.")
-        if self.field and self.field.is_suspended:
-            raise ValidationError('Aktivnost se ne može povezati s terenom jer je teren suspendovan.')
-        sports_on_teren = self.field.sports.all()
-        if self.sport not in sports_on_teren:
-            raise ValidationError(f"Sport '{self.sport.name}' nije dostupan na terenu '{self.field.location}'.")
-        if self.NumberOfParticipants is not None and self.NumberOfParticipants < 0:
-            raise ValidationError("Broj učesnika ne može biti negativan.")
-        super().clean()
- """
+    
     def clean(self):
         if self.date is None:
             raise ValidationError("Datum ne može biti prazan.")
