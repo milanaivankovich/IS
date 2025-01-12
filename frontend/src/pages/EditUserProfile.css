@@ -54,12 +54,17 @@
     color: #F15A24;
 }
 
+.EditUserProfileBody .close-icon-orange {
+    transform: translate(215px, -220px);
+}
+
 .NewImage:hover {
     color: #e64a19;
 }
 
 .EditUserProfileDialog form .EditProfileLabel,
-.EditUserProfileDialog form .EditProfileInput {
+.EditUserProfileDialog form .EditProfileInput,
+.EditUserProfileDialog form .EditProfileInput-email {
     font: 'Popins', regular;
     font-size: 16px;
 
@@ -72,6 +77,7 @@
     color: black;
 }
 
+
 .EditProfileInput {
     color: #666666;
     display: block;
@@ -83,6 +89,18 @@
     border-radius: 5px;
     /* Remove default outline */
     transition: border 0.3s ease;
+}
+
+.EditProfileInput-email {
+    color: #666666;
+    display: block;
+    width: 90%;
+    align-self: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #f1f1f1;
 }
 
 .EditProfileInput:focus {

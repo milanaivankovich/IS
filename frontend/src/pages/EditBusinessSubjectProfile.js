@@ -252,8 +252,9 @@ const EditUserProfile = () => {
             <input
               type="email"
               value={subjectData.email}
-              className="EditProfileInput"
+              className="EditProfileInput-email"
               required
+              disabled
               onChange={(e) => setSubjectData(prevData => ({ ...prevData, email: e.target.value }))}
             />
             <button
