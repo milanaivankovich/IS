@@ -13,7 +13,19 @@ const Dogadjaji = () => {
   const [advertisements, setAdvertisements] = useState([]);
   const [loadingAdvertisements, setLoadingAdvertisements] = useState(false);
   const [loadingActivities, setLoadingActivities] = useState(false);
-
+  
+  const filterFutureEvents = (events) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Resetuje trenutni datum na ponoć
+  
+    return events.filter((event) => {
+      const eventDate = new Date(event.date);
+      console.log("Event Date:", eventDate); // Log za provere
+      console.log("Today:", today); // Log za provere
+  
+      return eventDate >= today; // Proverava da li je datum budući ili današnji
+    });
+  };
   // Dohvaćanje reklama
   const fetchAdvertisements = async () => {
     setLoadingAdvertisements(true);
@@ -22,7 +34,8 @@ const Dogadjaji = () => {
       if (response.data.error || response.data.length === 0) {
         setAdvertisements([]);
       } else {
-        setAdvertisements(response.data);
+        const futureAdvertisements = filterFutureEvents(response.data);
+        setAdvertisements(futureAdvertisements);
       }
     } catch (error) {
       console.error("Greška pri dohvaćanju oglasa:", error);
@@ -30,6 +43,7 @@ const Dogadjaji = () => {
       setLoadingAdvertisements(false);
     }
   };
+
 
   // Dohvaćanje aktivnosti
   const fetchActivities = async () => {
@@ -39,7 +53,8 @@ const Dogadjaji = () => {
       if (response.data.error || response.data.length === 0) {
         setActivities([]);
       } else {
-        setActivities(response.data);
+        const futureActivities = filterFutureEvents(response.data);
+        setActivities(futureActivities);
       }
     } catch (error) {
       console.error("Greška pri dohvaćanju aktivnosti:", error);
