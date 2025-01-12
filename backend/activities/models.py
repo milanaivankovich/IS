@@ -50,10 +50,13 @@ class Activities(models.Model):
             raise ValidationError("Korisnik nije prijavljen na ovu aktivnost.")
         if self.date <= now():
             raise ValidationError("Ne možete se odjaviti nakon početka aktivnosti.")
-        self.participants.remove(user)
+    
+        self.participants.remove(user)  # Uklanjanje korisnika iz ManyToMany veze
         if self.NumberOfParticipants is not None:
             self.NumberOfParticipants += 1
         self.save()
+
+
 
     def __str__(self):
         formatted_date = localtime(self.date).strftime('%Y-%m-%d %H:%M:%S') if self.date else "N/A"

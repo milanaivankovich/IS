@@ -316,12 +316,22 @@ def unregister_activity(request, activity_id):
     """
     Odjava korisnika sa aktivnosti.
     """
-    user = request.user
+    username = request.data.get('username')
+
+    if not username:
+        return Response({'error': 'Nedostaje korisničko ime.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    user = get_object_or_404(Client, username=username)
     activity = get_object_or_404(Activities, id=activity_id)
 
+    # Provjera i uklanjanje korisnika
     try:
         activity.unregister_participant(user)
-        return Response({"message": "Uspešno ste se odjavili sa aktivnosti."}, status=status.HTTP_200_OK)
+        return Response({
+            "message": "Uspešno ste se odjavili sa aktivnosti.",
+            "activity_removed": True,  # Dodano kako bi frontend mogao znati da je aktivnost uklonjena
+            "remaining_slots": activity.NumberOfParticipants
+        }, status=status.HTTP_200_OK)
     except ValidationError as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
