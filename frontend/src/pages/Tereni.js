@@ -25,6 +25,7 @@ const Tereni = () => {
   const [noAdvertisements, setNoAdvertisements] = useState(false);
   const [noActivities, setNoActivities] = useState(false);
 
+ 
   // Dohvaćanje terena
   const fetchFields = async () => {
     try {
@@ -69,8 +70,13 @@ const Tereni = () => {
         setNoAdvertisements(true);
         setFilteredAdvertisements([]);
       } else {
-        setFilteredAdvertisements(response.data);
+        const futureAdvertisements = filterFutureEvents(response.data);
+        setFilteredAdvertisements(futureAdvertisements);
+      
+        if (futureAdvertisements.length === 0) {
+          setNoAdvertisements(true);
       }
+    }
     } catch (error) {
       console.error("Greška pri dohvaćanju oglasa:", error);
       setNoAdvertisements(true);
@@ -108,7 +114,12 @@ const Tereni = () => {
         setNoActivities(true);
         setFilteredActivities([]);
       } else {
-        setFilteredActivities(response.data);
+        const futureActivities = filterFutureEvents(response.data);
+        setFilteredActivities(futureActivities);
+      
+        if (futureActivities.length === 0) {
+          setNoActivities(true);
+        }
       }
     } catch (error) {
       console.error("Greška pri dohvaćanju aktivnosti:", error);
@@ -117,7 +128,19 @@ const Tereni = () => {
       setLoadingActivities(false);
     }
   };
-
+  const filterFutureEvents = (events) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Resetuje trenutni datum na ponoć
+  
+    return events.filter((event) => {
+      const eventDate = new Date(event.date);
+      console.log("Event Date:", eventDate); // Log za provere
+      console.log("Today:", today); // Log za provere
+  
+      return eventDate >= today; // Proverava da li je datum budući ili današnji
+    });
+  };
+  
   // Formatiranje datuma
   const formatDateToLocal = (date) => {
     const year = date.getFullYear();
