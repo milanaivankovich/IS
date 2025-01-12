@@ -319,3 +319,20 @@ def get_user_events(request, username):
         'created_events': created_serializer.data,
         'registered_events': registered_serializer.data
     }, status=status.HTTP_200_OK)
+
+@api_view(['DELETE'])
+def delete_activity(request, pk):
+    """
+    Soft delete za aktivnost (označava je kao obrisanu)
+    """
+    try:
+        # Pronađi aktivnost koja nije obrisana
+        activity = Activities.objects.get(pk=pk, is_deleted=False)
+    except Activities.DoesNotExist:
+        return Response({'error': 'Activity not found'}, status=404)
+
+    # Označavanje aktivnosti kao obrisane
+    activity.is_deleted = True
+    activity.save()
+
+    return Response({'message': 'Activity marked as deleted'}, status=200)

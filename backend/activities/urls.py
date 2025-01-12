@@ -4,7 +4,6 @@ from rest_framework.routers import DefaultRouter
 from .views import get_location_by_field_id, get_registered_events
 
 urlpatterns = [
-    #path('dodaj/', AktivnostCreateView.as_view(), name='dodaj-aktivnost'),
     path('clients/<int:client_id>/activities/', views.get_client_activities, name='get_client_activities'),
     path('clients/<int:client_id>/activities/add/', views.add_activity, name='add_activity'),
     path('clients/<int:client_id>/client_activities/', views.client_activities, name='client_activities'),
@@ -32,7 +31,7 @@ urlpatterns = [
     path('api/events/history/<str:username>/', views.get_event_history, name='event-history'),
     path('profile/', views.user_profile, name='user_profile'),
     path('api/user-events/<str:username>/', views.get_user_events, name='user-events'),
-    #path('api/registered-events/<str:username>/', get_registered_events, name='registered-events'),
     path('api/registered-events/<str:username>/', views.get_registered_events, name='registered-events'),
     path('activities/<int:activity_id>/unregister/', views.unregister_activity, name='unregister_activity'),
+    path('activities/delete/<int:pk>/', views.delete_activity, name='delete_activity'),
 ]
