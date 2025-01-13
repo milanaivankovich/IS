@@ -108,47 +108,50 @@ const SponsoredEventCard = ({ event }) => {
 
   return (
     <div className="SponsoredEventCard-Okvir">
-      <header className="SponsoredEventCard-Header" />
-      <div className="SponsoredEventCard-body">
-        <div className="SponsoredEventCard-user">
-          <img src={picture !== null ? picture : CreatorImg} className="creator-image" alt="Creator" />
-          <div className="Naslov">
-            {name}
-            <div className="createdBy">
-              <FontAwesomeIcon icon={faUser} /> by @{name1}
-            </div>
-          </div>
+  <header className="SponsoredEventCard-Header" />
+  <div className="SponsoredEventCard-body">
+    <div className="SponsoredEventCard-user">
+      <img src={picture !== null ? picture : CreatorImg} className="creator-image" alt="Creator" />
+      <div className="Naslov">
+        {name}
+        <div className="createdBy">
+          <FontAwesomeIcon icon={faUser} /> by @{name1}
         </div>
-        <div className="Opis">
-          <p>
-            <FontAwesomeIcon icon={faFutbol} /> <strong>Sport:</strong> {sports || "Učitavanje..."}
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faCalendarAlt} /> <strong>Datum:</strong> {dateOnly}
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faClock} /> <strong>Vrijeme:</strong> {timeOnly}
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faMapMarkerAlt} /> <strong>Lokacija:</strong>{" "}
-            {location ? (
-              <span
-                className="clickable-location"
-                onClick={() => handleLocationClick(field)}
-              >
-                {location} - {preciseLocation}
-              </span>
-            ) : (
-              "Učitavanje..."
-            )}
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faRunning} /> <strong>Opis:</strong> {description}
-          </p>
-        </div>
-        
       </div>
     </div>
+    <div className="Opis">
+      <p>
+        <FontAwesomeIcon icon={faRunning} /> <strong>Opis:</strong> {description}
+      </p>
+    </div>
+    <div className="SponsoredEventCard-footer">
+      <div className="SponsoredEventCard-footer-left">
+        <p>
+          <FontAwesomeIcon icon={faCalendarAlt} /> {dateOnly}
+        </p>
+        <p>
+          <FontAwesomeIcon icon={faClock} />  {timeOnly}
+        </p>
+      </div>
+      <div className="SponsoredEventCard-footer-right">
+        <p>
+          <FontAwesomeIcon icon={faMapMarkerAlt} /> {" "}
+          {location ? (
+            <span
+              className="clickable-location"
+              onClick={() => handleLocationClick(field)}
+            >
+              {location} - {preciseLocation}
+            </span>
+          ) : (
+            "Učitavanje..."
+          )}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
   );
   
 };

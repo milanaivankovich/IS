@@ -77,7 +77,7 @@ const Dogadjaji = () => {
       <div className="Events-body">
         {/* Sekcija za reklame */}
         <div className="Events-bar">
-          <div className="Event-bar-title">SPONZORISANE REKLAME</div>
+          <div className="Event-bar-title">REKLAME</div>
           {loadingAdvertisements ? (
             <p>Učitavanje reklama...</p>
           ) : advertisements.length === 0 ? (

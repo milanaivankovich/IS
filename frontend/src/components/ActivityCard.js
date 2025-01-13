@@ -77,7 +77,7 @@ const ActivityCard = ({ activity }) => {
   
   
 
-  const handleUsernameClick = (username) => {
+  const handleUsernameClick = (id) => {
     window.location.href = `http://localhost:3000/userprofile/${id}/`;
   };
 
@@ -265,7 +265,7 @@ const ActivityCard = ({ activity }) => {
     <h3 className="activity-card-title">{titel}</h3>
   
     <p>
-      <FontAwesomeIcon icon={faUser} /> <strong>Kreirao oglas:</strong>{" "}
+      <FontAwesomeIcon icon={faUser} /> <strong> by @</strong>{" "}
       {username ? (
         <span
           className="clickable-username"

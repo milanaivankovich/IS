@@ -6,7 +6,7 @@
     align-items: flex-start;
     margin: 20px;
 
-    width: 344px;
+    width: 360px; /* Povećana širina */
     max-height: 500px;
     overflow: hidden;
 
@@ -20,47 +20,25 @@
 }
 
 .Opis {
-    /* text */
     color: #666666;
     text-align: justify;
-    /* Auto layout */
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-
-    /* Inside auto layout */
     align-self: stretch;
-    font-stretch: expanded;
 }
 
 .Opis p {
     margin: 0;
-    /* Uklanja defaultne margine */
     margin-bottom: 10px;
-    /* Minimalni razmak između paragrafa */
 }
 
 .SponsoredEventCard-Header {
-    /* text */
-    /* media */
-
-    width: 344px;
+    width: 100%; /* Širina prilagođena kartici */
     height: 120px;
-
     background: #F15A24;
-
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    /*padding: 20px 24px;*/
     overflow: hidden;
-
-
-    /* Inside auto layout */
-    flex: none;
-    align-self: stretch;
-
     max-height: 159px;
 }
 
@@ -69,14 +47,12 @@
 }
 
 .SponsoredEventCard-user {
-    /* card header */
     height: 80px;
     gap: 15px;
     width: 100%;
-    display: inline-flex;
+    display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    /* Inside auto layout */
 }
 
 .creator-image {
@@ -85,7 +61,6 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    /* Makes the image circular */
     object-fit: cover;
 }
 
@@ -94,56 +69,35 @@
     color: #666666;
 }
 
-.created {
-    color: #666666;
-}
-
-.EventCard-buttons {
-    /* dialog button bar */
-    /* Auto layout */
+.SponsoredEventCard-footer {
     display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: flex-end;
-
-    gap: 8px;
-    padding: 10px 0px;
-
-    /* Inside auto layout */
-    align-self: stretch;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
 }
 
-.EventCard-button {
-    border: 2px transparent;
-    background-color: #fefefe;
-    color: #F15A24;
-    text-transform: uppercase;
-
-    /* text label */
-    line-height: 24px;
-    /* identical to box height, or 171% */
-    /* Inside auto layout */
-
-    padding: 6px 8px;
-    gap: 8px;
-    height: 36px;
-
-    /* Inside auto layout */
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-}
-
-.EventCard-button:hover {
-    color: #e64a19;
-}
-
-.scroll-bar-user-profile {
+.SponsoredEventCard-footer-left {
     display: flex;
-    overflow-x: auto;
-    gap: 10px;
+    flex-direction: column;
+    gap: 5px;
+    text-align: left;
 }
 
-.scroll-bar-user-profile>* {
-    flex-shrink: 0;
+.SponsoredEventCard-footer-right {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    text-align: right;
+}
+
+.SponsoredEventCard-footer-right .clickable-location {
+    cursor: pointer;
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.SponsoredEventCard-footer-right .clickable-location:hover {
+    color: #0056b3;
 }
