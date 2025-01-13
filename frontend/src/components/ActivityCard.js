@@ -300,6 +300,11 @@ const ActivityCard = ({ activity }) => {
           >
             {location || "Učitavanje..."}
           </span>
+          <p>
+            <FontAwesomeIcon icon={faUser} /> Neophodnih:{" "} 
+            {NumberOfParticipants|| "Nepoznato"} učesnika
+          </p>
+    
         </p>
       </div>
     </div>
