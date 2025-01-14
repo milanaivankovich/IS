@@ -192,3 +192,17 @@ p {
   background: #f0f0f0;
   color: #000;
 }
+.activity-card .menu-item {
+  display: flex;
+  align-items: center; /* Vertikalno poravnanje */
+  gap: 8px; /* Razmak između ikone i teksta */
+}
+
+.activity-card .menu-item .icon {
+  font-size: 16px; /* Prilagodite veličinu ikone */
+}
+
+.activity-card .menu-item .label {
+  font-size: 14px; /* Prilagodite veličinu teksta */
+  color: #333;
+}

@@ -278,6 +278,12 @@ const ActivityCard = ({ activity }) => {
       setIsLoading(false);
     }
   };
+  const isPastActivity = (activityDate) => {
+    const now = new Date(); // Trenutni datum i vreme
+    const activityDateTime = new Date(activityDate); // Datum aktivnosti
+    return activityDateTime < now; // Provera da li je aktivnost u prošlosti
+  };
+  
 
   ///datetime
   const parseDateTime = (dateString) => {
@@ -324,7 +330,11 @@ const ActivityCard = ({ activity }) => {
           {showMenu && (
             <div className="menu-dropdown">
               <button className="menu-button" onClick={handleDelete}>
-                <FontAwesomeIcon icon={faTrash} /> Obriši
+              <div className="menu-item">
+                <FontAwesomeIcon icon={faTrash} className="icon" />
+                <span className="label">Obriši</span>
+             </div>
+
               </button>
             </div>
           )}
@@ -386,19 +396,23 @@ const ActivityCard = ({ activity }) => {
         <button
           className="button"
           onClick={handleRegister}
-          disabled={remainingSlots <= 0 || isLoading || !isLoggedIn}
+          disabled={remainingSlots <= 0 || isLoading || !isLoggedIn||
+            isPastActivity(date)}
         >
           {isLoading ? "Prijava u toku..." : "Prijavi se"}
         </button>
         <button
     className="button unregister-button"
     onClick={handleUnregister}
-    disabled={isLoading || !isLoggedIn}
+    disabled={isLoading || !isLoggedIn|| 
+      isPastActivity(date) }
   >
     {isLoading && remainingSlots ? "Odjava u toku..." : "Odjavi se"}
   </button>
       </div>
-
+      {isPastActivity(date) && (
+  <p className="error-message">Nije moguće prijaviti se na aktivnost koja je već završena.</p>
+)}
       {!isLoggedIn && <p className="error-message">Morate biti prijavljeni da biste se prijavili na aktivnost.</p>}
 
       {error && <p className="error-message">{error}</p>}
