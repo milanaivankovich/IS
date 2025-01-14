@@ -87,7 +87,7 @@ const Login = () => {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
-        photoURL: user.photoURL,
+        
       });
       // Store the back-end token in localStorage
       const { token } = response.data; // Extract the token returned from the back-end

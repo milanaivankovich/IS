@@ -23,7 +23,7 @@ class BusinessSubjectSerializer(serializers.ModelSerializer):
             return value  # Skip validation if the email hasn't changed
 
         # Check if the email is being updated and is unique
-        if BusinessSubject.objects.filter(email=value).exists():
+        if BusinessSubject.objects.filter(email=value).exists() or Client.objects.filter(email=value).exists():
             raise serializers.ValidationError("A user with this email already exists.")
         return value
 
@@ -105,7 +105,7 @@ class ClientSerializer(serializers.ModelSerializer):
             return value  # Skip validation if the email hasn't changed
 
         # Check if the email is being updated and is unique
-        if Client.objects.filter(email=value).exists():
+        if BusinessSubject.objects.filter(email=value).exists() or Client.objects.filter(email=value).exists():
             raise serializers.ValidationError("A user with this email already exists.")
         return value
 

@@ -157,7 +157,6 @@ const handleSocialSignIn = async () => {
         uid: result.user.uid,
         email: result.user.email,
         displayName: result.user.displayName,
-        photoURL: result.user.photoURL,
       });
   
       // Check the response from the backend
