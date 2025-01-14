@@ -82,7 +82,7 @@
 
 .activity-card-review {
   flex: 1 0 300px;
-  max-width: 300px;
+  max-width: 280px;
   min-height: 280px;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -112,10 +112,9 @@
 
 .rating-stars {
   display: flex;
-  gap: 5px;
-  margin-top: 10px;
-  margin-left: 100px;
-  margin-bottom: 10px;
+  justify-content: flex-start;
+  margin-left:120px;
+  margin-bottom: 10px; /* Razmak između zvezdica i komentara */
 }
 
 .star {
@@ -125,4 +124,36 @@
 
 .star.filled {
   color: #e64a19; 
+}
+.review-detail {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.review-detail .icon {
+  margin-right: 10px;
+  color: #555; /* Možete prilagoditi boju ikona */
+  font-size: 16px; /* Možete prilagoditi veličinu ikona */
+}
+
+.review-detail {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.review-detail .icon {
+  margin-right: 10px;
+  color: #555;
+  font-size: 16px;
+}
+
+.size {
+  margin: 0; /* Ako želite da uklonite razmake između redova */
+}
+.separator {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 15px 0; /* Razmak iznad i ispod linije */
 }

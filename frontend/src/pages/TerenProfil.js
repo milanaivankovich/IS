@@ -12,6 +12,8 @@ import { IoIosCloseCircle } from "react-icons/io";
 import ReviewCard from '../components/ReviewCard.js';
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { FaStar, FaRegStar } from 'react-icons/fa';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faComment, faCalendarAlt, faClock } from '@fortawesome/free-solid-svg-icons';
 
 
 const TerenProfil = () => {
@@ -364,12 +366,26 @@ const TerenProfil = () => {
                         return (
                           <div key={review.id} className="activity-card-review">
                             <ReviewCard clientId={review.client} />
-                            <p className="size"><strong>Komentar: </strong>{review.description}</p>
-                            <p className="size"><strong>Datum: </strong>{reviewDate.toISOString().split('T')[0]}</p>
-                            <p className="size"><strong>Vrijeme: </strong>{reviewDate.toISOString().split('T')[1].split(':').slice(0, 2).join(':')}</p>
                             <div className="rating-stars">
-                              {renderStars(review.rating)}
-                            </div>
+                               {renderStars(review.rating)}
+                             </div>
+                              <div className="review-detail">
+                               <FontAwesomeIcon icon={faComment} className="icon" />
+                               <p className="size">{review.description}</p>
+                              </div>
+                              <hr className="separator" />
+                             <div className="review-detail">
+                                <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
+                                <p className="size">{reviewDate.toISOString().split('T')[0]}</p>
+                              </div>
+                             
+  
+                             <div className="review-detail">
+                               <FontAwesomeIcon icon={faClock} className="icon" />
+                               <p className="size">{reviewDate.toISOString().split('T')[1].split(':').slice(0, 2).join(':')}</p>
+                             </div>
+  
+                             
                           </div>
                         );
                       })}
