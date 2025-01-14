@@ -5,7 +5,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import NewAdvertisementCard from "./NewAdvertisementCard";
 import { IoIosCloseCircle } from "react-icons/io";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarAlt, faClock,faRunning, faMapMarkerAlt, faFutbol, faUser, faBasketballBall, faTableTennis, faVolleyballBall } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarAlt, faClock,faRunning, faMapMarkerAlt, faFutbol, faUser, faBasketballBall, faTableTennis, faVolleyballBall, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 const SponsoredEventCardForBusinessSubject = ({ user, event, currentUser }) => {
   const { id, name, description, date, field, business_subject, sport } = event;
@@ -182,8 +182,8 @@ const SponsoredEventCardForBusinessSubject = ({ user, event, currentUser }) => {
             <BsThreeDotsVertical className="menu-icon" onClick={toggleMenu} />
             {menuVisible && (
               <div className="dropdown-menu">
-                <button onClick={showEvent}>Uredi</button>
-                <button onClick={deleteEvent}>Obriši</button>
+                <button onClick={showEvent}><FontAwesomeIcon icon={faEdit} />{" "}Uredi</button>
+                <button onClick={deleteEvent}><FontAwesomeIcon icon={faTrash} />{" "}Obriši</button>
               </div>
             )}
           </div>

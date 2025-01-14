@@ -15,6 +15,10 @@
     border-radius: 8px;
 }
 
+.SponsoredEventCard-Okvir:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
 .Naslov {
     font-size: 20px;
 }
@@ -40,6 +44,8 @@
     background: #F15A24;
     overflow: hidden;
     max-height: 159px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }
 
 .SponsoredEventCard-body {
@@ -124,6 +130,7 @@
     border-radius: 8px;
     padding: 10px;
     z-index: 9999;
+    width: 110px;
   }
   
   .dropdown-menu button {
