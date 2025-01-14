@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./SponsoredEventCard.css";
 import CreatorImg from "../images/user.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarAlt, faClock,faRunning, faMapMarkerAlt, faFutbol, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarAlt, faClock,faRunning, faMapMarkerAlt, faFutbol, faUser, faBasketballBall, faTableTennis, faVolleyballBall } from "@fortawesome/free-solid-svg-icons";
 
 const SponsoredEventCard = ({ event }) => {
   const { name, description, date, field, business_subject, sport } = event;
@@ -106,6 +106,13 @@ const SponsoredEventCard = ({ event }) => {
     }
   }, [business_subject]);
 
+  const sportIcons = {
+    fudbal: faFutbol,
+    kosarka: faBasketballBall,
+    tenis: faTableTennis,
+    odbojka: faVolleyballBall,
+  };
+
   return (
     <div className="SponsoredEventCard-Okvir">
   <header className="SponsoredEventCard-Header" />
@@ -121,7 +128,11 @@ const SponsoredEventCard = ({ event }) => {
     </div>
     <div className="Opis">
       <p>
-        <FontAwesomeIcon icon={faRunning} /> <strong>Opis:</strong> {description}
+        <FontAwesomeIcon icon={faRunning} />{" "}{description}
+      </p>
+      <p>
+          <FontAwesomeIcon icon={sportIcons[sports?.toLowerCase()] || faFutbol} />{" "}
+          {sports || "Učitavanje..."}
       </p>
     </div>
     <div className="SponsoredEventCard-footer">
@@ -151,7 +162,6 @@ const SponsoredEventCard = ({ event }) => {
     </div>
   </div>
 </div>
-
   );
   
 };

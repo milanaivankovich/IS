@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./ActivityCard.css";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faCalendarAlt, faMapMarkerAlt, faRunning, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faCalendarAlt, faMapMarkerAlt, faRunning, faUser, faFutbol, faBasketballBall, faVolleyballBall, faTableTennis } from "@fortawesome/free-solid-svg-icons";
 
 const ActivityCard = ({ activity }) => {
   const { description, date, field, titel, sport, id, NumberOfParticipants, client } = activity;
@@ -260,6 +260,13 @@ const ActivityCard = ({ activity }) => {
 
   const { formattedDate, formattedTime } = parseDateTime(date);
 
+  const sportIcons = {
+      fudbal: faFutbol,
+      kosarka: faBasketballBall,
+      tenis: faTableTennis,
+      odbojka: faVolleyballBall,
+    };
+
   return (
     <div className="activity-card">
     <h3 className="activity-card-title">{titel}</h3>
@@ -279,9 +286,12 @@ const ActivityCard = ({ activity }) => {
     </p>
   
     <p>
-      <FontAwesomeIcon icon={faRunning} /> <strong>Opis:</strong> {description}
+      <FontAwesomeIcon icon={faRunning} /> {description}
     </p>
-  
+    <p>
+       <FontAwesomeIcon icon={sportIcons[sports?.toLowerCase()] || faFutbol} />{" "}
+       {sports || "Učitavanje..."}
+    </p>
     <div className="activity-card-footer">
       <div className="activity-card-footer-left">
         <p>

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import "./SponsoredEventCardForBusinessSubject.css";
+import "./SponsoredEventCard.css";
 import CreatorImg from "../images/user.svg";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import NewAdvertisementCard from "./NewAdvertisementCard";
 import { IoIosCloseCircle } from "react-icons/io";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarAlt, faClock,faRunning, faMapMarkerAlt, faFutbol, faUser, faBasketballBall, faTableTennis, faVolleyballBall } from "@fortawesome/free-solid-svg-icons";
 
 const SponsoredEventCardForBusinessSubject = ({ user, event, currentUser }) => {
   const { id, name, description, date, field, business_subject, sport } = event;
@@ -157,15 +159,24 @@ const SponsoredEventCardForBusinessSubject = ({ user, event, currentUser }) => {
     }
   }, [business_subject]);
 
+  const sportIcons = {
+    fudbal: faFutbol,
+    kosarka: faBasketballBall,
+    tenis: faTableTennis,
+    odbojka: faVolleyballBall,
+  };
+
   return (
-    <div className="SponsoredEventCard-Okvir-bs">
-      <header className="SponsoredEventCard-Header-bs" />
-      <div className="SponsoredEventCard-body-bs">
+    <div className="SponsoredEventCard-Okvir">
+      <header className="SponsoredEventCard-Header" />
+      <div className="SponsoredEventCard-body">
         <div className="SponsoredEventCard-user">
           <img src={picture !== null ? picture : CreatorImg} className="creator-image" alt="Creator" />
           <div className="Naslov">
             {name}
-            <div className="createdBy"> by @{name1}</div>
+            <div className="createdBy">
+              <FontAwesomeIcon icon={faUser} /> by @{name1}
+            </div>
           </div>
           <div className="event-card-menu">
             <BsThreeDotsVertical className="menu-icon" onClick={toggleMenu} />
@@ -177,23 +188,13 @@ const SponsoredEventCardForBusinessSubject = ({ user, event, currentUser }) => {
             )}
           </div>
         </div>
-        <div className="Opis-bs">
-          <p><strong>Opis:</strong> {description}</p>
-          <p><strong>Sport:</strong> {sports}</p>
-          <p><strong>Datum:</strong> {dateOnly}</p>
-          <p><strong>Vrijeme:</strong> {timeOnly}</p>
+        <div className="Opis">
           <p>
-            <strong>Lokacija:</strong>{" "}
-            {location ? (
-              <span
-                className="clickable-location"
-                onClick={() => handleLocationClick(field)}
-              >
-                {location} - {preciseLocation}
-              </span>
-            ) : (
-              "Učitavanje..."
-            )}
+            <FontAwesomeIcon icon={faRunning} />{" "}{description}
+          </p>
+           <p>
+            <FontAwesomeIcon icon={sportIcons[sports?.toLowerCase()] || faFutbol} />{" "}
+            {sports || "Učitavanje..."}
           </p>
         </div>
         {isEditVisible && (
@@ -205,6 +206,32 @@ const SponsoredEventCardForBusinessSubject = ({ user, event, currentUser }) => {
             />
           </div>
         )}
+        <div className="SponsoredEventCard-footer">
+              <div className="SponsoredEventCard-footer-left">
+                <p>
+                  <FontAwesomeIcon icon={faCalendarAlt} /> {dateOnly}
+                </p>
+                <p>
+                  <FontAwesomeIcon icon={faClock} />  {timeOnly}
+                </p>
+              </div>
+              <div className="SponsoredEventCard-footer-right">
+                <p>
+                  <FontAwesomeIcon icon={faMapMarkerAlt} /> {" "}
+                  {location ? (
+                    <span
+                      className="clickable-location"
+                      onClick={() => handleLocationClick(field)}
+                    >
+                      {location} - {preciseLocation}
+                    </span>
+                  ) : (
+                    "Učitavanje..."
+                  )}
+                </p>
+              </div>
+            </div>
+        
       </div>
     </div>
   );
