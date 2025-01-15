@@ -127,9 +127,9 @@ const EditEventCard = ({ user, pk, eventId }) => {
 
       // Prikazivanje odgovarajuće poruke
       if (isPost) {
-        alert("Događaj je uspješno dodan!");
+        alert("Događaj je uspješno kreiran.");
       } else {
-        alert("Događaj je uspješno ažuriran!");
+        alert("Događaj je uspješno ažuriran.");
       }
 
       window.location.reload();

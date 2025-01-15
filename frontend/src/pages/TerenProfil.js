@@ -13,7 +13,7 @@ import ReviewCard from '../components/ReviewCard.js';
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { FaStar, FaRegStar } from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComment, faCalendarAlt, faClock } from '@fortawesome/free-solid-svg-icons';
+import { faComment, faCalendarAlt, faClock, faLocation, faMapMarkerAlt, faBasketballBall, faCircleCheck, faCircleXmark, faStar, faInfo } from '@fortawesome/free-solid-svg-icons';
 
 
 const TerenProfil = () => {
@@ -261,6 +261,14 @@ const TerenProfil = () => {
     fetchData();
   }, [idField]);
 
+  const calculateAverageRating = (reviews) => {
+    if (reviews.length === 0) return 0; 
+  
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return (totalRating / reviews.length).toFixed(2); 
+  };
+  
+
   return (
     <body>
       <header className="userprofile-menu">
@@ -317,7 +325,7 @@ const TerenProfil = () => {
                             <SponsoredEventCard key={event.id} event={event} />
                           ))
                         ) : (
-                          <p className="no-events-message">Nema sponzorisanih događaja.</p>
+                          <p className="no-events-message">Nema reklama na terenu.</p>
                         )}
                       </div>
 
@@ -410,24 +418,42 @@ const TerenProfil = () => {
                     <div className="image-container">
                       <img src={`http://127.0.0.1:8000${information.image}`} alt="Teren" />
                     </div>
-                    <div>
-                      <p className="information-text">Lokacija: {information.location}</p>
-                      <p className="information-text">Tačna lokacija: {information.precise_location}</p>
-                      <p className="information-text">Geografska širina: {information.latitude}</p>
-                      <p className="information-text">Geografska dužina: {information.longitude}</p>
-                      <div className="information-text">
-                        Sportovi:
-                        {Array.isArray(information.sports) && information.sports.length > 0 ? (
-                          information.sports.map(sport => (
-                            <span key={sport.id} className="sport-name">
-                              {sport.name}
-                            </span>
-                          )).reduce((prev, curr) => [prev, ', ', curr])
-                        ) : (
-                          <span>No sports available</span>
-                        )}
+                    <div className="card-information">
+                      <div className="card-body-information">
+                        <div>
+                          <p className="information-text">
+                            <FontAwesomeIcon icon={faMapMarkerAlt} className="icon" />Lokacija: {information.location}
+                          </p>
+                          <p className="information-text">
+                            <FontAwesomeIcon icon={faMapMarkerAlt} className="icon" /> Tačna lokacija: {information.precise_location}
+                          </p>
+                          <p className="information-text">
+                            <FontAwesomeIcon icon={faLocation} className="icon" /> Geografska širina: {information.latitude}
+                          </p>
+                          <p className="information-text">
+                            <FontAwesomeIcon icon={faLocation} className="icon" /> Geografska dužina: {information.longitude}
+                          </p>
+                          <div className="information-text">
+                            <FontAwesomeIcon icon={faBasketballBall} className="icon" /> Sportovi:
+                            {Array.isArray(information.sports) && information.sports.length > 0 ? (
+                              information.sports.map(sport => (
+                                <span key={sport.id} className="sport-name">
+                                  {sport.name}
+                                </span>
+                              )).reduce((prev, curr) => [prev, ', ', curr])
+                            ) : (
+                              <span>No sports available</span>
+                            )}
+                          </div>
+                          <p className="information-text">
+                            <FontAwesomeIcon icon={information.is_suspended ? faCircleXmark : faCircleCheck} className="icon" />{" "}
+                            Status: {information.is_suspended ? 'Suspendovan' : 'Aktivan'}
+                          </p>
+                          <p className="information-text">
+                            <FontAwesomeIcon icon={faStar} className="icon" /> Ocjena: {calculateAverageRating(reviews)}
+                          </p>
+                        </div>
                       </div>
-                      <p className="information-text">Status:{information.is_suspended ? 'Suspendovan' : 'Aktivan'}</p>
                     </div>
                   </div>
                 )}

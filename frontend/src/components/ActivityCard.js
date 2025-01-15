@@ -89,12 +89,12 @@ const ActivityCard = ({ activity }) => {
   
   const handleDelete = async () => {
     if (!isCreator) {
-      alert("Samo kreator može obrisati ovu aktivnost.");
+      alert("Samo kreator može obrisati ovaj događaj.");
       return;
     }
 
     const confirmDelete = window.confirm(
-      "Da li ste sigurni da želite da obrišete ovu aktivnost?"
+      "Da li ste sigurni da želite da obrišete ovaj događaj?"
     );
     if (!confirmDelete) return;
 
@@ -109,7 +109,7 @@ const ActivityCard = ({ activity }) => {
       );
 
       if (response.status === 200) {
-        alert(response.data.message);
+        alert("Događaj je uspješno obrisan.");
         window.location.reload(); // Osvježavanje liste aktivnosti
       } else {
         throw new Error(response.data.error || "Brisanje nije uspelo.");

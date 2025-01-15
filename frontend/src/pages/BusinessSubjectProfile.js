@@ -143,7 +143,7 @@ const BusinessSubjectProfile = () => {
 
   const [eventsData, setEventsData] = useState([]);
   const [selectionTitle, setSelectionTitle] = useState('Događaji');
-  const [selectionSubtitle, setSelectionSubtitle] = useState('Predstojeći događaji koje je kreirao korisnik');
+  const [selectionSubtitle, setSelectionSubtitle] = useState('Događaji koje je kreirao korisnik');
 
   // Funkcija za dohvaćanje podataka za različite kartice
   useEffect(() => {
@@ -211,7 +211,7 @@ const BusinessSubjectProfile = () => {
                 <button className='userprofile-tab-button'
                   onClick={() => {
                     setSelectionTitle('Događaji');
-                    setSelectionSubtitle('Predstojeći događaji koje je kreirao korisnik');
+                    setSelectionSubtitle('Događaji koje je kreirao korisnik');
                     setActiveTab("events");
                   }}>Događaji</button>
                 <button className='userprofile-tab-button' onClick={() => {
@@ -225,7 +225,7 @@ const BusinessSubjectProfile = () => {
 
             }>Poruke</button>*/}
                 <button className='userprofile-tab-button' onClick={() => {
-                  setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Stari događaji koje je kreirao korisnik');
+                  setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Događaji koji su prošli');
                   setActiveTab("activity")
                 }}>Istorija Aktivnosti</button>
               </nav></div>

@@ -106,16 +106,19 @@ const SponsoredEventCardForBusinessSubject = ({ user, event, currentUser }) => {
     };
   }, []);
 
-  // Funkcija za brisanje oglasa
-  const deleteEvent = async () => {
-    if (user.nameSportOrganization === (currentUser.nameSportOrganization || currentUser.username)) {
+// Funkcija za brisanje oglasa
+const deleteEvent = async () => {
+  if (user.nameSportOrganization === (currentUser.nameSportOrganization || currentUser.username)) {
+    const userConfirmation = window.confirm("Da li ste sigurni da želite da obrišete ovaj događaj?");
+    
+    if (userConfirmation) {
       try {
         const response = await fetch(`http://127.0.0.1:8000/api/advertisement/delete/${id}/`, {
           method: "DELETE",
         });
 
         if (response.ok) {
-          alert("Događaj je uspješno obrisan!");
+          alert("Događaj je uspješno obrisan.");
           window.location.reload();
         } else {
           console.error("Failed to delete event");
@@ -124,16 +127,19 @@ const SponsoredEventCardForBusinessSubject = ({ user, event, currentUser }) => {
         console.error("Error deleting event:", error);
       }
     } else {
-      alert("Nemate dozvolu za brisanje.");
-      window.location.reload();
+      alert("Brisanje je otkazano.");
     }
-  };
+  } else {
+    alert("Samo kreator može obrisati ovaj događaj.");
+    window.location.reload();
+  }
+};
 
   const showEvent = () => {
     if (user.nameSportOrganization === (currentUser.nameSportOrganization || currentUser.username)) {
       setIsEditVisible(true);
     } else {
-      alert("Nemate dozvolu za uređivanje.");
+      alert("Samo kreator moze uređivati ovaj događaj.");
       window.location.reload();
     }
   };

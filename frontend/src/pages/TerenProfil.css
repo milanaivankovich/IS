@@ -1,27 +1,31 @@
 .information-container {
   display: flex;
+  flex-direction: row;
   align-items: flex-start;
 }
 
 .image-container {
-  width: 60%;
-  margin-top: 80px;
+  margin-bottom: 0px; /* Povećava ili smanjuje razmak između slike i kartice */
 }
 
 .image-container img {
-  width: 80%;
-  height: auto;
+  height: 500px;
+  width: 750px;
   border-radius: 10px;
   margin-left: -250px;
+  margin-top: 40px;
+}
+
+.image-container img:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .information-text {
   font-size: 20px;
-  color: black;
-  position: relative;
-  top: 150px;
-  margin-left: -250px;
-  margin-top: 15px;
+  color: gray;            
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .information-text strong {
@@ -30,6 +34,7 @@
 
 .sport-name {
   font-size: 20px;
+  margin-left: 5px;
 }
 
 .activity-cards-container-field {
@@ -111,10 +116,10 @@
 }
 
 .rating-stars {
+  margin-top: 15px;
+  margin-bottom: 5px;
   display: flex;
   justify-content: flex-start;
-  margin-left:120px;
-  margin-bottom: 10px; /* Razmak između zvezdica i komentara */
 }
 
 .star {
@@ -124,11 +129,6 @@
 
 .star.filled {
   color: #e64a19; 
-}
-.review-detail {
-  display: flex;
-  align-items: center;
-  margin: 5px 0;
 }
 
 .review-detail .icon {
@@ -150,10 +150,39 @@
 }
 
 .size {
-  margin: 0; /* Ako želite da uklonite razmake između redova */
+  margin: 0px; /* Ako želite da uklonite razmake između redova */
 }
+
 .separator {
   border: none;
   border-top: 1px solid #ddd;
-  margin: 15px 0; /* Razmak iznad i ispod linije */
+  margin-bottom: 10px;
+}
+
+.card-information {
+  background-color: #fff;  
+  border-radius: 10px;     
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  
+  padding: 20px;           
+  margin: 20px auto;       
+  width: 500px;   
+  height: 300px;
+  margin-top: 170px;
+  margin-right: 180px;
+}
+
+.card-body-information {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;   
+  padding: 15px;             
+}
+
+.card-information:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);  
+}
+
+.icon {
+  margin-right: 4px;
+  color: grey
 }

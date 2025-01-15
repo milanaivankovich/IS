@@ -68,8 +68,8 @@ const EditEventCard = ({ user, pk }) => {
     })
       .then((response) => {
         console.log("Data updated successfully:", response.data);
+        alert("Događaj je uspješno kreiran.");
         window.location.reload();
-        //alert("Događaj je uspješno kreiran.");
       })
       .catch((error) => {
         console.error("There was an error updating the data:", error);

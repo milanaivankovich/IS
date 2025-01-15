@@ -219,17 +219,17 @@ const UserProfile = () => {
                   setActiveTab("events");
                 }}>Događaji</button>
               <button className='userprofile-tab-button' onClick={() => {
-                setSelectionTitle('Omiljeno'); setSelectionSubtitle('Omiljeni tereni korisnika');
+                setSelectionTitle('Omiljeno'); setSelectionSubtitle('Vaši omiljeni tereni');
                 setActiveTab("favorites")
               }}>Omiljeno</button>
               {<button className='userprofile-tab-button' onClick={() => {
-                setSelectionTitle('Prijave na aktivnosti'); setSelectionSubtitle('Događaji na koje se korisnik prijavio');
+                setSelectionTitle('Prijave na aktivnosti'); setSelectionSubtitle('Događaji kojima se korisnik pridružio');
                 setActiveTab("registered-activities")
               }
 
               }>Prijave na aktivnosti</button>}
               <button className='userprofile-tab-button' onClick={() => {
-                setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Događaji kojima se korisnik pridružio');
+                setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Događaji koji su prošli');
                 setActiveTab("activity")
               }}>Istorija Aktivnosti</button>
             </nav></div>

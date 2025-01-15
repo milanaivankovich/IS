@@ -110,5 +110,13 @@
         "client_id": 10,
         "field_id": 5,
         "date": "2025-01-11"
+    },
+    {
+        "id": 15,
+        "rating": 3,
+        "description": "recenzija111",
+        "client_id": 10,
+        "field_id": 4,
+        "date": "2025-01-15"
     }
 ]
