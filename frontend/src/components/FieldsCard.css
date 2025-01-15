@@ -15,6 +15,15 @@
     border-radius: 8px;
 }
 
+.field-card-okvir:hover {
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+.naslov {
+    color: #666666;
+    margin-bottom: 10px;
+}
+
 .Opis {
     /* text */
     color: #666666;

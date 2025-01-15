@@ -102,6 +102,10 @@
   transition: box-shadow 0.2s ease;
 }
 
+.activity-card-review:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 .scroll-bar-field-profile {
   margin-top: 20px;
   display: flex;

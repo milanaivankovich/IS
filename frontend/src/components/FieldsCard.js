@@ -3,6 +3,8 @@ import axios from "axios";
 import "./FieldsCard.css";
 import { FaRegHeart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarAlt, faClock,faRunning, faMapMarkerAlt, faFutbol, faUser, faBasketballBall, faTableTennis, faVolleyballBall } from "@fortawesome/free-solid-svg-icons";
 
 const FieldsCard = ({ field, userId, userType }) => {
   const [isFavourite, setIsFavourite] = useState(true);
@@ -41,6 +43,13 @@ const FieldsCard = ({ field, userId, userType }) => {
     window.location.href = `/teren-profil/${field.id}`;
   };
 
+  const sportIcons = {
+    fudbal: faFutbol,
+    kosarka: faBasketballBall,
+    tenis: faTableTennis,
+    odbojka: faVolleyballBall,
+  };
+
   return (
     <div className="field-card-okvir">
       <header className="field-card-header">
@@ -48,8 +57,8 @@ const FieldsCard = ({ field, userId, userType }) => {
       </header>
       <div className="field-card-body">
         <div className="fav-field-card-heading">
-          <div className="Naslov">
-            {field.location}
+          <div className="naslov">
+            <strong>{field.location}</strong>
           </div>
           <div className="fav-field-button">
             {isFavourite ? (
@@ -60,11 +69,11 @@ const FieldsCard = ({ field, userId, userType }) => {
           </div>
         </div>
         <div className="Opis">
-          <p><strong>Lokacija:</strong> {field.precise_location}</p>
-          <p><strong>Sportovi: </strong>
+          <p><FontAwesomeIcon icon={faMapMarkerAlt} />{" "}{field.precise_location}</p>
+          <p>
             {Array.isArray(field.sports) && field.sports.length > 0 ? (
               field.sports.map(sport => (
-                <span key={sport.id}>{sport.name}</span>
+                <span key={sport.id}><FontAwesomeIcon icon={sportIcons[sport.name?.toLowerCase()] || faFutbol} />{" "}{sport.name}</span>
               )).reduce((prev, curr) => [prev, ', ', curr])
             ) : (
               <span>Nedefinisano</span>

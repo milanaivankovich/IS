@@ -13,7 +13,7 @@ import ReviewCard from '../components/ReviewCard.js';
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { FaStar, FaRegStar } from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComment, faCalendarAlt, faClock, faLocation, faMapMarkerAlt, faBasketballBall, faCircleCheck, faCircleXmark, faStar, faInfo } from '@fortawesome/free-solid-svg-icons';
+import { faComment, faCalendarAlt, faClock, faLocation, faMapMarkerAlt, faBasketballBall, faCircleCheck, faCircleXmark, faStar, faFutbol, faTableTennis, faVolleyballBall, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 
 const TerenProfil = () => {
@@ -267,7 +267,12 @@ const TerenProfil = () => {
     const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
     return (totalRating / reviews.length).toFixed(2); 
   };
-  
+  const sportIcons = {
+    fudbal: faFutbol,
+    kosarka: faBasketballBall,
+    tenis: faTableTennis,
+    odbojka: faVolleyballBall,
+  };
 
   return (
     <body>
@@ -434,11 +439,11 @@ const TerenProfil = () => {
                             <FontAwesomeIcon icon={faLocation} className="icon" /> Geografska dužina: {information.longitude}
                           </p>
                           <div className="information-text">
-                            <FontAwesomeIcon icon={faBasketballBall} className="icon" /> Sportovi:
+                            <FontAwesomeIcon icon={faInfoCircle} className="icon" /> Sportovi:
                             {Array.isArray(information.sports) && information.sports.length > 0 ? (
                               information.sports.map(sport => (
                                 <span key={sport.id} className="sport-name">
-                                  {sport.name}
+                                  <FontAwesomeIcon icon={sportIcons[sport.name?.toLowerCase()] || faFutbol} />{" "}{sport.name}
                                 </span>
                               )).reduce((prev, curr) => [prev, ', ', curr])
                             ) : (
