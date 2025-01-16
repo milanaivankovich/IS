@@ -15,10 +15,6 @@ from datetime import datetime
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 
-activities = Activities.objects.all()
-for activity in activities:
-    print(activity)
-
 
 class ActivitiesCreateView(CreateView):
     model = Activities
@@ -162,7 +158,7 @@ def get_type_of_sport_by_field_id(request, field_id):
 @api_view(['POST'])
 def register_to_activity(request, activity_id):
     activity = get_object_or_404(Activities, id=activity_id)
-    username = request.data.get('username')
+    username = request.data.get('username') 
 
     if not username:
         return Response({'error': 'Nedostaje korisničko ime.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -171,6 +167,10 @@ def register_to_activity(request, activity_id):
         user = Client.objects.get(username=username)
     except Client.DoesNotExist:
         return Response({'error': 'Korisnik nije pronađen.'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Provera da li je korisnik kreator aktivnosti preko username-a
+    if activity.client.username == username:  # Poređenje username-a kreatora i prijavljenog korisnika
+        return Response({'error': 'Ne možete se prijaviti na svoju aktivnost.'}, status=status.HTTP_400_BAD_REQUEST)
 
     # Provera da li je korisnik već prijavljen
     if user in activity.participants.all():
@@ -207,6 +207,8 @@ def unregister_activity(request, activity_id):
     # Provjera i uklanjanje korisnika
     try:
         activity.unregister_participant(user)
+        remaining_slots = activity.NumberOfParticipants - activity.participants.count() if activity.NumberOfParticipants else None
+        print(f"Slobodnih mjesta: {remaining_slots}")
         return Response({
             "message": "Uspešno ste se odjavili sa aktivnosti.",
             "activity_removed": True,  # Dodano kako bi frontend mogao znati da je aktivnost uklonjena
