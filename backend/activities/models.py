@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from accounts.models import Client
 from django.core.exceptions import ValidationError
 from django.utils.timezone import localtime
@@ -24,28 +24,35 @@ class Activities(models.Model):
         if self.NumberOfParticipants is not None and self.NumberOfParticipants < 0:
             raise ValidationError("Broj učesnika ne može biti negativan.")
         super().clean()
+    @transaction.atomic
+    def register_participant(self, user):
+        """
+        Registrira učesnika na aktivnost, uz validaciju dostupnosti mesta i duplikata.
+        """
+        if user in self.participants.all():
+            raise ValidationError("Korisnik je već prijavljen na ovu aktivnost.")
 
-    def register_participant(self):
-        """Smanjuje broj učesnika za 1 ako su mesta dostupna."""
-        if self.NumberOfParticipants <= 0:
-            raise ValidationError("Nema više dostupnih mesta za ovu aktivnost.")
-        self.NumberOfParticipants -= 1
+        if self.NumberOfParticipants is not None and self.participants.count() >= self.NumberOfParticipants:
+            raise ValidationError("Nema slobodnih mesta.")
+
+        print(f"Aktualan broj učesnika: {self.participants.count()}")
+        print(f"Maksimalan broj učesnika: {self.NumberOfParticipants}")
+        self.participants.add(user)
         self.save()
 
+    @transaction.atomic
     def unregister_participant(self, user):
-        """Uklanja korisnika sa liste učesnika."""
+        """
+        Odjavljuje učesnika sa aktivnosti, uz validaciju datuma i duplikata.
+        """
         if user not in self.participants.all():
             raise ValidationError("Korisnik nije prijavljen na ovu aktivnost.")
+
         if self.date <= now():
-            raise ValidationError("Ne možete se odjaviti nakon početka aktivnosti.")
-    
-        self.participants.remove(user)  # Uklanjanje korisnika iz ManyToMany veze
-        if self.NumberOfParticipants is not None:
-            self.NumberOfParticipants += 1
+            raise ValidationError("Ne možete se odjaviti sa aktivnosti koja je već počela.")
+        print(f"Aktualan broj učesnika nakon odjave: {self.participants.count()}")
+        self.participants.remove(user)
         self.save()
-
-
-
     def __str__(self):
         formatted_date = localtime(self.date).strftime('%Y-%m-%d %H:%M:%S') if self.date else "N/A"
         return f"{self.titel} - {formatted_date}"

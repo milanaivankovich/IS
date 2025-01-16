@@ -183,9 +183,9 @@ def register_to_activity(request, activity_id):
     # Dodavanje korisnika u učesnike
     activity.participants.add(user)
     activity.save()
-
+    
     remaining_slots = activity.NumberOfParticipants - activity.participants.count() if activity.NumberOfParticipants else None
-
+    print(f"Slobodnih mjesta: {remaining_slots}")
     return Response(
         {'message': 'Uspješno ste se prijavili na aktivnost!', 'remaining_slots': remaining_slots},
         status=status.HTTP_200_OK
