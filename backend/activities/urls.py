@@ -34,4 +34,5 @@ urlpatterns = [
     path('api/registered-events/<str:username>/', views.get_registered_events, name='registered-events'),
     path('activities/<int:activity_id>/unregister/', views.unregister_activity, name='unregister_activity'),
     path('activities/delete/<int:pk>/', views.delete_activity, name='delete_activity'),
+    path('activities/<int:activity_id>/participants/', views.activity_participants, name='activity_participants'),
 ]

@@ -183,7 +183,8 @@ def register_to_activity(request, activity_id):
     # Dodavanje korisnika u učesnike
     activity.participants.add(user)
     activity.save()
-    
+    print(f"Korisnik '{username}' je uspešno prijavljen na aktivnost '{activity.titel}'.")
+
     remaining_slots = activity.NumberOfParticipants - activity.participants.count() if activity.NumberOfParticipants else None
     print(f"Slobodnih mjesta: {remaining_slots}")
     return Response(
@@ -209,6 +210,8 @@ def unregister_activity(request, activity_id):
         activity.unregister_participant(user)
         remaining_slots = activity.NumberOfParticipants - activity.participants.count() if activity.NumberOfParticipants else None
         print(f"Slobodnih mjesta: {remaining_slots}")
+        print(f"Korisnik '{username}' je uspešno odjavljen sa aktivnosti '{activity.titel}'.")
+
         return Response({
             "message": "Uspešno ste se odjavili sa aktivnosti.",
             "activity_removed": True,  # Dodano kako bi frontend mogao znati da je aktivnost uklonjena
@@ -229,6 +232,12 @@ def user_profile(request):
     user = request.user
     created_activities = Activities.objects.filter(client=user, is_deleted=False)
     joined_activities = Activities.objects.filter(participants=user, is_deleted=False).exclude(client=user)
+    
+    # Dohvati učesnike za svaku kreiranu aktivnos
+    activities_with_participants = {
+        activity: activity.participants.all().values_list('username', flat=True)
+        for activity in created_activities
+    }
     return render(request, 'profile.html', {
         'created_activities': created_activities,
         'joined_activities': joined_activities,
@@ -264,6 +273,26 @@ def activities_by_username(request, username):
         serializer = ActivitiesSerializer(activities, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response({'error': 'No activities found created by this user'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+def activity_participants(request, activity_id):
+    """
+    Prikazuje korisnička imena svih učesnika prijavljenih na datu aktivnost.
+    Dostupno samo kreatoru aktivnosti.
+    """
+    activity = get_object_or_404(Activities, id=activity_id)
+
+    # Proverite da li je trenutni korisnik kreator aktivnosti
+    if request.user != activity.client:
+        return Response({'error': 'Nemate dozvolu za prikaz učesnika ove aktivnosti.'}, status=status.HTTP_403_FORBIDDEN)
+
+    # Prikupljanje korisničkih imena učesnika
+    participants = activity.participants.all().values_list('username', flat=True)
+
+    # Dodan ispis korisnika u terminal za testiranje
+    print(f"Prijavljeni korisnici na aktivnost '{activity.naziv}': {', '.join(participants)}")
+
+    return Response({'participants': list(participants)}, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
