@@ -1,14 +1,28 @@
 .activity-cards-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 20px;
   justify-content: center;
 }
 
-
+.activity-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 20px ; 
+  margin-left: 5px;
+  width: 400px; 
+  max-height: 500px; 
+  overflow: visible; 
+  background: #fff; 
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.3); 
+  border-radius: 8px; 
+  padding: 16px; 
+  position: relative; /* Za pozicioniranje menija */
+}
 
 .activity-card:hover {
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
 }
 
 .activity-card h3 {
@@ -22,9 +36,34 @@
   font-size: 15px;
   color: #666;
   line-height: 1.9;
-  margin-bottom: 0px;
   text-align: justify;
-  /* Poboljšava čitljivost teksta */
+  margin: 4px 0;
+}
+
+.activity-card-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.activity-card-footer-left,
+.activity-card-footer-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-card-footer-right {
+  align-items: flex-end;
+  text-align: right;
+  margin-left: 70px;
+}
+
+.activity-card-footer-right .clickable-location {
+  cursor: pointer;
+  color: #e64a19;
+  text-decoration: underline;
 }
 
 .activity-card-buttons {
@@ -34,111 +73,35 @@
   margin-left: 150px;
 }
 
-.activity-card-buttons .button {
+.activity-card-buttons .button,
+.activity-card-buttons .unregister-button {
   font-size: 14px;
+  font-weight: 600;
   color: #fff;
   background-color: #ff5722;
   border: none;
   padding: 10px 15px;
   border-radius: 4px;
   cursor: pointer;
-  font-weight: 600;
   transition: background-color 0.3s ease;
 }
 
-.activity-card-buttons .button:hover {
+.activity-card-buttons .button:hover,
+.activity-card-buttons .unregister-button:hover {
   background-color: #e64a19;
 }
 
-/* Uklanjanje prevelikih razmaka na mobilnim uređajima */
-@media (max-width: 300px) {
-  .activity-card {
-    flex: 1 0 100%;
-    /* Kartice zauzimaju punu širinu ekrana */
-    max-width: none;
-  }
-
-  .activity-section {
-    padding: 15px 5px;
-  }
-
-  .activity-card-buttons {
-    flex-direction: column;
-    /* Dugmad postaju vertikalna na manjim ekranima */
-    gap: 8px;
-  }
-}
-
-.aktivnost-card button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-.clickable-username {
-  color:#e64a19;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.clickable-username:hover {
-  color: #e64a19;
-}
-
-.activity-card-buttons .unregister-button {
-  background-color: #757575; /* Siva boja */
-  border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
-  transition: background-color 0.3s ease;
-}
-
-.activity-card-buttons .unregister-button:hover {
-  background-color: #616161; /* Tamnija nijansa sive */
-}
-
+.activity-card-buttons .button:disabled,
 .activity-card-buttons .unregister-button:disabled {
-  background-color: #ccc; /* Svetlija nijansa sive */
+  background-color: #ecd1a9;
+  color: #ffffff;
+  border: 1px solid #d2ba96;
   cursor: not-allowed;
-}
-.activity-card {
-  border: 1px solid #ddd;
-  padding: 16px;
-  margin: 16px 0;
-  border-radius: 8px;
-  background-color: #fff;
-  position: relative;
-  display: flex;
-  flex-direction: column;
+  box-shadow: none;
 }
 
-.activity-card-footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: auto; /* Gura footer na dno */
-  padding-top: 16px;
-  border-top: 1px solid #eee;
-}
-
-.activity-card-footer-left {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.activity-card-footer-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  text-align: right;
-}
-
-.activity-card-footer-right .clickable-location {
-  cursor: pointer;
-  color: #007bff;
-  text-decoration: underline;
+.activity-card-buttons .button:hover:disabled {
+  background-color: #ecd1a9;
 }
 
 .activity-card-title {
@@ -147,12 +110,14 @@
   font-weight: bold;
 }
 
-p {
-  margin: 4px 0;
+.clickable-username {
+  color: #e64a19;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
-.activity-card {
-  position: relative; /* Potrebno za pravilno pozicioniranje menija */
+.clickable-username:hover {
+  color: #e64a19;
 }
 
 .activity-card .menu {
@@ -163,7 +128,7 @@ p {
 
 .activity-card .menu-icon {
   cursor: pointer;
-  font-size: 16px; /* Prilagodite veličinu po želji */
+  font-size: 16px;
 }
 
 .activity-card .menu-dropdown {
@@ -190,19 +155,19 @@ p {
 
 .activity-card .menu-button:hover {
   background: #f0f0f0;
-  color: #000;
 }
+
 .activity-card .menu-item {
   display: flex;
-  align-items: center; /* Vertikalno poravnanje */
-  gap: 8px; /* Razmak između ikone i teksta */
+  align-items: center;
+  gap: 8px;
 }
 
 .activity-card .menu-item .icon {
-  font-size: 16px; /* Prilagodite veličinu ikone */
+  font-size: 16px;
 }
 
 .activity-card .menu-item .label {
-  font-size: 14px; /* Prilagodite veličinu teksta */
+  font-size: 14px;
   color: #333;
 }
