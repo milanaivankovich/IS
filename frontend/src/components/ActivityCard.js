@@ -7,11 +7,10 @@ import { faClock, faCalendarAlt, faMapMarkerAlt, faRunning, faUser, faFutbol, fa
    from "@fortawesome/free-solid-svg-icons";
 
 const ActivityCard = ({ activity }) => {
-  const { description, date, field, titel, sport, id, NumberOfParticipants, client } = activity;
+  const { description, date, field, titel, sport, id, NumberOfParticipants, participants, client } = activity;
   const [location, setLocation] = useState("");
   const [sports, setSport] = useState("");
-  const [remainingSlots, setRemainingSlots] = useState(NumberOfParticipants);
-  const [isLoading, setIsLoading] = useState(false);
+  
   const [error, setError] = useState(null);
   const [username, setUsername] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -19,7 +18,10 @@ const ActivityCard = ({ activity }) => {
   const [showMenu, setShowMenu] = useState(false); // Prikazuje meni sa tri tačkice
 
 
-
+  const initialRemainingSlots =
+  NumberOfParticipants - participants.length;
+  const [remainingSlots, setRemainingSlots] = useState(initialRemainingSlots);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const fetchUsername = async () => {
       try {
@@ -133,6 +135,13 @@ const ActivityCard = ({ activity }) => {
       alert("Morate biti prijavljeni kao rekreativac da biste se prijavili na aktivnost.");
       return;
     }
+   
+      if (remainingSlots <= 0) {
+        alert("Nema slobodnih mesta.");
+        return;
+      }
+  
+    
     let pk = {
       id: -1,
       type: ''
@@ -188,18 +197,18 @@ const ActivityCard = ({ activity }) => {
         },
         body: JSON.stringify(currentUserData),
       });
-
-      if (!response.ok) {
+      if (response.ok) {
+        // Smanji broj slobodnih mesta na frontendu
+        setRemainingSlots((prev) => prev - 1);
+        alert("Uspešno ste se prijavili na aktivnost!");
+      } else {
         const data = await response.json();
-        throw new Error(data.error || "Failed to register for the activity");
+        alert(data.error || "Greška pri prijavi.");
       }
-
-      const data = await response.json();
-      setRemainingSlots(data.remaining_slots);
-      alert(data.message);
-    } catch (err) {
-      setError(err.message);
-    } finally {
+    } catch (error) {
+      console.error("Error during registration:", error);
+      alert("Došlo je do greške.");
+    }finally {
       setIsLoading(false);
     }
   };
@@ -382,7 +391,7 @@ const ActivityCard = ({ activity }) => {
           </span>
           <p>
             <FontAwesomeIcon icon={faUser} /> Neophodnih:{" "} 
-            {NumberOfParticipants|| "Nepoznato"} učesnika
+            {remainingSlots|| "Nepoznato"} učesnika
           </p>
     
         </p>
