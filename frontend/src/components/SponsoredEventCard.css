@@ -88,6 +88,7 @@
     flex-direction: column;
     gap: 5px;
     text-align: left;
+   
 }
 
 .SponsoredEventCard-footer-right {
@@ -95,16 +96,17 @@
     flex-direction: column;
     gap: 5px;
     text-align: right;
+    margin-left: 40px;
 }
 
 .SponsoredEventCard-footer-right .clickable-location {
     cursor: pointer;
-    color: #007bff;
+    color:  #e64a19;
     text-decoration: underline;
 }
 
 .SponsoredEventCard-footer-right .clickable-location:hover {
-    color: #0056b3;
+    color:  #e64a19;
 }
 
 .event-card-menu {
