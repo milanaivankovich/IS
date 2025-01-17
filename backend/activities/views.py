@@ -278,20 +278,15 @@ def activities_by_username(request, username):
 def activity_participants(request, activity_id):
     """
     Prikazuje korisnička imena svih učesnika prijavljenih na datu aktivnost.
-    Dostupno samo kreatoru aktivnosti.
+    Dostupno svim korisnicima.
     """
+    # Dohvati aktivnost
     activity = get_object_or_404(Activities, id=activity_id)
-
-    # Proverite da li je trenutni korisnik kreator aktivnosti
-    if request.user != activity.client:
-        return Response({'error': 'Nemate dozvolu za prikaz učesnika ove aktivnosti.'}, status=status.HTTP_403_FORBIDDEN)
 
     # Prikupljanje korisničkih imena učesnika
     participants = activity.participants.all().values_list('username', flat=True)
-
-    # Dodan ispis korisnika u terminal za testiranje
-    print(f"Prijavljeni korisnici na aktivnost '{activity.naziv}': {', '.join(participants)}")
-
+    print(f"Učesnici aktivnosti {activity_id}: {list(participants)}")
+    # Vraća JSON sa korisničkim imenima učesnika
     return Response({'participants': list(participants)}, status=status.HTTP_200_OK)
 
 
