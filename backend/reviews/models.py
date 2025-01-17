@@ -12,6 +12,7 @@ class Review(models.Model):
     client = models.ForeignKey('accounts.Client', on_delete=models.CASCADE, null=True)
     field = models.ForeignKey('fields.Field', on_delete=models.CASCADE, null=True)
     date = models.DateTimeField(auto_now_add=True, null=True)
+    liked_by = models.ManyToManyField('accounts.Client', related_name='liked_reviews', blank=True)
 
     def clean(self):
         if self.field and self.field.is_suspended:

@@ -190,3 +190,23 @@
   margin-right: 4px;
   color: grey
 }
+
+.fav-review-like-button,
+.fav-review-like-button .FaHeart-icon,
+.fav-review-like-button .FaRegHeart-icon {
+  color: #F15A24;
+  position: absolute;
+  align-self: center;
+  margin-left: 200px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.fav-review-like-button:hover {
+  color: #e64a19;
+}
+
+.numberOfLikes {
+  margin-left: 225px;
+  color: #e64a19;
+}

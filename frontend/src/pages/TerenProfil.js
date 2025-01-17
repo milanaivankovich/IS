@@ -274,6 +274,49 @@ const TerenProfil = () => {
     odbojka: faVolleyballBall,
   };
 
+  const handleReviewLike = async (reviewId) => {
+    if (id.type === 'BusinessSubject') {
+      alert('Nemate dozovolu da lajkujete recenziju.');
+      return;
+    }
+    try {
+        await axios.post(
+            `http://127.0.0.1:8000/api/review/update/${reviewId}/`,
+            { client_id: userId }, 
+            {
+                headers: {
+                    "Content-Type": "application/json", 
+                },
+            },
+        );
+        const updatedReviews = await axios.get(`http://localhost:8000/api/reviews/${idField.id}/`);
+        setReviews(updatedReviews.data); 
+
+    } catch (error) {
+        console.error('Greška prilikom lajkovanja recenzije:', error);
+    }
+};
+
+const handleReviewRemoveLike = async (reviewId) => {
+  try {
+      await axios.post(
+          `http://127.0.0.1:8000/api/review/delete/${reviewId}/`,
+          { client_id: userId }, 
+          {
+              headers: {
+                  "Content-Type": "application/json", 
+              },
+          },
+      );
+      const updatedReviews = await axios.get(`http://localhost:8000/api/reviews/${idField.id}/`);
+      setReviews(updatedReviews.data); 
+
+  } catch (error) {
+      console.error('Greška prilikom lajkovanja recenzije:', error);
+  }
+};
+
+  
   return (
     <body>
       <header className="userprofile-menu">
@@ -358,7 +401,8 @@ const TerenProfil = () => {
                       {reviews.map((review) => {
                         const reviewDate = new Date(review.date);
                         reviewDate.setHours(reviewDate.getHours() + 1); // Dodajemo 1 sat na vrijeme
-
+                        const likedBy = review.liked_by;
+                        const numberOfLikes = likedBy.length;
                         const renderStars = (rating) => {
                           const stars = [];
                           for (let i = 1; i <= 5; i++) {
@@ -391,14 +435,24 @@ const TerenProfil = () => {
                                 <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
                                 <p className="size">{reviewDate.toISOString().split('T')[0]}</p>
                               </div>
-                             
-  
                              <div className="review-detail">
                                <FontAwesomeIcon icon={faClock} className="icon" />
                                <p className="size">{reviewDate.toISOString().split('T')[1].split(':').slice(0, 2).join(':')}</p>
-                             </div>
-  
-                             
+                             </div> 
+                             <div className="review-detail">
+                                  {likedBy.includes(userId) ? (
+                                    <FaHeart
+                                      className="fav-review-like-button"
+                                      onClick={() => handleReviewRemoveLike(review.id)}
+                                    />
+                                  ) : (
+                                    <FaRegHeart
+                                      className="fav-review-like-button"
+                                      onClick={() => handleReviewLike(review.id)}
+                                    />
+                                  )}
+                                  <p className="numberOfLikes">{numberOfLikes}</p>
+                              </div>
                           </div>
                         );
                       })}
