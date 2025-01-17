@@ -198,6 +198,7 @@
   color: #F15A24;
   position: absolute;
   align-self: center;
+  margin-bottom: 13px;
   margin-left: 200px;
   pointer-events: auto;
   cursor: pointer;
