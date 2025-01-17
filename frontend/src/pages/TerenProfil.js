@@ -458,7 +458,7 @@ const handleReviewRemoveLike = async (reviewId) => {
                       })}
 
                     </div>
-                    {(idField.pk !== -1) ? (
+                    {((idField.pk !== -1) && (id.type === 'Client')) ? (
                       <button className="create-event-button" onClick={() => toggleFloatingWindow()}>
                         + Nova recenzija
                       </button>

@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faClock,faRunning, faMapMarkerAlt, faFutbol, faUser, faBasketballBall, faTableTennis, faVolleyballBall, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 const SponsoredEventCardForBusinessSubject = ({ user, event, currentUser }) => {
-  const { id, name, description, date, field, business_subject, sport } = event;
+  const { id, name, description, date, field, business_subject, sport, duration_hours } = event;
   const [location, setLocation] = useState("");
   const [preciseLocation, setPreciseLocation] = useState("");
   const [name1, setName] = useState("");
@@ -21,6 +21,9 @@ const SponsoredEventCardForBusinessSubject = ({ user, event, currentUser }) => {
   formattedDate.setHours(formattedDate.getHours() - 1);
   const dateOnly = formattedDate.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
   const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', minute: '2-digit' }); // Format: HH:MMFormat: HH:MM
+  const endTime = new Date(formattedDate); 
+  endTime.setHours(endTime.getHours() + duration_hours);
+  const endTimeOnly = endTime.toLocaleTimeString("en-GB", { hour: '2-digit', minute: '2-digit' }); // Format: HH:MM
 
   // Dohvaćanje lokacije na temelju field ID-a
   useEffect(() => {
@@ -218,7 +221,7 @@ const deleteEvent = async () => {
                   <FontAwesomeIcon icon={faCalendarAlt} /> {dateOnly}
                 </p>
                 <p>
-                  <FontAwesomeIcon icon={faClock} />  {timeOnly}
+                  <FontAwesomeIcon icon={faClock} />  {timeOnly}-{endTimeOnly}
                 </p>
               </div>
               <div className="SponsoredEventCard-footer-right">
@@ -229,7 +232,7 @@ const deleteEvent = async () => {
                       className="clickable-location"
                       onClick={() => handleLocationClick(field)}
                     >
-                      {location} - {preciseLocation}
+                      {location} 
                     </span>
                   ) : (
                     "Učitavanje..."

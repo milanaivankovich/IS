@@ -15,7 +15,9 @@ const EditEventCard = ({ user, pk, eventId }) => {
   const [advertisementDate, setAdvertisementDate] = useState("");
   const [advertisementField, setAdvertisementField] = useState("");
   const [advertisementSport, setAdvertisementSport] = useState("");
+  const [advertisementDurationHours, setAdvertisementDurationHours] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [allAdvertisements, setAllAdvertisements] = useState([]);
   const [eventData, setEventData] = useState({
     id: eventId || -1,
     name: "",
@@ -27,6 +29,24 @@ const EditEventCard = ({ user, pk, eventId }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // Dohvacanje svih oglasa
+    useEffect(() => {
+      const fetchAdvertisements = async () => {
+        try {
+          const response = await fetch("http://127.0.0.1:8000/api/advertisements/");
+          if (!response.ok) {
+            throw new Error("Failed to fetch advertisements");
+          }
+          const data = await response.json();
+          setAllAdvertisements(data);
+        } catch (error) {
+          console.error("Error fetching advertisements:", error);
+        }
+      };
+  
+      fetchAdvertisements();
+    }, []);
+
   useEffect(() => {
     const searchFields = async () => {
       if (fields.length === 0) {
@@ -36,7 +56,7 @@ const EditEventCard = ({ user, pk, eventId }) => {
           setOptionsLocation(
             response.data.map((item) => ({
               value: item.id,
-              label: `${item.location} (${item.sports
+              label: `${item.location}-${item.precise_location} (${item.sports
                 .map((sport) => sport.name)
                 .join(", ")})`,
               sport: item.sports.map((sport) => ({
@@ -84,6 +104,7 @@ const EditEventCard = ({ user, pk, eventId }) => {
           setAdvertisementDate(data[0].date || "");
           setAdvertisementField(data[0].field || "");
           setAdvertisementSport(data[0].sport || "");
+          setAdvertisementDurationHours(data[0].duration_hours || "");
         }
         setIsLoading(false); // Postavljanje statusa učitavanja na false kada su podaci učitani
       } catch (error) {
@@ -113,6 +134,7 @@ const EditEventCard = ({ user, pk, eventId }) => {
       business_subject: pk,
       field: updatedEventData.field || advertisementField,
       sport: updatedEventData.sport || advertisementSport,
+      duration_hours: updatedEventData.duration_hours || advertisementDurationHours,
     };
 
     console.log("Payload being sent to API:", payload);
@@ -149,6 +171,38 @@ const EditEventCard = ({ user, pk, eventId }) => {
     if (isSubmitting) {
       return;
     }
+
+  // Provjera postoji li oglas s istim terenom i datumom
+  const isDuplicate = allAdvertisements.some((ad) => {
+    const adStartTime = new Date(ad.date); 
+    adStartTime.setHours(adStartTime.getHours() - 1);
+    const adEndTime = new Date(ad.date);
+    adEndTime.setHours(adEndTime.getHours() - 1);
+    adEndTime.setHours(adEndTime.getHours() + ad.duration_hours);
+  
+    const eventStartTime = new Date(eventData.date);
+    const eventEndTime = new Date(eventData.date);
+    eventEndTime.setHours(eventEndTime.getHours() + parseInt(eventData.duration_hours || 0, 10));
+    console.log(adStartTime, adEndTime, eventStartTime, eventEndTime);
+  
+    // Provjera preklapanja vremena
+    return (
+      ad.field === selectedLocation?.value &&
+      (
+        (eventStartTime >= adStartTime && eventStartTime < adEndTime) || 
+        (eventEndTime > adStartTime && eventEndTime <= adEndTime) || 
+        (eventStartTime <= adStartTime && eventEndTime >= adEndTime) 
+      )
+    );
+  });
+  
+  if (isDuplicate) {
+    alert(
+      "Postoji već događaj za odabrani teren i datum. Molimo odaberite drugi datum, vrijeme ili teren."
+    );
+    return;
+  }
+  
 
     setIsSubmitting(true);
 
@@ -283,11 +337,26 @@ const EditEventCard = ({ user, pk, eventId }) => {
               id="UnosDatumaDogadjaja-input"
               type="datetime-local"
               min={new Date().toISOString().slice(0, 16)}
-              value={eventData.date}
+              value={eventData.date || advertisementDate}
               onChange={(e) =>
                 setEventData((prevData) => ({
                   ...prevData,
                   date: e.target.value,
+                }))
+              }
+            />
+
+            <label className="EditEventLabel"> Vrijeme trajanja događaja (u satima): </label>
+            <input
+              className="UnosInformacijaDogadjaja"
+              type="number"
+              min="1"
+              placeholder="Unesi broj sati"
+              value={eventData.duration_hours || advertisementDurationHours}
+              onChange={(e) =>
+                setEventData((prevData) => ({
+                  ...prevData,
+                  duration_hours: e.target.value,
                 }))
               }
             />

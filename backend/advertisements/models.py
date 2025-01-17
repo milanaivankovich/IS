@@ -10,6 +10,7 @@ class Advertisement(models.Model):
     field = models.ForeignKey('fields.Field', on_delete=models.CASCADE, null=True)
     sport = models.ForeignKey('fields.Sport', on_delete=models.CASCADE, null=True)
     is_deleted = models.BooleanField(default=False)
+    duration_hours = models.IntegerField(null=False, default=0)
 
     def clean(self):
         if self.field and self.field.is_suspended:
