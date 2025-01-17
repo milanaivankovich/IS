@@ -16,12 +16,27 @@ const ActivityCard = ({ activity }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCreator, setIsCreator] = useState(false); // Da li je trenutni korisnik kreator
   const [showMenu, setShowMenu] = useState(false); // Prikazuje meni sa tri tačkice
-
-
   const initialRemainingSlots =
   NumberOfParticipants - participants.length;
   const [remainingSlots, setRemainingSlots] = useState(initialRemainingSlots);
   const [isLoading, setIsLoading] = useState(false);
+  const [activityParticipants, setActivityParticipants] = useState([]);
+
+  
+  const fetchParticipants = async () => {
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/activities/${id}/participants/`
+      );
+      setActivityParticipants(response.data.participants); // Postavite učesnike
+    } catch (error) {
+      console.error("Error fetching participants:", error);
+    }
+  };
+  useEffect(() => {
+    fetchParticipants();
+  }, []);
+  
   useEffect(() => {
     const fetchUsername = async () => {
       try {
@@ -198,6 +213,7 @@ const ActivityCard = ({ activity }) => {
         body: JSON.stringify(currentUserData),
       });
       if (response.ok) {
+        fetchParticipants();
         // Smanji broj slobodnih mesta na frontendu
         setRemainingSlots((prev) => prev - 1);
         alert("Uspešno ste se prijavili na aktivnost!");
@@ -349,7 +365,19 @@ const ActivityCard = ({ activity }) => {
           )}
         </div>
       )}
-  
+  <div className="participants-list">
+  <h4>Učesnici:</h4>
+  {activityParticipants.length > 0 ? (
+    <ul>
+      {activityParticipants.map((participant, index) => (
+        <li key={index}>{participant}</li>
+      ))}
+    </ul>
+  ) : (
+    <p>Još nema učesnika.</p>
+  )}
+</div>
+
     <p>
       <FontAwesomeIcon icon={faUser} /> <strong> by @</strong>{" "}
       {username ? (
@@ -390,8 +418,8 @@ const ActivityCard = ({ activity }) => {
             {location || "Učitavanje..."}
           </span>
           <p>
-            <FontAwesomeIcon icon={faUser} /> Neophodnih:{" "} 
-            {remainingSlots|| "Nepoznato"} učesnika
+            <FontAwesomeIcon icon={faUser} /> {" "} 
+            {NumberOfParticipants-remainingSlots|| "0"} / {NumberOfParticipants}  učesnika
           </p>
     
         </p>
