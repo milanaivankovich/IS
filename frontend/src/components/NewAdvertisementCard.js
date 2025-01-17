@@ -10,6 +10,7 @@ const EditEventCard = ({ user, pk, eventId }) => {
   const [optionsSport, setOptionsSport] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedSport, setSelectedSport] = useState(null);
+  const [advertisementId, setAdvertisementId] = useState("");
   const [advertisementName, setAdvertisementName] = useState("");
   const [advertisementDescription, setAdvertisementDescription] = useState("");
   const [advertisementDate, setAdvertisementDate] = useState("");
@@ -99,6 +100,7 @@ const EditEventCard = ({ user, pk, eventId }) => {
         const data = await response.json();
 
         if (data && data[0]) {
+          setAdvertisementId(data[0].id || "");
           setAdvertisementName(data[0].name || "");
           setAdvertisementDescription(data[0].description || "");
           setAdvertisementDate(data[0].date || "");
@@ -183,11 +185,10 @@ const EditEventCard = ({ user, pk, eventId }) => {
     const eventStartTime = new Date(eventData.date);
     const eventEndTime = new Date(eventData.date);
     eventEndTime.setHours(eventEndTime.getHours() + parseInt(eventData.duration_hours || 0, 10));
-    console.log(adStartTime, adEndTime, eventStartTime, eventEndTime);
-  
+
     // Provjera preklapanja vremena
     return (
-      ad.field === selectedLocation?.value &&
+      ad.field === selectedLocation?.value && ad.id !== advertisementId &&
       (
         (eventStartTime >= adStartTime && eventStartTime < adEndTime) || 
         (eventEndTime > adStartTime && eventEndTime <= adEndTime) || 

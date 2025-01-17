@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import SponsoredEventCard from '../components/SponsoredEventCard';
-import SponsoredEventCardForBusinessSubject from '../components/SponsoredEventCardForBusinessSubject';
 import MessageCard from '../components/MessageCard';
 import './UserProfile.css';
 import './BusinessSubjectProfile.css';
@@ -242,7 +241,7 @@ const BusinessSubjectProfile = () => {
                       <div className="events-section">
                         <div className="scroll-bar-user-profile">
                           {Array.isArray(eventsData) && eventsData.map((activity) => (
-                            <SponsoredEventCardForBusinessSubject user={subjectData} event={activity} currentUser={currentUserData} />
+                            <SponsoredEventCard event={activity} user={subjectData}  currentUser={currentUserData}  />
                           ))}
                         </div>
                         {((id.type === 'BusinessSubject') && (currentUserData.nameSportOrganization === username)) ? (
@@ -278,7 +277,7 @@ const BusinessSubjectProfile = () => {
                     {activeTab === "activity" && (
                       <div className="scroll-bar-user-profile">
                         {Array.isArray(activityHistory) && activityHistory.map((activity) => (
-                          <SponsoredEventCard key={activity.id} event={activity} />
+                          <SponsoredEventCard key={activity.id} event={activity}  />
                         ))}
                       </div>
                     )}

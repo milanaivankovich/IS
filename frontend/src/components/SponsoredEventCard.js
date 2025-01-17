@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
 import "./SponsoredEventCard.css";
 import CreatorImg from "../images/user.svg";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import NewAdvertisementCard from "./NewAdvertisementCard";
+import { IoIosCloseCircle } from "react-icons/io";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarAlt, faClock,faRunning, faMapMarkerAlt, faFutbol, faUser, faBasketballBall, faTableTennis, faVolleyballBall } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarAlt, faClock,faRunning, faMapMarkerAlt, faFutbol, faUser, faBasketballBall, faTableTennis, faVolleyballBall, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
-const SponsoredEventCard = ({ event }) => {
-  const { name, description, date, field, business_subject, sport, duration_hours } = event;
+const SponsoredEventCard = ({ event, user, currentUser }) => {
+  const { id, name, description, date, field, business_subject, sport, duration_hours } = event;
   const [location, setLocation] = useState("");
   const [preciseLocation, setPreciseLocation] = useState("");
   const [name1, setName] = useState("");
   const [sports, setSport] = useState("");
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [isEditVisible, setIsEditVisible] = useState(false);
   const [picture, setPicture] = useState("");
   const formattedDate = new Date(date);
 
@@ -88,6 +93,60 @@ const SponsoredEventCard = ({ event }) => {
       fetchSport();
     }
   }, [sport]);
+
+
+  const toggleMenu = () => setMenuVisible(!menuVisible);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".event-card-menu")) {
+        setMenuVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+// Funkcija za brisanje oglasa
+const deleteEvent = async () => {
+  if (user.nameSportOrganization === (currentUser.nameSportOrganization || currentUser.username)) {
+    const userConfirmation = window.confirm("Da li ste sigurni da želite da obrišete ovaj događaj?");
+    
+    if (userConfirmation) {
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/advertisement/delete/${id}/`, {
+          method: "DELETE",
+        });
+
+        if (response.ok) {
+          alert("Događaj je uspješno obrisan.");
+          window.location.reload();
+        } else {
+          console.error("Failed to delete event");
+        }
+      } catch (error) {
+        console.error("Error deleting event:", error);
+      }
+    } else {
+      alert("Brisanje je otkazano.");
+    }
+  } else {
+    alert("Samo kreator može obrisati ovaj događaj.");
+    window.location.reload();
+  }
+};
+
+  const showEvent = () => {
+    if (user.nameSportOrganization === (currentUser.nameSportOrganization || currentUser.username)) {
+      setIsEditVisible(true);
+    } else {
+      alert("Samo kreator moze uređivati ovaj događaj.");
+      window.location.reload();
+    }
+  };
+
   const handleLocationClick = (fieldId) => {
     window.location.href = `/teren-profil/${fieldId}`;
   };
@@ -118,55 +177,74 @@ const SponsoredEventCard = ({ event }) => {
 
   return (
     <div className="SponsoredEventCard-Okvir">
-  <header className="SponsoredEventCard-Header" />
-  <div className="SponsoredEventCard-body">
-    <div className="SponsoredEventCard-user">
-      <img src={picture !== null ? picture : CreatorImg} className="creator-image" alt="Creator" />
-      <div className="Naslov">
-        {name}
-        <div className="createdBy">
-          <FontAwesomeIcon icon={faUser} /> by @{name1}
-        </div>
-      </div>
-    </div>
-    <div className="Opis">
-      <p>
-        <FontAwesomeIcon icon={faRunning} />{" "}{description}
-      </p>
-      <p>
-          <FontAwesomeIcon icon={sportIcons[sports?.toLowerCase()] || faFutbol} />{" "}
-          {sports || "Učitavanje..."}
-      </p>
-    </div>
-    <div className="SponsoredEventCard-footer">
-      <div className="SponsoredEventCard-footer-left">
-        <p>
-          <FontAwesomeIcon icon={faCalendarAlt} /> {dateOnly}
-        </p>
-        <p>
-          <FontAwesomeIcon icon={faClock} />  {timeOnly}-{endTimeOnly}
-        </p>
-      </div>
-      <div className="SponsoredEventCard-footer-right">
-        <p>
-          <FontAwesomeIcon icon={faMapMarkerAlt} /> {" "}
-          {location ? (
-            <span
-              className="clickable-location"
-              onClick={() => handleLocationClick(field)}
-            >
-              {location}
-            </span>
-          ) : (
-            "Učitavanje..."
+      <header className="SponsoredEventCard-Header" />
+      <div className="SponsoredEventCard-body">
+        <div className="SponsoredEventCard-user">
+          <img src={picture !== null ? picture : CreatorImg} className="creator-image" alt="Creator" />
+          <div className="Naslov">
+            {name}
+            <div className="createdBy">
+              <FontAwesomeIcon icon={faUser} /> by @{name1}
+            </div>
+          </div>
+          {user && (
+            <div className="event-card-menu">
+              <BsThreeDotsVertical className="menu-icon" onClick={toggleMenu} />
+              {menuVisible && (
+                <div className="dropdown-menu">
+                  <button onClick={showEvent}><FontAwesomeIcon icon={faEdit} />{" "}Uredi</button>
+                  <button onClick={deleteEvent}><FontAwesomeIcon icon={faTrash} />{" "}Obriši</button>
+                </div>
+              )}
+            </div>
           )}
-        </p>
+        </div>
+        <div className="Opis">
+          <p>
+            <FontAwesomeIcon icon={faRunning} />{" "}{description}
+          </p>
+           <p>
+            <FontAwesomeIcon icon={sportIcons[sports?.toLowerCase()] || faFutbol} />{" "}
+            {sports || "Učitavanje..."}
+          </p>
+        </div>
+        {isEditVisible && (
+          <div>
+            <NewAdvertisementCard user={user} pk={business_subject} eventId={id} className="new-event-card" />
+            <IoIosCloseCircle
+              className="close-icon-new-advertisement"
+              onClick={() => setIsEditVisible(false)}
+            />
+          </div>
+        )}
+        <div className="SponsoredEventCard-footer">
+              <div className="SponsoredEventCard-footer-left">
+                <p>
+                  <FontAwesomeIcon icon={faCalendarAlt} /> {dateOnly}
+                </p>
+                <p>
+                  <FontAwesomeIcon icon={faClock} />  {timeOnly}-{endTimeOnly}
+                </p>
+              </div>
+              <div className="SponsoredEventCard-footer-right">
+                <p>
+                  <FontAwesomeIcon icon={faMapMarkerAlt} /> {" "}
+                  {location ? (
+                    <span
+                      className="clickable-location"
+                      onClick={() => handleLocationClick(field)}
+                    >
+                      {location} 
+                    </span>
+                  ) : (
+                    "Učitavanje..."
+                  )}
+                </p>
+              </div>
+            </div>
+        
       </div>
     </div>
-  </div>
-</div>
   );
-  
 };
-
 export default SponsoredEventCard;
