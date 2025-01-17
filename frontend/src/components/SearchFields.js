@@ -41,7 +41,7 @@ const SearchFieldsComponent = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowResults(false); 
+        setShowResults(false);
       }
     };
 
@@ -57,7 +57,7 @@ const SearchFieldsComponent = () => {
   };
 
   return (
-    <>
+    <div className="search-fields-body">
       <form className="searchContainerFields" role="search" ref={searchRef}>
         <div className="searchContentFields">
           <img src={Icon} alt="" className="searchIcon" />
@@ -91,11 +91,11 @@ const SearchFieldsComponent = () => {
               ))}
             </ul>
           ) : (
-             <h3>Nema rezultata za pretragu.</h3>
+            <h3>Nema rezultata za pretragu.</h3>
           )}
         </div>
       )}
-    </>
+    </div>
   );
 };
 
