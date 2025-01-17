@@ -295,6 +295,7 @@ const ActivityCard = ({ activity }) => {
       }
 
       const data = await response.json();
+      fetchParticipants();
       setRemainingSlots(data.remaining_slots);
       alert(data.message);
     } catch (err) {
