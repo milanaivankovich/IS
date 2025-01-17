@@ -241,7 +241,7 @@ const BusinessSubjectProfile = () => {
                       <div className="events-section">
                         <div className="scroll-bar-user-profile">
                           {Array.isArray(eventsData) && eventsData.map((activity) => (
-                            <SponsoredEventCard event={activity} user={subjectData}  currentUser={currentUserData}  />
+                            <SponsoredEventCard event={activity} user={subjectData} currentUser={currentUserData} />
                           ))}
                         </div>
                         {((id.type === 'BusinessSubject') && (currentUserData.nameSportOrganization === username)) ? (
@@ -251,8 +251,8 @@ const BusinessSubjectProfile = () => {
                         ) : null}
                         {isVisible ? (
                           <div>
-                            <NewAdvertisementCard user={currentUserData} pk={id.id} className="new-event-card" />
-                            <IoIosCloseCircle className="close-icon-new-advertisement" onClick={() => toggleFloatingWindow()} />
+                            <NewAdvertisementCard user={currentUserData} pk={id.id} closeFunction={toggleFloatingWindow} className="new-event-card" />
+                            {/* <IoIosCloseCircle className="close-icon-new-advertisement" onClick={() => toggleFloatingWindow()} /> */}
                           </div>
                         ) : null}
                       </div>
@@ -277,7 +277,7 @@ const BusinessSubjectProfile = () => {
                     {activeTab === "activity" && (
                       <div className="scroll-bar-user-profile">
                         {Array.isArray(activityHistory) && activityHistory.map((activity) => (
-                          <SponsoredEventCard key={activity.id} event={activity}  />
+                          <SponsoredEventCard key={activity.id} event={activity} />
                         ))}
                       </div>
                     )}

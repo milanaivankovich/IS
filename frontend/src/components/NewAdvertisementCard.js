@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import "./EditEventCard.css";
 import CreatorImg from "../images/user.svg";
 import axios from "axios";
+import { IoIosCloseCircle } from "react-icons/io";
 import Select from "react-select";
 
-const EditEventCard = ({ user, pk, eventId }) => {
+const EditEventCard = ({ user, pk, eventId, closeFunction }) => {
   const [fields, setFields] = useState([]);
   const [optionsLocation, setOptionsLocation] = useState([]);
   const [optionsSport, setOptionsSport] = useState([]);
@@ -30,23 +31,23 @@ const EditEventCard = ({ user, pk, eventId }) => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Dohvacanje svih oglasa
-    useEffect(() => {
-      const fetchAdvertisements = async () => {
-        try {
-          const response = await fetch("http://127.0.0.1:8000/api/advertisements/");
-          if (!response.ok) {
-            throw new Error("Failed to fetch advertisements");
-          }
-          const data = await response.json();
-          setAllAdvertisements(data);
-        } catch (error) {
-          console.error("Error fetching advertisements:", error);
+  // Dohvacanje svih oglasa
+  useEffect(() => {
+    const fetchAdvertisements = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/advertisements/");
+        if (!response.ok) {
+          throw new Error("Failed to fetch advertisements");
         }
-      };
-  
-      fetchAdvertisements();
-    }, []);
+        const data = await response.json();
+        setAllAdvertisements(data);
+      } catch (error) {
+        console.error("Error fetching advertisements:", error);
+      }
+    };
+
+    fetchAdvertisements();
+  }, []);
 
   useEffect(() => {
     const searchFields = async () => {
@@ -174,36 +175,36 @@ const EditEventCard = ({ user, pk, eventId }) => {
       return;
     }
 
-  // Provjera postoji li oglas s istim terenom i datumom
-  const isDuplicate = allAdvertisements.some((ad) => {
-    const adStartTime = new Date(ad.date); 
-    adStartTime.setHours(adStartTime.getHours() - 1);
-    const adEndTime = new Date(ad.date);
-    adEndTime.setHours(adEndTime.getHours() - 1);
-    adEndTime.setHours(adEndTime.getHours() + ad.duration_hours);
-  
-    const eventStartTime = new Date(eventData.date);
-    const eventEndTime = new Date(eventData.date);
-    eventEndTime.setHours(eventEndTime.getHours() + parseInt(eventData.duration_hours || 0, 10));
+    // Provjera postoji li oglas s istim terenom i datumom
+    const isDuplicate = allAdvertisements.some((ad) => {
+      const adStartTime = new Date(ad.date);
+      adStartTime.setHours(adStartTime.getHours() - 1);
+      const adEndTime = new Date(ad.date);
+      adEndTime.setHours(adEndTime.getHours() - 1);
+      adEndTime.setHours(adEndTime.getHours() + ad.duration_hours);
 
-    // Provjera preklapanja vremena
-    return (
-      ad.field === selectedLocation?.value && ad.id !== advertisementId &&
-      (
-        (eventStartTime >= adStartTime && eventStartTime < adEndTime) || 
-        (eventEndTime > adStartTime && eventEndTime <= adEndTime) || 
-        (eventStartTime <= adStartTime && eventEndTime >= adEndTime) 
-      )
-    );
-  });
-  
-  if (isDuplicate) {
-    alert(
-      "Postoji već događaj za odabrani teren i datum. Molimo odaberite drugi datum, vrijeme ili teren."
-    );
-    return;
-  }
-  
+      const eventStartTime = new Date(eventData.date);
+      const eventEndTime = new Date(eventData.date);
+      eventEndTime.setHours(eventEndTime.getHours() + parseInt(eventData.duration_hours || 0, 10));
+
+      // Provjera preklapanja vremena
+      return (
+        ad.field === selectedLocation?.value && ad.id !== advertisementId &&
+        (
+          (eventStartTime >= adStartTime && eventStartTime < adEndTime) ||
+          (eventEndTime > adStartTime && eventEndTime <= adEndTime) ||
+          (eventStartTime <= adStartTime && eventEndTime >= adEndTime)
+        )
+      );
+    });
+
+    if (isDuplicate) {
+      alert(
+        "Postoji već događaj za odabrani teren i datum. Molimo odaberite drugi datum, vrijeme ili teren."
+      );
+      return;
+    }
+
 
     setIsSubmitting(true);
 
@@ -269,7 +270,7 @@ const EditEventCard = ({ user, pk, eventId }) => {
   return (
     <div className="dimmer">
       <form className="EditEventCard-form" onSubmit={handleSubmit}>
-        <header className="EditEventCard-Header" />
+        <IoIosCloseCircle className="close-icon" onClick={closeFunction} />
         <div className="EditEventCard-body">
           <div className="EditEventCard-user">
             <img
