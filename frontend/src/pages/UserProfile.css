@@ -146,17 +146,6 @@
   background-color: #e64a19;
 }
 
-.close-icon {
-  z-index: 1001;
-  color: #F15A24;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  height: 25px;
-  width: 25px;
-  transform: translate(220px, -305px);
-}
-
 .scroll-bar-user-profile {
   width: 90vw;
   min-height: 260px;

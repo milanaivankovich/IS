@@ -3,10 +3,11 @@ import "./EditEventCard.css";
 import CreatorImg from "../images/user.svg";
 import axios from "axios";
 import Select from 'react-select';
+import { IoIosCloseCircle } from "react-icons/io";
 
 
 //pretraziti lokacije pa ponuditi autofill
-const EditEventCard = ({ user, pk }) => {
+const EditEventCard = ({ user, pk, closeFunction }) => {
 
   const [fields, setFields] = useState([]);
   const [optionsLocation, setOptionsLocation] = useState([]);
@@ -102,7 +103,7 @@ const EditEventCard = ({ user, pk }) => {
   return (
     <div className='dimmer'>
       <form className="EditEventCard-form" onSubmit={handleSubmit}>
-        <header className="EditEventCard-Header" />
+        <IoIosCloseCircle className="close-icon" onClick={closeFunction} />
         <div className="EditEventCard-body">
           <div className="EditEventCard-user">
             <img src={user.profile_picture !== null ? user.profile_picture : CreatorImg} className="creator-image" alt="Creator" />
@@ -181,7 +182,6 @@ const EditEventCard = ({ user, pk }) => {
           </div>
         </div>
       </form>
-
     </div>
   );
 };

@@ -6,7 +6,8 @@
     align-items: flex-start;
     margin: 20px;
     margin-left: 5px;
-    width: 400px; /* Povećana širina */
+    width: 400px;
+    /* Povećana širina */
     max-height: 500px;
     overflow: vissible;
     position: relative;
@@ -39,7 +40,8 @@
 }
 
 .SponsoredEventCard-Header {
-    width: 100%; /* Širina prilagođena kartici */
+    width: 100%;
+    /* Širina prilagođena kartici */
     height: 120px;
     background: #F15A24;
     overflow: hidden;
@@ -88,7 +90,7 @@
     flex-direction: column;
     gap: 5px;
     text-align: left;
-   
+
 }
 
 .SponsoredEventCard-footer-right {
@@ -101,12 +103,12 @@
 
 .SponsoredEventCard-footer-right .clickable-location {
     cursor: pointer;
-    color:  #e64a19;
+    color: #e64a19;
     text-decoration: underline;
 }
 
 .SponsoredEventCard-footer-right .clickable-location:hover {
-    color:  #e64a19;
+    color: #e64a19;
 }
 
 .event-card-menu {
@@ -119,9 +121,9 @@
     cursor: pointer;
     /* Prikazuje ikonu ruke na hover */
     color: #000000;
-  }
-  
-  .dropdown-menu {
+}
+
+.dropdown-menu {
     position: absolute;
     top: 25px;
     /* Postavlja meni ispod tri tačke */
@@ -133,9 +135,9 @@
     padding: 10px;
     z-index: 9999;
     width: 110px;
-  }
-  
-  .dropdown-menu button {
+}
+
+.dropdown-menu button {
     display: block;
     width: 100%;
     background: none;
@@ -143,9 +145,9 @@
     padding: 8px 12px;
     text-align: left;
     cursor: pointer;
-  }
-  
-  .dropdown-menu button:hover {
+}
+
+.dropdown-menu button:hover {
     background: #F15A24;
     color: #fff;
-  }
+}

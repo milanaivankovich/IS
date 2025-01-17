@@ -3,12 +3,14 @@
     font-size: 16px;
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* Sprečava probleme sa paddingom i marginama */
+    box-sizing: border-box;
+    /* Sprečava probleme sa paddingom i marginama */
 }
 
 .Tereni-header {
     position: relative;
-    z-index: 2; /* Postavljanje header-a u pravilan sloj */
+    z-index: 2;
+    /* Postavljanje header-a u pravilan sloj */
 }
 
 .Event-cards {
@@ -57,18 +59,18 @@
     font-weight: 500;
     text-transform: uppercase;
     color: black;
-    margin-left: 20px;
+    margin-left: 40px;
     margin-bottom: 20px;
 }
 
 .section-subtitle {
     color: #666666;
-    margin-left: 25px;
+    margin-left: 40px;
     font-size: 16px;
 }
 
 .map-calendar-section {
-    margin-top: 20px;
+    margin: 20px;
 }
 
 .map-calendar-container {
@@ -79,14 +81,16 @@
     border-radius: 10px;
     margin: 20px;
     position: relative;
-    z-index: 1; /* Sprečavanje preklapanja sa futerom */
+    z-index: 1;
+    /* Sprečavanje preklapanja sa futerom */
 }
 
 .map-container {
     width: 60%;
     height: 350px;
     border-radius: 10px;
-    z-index: 2; /* Zadržavanje sloja iznad pozadine */
+    z-index: 2;
+    /* Zadržavanje sloja iznad pozadine */
 }
 
 .calendar {
@@ -95,7 +99,8 @@
     position: relative;
     left: 15px;
     border-color: white;
-    z-index: 2; /* Sprečavanje preklapanja sa futerom */
+    z-index: 2;
+    /* Sprečavanje preklapanja sa futerom */
 }
 
 .Field-list {
@@ -112,16 +117,16 @@
 }
 
 .reset-date-button {
-    background-color: transparent; 
-    border: none; 
-    cursor: pointer; 
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
     display: flex;
 }
 
 .reset-date-button::before {
     content: '\2716';
-    color: white; 
-    font-size: 20px; 
+    color: white;
+    font-size: 20px;
     position: relative;
     top: -15px;
     left: 10px;
@@ -129,12 +134,12 @@
 
 .reset-date-button:hover::before {
     color: white;
-    transform: scale(1.2); 
+    transform: scale(1.2);
 }
 
 .react-calendar__tile--active {
     background-color: #fa5c16 !important;
-    color: white; 
+    color: white;
 }
 
 /* Stilovi za pretragu */

@@ -256,8 +256,8 @@ const UserProfile = () => {
                       ) : null}
                       {isVisible ? (
                         <div>
-                          <EditEventCard user={currentUserData} pk={id} className="new-event-card" />
-                          <IoIosCloseCircle className="close-icon" onClick={() => toggleFloatingWindow()} />
+                          <EditEventCard user={currentUserData} pk={id} className="new-event-card" closeFunction={toggleFloatingWindow} />
+                          {/*<IoIosCloseCircle className="close-icon" onClick={() => toggleFloatingWindow()} />*/}
                         </div>
                       ) : null}
                     </div>
