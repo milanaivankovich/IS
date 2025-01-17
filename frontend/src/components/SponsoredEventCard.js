@@ -5,7 +5,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import NewAdvertisementCard from "./NewAdvertisementCard";
 import { IoIosCloseCircle } from "react-icons/io";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarAlt, faClock,faRunning, faMapMarkerAlt, faFutbol, faUser, faBasketballBall, faTableTennis, faVolleyballBall, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarAlt, faClock, faRunning, faMapMarkerAlt, faFutbol, faUser, faBasketballBall, faTableTennis, faVolleyballBall, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 const SponsoredEventCard = ({ event, user, currentUser }) => {
   const { id, name, description, date, field, business_subject, sport, duration_hours } = event;
@@ -21,7 +21,7 @@ const SponsoredEventCard = ({ event, user, currentUser }) => {
   formattedDate.setHours(formattedDate.getHours() - 1);
   const dateOnly = formattedDate.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
   const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', minute: '2-digit' }); // Format: HH:MMFormat: HH:MM
-  const endTime = new Date(formattedDate); 
+  const endTime = new Date(formattedDate);
   endTime.setHours(endTime.getHours() + duration_hours);
   const endTimeOnly = endTime.toLocaleTimeString("en-GB", { hour: '2-digit', minute: '2-digit' }); // Format: HH:MM
 
@@ -109,38 +109,38 @@ const SponsoredEventCard = ({ event, user, currentUser }) => {
     };
   }, []);
 
-// Funkcija za brisanje oglasa
-const deleteEvent = async () => {
-  if (user.nameSportOrganization === (currentUser.nameSportOrganization || currentUser.username)) {
-    const userConfirmation = window.confirm("Da li ste sigurni da želite da obrišete ovaj događaj?");
-    
-    if (userConfirmation) {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/api/advertisement/delete/${id}/`, {
-          method: "DELETE",
-        });
+  // Funkcija za brisanje oglasa
+  const deleteEvent = async () => {
+    if (user.nameSportOrganization === (currentUser.nameSportOrganization || currentUser.username)) {
+      const userConfirmation = window.confirm("Da li ste sigurni da želite da obrišete ovaj događaj?");
 
-        if (response.ok) {
-          alert("Događaj je uspješno obrisan.");
-          window.location.reload();
-        } else {
-          console.error("Failed to delete event");
+      if (userConfirmation) {
+        try {
+          const response = await fetch(`http://127.0.0.1:8000/api/advertisement/delete/${id}/`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            alert("Događaj je uspješno obrisan.");
+            window.location.reload();
+          } else {
+            console.error("Failed to delete event");
+          }
+        } catch (error) {
+          console.error("Error deleting event:", error);
         }
-      } catch (error) {
-        console.error("Error deleting event:", error);
+      } else {
+        alert("Brisanje je otkazano.");
       }
     } else {
-      alert("Brisanje je otkazano.");
+      alert("Samo kreator može obrisati ovaj događaj.");
+      window.location.reload();
     }
-  } else {
-    alert("Samo kreator može obrisati ovaj događaj.");
-    window.location.reload();
-  }
-};
+  };
 
   const showEvent = () => {
     if (user.nameSportOrganization === (currentUser.nameSportOrganization || currentUser.username)) {
-      setIsEditVisible(true);
+      toggleEdit();
     } else {
       alert("Samo kreator moze uređivati ovaj događaj.");
       window.location.reload();
@@ -175,6 +175,11 @@ const deleteEvent = async () => {
     odbojka: faVolleyballBall,
   };
 
+  const toggleEdit = () => {
+    setIsEditVisible(!isEditVisible);
+    toggleMenu();
+  };
+
   return (
     <div className="SponsoredEventCard-Okvir">
       <header className="SponsoredEventCard-Header" />
@@ -203,46 +208,46 @@ const deleteEvent = async () => {
           <p>
             <FontAwesomeIcon icon={faRunning} />{" "}{description}
           </p>
-           <p>
+          <p>
             <FontAwesomeIcon icon={sportIcons[sports?.toLowerCase()] || faFutbol} />{" "}
             {sports || "Učitavanje..."}
           </p>
         </div>
         {isEditVisible && (
           <div>
-            <NewAdvertisementCard user={user} pk={business_subject} eventId={id} className="new-event-card" />
-            <IoIosCloseCircle
+            <NewAdvertisementCard user={user} pk={business_subject} eventId={id} closeFunction={toggleEdit} className="new-event-card" />
+            {/*<IoIosCloseCircle
               className="close-icon-new-advertisement"
               onClick={() => setIsEditVisible(false)}
-            />
+            />*/}
           </div>
         )}
         <div className="SponsoredEventCard-footer">
-              <div className="SponsoredEventCard-footer-left">
-                <p>
-                  <FontAwesomeIcon icon={faCalendarAlt} /> {dateOnly}
-                </p>
-                <p>
-                  <FontAwesomeIcon icon={faClock} />  {timeOnly}-{endTimeOnly}
-                </p>
-              </div>
-              <div className="SponsoredEventCard-footer-right">
-                <p>
-                  <FontAwesomeIcon icon={faMapMarkerAlt} /> {" "}
-                  {location ? (
-                    <span
-                      className="clickable-location"
-                      onClick={() => handleLocationClick(field)}
-                    >
-                      {location} 
-                    </span>
-                  ) : (
-                    "Učitavanje..."
-                  )}
-                </p>
-              </div>
-            </div>
-        
+          <div className="SponsoredEventCard-footer-left">
+            <p>
+              <FontAwesomeIcon icon={faCalendarAlt} /> {dateOnly}
+            </p>
+            <p>
+              <FontAwesomeIcon icon={faClock} />  {timeOnly}-{endTimeOnly}
+            </p>
+          </div>
+          <div className="SponsoredEventCard-footer-right">
+            <p>
+              <FontAwesomeIcon icon={faMapMarkerAlt} /> {" "}
+              {location ? (
+                <span
+                  className="clickable-location"
+                  onClick={() => handleLocationClick(field)}
+                >
+                  {location}
+                </span>
+              ) : (
+                "Učitavanje..."
+              )}
+            </p>
+          </div>
+        </div>
+
       </div>
     </div>
   );
