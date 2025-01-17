@@ -2,27 +2,30 @@ import React, { useEffect, useState } from "react";
 import "./ActivityCard.css";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faCalendarAlt, faMapMarkerAlt, faRunning, faUser, faFutbol, faBasketballBall, faVolleyballBall, faTableTennis,faEllipsisV,
-  faTrash }
-   from "@fortawesome/free-solid-svg-icons";
+import {
+  faClock, faCalendarAlt, faMapMarkerAlt, faRunning, faUser, faFutbol, faBasketballBall, faVolleyballBall, faTableTennis, faEllipsisV,
+  faTrash,
+  faEdit
+}
+  from "@fortawesome/free-solid-svg-icons";
 
 const ActivityCard = ({ activity }) => {
   const { description, date, field, titel, sport, id, NumberOfParticipants, participants, client } = activity;
   const [location, setLocation] = useState("");
   const [sports, setSport] = useState("");
-  
+
   const [error, setError] = useState(null);
   const [username, setUsername] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCreator, setIsCreator] = useState(false); // Da li je trenutni korisnik kreator
   const [showMenu, setShowMenu] = useState(false); // Prikazuje meni sa tri tačkice
   const initialRemainingSlots =
-  NumberOfParticipants - participants.length;
+    NumberOfParticipants - participants.length;
   const [remainingSlots, setRemainingSlots] = useState(initialRemainingSlots);
   const [isLoading, setIsLoading] = useState(false);
   const [activityParticipants, setActivityParticipants] = useState([]);
 
-  
+
   const fetchParticipants = async () => {
     try {
       const response = await axios.get(
@@ -36,7 +39,7 @@ const ActivityCard = ({ activity }) => {
   useEffect(() => {
     fetchParticipants();
   }, []);
-  
+
   useEffect(() => {
     const fetchUsername = async () => {
       try {
@@ -103,7 +106,7 @@ const ActivityCard = ({ activity }) => {
     }
   }, [sport]);
 
-  
+
   const handleDelete = async () => {
     if (!isCreator) {
       alert("Samo kreator može obrisati ovaj događaj.");
@@ -150,13 +153,13 @@ const ActivityCard = ({ activity }) => {
       alert("Morate biti prijavljeni kao rekreativac da biste se prijavili na aktivnost.");
       return;
     }
-   
-      if (remainingSlots <= 0) {
-        alert("Nema slobodnih mesta.");
-        return;
-      }
-  
-    
+
+    if (remainingSlots <= 0) {
+      alert("Nema slobodnih mesta.");
+      return;
+    }
+
+
     let pk = {
       id: -1,
       type: ''
@@ -224,7 +227,7 @@ const ActivityCard = ({ activity }) => {
     } catch (error) {
       console.error("Error during registration:", error);
       alert("Došlo je do greške.");
-    }finally {
+    } finally {
       setIsLoading(false);
     }
   };
@@ -309,7 +312,7 @@ const ActivityCard = ({ activity }) => {
     const activityDateTime = new Date(activityDate); // Datum aktivnosti
     return activityDateTime < now; // Provera da li je aktivnost u prošlosti
   };
-  
+
 
   ///datetime
   const parseDateTime = (dateString) => {
@@ -336,17 +339,17 @@ const ActivityCard = ({ activity }) => {
   const { formattedDate, formattedTime } = parseDateTime(date);
 
   const sportIcons = {
-      fudbal: faFutbol,
-      kosarka: faBasketballBall,
-      tenis: faTableTennis,
-      odbojka: faVolleyballBall,
-    };
+    fudbal: faFutbol,
+    kosarka: faBasketballBall,
+    tenis: faTableTennis,
+    odbojka: faVolleyballBall,
+  };
 
   return (
     <div className="activity-card">
-    <h3 className="activity-card-title">{titel}</h3>
-    
-    {isCreator && (
+      <h3 className="activity-card-title">{titel}</h3>
+
+      {isCreator && (
         <div className="menu">
           <FontAwesomeIcon
             icon={faEllipsisV}
@@ -355,106 +358,104 @@ const ActivityCard = ({ activity }) => {
           />
           {showMenu && (
             <div className="menu-dropdown">
-              <button className="menu-button" onClick={handleDelete}>
-              <div className="menu-item">
-                <FontAwesomeIcon icon={faTrash} className="icon" />
-                <span className="label">Obriši</span>
-             </div>
-
-              </button>
+              <button className="menu-button" ><FontAwesomeIcon icon={faEdit} />{" "}Uredi</button>
+              <button className="menu-button" onClick={handleDelete}><FontAwesomeIcon icon={faTrash} />{" "}Obriši</button>
             </div>
           )}
+
         </div>
       )}
-  <div className="participants-list">
-  <h4>Učesnici:</h4>
-  {activityParticipants.length > 0 ? (
-    <ul>
-      {activityParticipants.map((participant, index) => (
-        <li key={index}>{participant}</li>
-      ))}
-    </ul>
-  ) : (
-    <p>Još nema učesnika.</p>
-  )}
-</div>
-
-    <p>
-      <FontAwesomeIcon icon={faUser} /> <strong> by @</strong>{" "}
-      {username ? (
-        <span
-          className="clickable-username"
-          onClick={() => handleUsernameClick(username)}
-        >
-          {username}
-        </span>
-      ) : (
-        "Nepoznato"
-      )}
-    </p>
-  
-    <p>
-      <FontAwesomeIcon icon={faRunning} /> {description}
-    </p>
-    <p>
-       <FontAwesomeIcon icon={sportIcons[sports?.toLowerCase()] || faFutbol} />{" "}
-       {sports || "Učitavanje..."}
-    </p>
-    <div className="activity-card-footer">
-      <div className="activity-card-footer-left">
-        <p>
-          <FontAwesomeIcon icon={faCalendarAlt} />  {formattedDate}
-        </p>
-        <p>
-          <FontAwesomeIcon icon={faClock} />  {formattedTime}
-        </p>
+      <div className="participants-list">
+        <h4>Učesnici:</h4>
+        {activityParticipants.length > 0 ? (
+          <ul>
+            {activityParticipants.map((participant, index) => (
+              <li key={index}>{participant}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>Još nema učesnika.</p>
+        )}
       </div>
-      <div className="activity-card-footer-right">
-        <p>
-          <FontAwesomeIcon icon={faMapMarkerAlt} />{" "}
+
+      <p>
+        <FontAwesomeIcon icon={faUser} /> <strong> by @</strong>{" "}
+        {username ? (
           <span
-            className="clickable-location"
-            onClick={() => handleLocationClick(field)}
+            className="clickable-username"
+            onClick={() => handleUsernameClick(username)}
           >
-            {location || "Učitavanje..."}
+            {username}
           </span>
+        ) : (
+          "Nepoznato"
+        )}
+      </p>
+
+      <p>
+        <FontAwesomeIcon icon={faRunning} /> {description}
+      </p>
+      <p>
+        <FontAwesomeIcon icon={sportIcons[sports?.toLowerCase()] || faFutbol} />{" "}
+        {sports || "Učitavanje..."}
+      </p>
+      <div className="activity-card-footer">
+        <div className="activity-card-footer-left">
           <p>
-            <FontAwesomeIcon icon={faUser} /> {" "} 
-            {NumberOfParticipants-remainingSlots|| "0"} / {NumberOfParticipants}  učesnika
+            <FontAwesomeIcon icon={faCalendarAlt} />  {formattedDate}
           </p>
-    
-        </p>
+          <p>
+            <FontAwesomeIcon icon={faClock} />  {formattedTime}
+          </p>
+        </div>
+        <div className="activity-card-footer-right">
+          <p>
+            <FontAwesomeIcon icon={faMapMarkerAlt} />{" "}
+            <span
+              className="clickable-location"
+              onClick={() => handleLocationClick(field)}
+            >
+              {location || "Učitavanje..."}
+            </span>
+            <p>
+              <FontAwesomeIcon icon={faUser} /> {" "}
+              {NumberOfParticipants - remainingSlots || "0"} / {NumberOfParticipants}  učesnika
+            </p>
+
+          </p>
+        </div>
       </div>
+
+
+
+      {!isCreator && <>
+        <div className="activity-card-buttons">
+          <button
+            className="button"
+            onClick={handleRegister}
+            disabled={remainingSlots <= 0 || isLoading || !isLoggedIn ||
+              isPastActivity(date)}
+          >
+            {isLoading ? "Prijava u toku..." : "Prijavi se"}
+          </button>
+          <button
+            className="button unregister-button"
+            onClick={handleUnregister}
+            disabled={isLoading || !isLoggedIn ||
+              isPastActivity(date)}
+          >
+            {isLoading && remainingSlots ? "Odjava u toku..." : "Odjavi se"}
+          </button>
+        </div>
+        {isPastActivity(date) && (
+          <p className="error-message">Nije moguće prijaviti se na aktivnost koja je već završena.</p>
+        )}
+        {!isLoggedIn && <p className="error-message">Morate biti prijavljeni da biste se prijavili na aktivnost.</p>}
+
+        {error && <p className="error-message">{error}</p>}
+      </>}
     </div>
- 
-  
 
-
-      <div className="activity-card-buttons">
-        <button
-          className="button"
-          onClick={handleRegister}
-          disabled={remainingSlots <= 0 || isLoading || !isLoggedIn||
-            isPastActivity(date)}
-        >
-          {isLoading ? "Prijava u toku..." : "Prijavi se"}
-        </button>
-        <button
-    className="button unregister-button"
-    onClick={handleUnregister}
-    disabled={isLoading || !isLoggedIn|| 
-      isPastActivity(date) }
-  >
-    {isLoading && remainingSlots ? "Odjava u toku..." : "Odjavi se"}
-  </button>
-      </div>
-      {isPastActivity(date) && (
-  <p className="error-message">Nije moguće prijaviti se na aktivnost koja je već završena.</p>
-)}
-      {!isLoggedIn && <p className="error-message">Morate biti prijavljeni da biste se prijavili na aktivnost.</p>}
-
-      {error && <p className="error-message">{error}</p>}
-    </div>
   );
 };
 
