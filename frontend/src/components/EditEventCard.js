@@ -16,12 +16,13 @@ const EditEventCard = ({ user, pk, event, closeFunction }) => {
   const [selectedSport, setSelectedSport] = useState(null);
 
   const [eventData, setEventData] = useState({
-    "id": event.id,
+    "id": event ? event.id : -1,
     "username": user.username,
     "titel": event ? event.titel : "",
     "description": event ? event.description : "",
     "date": "",
-    "NumberOfParticipants": -1,
+    "NumberOfParticipants": event ? event.NumberOfParticipants : "",
+    "duration_hours": event ? event.duration_hours : "",
     "client": pk,
     "field": -1,
     "sport": -1
@@ -34,6 +35,7 @@ const EditEventCard = ({ user, pk, event, closeFunction }) => {
         (option) => option.value === event.field
       );
       if (selectedField) {
+        searchSports(selectedField);
         setSelectedLocation(selectedField);
       }
     }
@@ -48,7 +50,7 @@ const EditEventCard = ({ user, pk, event, closeFunction }) => {
         setSelectedSport(selectedSport);
       }
     }
-  }, [event.sport, optionsSport]);
+  }, [event, optionsSport]);
 
   useEffect(() => {
     if (event.date) {
@@ -113,6 +115,20 @@ const EditEventCard = ({ user, pk, event, closeFunction }) => {
         alert("Doslo je do greške prilikom ažuriranja...");
       });
   };
+  const updateEventData = async () => {
+    await axios.put(`http://localhost:8000/activities/update/${eventData.id}/`, eventData, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    })
+      .then((response) => {
+        console.log("Data updated successfully:", response.data);
+        alert("Događaj je uspješno ažuriran.");
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("There was an error updating the data:", error);
+        alert("Doslo je do greške prilikom ažuriranja...");
+      });
+  };
 
   const colourOptions = {
     control: (styles) => ({
@@ -132,8 +148,16 @@ const EditEventCard = ({ user, pk, event, closeFunction }) => {
     e.preventDefault();
 
     await setEventData(prevData => ({ ...prevData, field: selectedLocation.value, sport: selectedLocation.value }));
-    if (eventData.field !== -1 && eventData.sport !== -1 && eventData.NumberOfParticipants !== -1)
-      await createNew();
+    if (eventData.field !== -1 && eventData.sport !== -1 && eventData.NumberOfParticipants !== -1
+      && eventData.NumberOfParticipants !== -1
+    ) {
+      if (eventData.id !== -1) {
+        updateEventData();
+      }
+      else
+        await createNew();
+
+    }
   };
 
   return (
@@ -195,6 +219,7 @@ const EditEventCard = ({ user, pk, event, closeFunction }) => {
             <input className="UnosInformacijaDogadjaja"
               id="UnosDatumaDogadjaja-input"
               type="datetime-local"
+              value={eventData.date}
               min={new Date().toISOString().slice(0, 16)}
               onChange={(e) => setEventData(prevData => ({ ...prevData, date: (e.target.value) }))}
               required />
@@ -204,10 +229,25 @@ const EditEventCard = ({ user, pk, event, closeFunction }) => {
               className="UnosInformacijaDogadjaja"
               type="number"
               placeholder="Unesi broj osoba..."
+              value={eventData.NumberOfParticipants}
               min={1}
               onChange={(e) => setEventData(prevData => ({ ...prevData, NumberOfParticipants: e.target.value }))}
               required />
-
+            <label className="EditEventLabel"> Vrijeme trajanja događaja (u satima): </label>
+            <input
+              className="UnosInformacijaDogadjaja"
+              type="number"
+              min="1"
+              max="24"
+              placeholder="Unesi broj sati"
+              value={eventData.duration_hours}
+              onChange={(e) =>
+                setEventData((prevData) => ({
+                  ...prevData,
+                  duration_hours: e.target.value,
+                }))
+              }
+            />
           </div>
           <div className="EventCard-buttons">
             <button
