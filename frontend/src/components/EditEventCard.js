@@ -7,7 +7,7 @@ import { IoIosCloseCircle } from "react-icons/io";
 
 
 //pretraziti lokacije pa ponuditi autofill
-const EditEventCard = ({ user, pk, closeFunction }) => {
+const EditEventCard = ({ user, pk, event, closeFunction }) => {
 
   const [fields, setFields] = useState([]);
   const [optionsLocation, setOptionsLocation] = useState([]);
@@ -15,6 +15,52 @@ const EditEventCard = ({ user, pk, closeFunction }) => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [selectedSport, setSelectedSport] = useState(null);
 
+  const [eventData, setEventData] = useState({
+    "id": event.id,
+    "username": user.username,
+    "titel": event ? event.titel : "",
+    "description": event ? event.description : "",
+    "date": "",
+    "NumberOfParticipants": -1,
+    "client": pk,
+    "field": -1,
+    "sport": -1
+  });
+  //update
+
+  useEffect(() => {
+    if (event.field) {
+      const selectedField = optionsLocation.find(
+        (option) => option.value === event.field
+      );
+      if (selectedField) {
+        setSelectedLocation(selectedField);
+      }
+    }
+  }, [event, optionsLocation]);
+
+  useEffect(() => {
+    if (event.sport) {
+      const selectedSport = optionsSport.find(
+        (option) => option.value === event.sport
+      );
+      if (selectedSport) {
+        setSelectedSport(selectedSport);
+      }
+    }
+  }, [event.sport, optionsSport]);
+
+  useEffect(() => {
+    if (event.date) {
+      const formattedDate = new Date(event.date).toISOString().slice(0, 16);
+      setEventData((prevData) => ({
+        ...prevData,
+        date: formattedDate.toString(),
+      }));
+    }
+  }, [event]);
+
+  //
   useEffect(() => {
     const searchFields = async () => {
       if (fields.length === 0) {
@@ -51,17 +97,7 @@ const EditEventCard = ({ user, pk, closeFunction }) => {
     })));
   };
 
-  const [eventData, setEventData] = useState({
-    //"id": 10,
-    "username": user.username,
-    "titel": "",
-    "description": "",
-    "date": "0000-00-00T00:00:00Z",
-    "NumberOfParticipants": -1,
-    "client": pk.id,
-    "field": -1,
-    "sport": -1
-  });
+
 
   const createNew = async () => {
     await axios.post('http://localhost:8000/api/activities/add/', eventData, {
@@ -160,7 +196,7 @@ const EditEventCard = ({ user, pk, closeFunction }) => {
               id="UnosDatumaDogadjaja-input"
               type="datetime-local"
               min={new Date().toISOString().slice(0, 16)}
-              onChange={(e) => setEventData(prevData => ({ ...prevData, date: (e.target.value.toString() + ":00Z") }))}
+              onChange={(e) => setEventData(prevData => ({ ...prevData, date: (e.target.value) }))}
               required />
 
             <label className="EditEventLabel"> Broj osoba: </label>
@@ -168,7 +204,7 @@ const EditEventCard = ({ user, pk, closeFunction }) => {
               className="UnosInformacijaDogadjaja"
               type="number"
               placeholder="Unesi broj osoba..."
-              min={0}
+              min={1}
               onChange={(e) => setEventData(prevData => ({ ...prevData, NumberOfParticipants: e.target.value }))}
               required />
 

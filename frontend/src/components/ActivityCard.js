@@ -8,6 +8,7 @@ import {
   faEdit
 }
   from "@fortawesome/free-solid-svg-icons";
+import EditEventCard from "./EditEventCard";
 
 const ActivityCard = ({ activity }) => {
   const { description, date, field, titel, sport, id, NumberOfParticipants, participants, client } = activity;
@@ -154,6 +155,30 @@ const ActivityCard = ({ activity }) => {
   const handleLocationClick = (fieldId) => {
     window.location.href = `/teren-profil/${fieldId}`;
   };
+
+  //dohvacanje podataka o kreatoru aktivnosti
+  const [creatorUserData, setCreatorUserData] = useState(null);
+
+  useEffect(() => {
+
+    const fetchUserData = async () => {
+      await axios.get(`http://localhost:8000/api/client/${client}/`
+      ).then(async response => {
+        await setCreatorUserData({
+          first_name: response.data.first_name,
+          last_name: response.data.last_name,
+          username: response.data.username,
+          email: response.data.email,
+          profile_picture: response.data.profile_picture ? "http://localhost:8000/" + response.data.profile_picture : null,
+        })
+      }).catch(error => {
+        console.error('Error fetching data: ', error);
+        alert('Error 404');
+      });
+    };
+    if (client)
+      fetchUserData();
+  }, [client]);
   // Funkcija za registraciju na aktivnost
   const handleRegister = async () => {
     if (!isLoggedIn) {
@@ -351,6 +376,12 @@ const ActivityCard = ({ activity }) => {
     tenis: faTableTennis,
     odbojka: faVolleyballBall,
   };
+  //edit dogadjaja
+  const [isEditVisible, setIsEditVisible] = useState(false);
+  const toggleEdit = () => {
+    setIsEditVisible(!isEditVisible);
+    setShowMenu(!showMenu);
+  };
 
   return (
     <div className="activity-card">
@@ -365,11 +396,19 @@ const ActivityCard = ({ activity }) => {
           />
           {showMenu && (
             <div className="menu-dropdown">
-              <button className="menu-button" ><FontAwesomeIcon icon={faEdit} />{" "}Uredi</button>
+              <button className="menu-button" onClick={toggleEdit}><FontAwesomeIcon icon={faEdit} />{" "}Uredi</button>
               <button className="menu-button" onClick={handleDelete}><FontAwesomeIcon icon={faTrash} />{" "}Obriši</button>
             </div>
           )}
-
+          {isEditVisible && (
+            <div>
+              <EditEventCard user={creatorUserData} pk={client} event={activity} closeFunction={toggleEdit} className="new-event-card" />
+              {/*<IoIosCloseCircle
+              className="close-icon-new-advertisement"
+              onClick={() => setIsEditVisible(false)}
+            />*/}
+            </div>
+          )}
         </div>
       )}
      
