@@ -7,7 +7,7 @@ import { IoIosCloseCircle } from "react-icons/io";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faClock, faRunning, faMapMarkerAlt, faFutbol, faUser, faBasketballBall, faTableTennis, faVolleyballBall, faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
-const SponsoredEventCard = ({ event, user, currentUser }) => {
+const SponsoredEventCard = ({ event, user, currentUser, type }) => {
   const { id, name, description, date, field, business_subject, sport, duration_hours } = event;
   const [location, setLocation] = useState("");
   const [preciseLocation, setPreciseLocation] = useState("");
@@ -192,7 +192,7 @@ const SponsoredEventCard = ({ event, user, currentUser }) => {
               <FontAwesomeIcon icon={faUser} /> by @{name1}
             </div>
           </div>
-          {user && (
+          {type==='BusinessSubject' && (
             <div className="event-card-menu">
               <BsThreeDotsVertical className="menu-icon" onClick={toggleMenu} />
               {menuVisible && (
