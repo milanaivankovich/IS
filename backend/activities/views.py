@@ -147,17 +147,24 @@ def get_location_by_field_id(request, field_id):
         return Response({'error': 'Field not found'}, status=404)
     
 @api_view(['PUT'])
-def update_activity(request, activity_id):
+def update_activity(request, pk):
     try:
-        activities = Activities.objects.get(activity_id = activity_id, is_deleted=False)
+        # Pronalazak aktivnosti koja nije obrisana
+        activity = Activities.objects.get(pk=pk, is_deleted=False)
     except Activities.DoesNotExist:
-        return Response({'error': 'Activitie not found'}, status=404)
+        return Response({'error': 'Aktivnost nije pronađena.'}, status=404)
 
-    serializer = ActivitiesSerializer(activities, data=request.data, partial=True)
+    # Kreiramo serializer s postojećim objektom i novim podacima
+    serializer = ActivitiesSerializer(activity, data=request.data, partial=True)
     if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=200)
+        try:
+            # Validacija na nivou modela (clean metoda)
+            serializer.save()
+            return Response({'message': 'Aktivnost uspješno ažurirana!', 'activity': serializer.data}, status=200)
+        except ValidationError as e:
+            return Response({'error': str(e)}, status=400)
     else:
+        # Povrat grešaka validacije serializer-a
         return Response(serializer.errors, status=400)
 
 
