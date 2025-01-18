@@ -13,7 +13,7 @@ import {
 import EditEventCard from "./EditEventCard";
 
 const ActivityCard = ({ activity }) => {
-  const { description, date, field, titel, sport, id, NumberOfParticipants, participants, client } = activity;
+  const { description, date, field, titel, sport, id, NumberOfParticipants, participants, client,duration_hours } = activity;
   const [location, setLocation] = useState("");
   const [sports, setSport] = useState("");
 
@@ -349,7 +349,7 @@ const ActivityCard = ({ activity }) => {
 
 
   ///datetime
-  const parseDateTime = (dateString) => {
+  const parseDateTime = (dateString, duration_hours) => {
     // Parse the input date string
     const date = new Date(dateString);
 
@@ -366,11 +366,21 @@ const ActivityCard = ({ activity }) => {
         minute: "2-digit",
         hour12: false,
       });
+      
+      const endDate = new Date(date);
+      endDate.setHours(endDate.getHours() + duration_hours);
 
-    return { formattedDate, formattedTime };
+      const formattedEndTime = endDate
+      .toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+
+    return { formattedDate, formattedTime, formattedEndTime};
   };
 
-  const { formattedDate, formattedTime } = parseDateTime(date);
+  const { formattedDate, formattedTime,formattedEndTime} = parseDateTime(date, duration_hours);
 
   const sportIcons = {
     fudbal: faFutbol,
@@ -439,10 +449,10 @@ const ActivityCard = ({ activity }) => {
       <div className="activity-card-footer">
         <div className="activity-card-footer-left">
           <p>
-            <FontAwesomeIcon icon={faCalendarAlt} />  {formattedDate}
+            <FontAwesomeIcon icon={faCalendarAlt} />  {formattedDate} 
           </p>
           <p>
-            <FontAwesomeIcon icon={faClock} />  {formattedTime}
+            <FontAwesomeIcon icon={faClock} />  {formattedTime} - {formattedEndTime}
           </p>
         </div>
         <div className="activity-card-footer-right">
