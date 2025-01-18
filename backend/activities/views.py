@@ -47,17 +47,32 @@ def client_activities(request, client_id):
 
 @api_view(['POST'])
 def add_activity(request, client_id):
-    client = get_object_or_404(Client, id=client_id)
+    print("Primljen zahtjev za kreiranje aktivnosti.")  # Prati ulaz u funkciju
 
-    # Kopiramo podatke iz request-a i postavljamo 'client'
+    # Pronalazi klijenta
+    client = get_object_or_404(Client, id=client_id)
+    print(f"Klijent pronađen: {client}")  # Ispisuje pronađenog klijenta
+
+    # Kopiraj podatke i postavi client ID
     data = request.data.copy()
     data['client'] = client.id
+    print(f"Podaci za aktivnost: {data}")  # Ispisuje podatke koji dolaze iz zahtjeva
 
+    # Validacija i kreiranje aktivnosti
     serializer = ActivitiesSerializer(data=data)
     if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print("Serializer je validan.")  # Validacija je uspješna
+        try:
+            activity = serializer.save()
+            print(f"Aktivnost kreirana: {activity}")  # Ispisuje kreiranu aktivnost
+            return Response({'message': 'Aktivnost uspješno kreirana!', 'activity': ActivitiesSerializer(activity).data}, status=201)
+        except ValidationError as e:
+            print(f"Validacija nije uspjela: {e}")  # Ako validacija u modelu ne uspije
+            return Response({'error': str(e)}, status=400)
+    else:
+        print(f"Serializer nije validan: {serializer.errors}")  # Ako serializer ne prođe validaciju
 
+    # Povrat grešaka ako serializer nije validan
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -136,7 +151,7 @@ def update_activity(request, activity_id):
     try:
         activities = Activities.objects.get(activity_id = activity_id, is_deleted=False)
     except Activities.DoesNotExist:
-        return Response({'error': 'Advertisement not found'}, status=404)
+        return Response({'error': 'Activitie not found'}, status=404)
 
     serializer = ActivitiesSerializer(activities, data=request.data, partial=True)
     if serializer.is_valid():

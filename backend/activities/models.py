@@ -3,6 +3,7 @@ from accounts.models import Client
 from django.core.exceptions import ValidationError
 from django.utils.timezone import localtime
 from django.utils.timezone import now
+from datetime import timedelta
 
 class Activities(models.Model):
     id = models.AutoField(primary_key=True)
@@ -15,7 +16,8 @@ class Activities(models.Model):
     sport = models.ForeignKey('fields.Sport', on_delete=models.CASCADE, null=True)
     is_deleted = models.BooleanField(default=False)
     participants = models.ManyToManyField(Client, related_name='activities_participated', blank=True)
-    
+    duration_hours = models.IntegerField(null=False, default=0) 
+
     def clean(self):
         if self.date is None:
             raise ValidationError("Datum ne može biti prazan.")
@@ -24,6 +26,15 @@ class Activities(models.Model):
         if self.NumberOfParticipants is not None and self.NumberOfParticipants < 0:
             raise ValidationError("Broj učesnika ne može biti negativan.")
         super().clean()
+
+        conflicting_activities = Activities.objects.filter(
+            field=self.field,
+            is_deleted=False,
+            date__lt=self.date + timedelta(hours=self.duration_hours),
+            date__gte=self.date,
+        ).exclude(id=self.id)
+        if conflicting_activities.exists():
+            raise ValidationError("Teren je zauzet u ovom vremenskom periodu.")
     @transaction.atomic
     def register_participant(self, user):
         """
