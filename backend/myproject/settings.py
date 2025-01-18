@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'fields',
     'reviews',
     'advertisements',
-    'comments',
 ]
 
 MIDDLEWARE = [

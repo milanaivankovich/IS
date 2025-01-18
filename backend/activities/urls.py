@@ -35,4 +35,5 @@ urlpatterns = [
     path('activities/<int:activity_id>/unregister/', views.unregister_activity, name='unregister_activity'),
     path('activities/delete/<int:pk>/', views.delete_activity, name='delete_activity'),
     path('activities/<int:activity_id>/participants/', views.activity_participants, name='activity_participants'),
+    path('api/comments/<int:activity>/', views.comments_by_activity), #GET and POST comments by activity
 ]

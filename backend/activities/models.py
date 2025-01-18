@@ -5,6 +5,16 @@ from django.utils.timezone import localtime
 from django.utils.timezone import now
 from datetime import timedelta
 
+class Comment(models.Model):
+  id = models.AutoField(primary_key=True)
+  date = models.DateTimeField(auto_now_add=True, null=True)
+  client = models.ForeignKey('accounts.Client', on_delete=models.CASCADE, null=True)
+  text = models.TextField(blank=True, null=True)
+
+  def __str__(self):
+        return self.text
+
+
 class Activities(models.Model):
     id = models.AutoField(primary_key=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='activities')
@@ -17,6 +27,7 @@ class Activities(models.Model):
     is_deleted = models.BooleanField(default=False)
     participants = models.ManyToManyField(Client, related_name='activities_participated', blank=True)
     duration_hours = models.IntegerField(null=False, default=0) 
+    comments = models.ManyToManyField(Comment, related_name='activities', blank=True) 
 
     def clean(self):
         if self.date is None:
