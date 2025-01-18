@@ -6,6 +6,27 @@ const Comments = ({ activityId }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState([]);
+  const [usernames, setUsernames] = useState({});
+
+  // Dohvatanje trenutno prijavljenog korisnika
+  useEffect(() => {
+    const fetchUser = async () => {
+      await axios.get(`http://127.0.0.1:8000/api/get-user-type-and-id/`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      })
+        .then((request) => {
+          setUser(request.data);
+        })
+        .catch((error) => {
+          console.error("Error getting ID: ", error);
+          alert("Neuspjesna autorizacija. Molimo ulogujte se... ");
+          window.location.replace("/login"); 
+        });
+    };
+
+    fetchUser();
+  }, []);
 
   // Dohvatanje komentara za aktivnost
   const fetchComments = async () => {
@@ -37,7 +58,9 @@ const Comments = ({ activityId }) => {
     try {
       const response = await axios.post(
         `http://127.0.0.1:8000/api/comments/${activityId}/`,
-        { text: newComment },
+        { text: newComment,
+          client: user.id
+         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -61,6 +84,27 @@ const Comments = ({ activityId }) => {
     fetchComments();
   }, [activityId]);
 
+  //Dohvati ime korisnika po id-u
+  useEffect(() => {
+    const fetchName = async (clientId) => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/client/${clientId}/`
+        );
+        const data = await response.json();
+        setUsernames((prev) => ({ ...prev, [clientId]: data.username }));
+      } catch (error) {
+        console.error("Error fetching username:", error);
+      }
+    };
+
+    comments.forEach((comment) => {
+      if (comment.client && !usernames[comment.client]) {
+        fetchName(comment.client);
+      }
+    });
+  }, [comments]);
+
   return (
     <div className="comments-section">
       <h4>Komentari</h4>
@@ -76,7 +120,7 @@ const Comments = ({ activityId }) => {
                 </span>{" "}
                 -{" "}
                 <span className="comment-author">
-                  @{comment.client?.username || "Nepoznato"}
+                  @{usernames[comment.client] || "Nepoznato"}
                 </span>
               </p>
             </div>

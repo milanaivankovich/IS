@@ -8,7 +8,8 @@
         "field_id": 1,
         "NumberOfParticipants": 4,
         "sport_id": 1,
-        "is_deleted": false
+        "is_deleted": false,
+        "duration_hours": 0
     },
     {
         "id": 13,
@@ -19,7 +20,8 @@
         "field_id": 3,
         "NumberOfParticipants": 3,
         "sport_id": 2,
-        "is_deleted": false
+        "is_deleted": false,
+        "duration_hours": 0
     },
     {
         "id": 14,
@@ -30,7 +32,8 @@
         "field_id": 4,
         "NumberOfParticipants": 1,
         "sport_id": 2,
-        "is_deleted": false
+        "is_deleted": false,
+        "duration_hours": 0
     },
     {
         "id": 15,
@@ -41,18 +44,8 @@
         "field_id": 6,
         "NumberOfParticipants": 5,
         "sport_id": 4,
-        "is_deleted": false
-    },
-    {
-        "id": 16,
-        "client_id": 7,
-        "titel": "Basket",
-        "description": "testtestestestset",
-        "date": "2025-01-24",
-        "field_id": 1,
-        "NumberOfParticipants": 4,
-        "sport_id": 1,
-        "is_deleted": false
+        "is_deleted": false,
+        "duration_hours": 0
     },
     {
         "id": 17,
@@ -63,7 +56,8 @@
         "field_id": 2,
         "NumberOfParticipants": 10,
         "sport_id": 2,
-        "is_deleted": true
+        "is_deleted": true,
+        "duration_hours": 0
     },
     {
         "id": 18,
@@ -74,17 +68,31 @@
         "field_id": 2,
         "NumberOfParticipants": 10,
         "sport_id": 2,
-        "is_deleted": true
+        "is_deleted": true,
+        "duration_hours": 0
     },
     {
-        "id": 19,
+        "id": 20,
         "client_id": 10,
-        "titel": "naslov2222",
+        "titel": "Basket",
         "description": "opisopisopis",
-        "date": "2025-01-30",
-        "field_id": 4,
-        "NumberOfParticipants": 8,
-        "sport_id": 4,
-        "is_deleted": true
+        "date": "2025-01-29",
+        "field_id": 1,
+        "NumberOfParticipants": 5,
+        "sport_id": 1,
+        "is_deleted": false,
+        "duration_hours": 2
+    },
+    {
+        "id": 21,
+        "client_id": 7,
+        "titel": "basket",
+        "description": "opis",
+        "date": "2025-01-23",
+        "field_id": 1,
+        "NumberOfParticipants": 5,
+        "sport_id": 1,
+        "is_deleted": false,
+        "duration_hours": 2
     }
 ]

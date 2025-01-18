@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Activities 
+from .models import Activities, Comment
 
 class ActivitiesAdmin(admin.ModelAdmin):
     list_display = ('titel', 'description', 'date', 'NumberOfParticipants', 'sport', 'field', 'get_client_username')
@@ -11,3 +11,4 @@ class ActivitiesAdmin(admin.ModelAdmin):
     get_client_username.short_description = 'Client Username'
     
 admin.site.register(Activities)
+admin.site.register(Comment)
