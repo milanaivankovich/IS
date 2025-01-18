@@ -220,3 +220,15 @@
   color: #999;
   text-align: left;
 }
+.activity-card-comments {
+  margin-top: 20px;
+  padding: 15px;
+  border-top: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+.activity-card-comments h4 {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
+}

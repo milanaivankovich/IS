@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./ActivityCard.css";
+import Comments from "./Comments"; // Pretpostavka da je Comments.js u istom direktorijumu
+
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -485,6 +487,10 @@ const ActivityCard = ({ activity }) => {
         )}
         </div>
       </div>
+      <div className="activity-card-comments">
+      <h4>Komentari</h4>
+      <Comments activityId={id} />
+    </div>
 
 
 
