@@ -147,10 +147,10 @@ def get_location_by_field_id(request, field_id):
         return Response({'error': 'Field not found'}, status=404)
     
 @api_view(['PUT'])
-def update_activity(request, pk):
+def update_activity(request, activity_id):
     try:
         # Pronalazak aktivnosti koja nije obrisana
-        activity = Activities.objects.get(pk=pk, is_deleted=False)
+        activity = Activities.objects.get(id=activity_id, is_deleted=False)
     except Activities.DoesNotExist:
         return Response({'error': 'Aktivnost nije pronađena.'}, status=404)
 
