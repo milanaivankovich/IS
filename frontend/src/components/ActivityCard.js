@@ -11,6 +11,7 @@ import {
 }
   from "@fortawesome/free-solid-svg-icons";
 import EditEventCard from "./EditEventCard";
+import { faComments } from "@fortawesome/free-solid-svg-icons";
 
 const ActivityCard = ({ activity }) => {
   const { description, date, field, titel, sport, id, NumberOfParticipants, participants, client,duration_hours } = activity;
@@ -28,7 +29,12 @@ const ActivityCard = ({ activity }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [activityParticipants, setActivityParticipants] = useState([]);
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [showComments, setShowComments] = useState(false); // Praćenje vidljivosti komentara
 
+  // Funkcija za prebacivanje vidljivosti komentara
+  const toggleComments = () => {
+    setShowComments((prev) => !prev);
+  };
   const fetchParticipants = async () => {
     try {
       const response = await axios.get(
@@ -497,11 +503,7 @@ const ActivityCard = ({ activity }) => {
         )}
         </div>
       </div>
-      <div className="activity-card-comments">
-      <h4>Komentari</h4>
-      <Comments activityId={id} />
-    </div>
-
+     
 
 
       {!isCreator && <>
@@ -527,6 +529,27 @@ const ActivityCard = ({ activity }) => {
           <p className="error-message">Nije moguće prijaviti se na aktivnost koja je već završena.</p>
         )}
         {!isLoggedIn && <p className="error-message">Morate biti prijavljeni da biste se prijavili na aktivnost.</p>}
+         {/* Ikonica za komentare */}
+      <div className="activity-card-comments-toggle">
+        <FontAwesomeIcon
+          icon={faComments}
+          className="comments-icon"
+          onClick={toggleComments}
+          style={{ cursor: "pointer", marginTop: "10px" }}
+        />
+        <span onClick={toggleComments} style={{ cursor: "pointer", marginLeft: "8px" }}>
+          {showComments ? "Sakrij komentare" : "Prikaži komentare"}
+        </span>
+      </div>
+
+      {/* Sekcija komentara */}
+      {showComments && (
+        <div className="activity-card-comments">
+          
+          <Comments activityId={id} />
+        </div>
+      )}
+  
 
         {error && <p className="error-message">{error}</p>}
       </>}
