@@ -17,11 +17,19 @@ def setData(request):
         serializer.save()
     return Response(serializer.data)
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def comments_by_activity(request, activity):
-    try:
-        comments = Comment.objects.filter(activity=activity)
-        serializer = CommentSerializer(comments, many=True)
-        return Response(serializer.data)
-    except Comment.DoesNotExist:
-        return Response(status=404)
+    if request.method == 'GET':
+        try:
+            comments = Comment.objects.filter(activity=activity)
+            serializer = CommentSerializer(comments, many=True)
+            return Response(serializer.data)
+        except Comment.DoesNotExist:
+            return Response(status=404)
+    
+    if request.method == 'POST':
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(activity_id=activity)  # Poveži komentar sa aktivnošću
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
