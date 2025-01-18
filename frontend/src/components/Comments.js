@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Comments.css";
+import CreatorImg from "../images/user.svg";
 
 const Comments = ({ activityId }) => {
   const [comments, setComments] = useState([]);
@@ -8,6 +9,7 @@ const Comments = ({ activityId }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState([]);
   const [usernames, setUsernames] = useState({});
+  const [pictures, setPictures] = useState({});
 
   // Dohvatanje trenutno prijavljenog korisnika
   useEffect(() => {
@@ -86,7 +88,7 @@ const Comments = ({ activityId }) => {
 
   //Dohvati ime korisnika po id-u
   useEffect(() => {
-    const fetchName = async (clientId) => {
+    const fetchUsername = async (clientId) => {
       try {
         const response = await fetch(
           `http://127.0.0.1:8000/api/client/${clientId}/`
@@ -100,10 +102,33 @@ const Comments = ({ activityId }) => {
 
     comments.forEach((comment) => {
       if (comment.client && !usernames[comment.client]) {
-        fetchName(comment.client);
+        fetchUsername(comment.client);
       }
     });
   }, [comments]);
+  
+
+    //Dohvati slike korisnika po id-u
+    useEffect(() => {
+      const fetchPicture = async (clientId) => {
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:8000/api/client/${clientId}/`
+          );
+          const data = await response.json();
+          setPictures((prev) => ({ ...prev, [clientId]: `http://127.0.0.1:8000/` + data.profile_picture }));
+        } catch (error) {
+          console.error("Error fetching username:", error);
+        }
+      };
+  
+      comments.forEach((comment) => {
+        if (comment.client && !pictures[comment.client]) {
+          fetchPicture(comment.client);
+        }
+      });
+    }, [comments]);
+
 
   return (
     <div className="comments-section">
@@ -114,6 +139,7 @@ const Comments = ({ activityId }) => {
           comments.map((comment) => (
             <div key={comment.id} className="comment">
               <p className="comment-text">{comment.text}</p>
+              <img src={pictures[comment.client] !== null ? pictures[comment.client] : CreatorImg} className="creator-image" alt="Creator" />
               <p className="comment-meta">
                 <span className="comment-date">
                   {new Date(comment.date).toLocaleString()}
