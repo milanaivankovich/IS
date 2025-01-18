@@ -27,7 +27,7 @@ const AddPhoto = ({ userId }) => {
   };
 
   const onCropComplete = (croppedArea, croppedAreaPixels) => {
-    setCrop(croppedAreaPixels);
+    setCroppedAreaPixels(croppedAreaPixels);
   };
 
   const [formData, setFormData] = useState(null);
@@ -68,7 +68,7 @@ const AddPhoto = ({ userId }) => {
 
   const handleCrop = async () => {
     try {
-      const croppedBlob = await getCroppedImg(imageSrc, crop); // imageSrc i crop dolaze iz stanja
+      const croppedBlob = await getCroppedImg(imageSrc, croppedAreaPixels); // imageSrc i crop dolaze iz stanja
       const croppedUrl = URL.createObjectURL(croppedBlob); // Kreira URL za isečenu sliku
       setFinalImage(croppedUrl);
       setFormData((prevFormData) => ({
