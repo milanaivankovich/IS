@@ -24,22 +24,29 @@ const ActivityCard = ({ activity }) => {
   const [remainingSlots, setRemainingSlots] = useState(initialRemainingSlots);
   const [isLoading, setIsLoading] = useState(false);
   const [activityParticipants, setActivityParticipants] = useState([]);
-
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
   const fetchParticipants = async () => {
     try {
       const response = await axios.get(
         `http://127.0.0.1:8000/activities/${id}/participants/`
       );
-      setActivityParticipants(response.data.participants); // Postavite učesnike
+      setActivityParticipants(response.data.participants || []); // Postavite učesnike
     } catch (error) {
       console.error("Error fetching participants:", error);
     }
   };
   useEffect(() => {
-    fetchParticipants();
-  }, []);
+    console.log("Updated activityParticipants:", activityParticipants); // Debug log
+  }, [activityParticipants]);
 
+  const handleIconClick = () => {
+    console.log("Icon clicked!"); // Proveri da li se klik detektuje
+    setIsDropdownVisible((prev) => !prev);
+    if (!isDropdownVisible) {
+      fetchParticipants();
+    }
+  };
   useEffect(() => {
     const fetchUsername = async () => {
       try {
@@ -365,18 +372,7 @@ const ActivityCard = ({ activity }) => {
 
         </div>
       )}
-      <div className="participants-list">
-        <h4>Učesnici:</h4>
-        {activityParticipants.length > 0 ? (
-          <ul>
-            {activityParticipants.map((participant, index) => (
-              <li key={index}>{participant}</li>
-            ))}
-          </ul>
-        ) : (
-          <p>Još nema učesnika.</p>
-        )}
-      </div>
+     
 
       <p>
         <FontAwesomeIcon icon={faUser} /> <strong> by @</strong>{" "}
@@ -417,12 +413,37 @@ const ActivityCard = ({ activity }) => {
             >
               {location || "Učitavanje..."}
             </span>
+            </p> 
             <p>
-              <FontAwesomeIcon icon={faUser} /> {" "}
-              {NumberOfParticipants - remainingSlots || "0"} / {NumberOfParticipants}  učesnika
-            </p>
-
-          </p>
+            <FontAwesomeIcon
+               icon={faUser}
+                onClick={handleIconClick}
+                style={{ cursor: "pointer", marginRight: "10px" }}
+                   
+                        />
+                    {NumberOfParticipants - remainingSlots || "0"} / {NumberOfParticipants} učesnika
+                     </p>
+      {/* Padajuća lista učesnika */}
+      {isDropdownVisible && (
+          <div className="participants-list">
+            <h4>Učesnici:</h4>
+            {activityParticipants.length > 0 ? (
+              <ul>
+                {activityParticipants.map((participant, index) => (
+                  <li key={index}>
+                  <span
+            className="clickable-username"
+            onClick={() => handleUsernameClick(participant)}
+          >
+            @{participant}
+          </span></li>
+                ))}
+              </ul>
+            ) : (
+              <p>Još nema učesnika.</p>
+            )}
+          </div>
+        )}
         </div>
       </div>
 
