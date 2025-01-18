@@ -1,10 +1,10 @@
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
-from .models import Activities
+from .models import Activities, Comment
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
 from accounts.models import Client
-from .serializers import ActivitiesSerializer
+from .serializers import ActivitiesSerializer, CommentSerializer
 from rest_framework import status
 from django.shortcuts import get_object_or_404, render
 from datetime import datetime
@@ -384,3 +384,27 @@ def delete_activity(request, pk):
     activity.save()
 
     return Response({'message': 'Activity marked as deleted'}, status=200)
+
+@api_view(['GET', 'POST'])
+def comments_by_activity(request, activity):
+    try:
+        # Provjerava postoji li aktivnost s proslijeđenim ID-jem
+        activity_instance = Activities.objects.get(id=activity)
+    except Activities.DoesNotExist:
+        return Response({"error": "Activity not found"}, status=404)
+
+    if request.method == 'GET':
+        # Dohvaća komentare povezane s aktivnošću
+        comments = activity_instance.comments.all()
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data, status=200)
+
+    if request.method == 'POST':
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            # Kreira novi komentar i povezuje ga s aktivnošću
+            comment = serializer.save()
+            activity_instance.comments.add(comment) 
+            return Response(CommentSerializer(comment).data, status=201)
+        return Response(serializer.errors, status=400)
+
