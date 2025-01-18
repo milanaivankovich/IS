@@ -332,17 +332,18 @@ const ActivityCard = ({ activity }) => {
         body: JSON.stringify(currentUserData),
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        fetchParticipants();
+        // Smanji broj slobodnih mesta na frontendu
+        setRemainingSlots((prev) => prev + 1);
+        alert("Uspešno ste se odjavili sa aktivnosti!");
+      } else {
         const data = await response.json();
-        throw new Error(data.error || "Failed to register for the activity");
+        alert(data.error || "Greška pri prijavi.");
       }
-
-      const data = await response.json();
-      fetchParticipants();
-      setRemainingSlots(data.remaining_slots);
-      alert(data.message);
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      console.error("Error during registration:", error);
+      alert("Došlo je do greške.");
     } finally {
       setIsLoading(false);
     }
