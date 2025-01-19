@@ -118,5 +118,29 @@
         "sport_id": 3,
         "is_deleted": true,
         "duration_hours": 1
+    },
+    {
+        "id": 24,
+        "client_id": 31,
+        "titel": "Basket",
+        "description": "Vecernja utakmica na otvorenom",
+        "date": "2025-02-05",
+        "field_id": 1,
+        "NumberOfParticipants": 5,
+        "sport_id": 1,
+        "is_deleted": false,
+        "duration_hours": 2
+    },
+    {
+        "id": 25,
+        "client_id": 31,
+        "titel": "Kosarka rekreativno",
+        "description": "Trazimo nove clanove",
+        "date": "2025-02-07",
+        "field_id": 4,
+        "NumberOfParticipants": 5,
+        "sport_id": 1,
+        "is_deleted": false,
+        "duration_hours": 2
     }
 ]

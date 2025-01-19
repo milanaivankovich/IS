@@ -53,5 +53,16 @@
         "sport_id": 4,
         "is_deleted": false,
         "duration_hours": 2
+    },
+    {
+        "id": 6,
+        "name": "Upis novih članova",
+        "description": "Muški odbojkaški klub Borac vrši upis novih članova.",
+        "date": "2025-02-01",
+        "business_subject_id": 7,
+        "field_id": 6,
+        "sport_id": 4,
+        "is_deleted": false,
+        "duration_hours": 1
     }
 ]
