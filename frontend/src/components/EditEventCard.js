@@ -5,8 +5,6 @@ import axios from "axios";
 import Select from 'react-select';
 import { IoIosCloseCircle } from "react-icons/io";
 
-
-//pretraziti lokacije pa ponuditi autofill
 const EditEventCard = ({ user, pk, event, closeFunction }) => {
 
   const [fields, setFields] = useState([]);
@@ -71,7 +69,9 @@ const EditEventCard = ({ user, pk, event, closeFunction }) => {
             setFields(response.data);
             setOptionsLocation(response.data.map(item => ({
               value: item.id,
-              label: item.location + ' (' + item.sports.map(sport => sport.name).join(', ') + ')',
+              label: `${item.location}-${item.precise_location} (${item.sports
+                .map((sport) => sport.name)
+                .join(", ")})`,
               sport: item.sports.map(sport => ({
                 sportID: sport.id,
                 sportName: sport.name,
@@ -147,7 +147,7 @@ const EditEventCard = ({ user, pk, event, closeFunction }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await setEventData(prevData => ({ ...prevData, field: selectedLocation.value, sport: selectedLocation.value }));
+    await setEventData(prevData => ({ ...prevData, field: selectedLocation.value, sport: selectedSport.value }));
     if (eventData.field !== -1 && eventData.sport !== -1 && eventData.NumberOfParticipants !== -1
       && eventData.NumberOfParticipants !== -1
     ) {

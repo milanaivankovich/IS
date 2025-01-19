@@ -77,9 +77,9 @@
         "titel": "Basket",
         "description": "opisopisopis1",
         "date": "2025-01-29",
-        "field_id": 1,
+        "field_id": 3,
         "NumberOfParticipants": 5,
-        "sport_id": 1,
+        "sport_id": 2,
         "is_deleted": false,
         "duration_hours": 2
     },
@@ -94,5 +94,29 @@
         "sport_id": 1,
         "is_deleted": false,
         "duration_hours": 2
+    },
+    {
+        "id": 22,
+        "client_id": 10,
+        "titel": "Fudbal",
+        "description": "opisopisopis",
+        "date": "2025-01-31",
+        "field_id": 4,
+        "NumberOfParticipants": 4,
+        "sport_id": 1,
+        "is_deleted": false,
+        "duration_hours": 2
+    },
+    {
+        "id": 23,
+        "client_id": 10,
+        "titel": "Tenis",
+        "description": "opisopisopis",
+        "date": "2025-01-31",
+        "field_id": 2,
+        "NumberOfParticipants": 3,
+        "sport_id": 3,
+        "is_deleted": true,
+        "duration_hours": 1
     }
 ]
