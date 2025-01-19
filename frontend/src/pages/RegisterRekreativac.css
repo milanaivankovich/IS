@@ -1,15 +1,19 @@
 /* RegisterRekreativac.css */
 .register-body {
-  margin: 0; /* Uklanja bijele margine */
+  margin: 0;
+  /* Uklanja bijele margine */
   padding: 0;
-  background-color: #22caff; /* Svijetloplava pozadina */
+  background-color: lightyellow;
+  /* Svijetloplava pozadina */
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Forma u centru */
+  height: 100vh;
+  /* Forma u centru */
   box-sizing: border-box;
-  overflow: hidden; /* Sprečava skrolovanje ako nešto izlazi van */
+  overflow: hidden;
+  /* Sprečava skrolovanje ako nešto izlazi van */
 }
 
 .register-container {
@@ -17,16 +21,19 @@
   flex-direction: column;
   align-items: center;
   font-family: Arial, sans-serif;
-  width: 100%; /* Širina kontejnera */
+  width: 100%;
+  /* Širina kontejnera */
 }
 
 .logo-container {
-  margin-top: 0; /* Smanjuje razmak na vrhu */
+  margin-top: 0;
+  /* Smanjuje razmak na vrhu */
   margin-bottom: 20px;
 }
 
 .basket-logo {
-  width: 160px; /* Prilagodite veličinu logotipa ako je potrebno */
+  width: 160px;
+  /* Prilagodite veličinu logotipa ako je potrebno */
   max-width: 250px;
 }
 
@@ -36,12 +43,13 @@
 }
 
 #form-container {
-  border: 3px solid #ff6600; 
+  border: 3px solid #ff6600;
   background: #f9f9f9;
   border-radius: 10px;
   padding: 20px;
   width: 100%;
-  max-width: 400px; /* Fiksna širina forme */
+  max-width: 400px;
+  /* Fiksna širina forme */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -71,8 +79,8 @@ input {
 
 input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  border-color: #ff6600;
+  box-shadow: 0 0 2px #ff6600;
 }
 
 .password-criteria-box {
@@ -176,7 +184,7 @@ button.email-button:hover {
 }
 
 .login-prompt .login-link {
-  color: #007bff;
+  color: #0056b3;
   font-weight: bold;
   text-decoration: none;
 }
@@ -229,9 +237,9 @@ button.email-button:hover {
   color: #333;
 }
 
-.tekst-za-unos{
+.tekst-za-unos {
   text-align: center;
-  
+
 }
 
 .password-container {
@@ -251,6 +259,7 @@ button.email-button:hover {
   right: 10px;
   cursor: pointer;
 }
+
 .image-preview-container {
   display: flex;
   flex-direction: column;
@@ -278,21 +287,29 @@ button.email-button:hover {
 .remove-button:hover {
   background-color: #e60000;
 }
+
 .crop-container {
-  position: relative; /* Obavezno! */
-  width: 100%; /* Postavi širinu po potrebi */
-  height: 400px; /* Visina za prikaz croppera */
-  overflow: hidden; /* Sprečava da sadržaj izlazi van */
+  position: relative;
+  /* Obavezno! */
+  width: 100%;
+  /* Postavi širinu po potrebi */
+  height: 400px;
+  /* Visina za prikaz croppera */
+  overflow: hidden;
+  /* Sprečava da sadržaj izlazi van */
 }
 
 .crop-buttons {
   position: absolute;
-  bottom: 10px; /* Dugmad na dnu crop-containera */
+  bottom: 10px;
+  /* Dugmad na dnu crop-containera */
   left: 50%;
-  transform: translateX(-50%); /* Centriraj dugmad horizontalno */
+  transform: translateX(-50%);
+  /* Centriraj dugmad horizontalno */
   display: flex;
   gap: 10px;
 }
+
 .save-button,
 .cancel-button {
   background-color: #007bff;
