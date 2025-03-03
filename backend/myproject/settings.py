@@ -34,6 +34,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,11 +49,13 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',  # For Google OAuth
     'allauth.socialaccount.providers.facebook',
     'accounts',
+    'chat',
     'corsheaders',
     'activities',
     'fields',
     'reviews',
     'advertisements',
+    
 ]
 
 MIDDLEWARE = [
@@ -95,12 +99,20 @@ CORS_ALLOWED_ORIGINS = [
 # Allow credentials (cookies)
 CORS_ALLOW_CREDENTIALS = True
 
-WSGI_APPLICATION = 'myproject.wsgi.application'
+ASGI_APPLICATION = 'myproject.wsgi.application'
+#WSGI_APPLICATION = 'myproject.wsgi.application'
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     # Add any other trusted origins here
 ]
+
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -121,6 +133,8 @@ EMAIL_HOST_PASSWORD = 'ocenekonabasket123'  # Use an App Password for Gmail
 DEFAULT_FROM_EMAIL = 'ocenekonabasketbl@gmail.com'
 
 FRONTEND_URL = "http://localhost:3000" 
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

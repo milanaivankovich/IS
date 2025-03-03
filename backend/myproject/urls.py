@@ -11,6 +11,7 @@ urlpatterns = [
     path('', include('fields.urls')),
     path('', include('reviews.urls')),
     path('', include('advertisements.urls')),
+    path('', include('chat.urls')),
 ]
 
 if settings.DEBUG:
