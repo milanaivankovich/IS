@@ -22,8 +22,8 @@ const Comments = ({ activityId }) => {
         })
         .catch((error) => {
           console.error("Error getting ID: ", error);
-          alert("Neuspjesna autorizacija. Molimo ulogujte se... ");
-          window.location.replace("/login"); 
+          //alert("Neuspjesna autorizacija. Molimo ulogujte se... ");
+          //window.location.replace("/login");
         });
     };
 
@@ -60,9 +60,10 @@ const Comments = ({ activityId }) => {
     try {
       const response = await axios.post(
         `http://127.0.0.1:8000/api/comments/${activityId}/`,
-        { text: newComment,
+        {
+          text: newComment,
           client: user.id
-         },
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -106,28 +107,28 @@ const Comments = ({ activityId }) => {
       }
     });
   }, [comments]);
-  
 
-    //Dohvati slike korisnika po id-u
-    useEffect(() => {
-      const fetchPicture = async (clientId) => {
-        try {
-          const response = await fetch(
-            `http://127.0.0.1:8000/api/client/${clientId}/`
-          );
-          const data = await response.json();
-          setPictures((prev) => ({ ...prev, [clientId]: `http://127.0.0.1:8000/` + data.profile_picture }));
-        } catch (error) {
-          console.error("Error fetching username:", error);
-        }
-      };
-  
-      comments.forEach((comment) => {
-        if (comment.client && !pictures[comment.client]) {
-          fetchPicture(comment.client);
-        }
-      });
-    }, [comments]);
+
+  //Dohvati slike korisnika po id-u
+  useEffect(() => {
+    const fetchPicture = async (clientId) => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/client/${clientId}/`
+        );
+        const data = await response.json();
+        setPictures((prev) => ({ ...prev, [clientId]: `http://127.0.0.1:8000/` + data.profile_picture }));
+      } catch (error) {
+        console.error("Error fetching username:", error);
+      }
+    };
+
+    comments.forEach((comment) => {
+      if (comment.client && !pictures[comment.client]) {
+        fetchPicture(comment.client);
+      }
+    });
+  }, [comments]);
 
 
   return (
@@ -138,17 +139,22 @@ const Comments = ({ activityId }) => {
         {comments.length > 0 ? (
           comments.map((comment) => (
             <div key={comment.id} className="comment">
-              <p className="comment-text">{comment.text}</p>
-              <img src={pictures[comment.client] !== null ? pictures[comment.client] : CreatorImg} className="creator-image" alt="Creator" />
-              <p className="comment-meta">
+              
+              <div className="comment-meta">
                 <span className="comment-date">
                   {new Date(comment.date).toLocaleString()}
                 </span>{" "}
-                -{" "}
-                <span className="comment-author">
-                  @{usernames[comment.client] || "Nepoznato"}
-                </span>
-              </p>
+                <div className="comment-author-section">
+                  <img
+                    src={pictures[comment.client] !== null ? pictures[comment.client] : CreatorImg}
+                    className="comment-image"
+                    alt="Creator"
+                  />
+                  <span className="comment-author">@{usernames[comment.client] || "Nepoznato"}</span>
+                </div>
+                <p className="comment-text">{comment.text}</p>
+              </div>
+              
             </div>
           ))
         ) : (
@@ -158,11 +164,12 @@ const Comments = ({ activityId }) => {
 
       <div className="add-comment">
         <textarea
-          placeholder="Dodajte komentar..."
+          placeholder={user.type !== 'Client' ? "Morate biti prijavljeni kao rekreativac da biste ostavili komentar"
+            : "Dodajte komentar..."}
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           rows="3"
-          disabled={isLoading}
+          disabled={isLoading || user.type !== "Client"}
         ></textarea>
         <button
           onClick={submitComment}
