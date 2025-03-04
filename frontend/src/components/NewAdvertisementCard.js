@@ -19,6 +19,7 @@ const EditEventCard = ({ user, pk, eventId, closeFunction }) => {
   const [advertisementSport, setAdvertisementSport] = useState("");
   const [advertisementDurationHours, setAdvertisementDurationHours] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [allActivities, setAllActivities] = useState([]);
   const [allAdvertisements, setAllAdvertisements] = useState([]);
   const [eventData, setEventData] = useState({
     id: eventId || -1,
@@ -48,6 +49,25 @@ const EditEventCard = ({ user, pk, eventId, closeFunction }) => {
 
     fetchAdvertisements();
   }, []);
+
+//Dohvacanje svih aktivnosti
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/activities/");
+        if (!response.ok) {
+          throw new Error("Failed to fetch activities");
+        }
+        const data = await response.json();
+        setAllActivities(data);
+      } catch (error) {
+        console.error("Error fetching activities:", error);
+      }
+    };
+
+    fetchActivities();
+  }, []);
+
 
   useEffect(() => {
     const searchFields = async () => {
@@ -176,7 +196,7 @@ const EditEventCard = ({ user, pk, eventId, closeFunction }) => {
     }
 
     // Provjera postoji li oglas s istim terenom i datumom
-    const isDuplicate = allAdvertisements.some((ad) => {
+    const isDuplicateAd = allAdvertisements.some((ad) => {
       const adStartTime = new Date(ad.date);
       adStartTime.setHours(adStartTime.getHours() - 1);
       const adEndTime = new Date(ad.date);
@@ -198,7 +218,38 @@ const EditEventCard = ({ user, pk, eventId, closeFunction }) => {
       );
     });
 
-    if (isDuplicate) {
+    if (isDuplicateAd) {
+      alert(
+        "Postoji već događaj za odabrani teren i datum. Molimo odaberite drugi datum, vrijeme ili teren."
+      );
+      return;
+    }
+
+    // Provjera postoji li aktivnost s istim terenom i datumom
+    const isDuplicateActivity = allActivities.some((activity) => {
+      const activityStartTime = new Date(activity.date);
+      activityStartTime.setHours(activityStartTime.getHours() - 1);
+      const activityEndTime = new Date(activity.date);
+      activityEndTime.setHours(activityEndTime.getHours() - 1);
+      activityEndTime.setHours(activityEndTime.getHours() + activity.duration_hours);
+
+      const eventStartTime = new Date(eventData.date);
+      const eventEndTime = new Date(eventData.date);
+    
+      eventEndTime.setHours(eventEndTime.getHours() + parseInt(eventData.duration_hours || 0, 10));
+      console.log(eventStartTime, eventEndTime, activityStartTime, activityEndTime);
+      // Provjera preklapanja vremena
+      return (
+        activity.field === selectedLocation?.value  &&
+        (
+          (eventStartTime >= activityStartTime && eventStartTime < activityEndTime) ||
+          (eventEndTime > activityStartTime && eventEndTime <= activityEndTime) ||
+          (eventStartTime <= activityStartTime && eventEndTime >= activityEndTime)
+        )
+      );
+    });
+
+    if (isDuplicateActivity) {
       alert(
         "Postoji već događaj za odabrani teren i datum. Molimo odaberite drugi datum, vrijeme ili teren."
       );

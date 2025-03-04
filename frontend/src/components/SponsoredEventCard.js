@@ -146,6 +146,9 @@ const SponsoredEventCard = ({ event, user, currentUser, type }) => {
       window.location.reload();
     }
   };
+  const handleUsernameClick = (id) => {
+    window.location.href = `http://localhost:3000/userprofile1/${id}/`;
+  };
 
   const handleLocationClick = (fieldId) => {
     window.location.href = `/teren-profil/${fieldId}`;
@@ -189,7 +192,17 @@ const SponsoredEventCard = ({ event, user, currentUser, type }) => {
           <div className="Naslov">
             {name}
             <div className="createdBy">
-              <FontAwesomeIcon icon={faUser} /> by @{name1}
+              <FontAwesomeIcon icon={faUser} /> by @
+              {name1 ? (
+          <span
+            className="clickable-username"
+            onClick={() => handleUsernameClick(name1)}
+          >
+            {name1}
+          </span>
+        ) : (
+          "Nepoznato"
+        )}
             </div>
           </div>
           {type==='BusinessSubject' && (

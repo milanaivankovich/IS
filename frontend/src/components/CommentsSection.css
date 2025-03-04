@@ -1,0 +1,49 @@
+.comments-section-dimmer .comments-section-card {
+  /* Auto layout */
+  display: flex;
+  font-size: 16px;
+  flex-direction: column;
+  margin: 20px;
+  padding: 10px;
+
+  background: #Fefefe;
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+
+  z-index: 1000;
+  position: relative;
+  max-height: 90vh;
+  max-width: 80vw;
+
+}
+
+.comments-section-dimmer .comments-section-body {
+  padding: 0px 10px;
+  overflow-y: scroll;
+  max-height: 83vh;
+}
+
+.comments-section-dimmer {
+  position: fixed;
+  /* Sticks the overlay to the entire screen */
+  top: 0;
+  left: 0;
+  min-width: 100vw;
+  min-height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  padding: 10px;
+  justify-content: center;
+  align-items: flex-start;
+  /* Semi-transparent background */
+  z-index: 999;
+  /* Ensure it's above other content */
+}
+
+
+.comments-section-dimmer .comments-section-close-icon {
+  color: #F15A24;
+  align-self: flex-end;
+  height: 25px;
+  width: 25px;
+}

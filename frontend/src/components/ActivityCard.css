@@ -186,8 +186,12 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 10px;
   z-index: 1000;
-  margin-top: 5px;
-  width: 100px; /* Širina liste */
+  bottom: 22%;
+  min-width: 100px;
+  left: 55%;
+  /* Širina liste */
+  max-width: 50%;
+  overflow: scroll;
 }
 
 .participants-list h4 {
@@ -201,18 +205,21 @@
   list-style-type: none;
   padding: 0;
   margin: 0;
-  text-align: left; /* Poravnanje učesnika lijevo */
+  text-align: left;
+  /* Poravnanje učesnika lijevo */
 }
 
 .participants-list ul li {
   font-size: 14px;
   color: #555;
   padding: 5px 0;
-  border-bottom: 1px solid #eee; /* Linija ispod svakog učesnika */
+  border-bottom: 1px solid #eee;
+  /* Linija ispod svakog učesnika */
 }
 
 .participants-list ul li:last-child {
-  border-bottom: none; /* Uklanja liniju ispod posljednjeg učesnika */
+  border-bottom: none;
+  /* Uklanja liniju ispod posljednjeg učesnika */
 }
 
 .participants-list p {
@@ -220,6 +227,7 @@
   color: #999;
   text-align: left;
 }
+
 .activity-card-comments {
   margin-top: 20px;
   padding: 15px;

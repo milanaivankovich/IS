@@ -14,7 +14,7 @@ def getData(request):
     advertisements = Advertisement.objects.filter(
         is_deleted=False,
         date__gt=now
-    )
+    ).order_by('date')  
     serializer = AdvertisementSerializer(advertisements, many=True)
     return Response(serializer.data)
 
@@ -134,7 +134,7 @@ def get_advertisements_by_business_subject(request, business_name):
         business_subject=business_subject,
         is_deleted=False,
         date__gt=now
-    )
+    ).order_by('date')
     
     if advertisements.exists():
         serializer = AdvertisementSerializer(advertisements, many=True)
@@ -146,7 +146,7 @@ def get_advertisements_by_business_subject(request, business_name):
 @api_view(['GET'])
 def advertisements_by_field(request, field):
     try:
-        reviews = Advertisement.objects.filter(field=field, is_deleted=False, date__gt=now())
+        reviews = Advertisement.objects.filter(field=field, is_deleted=False, date__gt=now()).order_by('date')
         serializer = AdvertisementSerializer(reviews, many=True)
         return Response(serializer.data)
     except Advertisement.DoesNotExist:
@@ -192,7 +192,7 @@ def get_past_advertisements_by_business_subject(request, business_name):
         business_subject=business_subject,
         is_deleted=False,
         date__lt=now
-    )
+    ).order_by('date')
     
     if advertisements.exists():
         serializer = AdvertisementSerializer(advertisements, many=True)

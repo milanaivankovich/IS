@@ -12,9 +12,10 @@ import {
   from "@fortawesome/free-solid-svg-icons";
 import EditEventCard from "./EditEventCard";
 import { faComments } from "@fortawesome/free-solid-svg-icons";
+import CommentsSection from "./CommentsSection";
 
 const ActivityCard = ({ activity }) => {
-  const { description, date, field, titel, sport, id, NumberOfParticipants, participants, client,duration_hours } = activity;
+  const { description, date, field, titel, sport, id, NumberOfParticipants, participants, client, duration_hours } = activity;
   const [location, setLocation] = useState("");
   const [sports, setSport] = useState("");
 
@@ -355,39 +356,40 @@ const ActivityCard = ({ activity }) => {
   };
 
 
-  ///datetime
-  const parseDateTime = (dateString, duration_hours) => {
-    // Parse the input date string
-    const date = new Date(dateString);
-
-    // Format the date as dd/MM/yyyy
-    const formattedDate = date
-      .toLocaleDateString("en-GB")
-      .replace(/\//g, "-")
-      .replace(/-/g, "/");
-
-    // Format the time as hh:mm
-    const formattedTime = date
-      .toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      });
-      
-      const endDate = new Date(date);
-      endDate.setHours(endDate.getHours() + duration_hours);
-
-      const formattedEndTime = endDate
-      .toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      });
-
-    return { formattedDate, formattedTime, formattedEndTime};
-  };
-
-  const { formattedDate, formattedTime,formattedEndTime} = parseDateTime(date, duration_hours);
+    ///datetime
+    const parseDateTime = (dateString, duration_hours) => {
+      // Parse the input date string
+      const date = new Date(dateString);
+      date.setHours(date.getHours() - 1);
+  
+      // Format the date as dd/MM/yyyy
+      const formattedDate = date
+        .toLocaleDateString("en-GB")
+        .replace(/\//g, "-")
+        .replace(/-/g, "/");
+  
+      // Format the time as hh:mm
+      const formattedTime = date
+        .toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
+        
+        const endDate = new Date(date);
+        endDate.setHours(endDate.getHours() + duration_hours);
+  
+        const formattedEndTime = endDate
+        .toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        });
+  
+      return { formattedDate, formattedTime, formattedEndTime};
+    };
+  
+    const { formattedDate, formattedTime,formattedEndTime} = parseDateTime(date, duration_hours);
 
   const sportIcons = {
     fudbal: faFutbol,
@@ -430,7 +432,7 @@ const ActivityCard = ({ activity }) => {
           )}
         </div>
       )}
-     
+
 
       <p>
         <FontAwesomeIcon icon={faUser} /> <strong> by @</strong>{" "}
@@ -456,7 +458,7 @@ const ActivityCard = ({ activity }) => {
       <div className="activity-card-footer">
         <div className="activity-card-footer-left">
           <p>
-            <FontAwesomeIcon icon={faCalendarAlt} />  {formattedDate} 
+            <FontAwesomeIcon icon={faCalendarAlt} />  {formattedDate}
           </p>
           <p>
             <FontAwesomeIcon icon={faClock} />  {formattedTime} - {formattedEndTime}
@@ -471,41 +473,57 @@ const ActivityCard = ({ activity }) => {
             >
               {location || "Učitavanje..."}
             </span>
-            </p> 
-            <p>
+          </p>
+          <p>
             <FontAwesomeIcon
-               icon={faUser}
-                onClick={handleIconClick}
-                style={{ cursor: "pointer", marginRight: "10px" }}
-                   
-                        />
-                    {NumberOfParticipants - remainingSlots || "0"} / {NumberOfParticipants} učesnika
-                     </p>
-      {/* Padajuća lista učesnika */}
-      {isDropdownVisible && (
-          <div className="participants-list">
-            <h4>Učesnici:</h4>
-            {activityParticipants.length > 0 ? (
-              <ul>
-                {activityParticipants.map((participant, index) => (
-                  <li key={index}>
-                  <span
-            className="clickable-username"
-            onClick={() => handleUsernameClick(participant)}
-          >
-            @{participant}
-          </span></li>
-                ))}
-              </ul>
-            ) : (
-              <p>Još nema učesnika.</p>
-            )}
-          </div>
-        )}
+              icon={faUser}
+              onClick={handleIconClick}
+              style={{ cursor: "pointer", marginRight: "10px" }}
+
+            />
+            {NumberOfParticipants - remainingSlots || "0"} / {NumberOfParticipants} učesnika
+          </p>
+          {/* Padajuća lista učesnika */}
+          {isDropdownVisible && (
+            <div className="participants-list">
+              <h4>Učesnici:</h4>
+              {activityParticipants.length > 0 ? (
+                <ul>
+                  {activityParticipants.map((participant, index) => (
+                    <li key={index}>
+                      <span
+                        className="clickable-username"
+                        onClick={() => handleUsernameClick(participant)}
+                      >
+                        @{participant}
+                      </span></li>
+                  ))}
+                </ul>
+              ) : (
+                <p>Još nema učesnika.</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
-     
 
+      {/* Ikonica za komentare */}
+      <div className="activity-card-comments-toggle">
+        <FontAwesomeIcon
+          icon={faComments}
+          className="comments-icon"
+          onClick={toggleComments}
+          style={{ cursor: "pointer", marginTop: "10px" }}
+        />
+        <span onClick={toggleComments} style={{ cursor: "pointer", marginLeft: "8px" }}>
+          {"Prikaži komentare"}
+        </span>
+      </div>
+
+      {/* Sekcija komentara */}
+      {showComments && (
+        <CommentsSection id={id} closeFunction={toggleComments} />
+      )}
 
       {!isCreator && <>
         <div className="activity-card-buttons">
@@ -530,27 +548,7 @@ const ActivityCard = ({ activity }) => {
           <p className="error-message">Nije moguće prijaviti se na aktivnost koja je već završena.</p>
         )}
         {!isLoggedIn && <p className="error-message">Morate biti prijavljeni da biste se prijavili na aktivnost.</p>}
-         {/* Ikonica za komentare */}
-      <div className="activity-card-comments-toggle">
-        <FontAwesomeIcon
-          icon={faComments}
-          className="comments-icon"
-          onClick={toggleComments}
-          style={{ cursor: "pointer", marginTop: "10px" }}
-        />
-        <span onClick={toggleComments} style={{ cursor: "pointer", marginLeft: "8px" }}>
-          {showComments ? "Sakrij komentare" : "Prikaži komentare"}
-        </span>
-      </div>
 
-      {/* Sekcija komentara */}
-      {showComments && (
-        <div className="activity-card-comments">
-          
-          <Comments activityId={id} />
-        </div>
-      )}
-  
 
         {error && <p className="error-message">{error}</p>}
       </>}
