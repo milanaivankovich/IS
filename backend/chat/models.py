@@ -12,6 +12,8 @@ class Message(models.Model):
     receiver_object_id = models.PositiveIntegerField()
     receiver = GenericForeignKey("receiver_content_type", "receiver_object_id")
 
+    room_name = models.CharField(max_length=255)  # Ensure this field exists
+
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
