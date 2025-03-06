@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+
 from pathlib import Path
 import os
 import firebase_admin
@@ -99,7 +100,7 @@ CORS_ALLOWED_ORIGINS = [
 # Allow credentials (cookies)
 CORS_ALLOW_CREDENTIALS = True
 
-ASGI_APPLICATION = 'myproject.wsgi.application'
+ASGI_APPLICATION = 'myproject.asgi.application'
 #WSGI_APPLICATION = 'myproject.wsgi.application'
 
 CSRF_TRUSTED_ORIGINS = [
