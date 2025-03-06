@@ -5,7 +5,8 @@ import profileImage from "../images/user.svg";
 import SearchComponent from "./Search.js";
 import PropTypes from "prop-types";
 import axios from "axios";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBell } from "@fortawesome/free-solid-svg-icons";
 
 //variant ostavljeno zbog ostatka koda, ne sluzi nicemu
 const MenuBar = ({ variant, search }) => {
@@ -31,10 +32,10 @@ const MenuBar = ({ variant, search }) => {
   }, []);
 
   return (
-    <nav className="menu-bar">
+    <nav id="menu-bar" className="menu-bar">
       <div className="menu-left">
         <img src={logo} className="logo-oce-neko-na-basket" />
-        <ul className="menu">
+        <ul className="menu-buttons-list">
           <li className="menu-item">
             <a href="/pocetna">Početna</a>
           </li>
@@ -49,6 +50,7 @@ const MenuBar = ({ variant, search }) => {
       {id.id !== -1 && (
         <div className="menu-right">
           {search && <SearchComponent />}
+          <FontAwesomeIcon icon={faBell} size="lg" onClick={() => (window.location.href = "/dashboard")} />
           <a href="/userprofile">
             <img
               src={profileImage}

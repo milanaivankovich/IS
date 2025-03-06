@@ -16,6 +16,7 @@ import BusinessSubjectProfile from "./pages/BusinessSubjectProfile";
 import TerenProfil from "./pages/TerenProfil";
 import EditBusinessSubjectProfile from "./pages/EditBusinessSubjectProfile";
 import ResetPassword from "./pages/ResetPassword";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("pocetna");
@@ -49,6 +50,8 @@ function App() {
       setCurrentPage("editbusinessprofile");
     } else if (path === "/resetpassword") {
       setCurrentPage("resetpassword");
+    } else if (path === "/dashboard") {
+      setCurrentPage("dashboard");
     } else if (path.includes("/teren-profil/")) {
       setCurrentPage("teren-profil");
       const id = path.split("/")[2];
@@ -79,6 +82,7 @@ function App() {
           {currentPage === "userprofile1" && <BusinessSubjectProfile />}
           {currentPage === "teren-profil" && <TerenProfil id={terenId} />}
           {currentPage === "resetpassword" && <ResetPassword />}
+          {currentPage === "dashboard" && <Dashboard />}
         </div>
       </header>
     </div>
