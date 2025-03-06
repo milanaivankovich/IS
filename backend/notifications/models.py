@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from accounts.models import Client
 from .models import Activities
 from .models import Comment
 
@@ -11,9 +11,9 @@ class Notification(models.Model):
         #('new_post', 'New Post'),
     ]
      
-    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    recipient = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='notifications')
     post = models.ForeignKey(Activities, on_delete=models.CASCADE, related_name='notifications')
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_notifications')
+    sender = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='sent_notifications')
     notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
     content = models.TextField()
     is_read = models.BooleanField(default=False)
