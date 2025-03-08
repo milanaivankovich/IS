@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'fields',
     'reviews',
     'advertisements',
+    'notifications',
     
 ]
 
@@ -201,6 +202,7 @@ firebase_admin.initialize_app(cred)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from backend.activities.models import Activities, Comment
-from backend.accounts.serializers import ClientSerializer
-from backend.activities.serializers import ActivitiesSerializer, CommentSerializer
+from activities.models import Activities, Comment
+from accounts.serializers import ClientSerializer
+from activities.serializers import ActivitiesSerializer, CommentSerializer
 from .models import Notification
 from django.contrib.auth.models import User
 

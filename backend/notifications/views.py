@@ -1,10 +1,11 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.decorators import action
-from django.contrib.auth.models import User
-from .models import Activities, Comment, Notification
-from .serializers import ActivitiesSerializer, CommentSerializer, NotificationSerializer, UserSerializer
-
+from rest_framework.decorators import action, api_view
+from accounts.models import Client
+from activities.models import Activities, Comment
+from .models import Notification
+from activities.serializers import ActivitiesSerializer, CommentSerializer
+from .serializers import NotificationSerializer
 
 class NotificationViewSet(viewsets.ModelViewSet):
     queryset = Notification.objects.all().order_by('-created_at')
@@ -27,7 +28,22 @@ class NotificationViewSet(viewsets.ModelViewSet):
         notification.is_read = True
         notification.save()
         return Response({"message": "Notification marked as read"}, status=status.HTTP_200_OK)
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    
+@api_view(['GET'])
+def get_notifications_by_client_id(request, id):
+    try:
+        client = Client.objects.get(id=id)
+    except Client.DoesNotExist:
+        return Response({'error': 'Client not found'}, status=404)
+    
+    notifications = Notification.objects.filter(
+        recipient=id,
+        is_deleted=False,
+    ).order_by('created_at')
+    
+    if notifications.exists():
+        serializer = NotificationSerializer(notifications, many=True)
+        return Response(serializer.data)
+    else:
+        return Response({'error': 'No notifications found for this business subject'}, status=404)
+    
