@@ -10,5 +10,6 @@ router.register(r'notifications', NotificationViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    #path('api/notifications', views.get_all_notifications, name='api_notifications'),
     path('api/notifications/<int:id>', views.get_notifications_by_client_id, name='get_notifications_by_client_id')
 ]

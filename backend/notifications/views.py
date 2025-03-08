@@ -45,5 +45,11 @@ def get_notifications_by_client_id(request, id):
         serializer = NotificationSerializer(notifications, many=True)
         return Response(serializer.data)
     else:
-        return Response({'error': 'No notifications found for this business subject'}, status=404)
+        return Response({'error': 'No notifications found for this client'}, status=404)
     
+#@api_view(['GET'])
+#def get_all_notifications(request):
+        # Custom logic, e.g., get notifications marked as special
+#        notifications = Notification.objects.filter(is_deleted=False)
+#        serializer = NotificationSerializer(notifications, many=True)
+#        return Response(serializer.data)
