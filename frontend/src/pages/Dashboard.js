@@ -5,9 +5,10 @@ import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import MenuBar from "../components/MenuBar";
+import NotificationPanel from "../components/NotificationPanel";
 
 
-const Dogadjaji = () => {
+const Dashboard = () => {
 
     return (
         <div>
@@ -26,12 +27,16 @@ const Dogadjaji = () => {
                     </Col>
                     <Col sm={9}>
                         <Tab.Content>
-                            <Tab.Pane eventKey="first">First tab content</Tab.Pane>
-                            <Tab.Pane eventKey="second">Second tab content</Tab.Pane>
+                            <Tab.Pane eventKey="first">
+                                Chat
+                            </Tab.Pane>
+                            <Tab.Pane eventKey="second">
+                                <NotificationPanel userId={7}></NotificationPanel>
+                            </Tab.Pane>
                         </Tab.Content>
                     </Col>
                 </Row>
             </Tab.Container>
         </div>);
 }
-export default Dogadjaji;
+export default Dashboard;
