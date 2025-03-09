@@ -26,7 +26,7 @@ def participate_notification(sender, instance, action, reverse, pk_set, **kwargs
                 notification_type='prijava',  # Set notification type
                 content=f"{user.username} se prijavio na događaj!",
             )
-            send_notification(new_notification)
+            send_notification(instance.client.id,new_notification)
             print(f"Signal for new notification participate for client {instance.client.username}")
 
 
@@ -40,5 +40,5 @@ def participate_notification(sender, instance, action, reverse, pk_set, **kwargs
                 notification_type='odjava',  # Set notification type
                 content=f"{user.username} se odjavio sa događaja!",
             )
-            send_notification(new_notification)
+            send_notification(instance.client.id,new_notification)
             print(f"Signal for new notification unparticipate created for user {instance.client.username}")

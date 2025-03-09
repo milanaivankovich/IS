@@ -1,18 +1,20 @@
 
 from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from .serializers import NotificationSerializer
 
-def send_notification(notification):
-    # Get the channel layer
-        channel_layer = get_channel_layer()
+def send_notification(room_name, notification):
+    """Broadcast a notification to the correct room."""
+    channel_layer = get_channel_layer()
+    
+    serializer = NotificationSerializer(notification)
+    serialized_data = serializer.data 
 
-    # Create the message you want to broadcast
-        message = notification.content  # or whatever field contains the notification text
-
-    # Send the message to the 'notifications' group
-        channel_layer.group_send(
-            'notification',  # Group name to broadcast to
-            {
-                'type': 'send_notification',  # Consumer method to call
-                'message': message  # The message content
-            }
-        )
+    async_to_sync(channel_layer.group_send)(
+        f"notifications_{room_name}",
+        {
+            "type": "send_notification",
+            **serialized_data
+        }
+    )
+    print("notification is sent: "+ f"notifications_{room_name}")

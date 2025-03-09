@@ -8,12 +8,14 @@ const WebSocketNotifications = () => {
 
     useEffect(() => {
         // Uspostavljanje WebSocket veze
-        const socket = new WebSocket(`ws://${url}/ws/notifications/1/`);
+        const socket = new WebSocket(`ws://${url}/ws/notifications/7/`); //todo id korisnika je room name
 
         // Kada server šalje poruku
         socket.onmessage = (event) => {
             const newMessage = event.data;
             setMessages((prevMessages) => [...prevMessages, newMessage]);
+            console.assert("message accepted");
+            toast("new message");
         };
 
         // Kretanje povezivanja sa serverom
@@ -41,10 +43,12 @@ const WebSocketNotifications = () => {
         <div>
             <ul>
                 {messages.map((msg, index) => (
-                    <li key={index}>{msg}</li>
+                    <li key={index}>
+                        <ToastContainer />
+                    </li>
+
                 ))}
             </ul>
-            <ToastContainer />
         </div>
     );
 };
