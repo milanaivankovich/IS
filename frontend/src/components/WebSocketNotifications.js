@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { fetchIdAndTypeOfUser } from '../utils';
 
 const WebSocketNotifications = () => {
     const url = "127.0.0.1:8000";
     const [messages, setMessages] = useState([]);
 
-    useEffect(() => {
-        // Uspostavljanje WebSocket veze
-        const socket = new WebSocket(`ws://${url}/ws/notifications/7/`); //todo id korisnika je room name
+    const connectWebSocket = (id) => {
+        const socket = new WebSocket(`ws://${url}/ws/notifications/${id}/`); //todo id korisnika je room name
 
         // Kada server šalje poruku
         socket.onmessage = (event) => {
@@ -20,7 +20,7 @@ const WebSocketNotifications = () => {
 
         // Kretanje povezivanja sa serverom
         socket.onopen = () => {
-            console.log('Povezan sa WebSocket serverom');
+            console.log(`Povezan sa WebSocket serverom ws://${url}/ws/notifications/${id}/`);
         };
 
         // Ako dođe do greške u vezi
@@ -37,6 +37,23 @@ const WebSocketNotifications = () => {
         return () => {
             socket.close();
         };
+
+    }
+    useEffect(() => {
+        // Uspostavljanje WebSocket veze
+        const is_registered = async () => {
+            try {
+                await fetchIdAndTypeOfUser()
+                    .then((userType) => {
+                        if (userType && userType.id !== -1) {
+                            connectWebSocket(userType.id)
+                        }
+                    });
+            } catch (error) {
+                console.error("Error");
+            }
+        };
+        is_registered();
     }, []);
 
     return (
