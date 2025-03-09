@@ -3,11 +3,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const WebSocketNotifications = () => {
+    const url = "127.0.0.1:8000";
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
         // Uspostavljanje WebSocket veze
-        const socket = new WebSocket('ws://your-websocket-server-url');
+        const socket = new WebSocket(`ws://${url}/ws/notifications/1/`);
 
         // Kada server šalje poruku
         socket.onmessage = (event) => {
@@ -38,7 +39,6 @@ const WebSocketNotifications = () => {
 
     return (
         <div>
-            <h1>Notifikacije</h1>
             <ul>
                 {messages.map((msg, index) => (
                     <li key={index}>{msg}</li>

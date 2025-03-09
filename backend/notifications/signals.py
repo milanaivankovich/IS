@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from .models import Notification
 from activities.models import Activities
 from accounts.models import Client
+from .utils import send_notification
 
 @receiver(m2m_changed, sender=Activities.participants.through)
 def participate_notification(sender, instance, action, reverse, pk_set, **kwargs):
@@ -17,7 +18,7 @@ def participate_notification(sender, instance, action, reverse, pk_set, **kwargs
     if action == "post_add":  # User liked the post
         for user_id in pk_set:
             user = Client.objects.get(pk=user_id)
-            Notification.objects.create(
+            new_notification = Notification.objects.create(
 
                 recipient=instance.client,  # Notify the post author
                 sender=user,  # The user who liked the post
@@ -25,18 +26,19 @@ def participate_notification(sender, instance, action, reverse, pk_set, **kwargs
                 notification_type='prijava',  # Set notification type
                 content=f"{user.username} se prijavio na događaj!",
             )
+            send_notification(new_notification)
             print(f"Signal for new notification participate for client {instance.client.username}")
 
 
     elif action == "post_remove":  # User unliked the post
         for user_id in pk_set:
             user = Client.objects.get(pk=user_id)
-            Notification.objects.create(
-
+            new_notification = Notification.objects.create(
                 recipient=instance.client,  # Notify the post author
                 sender=user,  # The user who liked the post
                 post=instance,
                 notification_type='odjava',  # Set notification type
                 content=f"{user.username} se odjavio sa događaja!",
             )
+            send_notification(new_notification)
             print(f"Signal for new notification unparticipate created for user {instance.client.username}")

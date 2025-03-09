@@ -17,6 +17,7 @@ import TerenProfil from "./pages/TerenProfil";
 import EditBusinessSubjectProfile from "./pages/EditBusinessSubjectProfile";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
+import WebSocketNotifications from "./components/WebSocketNotifications";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("pocetna");
@@ -84,6 +85,7 @@ function App() {
           {currentPage === "resetpassword" && <ResetPassword />}
           {currentPage === "dashboard" && <Dashboard />}
         </div>
+        <WebSocketNotifications />
       </header>
     </div>
   );

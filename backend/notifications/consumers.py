@@ -6,12 +6,12 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         self.group_name = 'notification'
 
         # Join the chat group
-        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+        await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
 
     async def disconnect(self, close_code):
         # Leave the chat group
-        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def receive(self, text_data):
         try:
@@ -28,7 +28,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
             # Send notification to the group (all users in the group receive it)
             await self.channel_layer.group_send(
-                self.room_group_name,
+                self.group_name,
                 {
                     "type": "send_notification",
                     "notification_type": notification_type,
