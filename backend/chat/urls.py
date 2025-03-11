@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import MessageListCreate, create_message
+from .views import MessageListCreate, create_message, send_message, get_messages_between_users
 
 urlpatterns = [
     path("api/messages/", MessageListCreate.as_view(), name="message-list"),
