@@ -1,0 +1,16 @@
+.toast-container {
+    /* Set maximum height */
+    padding: 10px;
+    height: 75%;
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    position: fixed;
+    /* Optional: Keep it fixed on the screen */
+    mask-image: linear-gradient(to top, rgba(255, 255, 255, 1) 90%, rgba(255, 255, 255, 0) 100%);
+    -webkit-mask-image: linear-gradient(to top, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 60%);
+
+    /* Optional: Mask for bottom fade as well */
+    mask-image: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 50%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 90%, rgba(255, 255, 255, 0) 100%);
+
+}

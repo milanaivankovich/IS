@@ -6,6 +6,7 @@ from activities.models import Activities, Comment
 from .models import Notification
 from activities.serializers import ActivitiesSerializer, CommentSerializer
 from .serializers import NotificationSerializer
+from django.shortcuts import get_object_or_404
 
 class NotificationViewSet(viewsets.ModelViewSet):
     queryset = Notification.objects.all().order_by('-created_at')
@@ -37,7 +38,7 @@ def get_notifications_by_client_id(request, id): #todo authorization
         return Response({'error': 'Client not found'}, status=404)
     
     notifications = Notification.objects.filter(
-        recipient=id,
+        recipient=client,
         is_deleted=False,
     ).order_by('-created_at')
     
@@ -55,23 +56,24 @@ class NotificationList(ListAPIView):
     serializer_class = NotificationSerializer
     pagination_class = MyCursorPagination
 
-    def get_by_client_id(self):
-        id = self.kwargs.get(id)
+    def get_queryset(self):
         try:
-            client = Client.objects.get(id=id)
-        except Client.DoesNotExist:
-            return Response({'error': 'Client not found'}, status=404)
+            client_id = int(self.kwargs.get("id"))
+        except ValueError:
+            return Response({'error':'Invalid client ID'}, status=400)
+        
+        client = get_object_or_404(Client, id=client_id)
     
-        notifications = Notification.objects.filter(
-            recipient=id,
+        return Notification.objects.filter(
+            recipient=client,
             is_deleted=False,
         ).order_by('-created_at')
     
-        if notifications.exists():
-            serializer = NotificationSerializer(notifications, many=True)
-            return Response(serializer.data)
-        else:
-            return Response({'error': 'No notifications found for this client'}, status=404)
+       # if notifications.exists():
+       #     serializer = NotificationSerializer(notifications, many=True)
+       #     return Response(serializer.data)
+       # else:
+       #     return Response({'error': 'No notifications found for this client'}, status=404)
     
 #@api_view(['GET'])
 #def get_all_notifications(request):

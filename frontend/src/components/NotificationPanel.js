@@ -5,6 +5,7 @@ import axios from "axios";
 import { Spinner, ToastContainer } from "react-bootstrap";
 import userImg from "../images/user.svg";
 import { useInView } from "react-intersection-observer";
+import "../pages/Dashboard.css";
 
 const NotificationPanel = ({ userId }) => {
 
@@ -16,7 +17,7 @@ const NotificationPanel = ({ userId }) => {
         setLoadingNotifications(true);
         await axios.get(`${API}/api/notifications/pagination/${userId}`) //token todo
             .then((response) => {
-                setNotifications(response.data.results)
+                setNotifications(response.data?.results)
                 setNextPage(response.data?.next ? response.data.next : null);
             })
             .catch((error) =>
@@ -55,18 +56,18 @@ const NotificationPanel = ({ userId }) => {
             <div className="Event-bar-title">NOTIFIKACIJE</div>
             {loadingNotifications ? (
                 <Spinner className='spinner-border' animation="border" />
-            ) : notifications.length === 0 ? (
+            ) : notifications?.length === 0 ? (
                 <p>Nema notifikacija.</p>
             ) : (<>
-                <ToastContainer className="position-static">
+                <ToastContainer className="toast-container">
 
                     {notifications?.map((notif) => (
-                        <NotificationCard key={notif.id}
-                            userImgLink={notif.sender.profile_picture ? `${API}${notif.sender.prfile_picture}` : userImg}
+                        <NotificationCard key={notif?.id}
+                            userImgLink={notif?.sender.profile_picture ? `${API}${notif?.sender.profile_picture}` : userImg}
                             userId={userId}
-                            username={notif.sender.username}
-                            content={notif.content} time={notif.created_at}
-                            is_read={notif.is_read} />))
+                            username={notif?.sender.username}
+                            content={notif?.content} time={notif?.created_at}
+                            is_read={notif?.is_read} />))
                     }
 
                 </ToastContainer>

@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { Spinner } from "react-bootstrap";
 
 //variant ostavljeno zbog ostatka koda, ne sluzi nicemu
 const MenuBar = ({ variant, search }) => {
@@ -15,9 +16,11 @@ const MenuBar = ({ variant, search }) => {
     "id": -1,
     "type": ''
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchIDType = async () => {
+      setLoading(true);
       await axios.get('http://localhost:8000/api/get-user-type-and-id/', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       })
@@ -27,6 +30,7 @@ const MenuBar = ({ variant, search }) => {
         .catch((error) => {
           console.error("Menu bar unregistered: ", error);
         });
+      setLoading(false);
     };
     fetchIDType();
   }, []);
@@ -47,36 +51,41 @@ const MenuBar = ({ variant, search }) => {
           </li>
         </ul>
       </div>
-      {id.id !== -1 && (
-        <div className="menu-right">
-          {search && <SearchComponent />}
-          <FontAwesomeIcon icon={faBell} size="lg" onClick={() => (window.location.href = "/dashboard")} />
-          <a href="/userprofile">
-            <img
-              src={profileImage}
-              alt="Circular Image"
-              className="user-image"
-            />
-          </a>
-        </div>
-      )}
-
-      {id.id === -1 && (
-        <div className="menu-right">
-          <button
-            className="login-button"
-            onClick={() => (window.location.href = "/usertype")}
-          >
-            Prijava
-          </button>
-          <button
-            className="register-button"
-            onClick={() => (window.location.href = "/usertype1")}
-          >
-            Registracija
-          </button>
-        </div>
-      )}
+      {loading ? <Spinner /> :
+        (
+          (id.id !== -1) && (
+            <div className="menu-right">
+              {search && <SearchComponent />}
+              <FontAwesomeIcon class="notification-icon" icon={faBell} onClick={() => (window.location.href = "/dashboard")} />
+              <a href="/userprofile">
+                <img
+                  src={profileImage}
+                  alt="Circular Image"
+                  className="user-image"
+                />
+              </a>
+            </div>
+          )
+          ||
+          (
+            id.id === -1 && (
+              <div className="menu-right">
+                <button
+                  className="login-button"
+                  onClick={() => (window.location.href = "/usertype")}
+                >
+                  Prijava
+                </button>
+                <button
+                  className="register-button"
+                  onClick={() => (window.location.href = "/usertype1")}
+                >
+                  Registracija
+                </button>
+              </div>
+            )
+          )
+        )}
     </nav>
   );
 };

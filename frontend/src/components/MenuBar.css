@@ -26,7 +26,6 @@
   gap: 10px;
   align-items: center;
   justify-content: right;
-  margin-right: 20px;
 }
 
 
@@ -59,7 +58,6 @@
 
 .logo-oce-neko-na-basket {
   margin-left: 20px;
-  margin-right: 20px;
   height: 64px;
   width: 153px;
   filter: drop-shadow(-4px 4px 2px rgba(0, 0, 0, 0.25));
@@ -78,7 +76,7 @@
 }
 
 .user-image {
-  margin: 20px;
+  margin: 10px 20px 10px 10px;
   width: 40px;
   height: 40px;
   justify-self: right;
@@ -106,8 +104,10 @@
 }
 
 /* Hover effect for login button */
-.login-button:hover {
+.login-button:hover,
+.notification-icon:hover {
   color: #e64a19;
+  cursor: pointer;
   /* Tamnija nijansa kada je dugme hoverovano */
 }
 
@@ -128,4 +128,10 @@
 .register-button:hover {
   background-color: #e64a19;
   /* Tamnija nijansa kada je dugme hoverovano */
+}
+
+.notification-icon {
+  height: 25px;
+  margin-left: 10px;
+  color: #666666;
 }
