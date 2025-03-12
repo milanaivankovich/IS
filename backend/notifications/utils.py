@@ -13,7 +13,8 @@ def send_notification(room_name, notification):
     async_to_sync(channel_layer.group_send)(
         f"notifications_{room_name}",
         {
-            **serialized_data
+            'type': 'send_notification', 
+            'data': serialized_data
         }
     )
     print("notification is sent: "+ f"notifications_{room_name}")

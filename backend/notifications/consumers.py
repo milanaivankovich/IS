@@ -24,7 +24,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
             data = json.loads(text_data)
             serializer = NotificationSerializer(data)
-            serialized_data = serializer.data 
+            if serializer.is_valid():
+                serialized_data = serializer.data
+            else:
+                print("Invalid notification data received")
+                return
             #notification_type = data.get("notification_type")  # Type of notification
             #message = data.get("content")
             #sender = data.get("sender")
@@ -37,7 +41,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 self.group_name,
                 {
-                    serialized_data
+                    "type": "send_notification",
+                    "data": serialized_data
                 },
             )
         except json.JSONDecodeError:
@@ -47,8 +52,9 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         #notification_type = event["notification_type"]
         #message = event["message"]
         #sender = event["sender"]
+        data = event["data"]
 
         # Send the notification to the WebSocket
-        await self.send(text_data=json.dumps(
-            event
-        ))
+        await self.send(text_data=json.dumps({
+            "data": data
+        }))
