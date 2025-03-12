@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import CreatorImg from "../images/user.svg";
 import { Toast } from "react-bootstrap";
 import "./NotificationCard.css";
+import API from "../variables";
 
 
 const NotificationCard = ({ userImgLink, userId, username, content, time, is_read }) => {
@@ -13,7 +14,10 @@ const NotificationCard = ({ userImgLink, userId, username, content, time, is_rea
         <Toast>
             <Toast.Header>
                 <img src={userImgLink} className="rounded me-2" id="notification-img" alt="" />
-                <strong className="me-auto">{username}</strong>
+                <strong className="me-auto">
+                    <a className="link-to-profile" href={`/userprofile/${username}`}>
+                        @{username}
+                    </a></strong>
                 <small>{formatedTime}</small>
             </Toast.Header>
             <Toast.Body>{content}</Toast.Body>

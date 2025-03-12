@@ -6,6 +6,7 @@ import { Spinner, ToastContainer } from "react-bootstrap";
 import userImg from "../images/user.svg";
 import { useInView } from "react-intersection-observer";
 import "../pages/Dashboard.css";
+import ActivityCard from "./ActivityCard.js";
 
 const NotificationPanel = ({ userId }) => {
 
@@ -51,6 +52,9 @@ const NotificationPanel = ({ userId }) => {
         }
     });
 
+    //prikaz kartice dogadjaja
+    const [showEvent, setShowEvent] = useState("");
+
     return (
         <div className="notification-panel-body">
             <div className="Event-bar-title">NOTIFIKACIJE</div>
@@ -68,13 +72,14 @@ const NotificationPanel = ({ userId }) => {
                                 userId={userId}
                                 username={notif?.sender.username}
                                 content={notif?.content} time={notif?.created_at}
-                                is_read={notif?.is_read} />))
+                                is_read={notif?.is_read}
+                                onClick={() => setShowEvent(notif?.post)}
+                            />))
                         }
                         <div ref={ref} style={{ height: "40px", color: "gray" }}>
                             {isFetchingNextPage && <Spinner className='spinner-border' animation="border" />}
                         </div>
                     </ToastContainer>
-
                 </div>
             )}
 

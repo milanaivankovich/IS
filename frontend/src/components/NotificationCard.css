@@ -2,3 +2,12 @@
     height: 40px;
     background-color: lightgray;
 }
+
+.link-to-profile {
+    color: var(--secondary-gray);
+    text-decoration: none;
+}
+
+.link-to-profile:hover {
+    color: var(--primary-orange);
+}
