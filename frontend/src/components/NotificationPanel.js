@@ -52,33 +52,33 @@ const NotificationPanel = ({ userId }) => {
     });
 
     return (
-        <>
+        <div className="notification-panel-body">
             <div className="Event-bar-title">NOTIFIKACIJE</div>
             {loadingNotifications ? (
                 <Spinner className='spinner-border' animation="border" />
             ) : notifications?.length === 0 ? (
                 <p>Nema notifikacija.</p>
-            ) : (<>
-                <ToastContainer className="toast-container">
+            ) : (
+                <div>
+                    <ToastContainer className="toast-container">
 
-                    {notifications?.map((notif) => (
-                        <NotificationCard key={notif?.id}
-                            userImgLink={notif?.sender.profile_picture ? `${API}${notif?.sender.profile_picture}` : userImg}
-                            userId={userId}
-                            username={notif?.sender.username}
-                            content={notif?.content} time={notif?.created_at}
-                            is_read={notif?.is_read} />))
-                    }
+                        {notifications?.map((notif) => (
+                            <NotificationCard key={notif?.id}
+                                userImgLink={notif?.sender.profile_picture ? `${notif?.sender.profile_picture}` : userImg}
+                                userId={userId}
+                                username={notif?.sender.username}
+                                content={notif?.content} time={notif?.created_at}
+                                is_read={notif?.is_read} />))
+                        }
+                        <div ref={ref} style={{ height: "40px", color: "gray" }}>
+                            {isFetchingNextPage && <Spinner className='spinner-border' animation="border" />}
+                        </div>
+                    </ToastContainer>
 
-                </ToastContainer>
-
-                <div ref={ref} style={{ height: "20px" }}>
-                    {isFetchingNextPage && <Spinner className='spinner-border' animation="border" />}
                 </div>
-            </>
             )}
 
-        </>);
+        </div>);
 }
 
 export default NotificationPanel;

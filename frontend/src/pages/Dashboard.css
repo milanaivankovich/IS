@@ -1,16 +1,72 @@
+.dashboard-body {
+    height: 80vh;
+}
+
+/*bootstrap*/
+.nav-pills .nav-link {
+    color: var(--secondary-gray);
+    /* Change text color */
+    background-color: var(--background-white);
+    /* Light gray background */
+    border: 1px solid var(--background-white);
+    /* Border color */
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+}
+
+
+.nav-link:hover .notification-icon {
+    color: var(--primary-orange);
+    /* Light gray background */
+    border: none;
+    /* Border color */
+}
+
+.nav-pills .nav-link:hover {
+    color: var(--primary-orange);
+    /* Change text color */
+    background-color: lightgrey;
+    /* Light gray background */
+    border: 1px solid var(--background-white);
+    /* Border color */
+}
+
+.nav-link.active .notification-icon {
+    color: var(--background-white);
+    /* Blue background */
+    border-color: none;
+}
+
+.nav-pills .nav-link.active {
+    color: var(--background-white);
+    background-color: var(--primary-orange);
+    /* Blue background */
+    border-color: none;
+}
+
+.dashboard-body .nav-tabs .nav-link:hover {
+    color: white;
+    background-color: var(--secondary-gray);
+    /* Darker blue on hover */
+}
+
+/*notification panel*/
+
+.notification-panel-body {
+    display: flex;
+    flex-direction: column;
+}
+
 .toast-container {
     /* Set maximum height */
+    display: flex;
     padding: 10px;
-    height: 75%;
-    overflow-y: auto;
+    flex-direction: column;
+    height: 78%;
+    overflow-y: scroll;
     /* Enable vertical scrolling */
-    position: fixed;
     /* Optional: Keep it fixed on the screen */
-    mask-image: linear-gradient(to top, rgba(255, 255, 255, 1) 90%, rgba(255, 255, 255, 0) 100%);
-    -webkit-mask-image: linear-gradient(to top, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 60%);
-
-    /* Optional: Mask for bottom fade as well */
-    mask-image: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 50%);
-    -webkit-mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 90%, rgba(255, 255, 255, 0) 100%);
-
+    mask-image: linear-gradient(to top, rgba(255, 255, 255, 1) 98%, rgba(255, 255, 255, 0) 100%);
+    -webkit-mask-image: linear-gradient(to top, rgba(255, 255, 255, 1) 98%, rgba(255, 255, 255, 0) 100%);
 }

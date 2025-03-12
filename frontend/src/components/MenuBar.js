@@ -6,7 +6,7 @@ import SearchComponent from "./Search.js";
 import PropTypes from "prop-types";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { faBell } from "@fortawesome/free-regular-svg-icons";
 import { Spinner } from "react-bootstrap";
 
 //variant ostavljeno zbog ostatka koda, ne sluzi nicemu
@@ -51,12 +51,12 @@ const MenuBar = ({ variant, search }) => {
           </li>
         </ul>
       </div>
-      {loading ? <Spinner /> :
+      {loading ? <></> :
         (
           (id.id !== -1) && (
             <div className="menu-right">
               {search && <SearchComponent />}
-              <FontAwesomeIcon class="notification-icon" icon={faBell} onClick={() => (window.location.href = "/dashboard")} />
+              <FontAwesomeIcon className="notification-icon" icon={faBell} onClick={() => (window.location.href = "/dashboard")} />
               <a href="/userprofile">
                 <img
                   src={profileImage}

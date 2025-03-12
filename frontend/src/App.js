@@ -18,6 +18,7 @@ import EditBusinessSubjectProfile from "./pages/EditBusinessSubjectProfile";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import WebSocketNotifications from "./components/WebSocketNotifications";
+import "./global.css";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("pocetna");

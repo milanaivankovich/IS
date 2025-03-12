@@ -38,11 +38,11 @@ const Dashboard = () => {
     }, []);
 
     return (
-        <div>
-            <MenuBar search={true} />
+        <div className="dashboard-body">
+            <MenuBar search={true} id="dashboard-menu" />
             {loading ? <div className='loading-line'></div>
                 :
-                <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+                <Tab.Container fill={true} className="tab-container" id="left-tabs-example" defaultActiveKey="first">
                     <Row>
                         <Col sm={3}>
                             <Nav variant="pills" className="flex-column">
@@ -67,7 +67,7 @@ const Dashboard = () => {
                             </Nav>
                         </Col>
                         <Col sm={9}>
-                            <Tab.Content>
+                            <Tab.Content className="tab-content-all">
                                 <Tab.Pane eventKey="first">
                                     Chat
                                 </Tab.Pane>
@@ -78,6 +78,6 @@ const Dashboard = () => {
                         </Col>
                     </Row>
                 </Tab.Container>}
-        </div>);
+        </div >);
 }
 export default Dashboard;
