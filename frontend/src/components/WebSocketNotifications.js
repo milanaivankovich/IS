@@ -5,17 +5,22 @@ import { fetchIdAndTypeOfUser } from '../utils';
 
 const WebSocketNotifications = () => {
     const url = "127.0.0.1:8000";
-    const [messages, setMessages] = useState([]);
+    //const [messages, setMessages] = useState([]);
 
     const connectWebSocket = (id) => {
         const socket = new WebSocket(`ws://${url}/ws/notifications/${id}/`); //todo id korisnika je room name
 
         // Kada server šalje poruku
         socket.onmessage = (event) => {
-            const newMessage = event.data;
-            setMessages((prevMessages) => [...prevMessages, newMessage]);
-            console.assert("message accepted");
-            toast("new message");
+            try {
+                const newMessage = JSON.parse(event.data); // Parse is synchronous
+                //setMessages((prevMessages) => [...prevMessages, newMessage.data]);
+
+                console.log("Message accepted:", newMessage); // Debugging log
+                toast(`@${newMessage.data.content}`); // todo izgled
+            } catch (error) {
+                console.error("Error parsing message:", error);
+            }
         };
 
         // Kretanje povezivanja sa serverom
@@ -35,10 +40,12 @@ const WebSocketNotifications = () => {
 
         // Čišćenje resursa kada komponenta bude demontirana
         return () => {
+            socket.onmessage = null;
             socket.close();
         };
 
     }
+
     useEffect(() => {
         // Uspostavljanje WebSocket veze
         const is_registered = async () => {
@@ -58,14 +65,7 @@ const WebSocketNotifications = () => {
 
     return (
         <div>
-            <ul>
-                {messages.map((msg, index) => (
-                    <li key={index}>
-                        <ToastContainer />
-                    </li>
-
-                ))}
-            </ul>
+            <ToastContainer position='bottom-right' />
         </div>
     );
 };
