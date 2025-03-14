@@ -55,6 +55,8 @@ const NotificationPanel = ({ userId }) => {
     //prikaz kartice dogadjaja
     const [showEvent, setShowEvent] = useState("");
 
+    //prikaz broja neprocitanih notifikacija, dohvatiti broj sa backa zbog paginacije
+
     return (
         <div className="notification-panel-body">
             <div className="Event-bar-title">NOTIFIKACIJE</div>
@@ -66,8 +68,9 @@ const NotificationPanel = ({ userId }) => {
                 <div>
                     <ToastContainer className="toast-container">
 
-                        {notifications?.map((notif) => (
-                            <NotificationCard key={notif?.id}
+                        {notifications?.map((notif, index) => (
+                            <NotificationCard key={index}
+                                item_id={notif?.id}
                                 userImgLink={notif?.sender.profile_picture ? `${notif?.sender.profile_picture}` : userImg}
                                 userId={userId}
                                 username={notif?.sender.username}

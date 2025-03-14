@@ -11,3 +11,7 @@
 .link-to-profile:hover {
     color: var(--primary-orange);
 }
+
+.toast-is-read-false {
+    border: 1px solid var(--primary-orange);
+}

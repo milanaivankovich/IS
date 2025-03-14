@@ -10,6 +10,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment, faMessage } from "@fortawesome/free-regular-svg-icons";
 import { faBell, faRing, faClock } from "@fortawesome/free-regular-svg-icons";
 import { fetchIdAndTypeOfUser } from "../utils.js";
+import { Badge, Stack } from "react-bootstrap";
+import axios from "axios";
+import API from "../variables.js";
 
 const Dashboard = () => {
 
@@ -22,11 +25,12 @@ const Dashboard = () => {
             try {
                 await fetchIdAndTypeOfUser()
                     .then((userType) => {
-                        if (!userType || userType === "BusinessSubject") {
+                        if (!userType || userType.type === "BusinessSubject") {
                             alert("Niste ulogovani kao rekreativac!");
                             window.location.replace('/pocetna');
                         }
                         setUserIdType(userType);
+                        getNotificationCount(userType.id)
                     });
             } catch (error) {
                 console.error("Error");
@@ -36,6 +40,23 @@ const Dashboard = () => {
         };
         is_registered();
     }, []);
+
+    //broj neprocitanih poruka todo
+    const [messagesCount, setMessagesCount] = useState(1);
+    //broj neprocitanih notifikacija
+    const [notificationCount, setNotificationCount] = useState(0); //todo get zahtjev
+    const getNotificationCount = async (user_id) => {
+        try {
+            const request = await axios.get(`${API}/api/notifications/unread-count/${user_id}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            })
+            setNotificationCount(request.data?.unread_count);
+            console.log(request);
+        }
+        catch (error) {
+            console.error("Error: ", error);
+        }
+    };
 
     return (
         <div className="dashboard-body">
@@ -48,14 +69,24 @@ const Dashboard = () => {
                             <Nav variant="pills" className="flex-column">
                                 <Nav.Item>
                                     <Nav.Link eventKey="first">
-                                        Poruke
-                                        <FontAwesomeIcon className="notification-icon" icon={faMessage} />
+                                        <Stack direction="horizontal" gap={2}>
+                                            Poruke
+                                            {messagesCount !== 0 && //todo staviti broj novih poruka
+                                                <Badge bg="secondary" pill>{messagesCount}</Badge>
+                                            }
+                                            <FontAwesomeIcon className="notification-icon" icon={faMessage} />
+                                        </Stack>
                                     </Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link eventKey="second">
-                                        Notifikacije
-                                        <FontAwesomeIcon className="notification-icon" icon={faBell} />
+                                        <Stack direction="horizontal" gap={2}>
+                                            Notifikacije
+                                            {notificationCount !== 0 &&
+                                                <Badge bg="secondary" pill>{notificationCount}</Badge>
+                                            }
+                                            <FontAwesomeIcon className="notification-icon" icon={faBell} />
+                                        </Stack>
                                     </Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>

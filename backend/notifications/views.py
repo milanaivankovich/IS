@@ -74,6 +74,58 @@ class NotificationList(ListAPIView):
        #     return Response(serializer.data)
        # else:
        #     return Response({'error': 'No notifications found for this client'}, status=404)
+
+@api_view(['PUT'])
+def delete_notification(request, item_id):
+    obj = get_object_or_404(Notification, id=item_id)
+    obj.is_deleted = True
+    obj.save()
+    return Response({"message": "Updated successfully"})
+
+@api_view(['PUT'])
+def mark_notification_as_read(request, item_id):
+    obj = get_object_or_404(Notification, id=item_id)
+    obj.is_read = True
+    obj.save()
+    return Response({"message": "Updated successfully"})
+
+@api_view(['PUT'])
+def mark_all_notifications_as_read(request, reciever_id):
+    client = get_object_or_404(Client, id=reciever_id)
+    updated_count = Notification.objects.filter(recipient=client).update(is_read=True)
+    return Response({"message": f"{updated_count} records updated successfully",
+        "client_id": reciever_id})
+
+@api_view(['GET'])
+def count_unread_notifications(request, reciever_id):
+    client = get_object_or_404(Client, id=reciever_id)
+    count = Notification.objects.filter(recipient=client, is_read=False, is_deleted=False).count()
+    return Response({
+        "unread_count": count
+    }); 
+    
+    """
+        token = request.headers.get('Authorization')  # Expected format: "Token <your_token>"
+    
+    if not token:
+        return Response({"error": "Authentication token required"}, status=status.HTTP_401_UNAUTHORIZED)
+    
+    try:
+        # Extract the actual token key from the "Token <token>" format
+        token_key = token.split(' ')[1]  # Assumes "Token <token>"
+        
+        # Retrieve the token object from the database
+        client_token = ClientToken.objects.get(key=token_key)
+        
+        # Retrieve the client associated with this token
+        user = client_token.client  # Assuming a reverse relationship 'client' exists
+        return Response({"pk": user.pk}, status=status.HTTP_200_OK)
+
+    except IndexError:
+        return Response({"error": "Invalid token format"}, status=status.HTTP_400_BAD_REQUEST)
+    except ClientToken.DoesNotExist:
+        return Response({"error": "Invalid token or token expired"}, status=status.HTTP_401_UNAUTHORIZED)  
+    """
     
 #@api_view(['GET'])
 #def get_all_notifications(request):
