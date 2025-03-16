@@ -6,7 +6,8 @@ from django.contrib.contenttypes.models import ContentType
 from .models import Message
 from accounts.models import ClientToken, BusinessSubjectToken
 
-PAGE_SIZE = 10  # Number of messages per page
+PAGE_SIZE = 10  
+MAX_BULK_DELETE = 20  
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -19,7 +20,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return
 
         self.scope["user"] = user
-        self.room_group_name = f"chat_{user.id}"  # Define a chat room based on user ID
+        self.room_group_name = f"chat_{user.id}"
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
@@ -38,10 +39,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             bs_token = await sync_to_async(BusinessSubjectToken.objects.get)(key=token)
             return bs_token.business_subject
         except BusinessSubjectToken.DoesNotExist:
-            return None  # Invalid token
+            return None  
 
     async def disconnect(self, close_code):
-        # Leave the chat group
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
@@ -52,6 +52,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.handle_send_message(data)
         elif action == "fetch_messages":
             await self.handle_fetch_messages(data)
+        elif action == "delete_message":
+            await self.handle_soft_delete_message(data)
+        elif action == "bulk_delete_messages":
+            await self.handle_bulk_delete_messages(data)
+        elif action == "edit_message":
+            await self.handle_edit_message(data)
 
     async def handle_send_message(self, data):
         sender_id = data["sender_id"]
@@ -63,17 +69,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
         sender_content_type = await sync_to_async(ContentType.objects.get)(model=sender_type)
         receiver_content_type = await sync_to_async(ContentType.objects.get)(model=receiver_type)
 
-        # Save message asynchronously
         message = await sync_to_async(Message.objects.create)(
             sender_content_type=sender_content_type,
             sender_object_id=sender_id,
             receiver_content_type=receiver_content_type,
             receiver_object_id=receiver_id,
             content=content,
-            is_read=False  # Mark as unread initially
+            is_read=False,
+            is_deleted=False  
         )
 
-        # Send message to WebSocket group
         await self.channel_layer.group_send(
             self.room_group_name,
             {
@@ -81,11 +86,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "message": content,
                 "sender": sender_id,
                 "receiver": receiver_id,
+                "message_id": message.id
             },
         )
 
     async def handle_fetch_messages(self, data):
-        """Fetch paginated messages with filtering, marking retrieved messages as read."""
         user = self.scope["user"]
         page = int(data.get("page", 1))
         sender_id = data.get("sender_id")
@@ -94,10 +99,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         offset = (page - 1) * PAGE_SIZE
 
-        # Base query: messages where the user is the receiver
-        query = Message.objects.filter(receiver_object_id=user.id)
+        query = Message.objects.filter(receiver_object_id=user.id, is_deleted=False)
 
-        # Apply optional filters
         if sender_id:
             query = query.filter(sender_object_id=sender_id)
         if receiver_id:
@@ -105,15 +108,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if unread_only:
             query = query.filter(is_read=False)
 
-        total_messages = await sync_to_async(query.count)()  # Count filtered messages
+        total_messages = await sync_to_async(query.count)()
 
-        # Fetch messages and mark them as read
         async def get_and_update_messages():
             messages = list(query
                             .select_related("sender_content_type", "receiver_content_type")
                             .order_by("-timestamp")[offset:offset + PAGE_SIZE])
-            
-            # Mark messages as read
+
             Message.objects.filter(id__in=[msg.id for msg in messages]).update(is_read=True)
             return messages
 
@@ -121,16 +122,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         message_list = [
             {
+                "id": msg.id,
                 "sender": msg.sender_object_id,
                 "receiver": msg.receiver_object_id,
                 "message": msg.content,
                 "timestamp": msg.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-                "is_read": True  # Retrieved messages are now read
+                "is_read": True  
             }
             for msg in messages
         ]
 
-        has_more = (offset + PAGE_SIZE) < total_messages  # Check if more messages exist
+        has_more = (offset + PAGE_SIZE) < total_messages  
 
         await self.send(text_data=json.dumps({
             "type": "message_history",
@@ -139,6 +141,69 @@ class ChatConsumer(AsyncWebsocketConsumer):
             "has_more": has_more
         }))
 
-    async def chat_message(self, event):
-        """Send a received chat message to the WebSocket."""
-        await self.send(text_data=json.dumps(event))
+    async def handle_soft_delete_message(self, data):
+        user = self.scope["user"]
+        message_id = data.get("message_id")
+
+        if not message_id:
+            return
+
+        try:
+            message = await sync_to_async(Message.objects.get)(id=message_id)
+        except Message.DoesNotExist:
+            return
+
+        if message.sender_object_id != user.id:
+            return  
+
+        message.is_deleted = True
+        await sync_to_async(message.save)()
+
+        await self.send(text_data=json.dumps({
+            "type": "message_deleted",
+            "message_id": message_id
+        }))
+
+    async def handle_bulk_delete_messages(self, data):
+        user = self.scope["user"]
+        message_ids = data.get("message_ids", [])
+
+        if not message_ids or len(message_ids) > MAX_BULK_DELETE:
+            return  
+
+        messages = await sync_to_async(list)(Message.objects.filter(id__in=message_ids, sender_object_id=user.id))
+
+        for message in messages:
+            message.is_deleted = True
+
+        await sync_to_async(Message.objects.bulk_update)(messages, ["is_deleted"])
+
+        await self.send(text_data=json.dumps({
+            "type": "bulk_messages_deleted",
+            "message_ids": [msg.id for msg in messages]
+        }))
+
+    async def handle_edit_message(self, data):
+        user = self.scope["user"]
+        message_id = data.get("message_id")
+        new_content = data.get("new_content")
+
+        if not message_id or not new_content:
+            return
+
+        try:
+            message = await sync_to_async(Message.objects.get)(id=message_id)
+        except Message.DoesNotExist:
+            return
+
+        if message.sender_object_id != user.id:
+            return  
+
+        message.content = new_content
+        await sync_to_async(message.save)()
+
+        await self.send(text_data=json.dumps({
+            "type": "message_edited",
+            "message_id": message_id,
+            "new_content": new_content
+        }))
