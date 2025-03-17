@@ -5,9 +5,12 @@ from asgiref.sync import sync_to_async
 from django.contrib.contenttypes.models import ContentType
 from .models import Message
 from accounts.models import ClientToken, BusinessSubjectToken
+from django.contrib.auth import get_user_model
 
 PAGE_SIZE = 10  
 MAX_BULK_DELETE = 20  
+
+User = get_user_model()
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
