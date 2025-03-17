@@ -117,7 +117,7 @@ const Comments = ({ activityId }) => {
           `http://127.0.0.1:8000/api/client/${clientId}/`
         );
         const data = await response.json();
-        setPictures((prev) => ({ ...prev, [clientId]: `http://127.0.0.1:8000/` + data.profile_picture }));
+        setPictures((prev) => ({ ...prev, [clientId]: `http://127.0.0.1:8000` + data.profile_picture }));
       } catch (error) {
         console.error("Error fetching username:", error);
       }
@@ -139,7 +139,7 @@ const Comments = ({ activityId }) => {
         {comments.length > 0 ? (
           comments.map((comment) => (
             <div key={comment.id} className="comment">
-              
+
               <div className="comment-meta">
                 <span className="comment-date">
                   {new Date(comment.date).toLocaleString()}
@@ -154,7 +154,7 @@ const Comments = ({ activityId }) => {
                 </div>
                 <p className="comment-text">{comment.text}</p>
               </div>
-              
+
             </div>
           ))
         ) : (
