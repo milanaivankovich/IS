@@ -56,7 +56,9 @@ const MenuBar = ({ variant, search }) => {
           (id.id !== -1) && (
             <div className="menu-right">
               {search && <SearchComponent />}
-              <FontAwesomeIcon className="notification-icon" icon={faBell} onClick={() => (window.location.href = "/dashboard")} />
+              <FontAwesomeIcon className="notification-icon" icon={faBell} onClick={() => (window.location.href = "/dashboard")}
+                shake={false} //staviti true ako ima novih notifikacija todo
+              />
               <a href="/userprofile">
                 <img
                   src={profileImage}

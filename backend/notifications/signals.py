@@ -1,7 +1,7 @@
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from .models import Notification
-from activities.models import Activities
+from activities.models import Activities, Comment
 from accounts.models import Client
 from .utils import send_notification
 
@@ -24,7 +24,7 @@ def participate_notification(sender, instance, action, reverse, pk_set, **kwargs
                 sender=user,  # The user who liked the post
                 post=instance,
                 notification_type='prijava',  # Set notification type
-                content=f"{user.username} se prijavio na događaj!",
+                content=f"{user.username} se prijavio na događaj.",
             )
             send_notification(instance.client.id,new_notification)
             print(f"Signal for new notification participate for client {instance.client.username}")
@@ -38,7 +38,31 @@ def participate_notification(sender, instance, action, reverse, pk_set, **kwargs
                 sender=user,  # The user who liked the post
                 post=instance,
                 notification_type='odjava',  # Set notification type
-                content=f"{user.username} se odjavio sa događaja!",
+                content=f"{user.username} se odjavio sa događaja.",
             )
             send_notification(instance.client.id,new_notification)
             print(f"Signal for new notification unparticipate created for user {instance.client.username}")
+
+@receiver(m2m_changed, sender=Activities.comments.through)
+def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
+    """
+    Signals
+    
+    - `action == "post_add"` → A user comments.
+    """
+    print(f"Signal comment for client {instance.client.username}")
+
+    if action == "post_add":
+        for comment_id in pk_set: #svakom participantu poslati komentar todo
+            comment = Comment.objects.get(pk=comment_id)
+            if (instance.client!=comment.client):
+                new_notification = Notification.objects.create(
+
+                    recipient=instance.client,  # Notify the post author
+                    sender=comment.client,  # The user who liked the post
+                    post=instance,
+                    notification_type='komentar',  # Set notification type
+                    content=f"{comment.client.username} komentariše događaj: {instance.titel}.",
+                    comment=comment
+                )
+                send_notification(instance.client.id,new_notification)

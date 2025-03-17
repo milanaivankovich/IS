@@ -8,12 +8,13 @@ class Notification(models.Model):
         ('odjava', 'Odjava'),
         ('prijava', 'Prijava'),
         ('komentar', 'Komentar'),
+        ('uskoro','Uskoro'), #za nadolazeci dogadjaj
         #('new_post', 'New Post'),
     ]
      
     recipient = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='recieve_notifications')
     post = models.ForeignKey(Activities, on_delete=models.CASCADE, related_name='notifications')
-    sender = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='sent_notifications')
+    sender = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='sent_notifications') # null=true ako je sistemska notifikacija
     notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
     content = models.TextField()
     is_read = models.BooleanField(default=False)
