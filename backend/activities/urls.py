@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from rest_framework.routers import DefaultRouter
 from .views import get_location_by_field_id, get_registered_events
-
+from .views import sport_statistics
 urlpatterns = [
     path('clients/<int:client_id>/activities/', views.get_client_activities, name='get_client_activities'),
     path('clients/<int:client_id>/activities/add/', views.add_activity, name='add_activity'),
@@ -36,4 +36,6 @@ urlpatterns = [
     path('activities/delete/<int:pk>/', views.delete_activity, name='delete_activity'),
     path('activities/<int:activity_id>/participants/', views.activity_participants, name='activity_participants'),
     path('api/comments/<int:activity>/', views.comments_by_activity), #GET and POST comments by activity
+    path('api/sport-statistics/', sport_statistics, name='sport_statistics'),
+
 ]
