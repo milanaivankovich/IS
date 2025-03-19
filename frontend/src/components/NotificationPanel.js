@@ -79,7 +79,7 @@ const NotificationPanel = ({ userId }) => {
                                 onClick={() => setShowEvent(notif?.post)}
                             />))
                         }
-                        <div ref={ref} style={{ height: "40px", color: "gray" }}>
+                        <div ref={ref} style={{ height: "40px" }}>
                             {isFetchingNextPage && <Spinner className='spinner-border' animation="border" />}
                         </div>
                     </ToastContainer>

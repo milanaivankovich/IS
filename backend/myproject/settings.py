@@ -36,6 +36,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'daphne',
+    'webpush',
     'channels',
     #'django_cron',
     'django.contrib.admin',
@@ -58,7 +59,6 @@ INSTALLED_APPS = [
     'reviews',
     'advertisements',
     'notifications',
-    
 ]
 
 REST_FRAMEWORK = {
@@ -218,3 +218,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": "BHlnwZxb8FYf1bmw9-8VnLToO9apR-LjyT56eSGJCcnHopvD7GfhgcNhCgqAvjW2GSa9CHeh3TDbnsH97I5udPI",
+    "VAPID_PRIVATE_KEY": "tVTXTBSKmZ-cSlo34fnSzFDyNiPmZCFUTZv1RfVY9KA",
+    "VAPID_ADMIN_EMAIL": "ocenekonabasketbl@gmail.com",
+}
