@@ -57,6 +57,16 @@ const Dashboard = () => {
             console.error("Error: ", error);
         }
     };
+    //test webpush
+    async function sendNotification() {
+        await fetch("http://127.0.0.1:8000/webpush/notify/mimi", {
+            method: "POST",
+            body: JSON.stringify({ message: "Hello from Django!" }),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+    }
 
     return (
         <div className="dashboard-body">
@@ -109,6 +119,8 @@ const Dashboard = () => {
                         </Col>
                     </Row>
                 </Tab.Container>}
+            <button onClick={() => sendNotification()}>Send Notification</button>
         </div >);
 }
+
 export default Dashboard;

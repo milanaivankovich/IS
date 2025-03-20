@@ -52,4 +52,11 @@ class MyCronJob(CronJobBase):
                 'ocenekonabasketbl@gmail.com',  # Replace with your email
                 [post.client.email],  # Assuming the Post model has a 'user' field
             )
+#bolji nacin
+            if __name__ == "__main__":
+    to_email = "anastasija.milenic@student.etf.unibl.org"  # Change to your email address
+    subject = "Test Email"
+    message = "This is a test email sent from Python!"
+    send_email_via_gmail(to_email, subject, message)
+
             '''

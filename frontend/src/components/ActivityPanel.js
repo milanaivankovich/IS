@@ -35,7 +35,7 @@ const ActivityPanel = (activityDataArray, nextPage, fetchingNextPage) => {
             {Array.isArray(data) && data.map((activity) => (
                 <ActivityCard key={activity.id} activity={activity} />
             ))}
-            <div ref={ref} style={{ height: "40px", color: "gray" }}>
+            <div ref={ref} style={{ height: "40px" }}>
                 {isFetchingNextPage && <Spinner className='spinner-border' animation="border" />}
             </div>
         </div>);

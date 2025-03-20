@@ -14,6 +14,8 @@ from django.utils.timezone import now
 from datetime import datetime
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
+from django.db.models import Count, Avg
+from django.http import JsonResponse
 
 
 class ActivitiesCreateView(CreateView):
@@ -413,3 +415,28 @@ def comments_by_activity(request, activity):
             activity_instance.comments.add(comment) 
             return Response(CommentSerializer(comment).data, status=201)
         return Response(serializer.errors, status=400)
+    
+@api_view(['GET', 'POST'])
+def sport_statistics(request):
+    # Najpopularniji sport (po broju aktivnosti)
+    popular_sport = Activities.objects.values('sport__name').annotate(total=Count('id')).order_by('-total').first()
+
+    # Sport sa najviše učesnika
+    sport_with_most_participants = Activities.objects.values('sport__name').annotate(total_participants=Count('participants')).order_by('-total_participants').first()
+
+    # Prosječan broj učesnika po sportu
+    avg_participants_per_sport = Activities.objects.values('sport__name').annotate(avg_participants=Avg('NumberOfParticipants'))
+
+    # Broj aktivnosti po sportovima
+    activities_per_sport = Activities.objects.values('sport__name').annotate(total_activities=Count('id')).order_by('-total_activities')
+
+    # Broj aktivnosti po mjesecima/godinama
+    activities_per_month = Activities.objects.extra(select={'month': "EXTRACT(MONTH FROM date)"}).values('month').annotate(count=Count('id')).order_by('month')
+
+    return JsonResponse({
+        'popular_sport': popular_sport,
+        'sport_with_most_participants': sport_with_most_participants,
+        'avg_participants_per_sport': list(avg_participants_per_sport),
+        'activities_per_sport': list(activities_per_sport),
+        'activities_per_month': list(activities_per_month)
+    })
