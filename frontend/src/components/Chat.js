@@ -5,6 +5,7 @@ import useWebSocket from "../hooks/useWebSocket";
 const Chat = ({ token }) => {
     const { messages, sendMessage, fetchMessages, isConnected } = useWebSocket(token);
     const [newMessage, setNewMessage] = useState("");
+    const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef(null);
 
     useEffect(() => {
@@ -19,6 +20,7 @@ const Chat = ({ token }) => {
         if (newMessage.trim() === "") return;
         sendMessage(newMessage);
         setNewMessage("");
+        setIsTyping(false);
     };
 
     return (
@@ -39,7 +41,6 @@ const Chat = ({ token }) => {
                 {isConnected ? "🟢 Online" : "🔴 Offline"}
             </Typography>
 
-            {/* Messages List */}
             <Paper elevation={3} sx={{ height: 300, overflowY: "auto", p: 2, my: 2, display: "flex", flexDirection: "column" }}>
                 {messages.map((msg, index) => (
                     <Box
@@ -59,12 +60,20 @@ const Chat = ({ token }) => {
                             {msg.sender}
                         </Typography>
                         <Typography variant="body1">{msg.message}</Typography>
+                        <Typography variant="caption" color="text.secondary">
+                            {msg.timestamp}
+                        </Typography>
                     </Box>
                 ))}
                 <div ref={messagesEndRef} />
             </Paper>
 
-            {/* Input & Send Button */}
+            {isTyping && (
+                <Typography variant="caption" color="text.secondary">
+                    Typing...
+                </Typography>
+            )}
+
             <Box sx={{ display: "flex", mt: 2, gap: 1 }}>
                 <TextField
                     fullWidth
@@ -72,7 +81,14 @@ const Chat = ({ token }) => {
                     size="small"
                     placeholder="Type a message..."
                     value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
+                    onChange={(e) => {
+                        setNewMessage(e.target.value);
+                        setIsTyping(true);
+                        setTimeout(() => setIsTyping(false), 2000);
+                    }}
+                    onKeyPress={(e) => {
+                        if (e.key === "Enter") handleSendMessage();
+                    }}
                     sx={{ bgcolor: "white", borderRadius: 1 }}
                 />
                 <Button onClick={handleSendMessage} variant="contained" sx={{ px: 3 }}>

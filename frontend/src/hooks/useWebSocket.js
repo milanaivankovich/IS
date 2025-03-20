@@ -47,6 +47,12 @@ const useWebSocket = (token) => {
 
     const sendMessage = (message) => {
         if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+            const newMessage = {
+                sender: "You",
+                message: message,
+                timestamp: new Date().toLocaleTimeString(),
+            };
+            setMessages((prev) => [...prev, newMessage]);
             socketRef.current.send(JSON.stringify({ action: "send_message", message }));
         }
     };
