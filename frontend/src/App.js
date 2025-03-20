@@ -19,6 +19,10 @@ import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import WebSocketNotifications from "./components/WebSocketNotifications";
 import "./global.css";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import Chat from "./components/Chat";
+
 
 function App() {
   const [currentPage, setCurrentPage] = useState("pocetna");

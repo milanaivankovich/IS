@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from "react";
-import useWebSocket from "./useWebSocket";
-import { v4 as uuidv4 } from "uuid";
+import React, { useState, useEffect, useRef } from "react";
+import { TextField, Button, Box, Typography, Paper } from "@mui/material";
+import useWebSocket from "../hooks/useWebSocket";
 
 const Chat = ({ token }) => {
-    const { messages, sendMessage, fetchMessages, editMessage, deleteMessage, isConnected } = useWebSocket(token);
+    const { messages, sendMessage, fetchMessages, isConnected } = useWebSocket(token);
     const [newMessage, setNewMessage] = useState("");
+    const messagesEndRef = useRef(null);
 
     useEffect(() => {
-        fetchMessages(); // Fetch messages when the component mounts
+        fetchMessages();
     }, []);
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
 
     const handleSendMessage = () => {
         if (newMessage.trim() === "") return;
@@ -17,29 +22,64 @@ const Chat = ({ token }) => {
     };
 
     return (
-        <div className="chat-container">
-            <h2>Chat</h2>
-            <div className="status">{isConnected ? "🟢 Online" : "🔴 Offline"}</div>
-            <div className="messages">
-                {messages.map((msg) => (
-                    <div key={uuidv4()} className="message">
-                        <span>{msg.sender}: </span>
-                        {msg.message}
-                        <button onClick={() => editMessage(msg.message_id, prompt("Edit message:", msg.message))}>
-                            ✏️
-                        </button>
-                        <button onClick={() => deleteMessage(msg.message_id)}>🗑</button>
-                    </div>
+        <Box
+            sx={{
+                maxWidth: 500,
+                mx: "auto",
+                p: 3,
+                bgcolor: "background.default",
+                borderRadius: 2,
+                boxShadow: 3,
+            }}
+        >
+            <Typography variant="h5" textAlign="center" fontWeight="bold" gutterBottom>
+                Chat
+            </Typography>
+            <Typography variant="subtitle2" color="text.secondary">
+                {isConnected ? "🟢 Online" : "🔴 Offline"}
+            </Typography>
+
+            {/* Messages List */}
+            <Paper elevation={3} sx={{ height: 300, overflowY: "auto", p: 2, my: 2, display: "flex", flexDirection: "column" }}>
+                {messages.map((msg, index) => (
+                    <Box
+                        key={index}
+                        sx={{
+                            p: 1.5,
+                            my: 1,
+                            maxWidth: "75%",
+                            borderRadius: 2,
+                            boxShadow: 2,
+                            alignSelf: msg.sender === "You" ? "flex-end" : "flex-start",
+                            bgcolor: msg.sender === "You" ? "primary.main" : "grey.300",
+                            color: msg.sender === "You" ? "white" : "black",
+                        }}
+                    >
+                        <Typography variant="subtitle2" fontWeight="bold">
+                            {msg.sender}
+                        </Typography>
+                        <Typography variant="body1">{msg.message}</Typography>
+                    </Box>
                 ))}
-            </div>
-            <input
-                type="text"
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Type a message..."
-            />
-            <button onClick={handleSendMessage}>Send</button>
-        </div>
+                <div ref={messagesEndRef} />
+            </Paper>
+
+            {/* Input & Send Button */}
+            <Box sx={{ display: "flex", mt: 2, gap: 1 }}>
+                <TextField
+                    fullWidth
+                    variant="outlined"
+                    size="small"
+                    placeholder="Type a message..."
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    sx={{ bgcolor: "white", borderRadius: 1 }}
+                />
+                <Button onClick={handleSendMessage} variant="contained" sx={{ px: 3 }}>
+                    Send
+                </Button>
+            </Box>
+        </Box>
     );
 };
 
