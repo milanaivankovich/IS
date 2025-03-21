@@ -4,6 +4,9 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.crypto import get_random_string
 from fields.models import Field
 
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+
 class Client(AbstractUser):
     # Additional fields specific to Client
     username = models.CharField(
@@ -14,10 +17,22 @@ class Client(AbstractUser):
     address = models.TextField(blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
     profile_picture = models.ImageField(upload_to='client_profile_pics/', blank=True, null=True)
-
-    
-
     bio = models.TextField(blank=True, null=True)
+
+    # New Fields
+    age = models.PositiveIntegerField(blank=True, null=True)  # Age as an optional integer field
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+        ('N', 'Prefer not to say'),
+    ]
+    gender = models.CharField(
+        max_length=1, 
+        choices=GENDER_CHOICES, 
+        blank=True, 
+        null=True
+    )
 
     # Provide custom related_name to avoid clashes
     groups = models.ManyToManyField(
@@ -39,10 +54,11 @@ class Client(AbstractUser):
         related_name='favorite_clients', 
         blank=True
     )
-    webpush_info = models.JSONField(null=True, blank=True) #required for browser notifications
+    webpush_info = models.JSONField(null=True, blank=True) # Required for browser notifications
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
 
 
 

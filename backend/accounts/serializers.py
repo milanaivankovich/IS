@@ -86,18 +86,22 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 class ClientSerializer(serializers.ModelSerializer):
-    # Remove the 'user' field and directly define the necessary fields
+    # Define additional fields
     first_name = serializers.CharField(max_length=30, required=False)
     last_name = serializers.CharField(max_length=30, required=False)
     username = serializers.CharField(max_length=150, required=False)
     password = serializers.CharField(write_only=True, style={'input_type': 'password'})
     email = serializers.EmailField(required=False)
     profile_picture = serializers.ImageField(required=False, allow_null=True)
+    age = serializers.IntegerField(required=False, allow_null=True)  # New field
+    gender = serializers.ChoiceField(choices=Client.GENDER_CHOICES, required=False, allow_null=True)  # New field
 
     class Meta:
         model = Client
-        fields = ['first_name', 'last_name', 'username', 'password', 'email', 'profile_picture']
-    
+        fields = [
+            'first_name', 'last_name', 'username', 'password', 'email', 
+            'profile_picture', 'age', 'gender'  # Include new fields
+        ]
 
     def validate_email(self, value):
         instance = self.instance  # Current instance being updated
@@ -105,7 +109,7 @@ class ClientSerializer(serializers.ModelSerializer):
             return value  # Skip validation if the email hasn't changed
 
         # Check if the email is being updated and is unique
-        if BusinessSubject.objects.filter(email=value).exists() or Client.objects.filter(email=value).exists():
+        if Client.objects.filter(email=value).exists():
             raise serializers.ValidationError("A user with this email already exists.")
         return value
 
@@ -125,17 +129,17 @@ class ClientSerializer(serializers.ModelSerializer):
         if password:
             instance.set_password(password)
 
-        # Update the instance with other fields
+        # Update instance with other fields
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
         return instance
 
     def create(self, validated_data):
-        # Extract the password from the validated data and create the user
+        # Extract the password from the validated data
         password = validated_data.pop('password')
         
-        # Create the user instance
+        # Create the user instance with new fields
         user = Client(**validated_data)
         user.set_password(password)
         user.save()
