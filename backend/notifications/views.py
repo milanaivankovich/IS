@@ -173,3 +173,42 @@ def send_push_notification(request, username):
         else: return JsonResponse({"error": "No subscription info"}, status=400)
     return JsonResponse({"error": "Invalid request"}, status=400)'
     '''
+
+#jazzband push notifications
+from push_notifications.models import WebPushDevice
+#NE RADI
+@csrf_exempt
+def register_subscription(request, username):
+    if request.method == 'POST':
+        data = request.data
+        #subscription_info = json.loads(request.body)
+        #user = request.user  # Get the user from the request context
+        #client = get_object_or_404(Client, username= username)
+        #custom user
+        #user = User.objects.create_user(username=client.username, password=client.password, email=client.email)
+        # Create a new WebPushDevice for the user
+        reg_id = data.registration_id
+        p256dh = data.p256dh
+        auth = data.auth
+        browser = data.auth
+        
+        device = WebPushDevice.objects.create(
+            registration_id=reg_id,
+            p256dh=p256dh,
+            auth = auth,
+            browser = browser,
+        )
+        device.save()
+        
+        return JsonResponse({"status": "Subscription successful"})
+    return JsonResponse({"error": "Invalid request"}, status=400)
+
+from .webpush import subscribe_webpush, official_send_push_notification
+@csrf_exempt
+def subscribe_to_webpush_service(request, username):
+    return subscribe_webpush(request)
+'''
+@csrf_exempt
+def test_sending_notification(request)
+    official_send_push_notification(requ,"test","test")'
+    '''
