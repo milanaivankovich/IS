@@ -20,15 +20,16 @@ import Dashboard from "./pages/Dashboard";
 import WebSocketNotifications from "./components/WebSocketNotifications";
 import "./global.css";
 import API from "./variables";
+import { subscribeUser, resetPushSubscription } from "./webpush/utils";
 
 
 function App() {
 
-  /*webpush notifikacije
+  //webpush notifikacije
   useEffect(() => {
-    subscribeToPush();
+    subscribeUser();
   }, []);
-  */
+  //
 
   const [currentPage, setCurrentPage] = useState("pocetna");
   const [terenId, setTerenId] = useState(null);
