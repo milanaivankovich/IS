@@ -27,3 +27,17 @@ class Notification(models.Model):
         if self.comment:
             return f"{self.sender} - {self.notification_type} - {self.comment.post.title} (Comment)"
         return f"{self.sender} - {self.notification_type} - {self.post.title}"
+'''
+class WebPushInfo(models.Model):
+    endpoint = models.URLField(max_length=200)
+    p256dh = models.CharField(max_length=255)
+    auth = models.CharField(max_length=255)
+    # Optionally, add more fields such as "expiration time" or "platform" for more detailed information
+    subscription_date = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"WebPush info for {self.user.username}"
+
+    class Meta:
+        verbose_name = "WebPush Info"
+        verbose_name_plural = "WebPush Infos"
+'''

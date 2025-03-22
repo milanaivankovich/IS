@@ -4,7 +4,7 @@ from . import views
 from .views import NotificationViewSet, NotificationList
 from .views import count_unread_notifications, mark_all_notifications_as_read, mark_notification_as_read, delete_notification
 from activities.views import ActivitiesCreateView
-from .views import send_push_notification
+#from .views import send_push_notification, webpush_subscribe
 
 router = DefaultRouter()
 router.register(r'notifications', NotificationViewSet)
@@ -19,6 +19,6 @@ urlpatterns = [
     path('api/notifications/mark-read/<int:item_id>/', mark_notification_as_read),
     path('api/notifications/mark-all-read/<int:reciever_id>/', mark_all_notifications_as_read),
     path('api/notifications/delete/<int:item_id>/', delete_notification),
-    #path("webpush/subscribe/", save_push_subscription, name="subscribe"),
-    path("webpush/notify/<str:username>", send_push_notification, name="webpush_notify"),
+    #path("webpush/subscribe/<str:username>/", webpush_subscribe, name="webpush_subscribe"),
+    #path('api/webpush/notify/<str:username>/', send_push_notification, name="webpush_notify"),
 ]

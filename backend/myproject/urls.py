@@ -13,7 +13,7 @@ urlpatterns = [
     path('', include('advertisements.urls')),
     path('', include('chat.urls')),
     path('', include('notifications.urls')),
-    path('webpush/', include('webpush.urls'))
+    #path('webpush/', include('webpush.urls'))
 ]
 
 if settings.DEBUG:

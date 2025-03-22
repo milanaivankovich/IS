@@ -54,7 +54,7 @@ class Client(AbstractUser):
         related_name='favorite_clients', 
         blank=True
     )
-    webpush_info = models.JSONField(null=True, blank=True) # Required for browser notifications
+    #webpush_info = models.JSONField(null=True, blank=True) # Required for browser notifications
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

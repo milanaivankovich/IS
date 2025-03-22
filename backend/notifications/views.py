@@ -10,8 +10,8 @@ from django.shortcuts import get_object_or_404
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from webpush import send_user_notification
-from webpush.utils import send_to_subscription
+
+from django.contrib.auth.models import User
 
 class NotificationViewSet(viewsets.ModelViewSet):
     queryset = Notification.objects.all().order_by('-created_at')
@@ -139,18 +139,24 @@ def count_unread_notifications(request, reciever_id):
 #        serializer = NotificationSerializer(notifications, many=True)
 #        return Response(serializer.data)
 
-
+'''
 ### webpush
-'''
-@csrf_exempt
-def save_push_subscription(request):
-    """ Save the push subscription from the client """
+from webpush import send_user_notification
+from webpush.utils import send_to_subscription
+
+@csrf_exempt  # Temporarily disable CSRF (or handle it properly in React)  # Ensure the user is authenticated
+def webpush_subscribe(request, username):
     if request.method == "POST":
-        data = json.loads(request.body)
-        send_to_subscription(data, payload="Subscription saved")
-        return JsonResponse({"message": "Subscription saved!"})
+        try:
+            subscription = json.loads(request.body)
+            user = get_object_or_404(Client, username=username)
+            user.webpush_info = subscription
+            user.save()
+            return JsonResponse({"status": "Subscription successful"})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
     return JsonResponse({"error": "Invalid request"}, status=400)
-'''
+
 @csrf_exempt
 def send_push_notification(request, username):
     """ Send push notification to a user """
@@ -160,8 +166,10 @@ def send_push_notification(request, username):
 
         user = get_object_or_404(Client, username=username) 
         if user.webpush_info is not None: # Change to your user system
-            send_user_notification(user=user, payload=payload, ttl=1000)
+            send_to_subscription(subscription=user.webpush_info,payload=payload, ttl=1000)
+            #send_user_notification(payload=payload, ttl=1000, subscription_info = user.webpush_info)
             print("Webpush notification sent")
             return JsonResponse({"message": "Notification sent!"})
-        else: return JsonResponse({"error": "No subscription info"}, status=404)
-    return JsonResponse({"error": "Invalid request"}, status=400)
+        else: return JsonResponse({"error": "No subscription info"}, status=400)
+    return JsonResponse({"error": "Invalid request"}, status=400)'
+    '''

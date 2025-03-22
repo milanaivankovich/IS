@@ -36,7 +36,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'daphne',
-    'webpush',
+    #'webpush',
+    'push_notifications',
     'channels',
     #'django_cron',
     'django.contrib.admin',
