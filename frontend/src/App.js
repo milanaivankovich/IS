@@ -19,40 +19,16 @@ import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import WebSocketNotifications from "./components/WebSocketNotifications";
 import "./global.css";
-import API, { VAPID_PUBLIC_KEY } from "./variables";
+import API from "./variables";
 
-async function subscribeToPush() {
-  if ("serviceWorker" in navigator && "PushManager" in window) {
-    try {
-      const registration = await navigator.serviceWorker.register("/webpush.js");
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: VAPID_PUBLIC_KEY,
-      });
-
-      // Send subscription to Django backend
-      await fetch(`${API}/webpush/save_information/`, {
-        method: "POST",
-        body: JSON.stringify(subscription),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      console.log("Push Subscription successful!");
-    } catch (error) {
-      console.error("Push Subscription failed:", error);
-    }
-  }
-}
 
 function App() {
 
-  //webpush notifikacije
+  /*webpush notifikacije
   useEffect(() => {
     subscribeToPush();
   }, []);
-  //
+  */
 
   const [currentPage, setCurrentPage] = useState("pocetna");
   const [terenId, setTerenId] = useState(null);
