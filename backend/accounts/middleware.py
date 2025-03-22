@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AnonymousUser
 from urllib.parse import parse_qs
 import logging
-from channels.middleware.base import BaseMiddleware
+from channels.middleware import BaseMiddleware
 from accounts.authentication import custom_authenticate  # Import your custom function
 
 logger = logging.getLogger(__name__)
