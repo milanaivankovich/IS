@@ -26,7 +26,7 @@ def participate_notification(sender, instance, action, reverse, pk_set, **kwargs
                 content=f"{user.username} se prijavio na događaj.",
             )
             send_notification(instance.client.id,new_notification)
-            send_push_notification_to_all_user_devices(user, f"@{user.username}", new_notification.content, f"@{user.username}/{new_notification.notification_type}")
+            send_push_notification_to_all_user_devices(new_notification.recipient, f"@{user.username}", new_notification.content, f"@{user.username}/{new_notification.notification_type}")
 
 
     elif action == "post_remove":  # User unliked the post
@@ -40,7 +40,7 @@ def participate_notification(sender, instance, action, reverse, pk_set, **kwargs
                 content=f"{user.username} se odjavio sa događaja.",
             )
             send_notification(instance.client.id,new_notification)
-            send_push_notification_to_all_user_devices(user, f"@{user.username}", new_notification.content, f"@{user.username}/{new_notification.notification_type}")
+            send_push_notification_to_all_user_devices(new_notification.recipient, f"@{user.username}", new_notification.content, f"@{user.username}/{new_notification.notification_type}")
 
 @receiver(m2m_changed, sender=Activities.comments.through)
 def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
@@ -63,7 +63,7 @@ def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
                     comment=comment
                 )
                 send_notification(instance.client.id,new_notification)
-                send_push_notification_to_all_user_devices(new_notification.sender.username, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
+                send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
 
             
             #poslati obavjest drugim participantima
@@ -79,7 +79,7 @@ def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
                         comment=comment
                     )
                     send_notification(participant.id ,new_notification)
-                    send_push_notification_to_all_user_devices(new_notification.sender.username, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
+                    send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
 
 @receiver(post_save, sender=Activities)
 def notify_on_post_update(sender, instance, created, **kwargs):
@@ -97,7 +97,7 @@ def notify_on_post_update(sender, instance, created, **kwargs):
                         content=f"{instance.client.username} ažurira događaj na koji ste prijavljeni.",
                     )
         send_notification(participant.id ,new_notification)
-        send_push_notification_to_all_user_devices(new_notification.sender.username, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
+        send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
 
 
 
