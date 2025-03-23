@@ -9,9 +9,9 @@ var getTitle = function (title) {
 var getNotificationOptions = function (message, message_tag) {
     var options = {
         body: message,
-        icon: '/img/icon_120.png',
+        icon: 'icon.png',
         tag: message_tag,
-        vibrate: [200, 100, 200, 100, 200, 100, 200]
+        //vibrate: [200, 100, 200, 100, 200, 100, 200]
     };
     return options;
 };

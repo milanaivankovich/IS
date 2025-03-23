@@ -4,6 +4,7 @@ from .models import Notification
 from activities.models import Activities, Comment
 from accounts.models import Client
 from .utils import send_notification
+from .webpush import send_push_notification_to_all_user_devices
 
 @receiver(m2m_changed, sender=Activities.participants.through)
 def participate_notification(sender, instance, action, reverse, pk_set, **kwargs):
@@ -13,8 +14,6 @@ def participate_notification(sender, instance, action, reverse, pk_set, **kwargs
     - `action == "post_add"` → A user participates.
     - `action == "post_remove"` → A user unparticipates.
     """
-    print(f"Signal participants change for client {instance.client.username}")
-
     if action == "post_add":  # User liked the post
         for user_id in pk_set:
             user = Client.objects.get(pk=user_id)
@@ -27,7 +26,7 @@ def participate_notification(sender, instance, action, reverse, pk_set, **kwargs
                 content=f"{user.username} se prijavio na događaj.",
             )
             send_notification(instance.client.id,new_notification)
-            print(f"Signal for new notification participate for client {instance.client.username}")
+            send_push_notification_to_all_user_devices(user, f"@{user.username}", new_notification.content, f"@{user.username}/{new_notification.notification_type}")
 
 
     elif action == "post_remove":  # User unliked the post
@@ -41,7 +40,7 @@ def participate_notification(sender, instance, action, reverse, pk_set, **kwargs
                 content=f"{user.username} se odjavio sa događaja.",
             )
             send_notification(instance.client.id,new_notification)
-            print(f"Signal for new notification unparticipate created for user {instance.client.username}")
+            send_push_notification_to_all_user_devices(user, f"@{user.username}", new_notification.content, f"@{user.username}/{new_notification.notification_type}")
 
 @receiver(m2m_changed, sender=Activities.comments.through)
 def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
@@ -50,8 +49,6 @@ def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
     
     - `action == "post_add"` → A user comments.
     """
-    print(f"Signal comment notification")
-
     if action == "post_add":
         for comment_id in pk_set: #za svaki novi komentar poslati obavjest
             comment = Comment.objects.get(pk=comment_id)
@@ -66,7 +63,7 @@ def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
                     comment=comment
                 )
                 send_notification(instance.client.id,new_notification)
-                print(f"Signal comment for client {instance.client.username}")
+                send_push_notification_to_all_user_devices(new_notification.sender.username, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
 
             
             #poslati obavjest drugim participantima
@@ -82,7 +79,7 @@ def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
                         comment=comment
                     )
                     send_notification(participant.id ,new_notification)
-                    print(f"Signal comment for participant {participant.username}")
+                    send_push_notification_to_all_user_devices(new_notification.sender.username, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
 
 @receiver(post_save, sender=Activities)
 def notify_on_post_update(sender, instance, created, **kwargs):
@@ -100,5 +97,7 @@ def notify_on_post_update(sender, instance, created, **kwargs):
                         content=f"{instance.client.username} ažurira događaj na koji ste prijavljeni.",
                     )
         send_notification(participant.id ,new_notification)
+        send_push_notification_to_all_user_devices(new_notification.sender.username, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
+
 
 
