@@ -119,7 +119,6 @@ const Dashboard = () => {
                         </Col>
                     </Row>
                 </Tab.Container>}
-            <button onClick={() => sendNotification()}>Send Notification</button>
         </div >);
 }
 

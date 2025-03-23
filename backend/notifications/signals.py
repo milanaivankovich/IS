@@ -1,4 +1,4 @@
-from django.db.models.signals import m2m_changed, post_save
+from django.db.models.signals import m2m_changed, post_save, pre_save
 from django.dispatch import receiver
 from .models import Notification
 from activities.models import Activities, Comment
@@ -81,14 +81,20 @@ def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
                     send_notification(participant.id ,new_notification)
                     send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
 
-@receiver(post_save, sender=Activities)
-def notify_on_post_update(sender, instance, created, **kwargs):
+@receiver(pre_save, sender=Activities)
+def notify_on_post_update(sender, instance, **kwargs):
     """
     Sends a notification when a post is updated (not created).
     """
-    for participant in instance.participants.all():
-                 #da ne salje sam sebi
-        new_notification = Notification.objects.create(
+
+    if instance.id:  # Ensure it's an update, not a new object
+        old_instance = Activities.objects.get(id=instance.pk)  # Get previous state
+        #ako nije promjena participanta u pitanju
+        if old_instance and old_instance.participants == instance.participants:  # Check if 'status' changed
+
+            for participant in instance.participants.all():
+                 #ne salje sam sebi
+                new_notification = Notification.objects.create(
 
                         recipient=participant,  # Notify the post author
                         sender=instance.client,  # The user who liked the post
@@ -96,8 +102,8 @@ def notify_on_post_update(sender, instance, created, **kwargs):
                         notification_type='azuriranje',  # Set notification type
                         content=f"{instance.client.username} ažurira događaj na koji ste prijavljeni.",
                     )
-        send_notification(participant.id ,new_notification)
-        send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
+                send_notification(participant.id ,new_notification)
+                send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
 
 
 

@@ -6,9 +6,12 @@ from push_notifications.webpush import webpush_send_message
 from .models import WebPushInfo
 
 def send_push_notification_to_all_user_devices(user, title, message, tag):
-     user_info = WebPushInfo.objects.filter(user=user) #ako postoji info poslace notifikaciju
-     for data in user_info:
-        official_send_push_notification(data.device.registration_id, title, message, tag)
+    try:
+        user_info = WebPushInfo.objects.filter(user=user) #ako postoji info poslace notifikaciju
+        for data in user_info:
+            official_send_push_notification(data.device.registration_id, title, message, tag)
+    except Exception as e: 
+        return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 #zvanicno

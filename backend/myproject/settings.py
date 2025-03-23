@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     #'webpush',
     'push_notifications',
     'channels',
-    #'django_cron',
+    'background_task',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
