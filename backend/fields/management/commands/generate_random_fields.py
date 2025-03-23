@@ -17,17 +17,26 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS('Successfully generated random fields and sports.'))
 
 def create_sports():
-    sports = ["fudbal", "kosarka", "tenis", "odbojka"]
-    for sport_name in sports:
-        Sport.objects.create(name=sport_name)
+    # Učitavanje sportova iz baze
+    sports = Sport.objects.all()  # Ovo učitava sve sportove iz baze
+    if not sports:
+        # Ako nema sportova u bazi, dodaj osnovne sportove
+        sports_data = ["fudbal", "kosarka", "tenis", "odbojka"]
+        for sport_name in sports_data:
+            Sport.objects.create(name=sport_name)
+        sports = Sport.objects.all()  # Ponovno učitavamo sportove nakon dodavanja
+
+    # Ovdje se koristi lista sportova učitanih iz baze
+    for sport in sports:
+        print(f'Created sport: {sport.name}')
 
 def create_fields(num_fields=10):
-    sports = list(Sport.objects.all())
+    sports = list(Sport.objects.all())  # Učitavanje svih sportova iz baze
     for _ in range(num_fields):
         location = fake.city()
         precise_location = fake.address()
-        latitude = random.uniform(44.77, 44.82) 
-        longitude = random.uniform(17.12, 17.20)  
+        latitude = random.uniform(44.77, 44.82)
+        longitude = random.uniform(17.12, 17.20)
         is_suspended = choice([True, False])
         image = None
 
@@ -40,6 +49,6 @@ def create_fields(num_fields=10):
             image=image
         )
         num_sports = choice([1, 2, 3])
-        selected_sports = random.sample(sports, num_sports)
-        field.sports.set(selected_sports)
+        selected_sports = random.sample(sports, num_sports)  # Biranje slučajnih sportova
+        field.sports.set(selected_sports)  # Postavljanje sportova na teren
         field.save()
