@@ -2,55 +2,145 @@
     {
         "id": 1,
         "location": "Borik",
-        "precise_location": "Borik123",
-        "latitude": 44.77094,
-        "longitude": 17.20613,
+        "precise_location": "Save Kovačevića",
+        "latitude": 44.7683,
+        "longitude": 17.20116,
         "is_suspended": false,
         "image": "media/teren1.jpg"
     },
     {
         "id": 2,
         "location": "Paprikovac",
-        "precise_location": "Paprikovac123",
-        "latitude": 44.78166,
-        "longitude": 17.17472,
+        "precise_location": "Ranka Šipke",
+        "latitude": 44.7815,
+        "longitude": 17.18489,
         "is_suspended": false,
         "image": "media/teren2.jpg"
     },
     {
         "id": 3,
-        "location": "Obilicevo",
-        "precise_location": "Obilicevo123",
-        "latitude": 44.761,
-        "longitude": 17.18871,
+        "location": "Obilićevo",
+        "precise_location": "Krfska",
+        "latitude": 44.75875,
+        "longitude": 17.19275,
         "is_suspended": false,
         "image": "media/teren3.jpg"
     },
     {
         "id": 4,
-        "location": "Starcevica",
-        "precise_location": "Starcevica123",
-        "latitude": 44.7599,
-        "longitude": 17.20622,
+        "location": "Starčevica",
+        "precise_location": "Bulevar Desanke Maksimović",
+        "latitude": 44.76399,
+        "longitude": 17.20528,
         "is_suspended": false,
         "image": "media/teren4.jpg"
     },
     {
         "id": 5,
-        "location": "Petricevac",
-        "precise_location": "Petricevac123",
-        "latitude": 44.78768,
-        "longitude": 17.18631,
+        "location": "Petrićevac",
+        "precise_location": "Majevička",
+        "latitude": 44.78685,
+        "longitude": 17.18951,
         "is_suspended": false,
         "image": "media/teren5.jpg"
     },
     {
         "id": 6,
-        "location": "Laus",
-        "precise_location": "Laus123",
-        "latitude": 44.77819,
-        "longitude": 17.16391,
+        "location": "Lauš",
+        "precise_location": "Kosovska",
+        "latitude": 44.77549,
+        "longitude": 17.16476,
         "is_suspended": false,
         "image": "media/teren6.jpg"
+    },
+    {
+        "id": 7,
+        "location": "Nova Varoš",
+        "precise_location": "Dragiše Vasića",
+        "latitude": 44.78039,
+        "longitude": 17.19435,
+        "is_suspended": false,
+        "image": "media/teren7.jpg"
+    },
+    {
+        "id": 8,
+        "location": "Obilićevo",
+        "precise_location": "Carice Milice",
+        "latitude": 44.76459,
+        "longitude": 17.19369,
+        "is_suspended": false,
+        "image": "media/teren8.jpg"
+    },
+    {
+        "id": 9,
+        "location": "Lauš",
+        "precise_location": "Svetog Nikole",
+        "latitude": 44.77932,
+        "longitude": 17.16689,
+        "is_suspended": false,
+        "image": "media/teren9.jpg"
+    },
+    {
+        "id": 10,
+        "location": "Rebrovac",
+        "precise_location": "Koste Jarića",
+        "latitude": 44.76022,
+        "longitude": 17.22043,
+        "is_suspended": false,
+        "image": "media/teren10.jpg"
+    },
+    {
+        "id": 11,
+        "location": "Borik",
+        "precise_location": "Branka Ćopića",
+        "latitude": 44.77507,
+        "longitude": 17.20412,
+        "is_suspended": false,
+        "image": "media/teren11.jpg"
+    },
+    {
+        "id": 12,
+        "location": "Rosulje",
+        "precise_location": "Milana Stevilovića",
+        "latitude": 44.7845,
+        "longitude": 17.19635,
+        "is_suspended": false,
+        "image": "media/teren12.jpg"
+    },
+    {
+        "id": 13,
+        "location": "Petrićevac",
+        "precise_location": "Zore Kovačević",
+        "latitude": 44.78829,
+        "longitude": 17.1862,
+        "is_suspended": false,
+        "image": "media/teren13.jpg"
+    },
+    {
+        "id": 14,
+        "location": "Ada",
+        "precise_location": "Veljka Mlađenovića",
+        "latitude": 44.7698,
+        "longitude": 17.22128,
+        "is_suspended": false,
+        "image": "media/teren14.jpg"
+    },
+    {
+        "id": 15,
+        "location": "Starčevica",
+        "precise_location": "Srpskih Ustanika",
+        "latitude": 44.75566,
+        "longitude": 17.20871,
+        "is_suspended": false,
+        "image": "media/teren15.jpg"
+    },
+    {
+        "id": 16,
+        "location": "Lauš",
+        "precise_location": "Kosovska",
+        "latitude": 44.77551,
+        "longitude": 17.16486,
+        "is_suspended": false,
+        "image": "media/Teren16.jpg"
     }
 ]
