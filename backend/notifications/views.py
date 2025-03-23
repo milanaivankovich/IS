@@ -206,7 +206,8 @@ def register_subscription(request, username):
 from .webpush import subscribe_webpush, official_send_push_notification
 @csrf_exempt
 def subscribe_to_webpush_service(request, username):
-    return subscribe_webpush(request)
+    user = get_object_or_404(Client, username=username)
+    return subscribe_webpush(request, user)
 '''
 @csrf_exempt
 def test_sending_notification(request)

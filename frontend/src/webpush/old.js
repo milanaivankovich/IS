@@ -26,10 +26,3 @@ async function subscribeToPush() {
 }
 
 //modal
-function webpushPremission() {
-    Notification.requestPermission().then(permission => {
-        if (permission !== "granted") {
-            console.error("Push notifications denied.");
-        }
-    });
-}
