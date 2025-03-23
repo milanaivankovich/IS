@@ -137,10 +137,451 @@
     {
         "id": 16,
         "location": "Lauš",
-        "precise_location": "Kosovska",
-        "latitude": 44.77551,
-        "longitude": 17.16486,
+        "precise_location": "Kralja Tvrtka 5",
+        "latitude": 44.81404,
+        "longitude": 17.12679,
         "is_suspended": false,
-        "image": "media/Teren16.jpg"
+        "image": ""
+    },
+    {
+        "id": 17,
+        "location": "Nova Varoš",
+        "precise_location": "Nikole Pašića 20",
+        "latitude": 44.81529,
+        "longitude": 17.12795,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 18,
+        "location": "Ada",
+        "precise_location": "Cara Lazara 6",
+        "latitude": 44.81844,
+        "longitude": 17.18445,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 19,
+        "location": "Petrićevac",
+        "precise_location": "Kralja Tvrtka 5",
+        "latitude": 44.8018,
+        "longitude": 17.17993,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 20,
+        "location": "Ada",
+        "precise_location": "Aleja Svetog Save 15",
+        "latitude": 44.79544,
+        "longitude": 17.16855,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 21,
+        "location": "Borik",
+        "precise_location": "Cara Lazara 6",
+        "latitude": 44.80834,
+        "longitude": 17.1523,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 22,
+        "location": "Lauš",
+        "precise_location": "Cara Lazara 6",
+        "latitude": 44.81481,
+        "longitude": 17.13188,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 23,
+        "location": "Lauš",
+        "precise_location": "Aleja Svetog Save 15",
+        "latitude": 44.77922,
+        "longitude": 17.14571,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 24,
+        "location": "Ada",
+        "precise_location": "Kneza Miloša 10",
+        "latitude": 44.77385,
+        "longitude": 17.13272,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 25,
+        "location": "Lauš",
+        "precise_location": "Gundulićeva 14",
+        "latitude": 44.80486,
+        "longitude": 17.14076,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 26,
+        "location": "Ada",
+        "precise_location": "Ulica Kralja Petra I Karađorđevića 1",
+        "latitude": 44.77736,
+        "longitude": 17.15218,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 27,
+        "location": "Obilićevo",
+        "precise_location": "Cara Lazara 6",
+        "latitude": 44.81646,
+        "longitude": 17.17371,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 28,
+        "location": "Paprikovac",
+        "precise_location": "Ulica Kralja Petra I Karađorđevića 1",
+        "latitude": 44.77403,
+        "longitude": 17.15291,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 29,
+        "location": "Kočićev Vijenac",
+        "precise_location": "Kneza Miloša 10",
+        "latitude": 44.79838,
+        "longitude": 17.14741,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 30,
+        "location": "Kočićev Vijenac",
+        "precise_location": "Vidovdanska 12",
+        "latitude": 44.78823,
+        "longitude": 17.19528,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 31,
+        "location": "Ada",
+        "precise_location": "Aleja Svetog Save 15",
+        "latitude": 44.80762,
+        "longitude": 17.14243,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 32,
+        "location": "Lazarevo",
+        "precise_location": "Ulica Kralja Petra I Karađorđevića 1",
+        "latitude": 44.78784,
+        "longitude": 17.19217,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 33,
+        "location": "Petrićevac",
+        "precise_location": "Gundulićeva 14",
+        "latitude": 44.8044,
+        "longitude": 17.13716,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 34,
+        "location": "Ada",
+        "precise_location": "Nikole Pašića 20",
+        "latitude": 44.77649,
+        "longitude": 17.14926,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 35,
+        "location": "Lauš",
+        "precise_location": "Kneza Miloša 10",
+        "latitude": 44.78533,
+        "longitude": 17.18546,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 36,
+        "location": "Borik",
+        "precise_location": "Aleja Svetog Save 15",
+        "latitude": 44.81936,
+        "longitude": 17.17122,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 37,
+        "location": "Obilićevo",
+        "precise_location": "Majke Jugovića 8",
+        "latitude": 44.77964,
+        "longitude": 17.18001,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 38,
+        "location": "Nova Varoš",
+        "precise_location": "Aleja Svetog Save 15",
+        "latitude": 44.78351,
+        "longitude": 17.19852,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 39,
+        "location": "Petrićevac",
+        "precise_location": "Nikole Pašića 20",
+        "latitude": 44.81757,
+        "longitude": 17.14794,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 40,
+        "location": "Starčevica",
+        "precise_location": "Kneza Miloša 10",
+        "latitude": 44.79468,
+        "longitude": 17.18261,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 41,
+        "location": "Ada",
+        "precise_location": "Aleja Svetog Save 15",
+        "latitude": 44.81791,
+        "longitude": 17.12262,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 42,
+        "location": "Lazarevo",
+        "precise_location": "Majke Jugovića 8",
+        "latitude": 44.79762,
+        "longitude": 17.12921,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 43,
+        "location": "Borik",
+        "precise_location": "Ulica Kralja Petra I Karađorđevića 1",
+        "latitude": 44.7884,
+        "longitude": 17.18377,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 44,
+        "location": "Lauš",
+        "precise_location": "Vidovdanska 12",
+        "latitude": 44.77437,
+        "longitude": 17.13563,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 45,
+        "location": "Starčevica",
+        "precise_location": "Vidovdanska 12",
+        "latitude": 44.77444,
+        "longitude": 17.12346,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 46,
+        "location": "Borik",
+        "precise_location": "Kneza Miloša 10",
+        "latitude": 44.77447,
+        "longitude": 17.16608,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 47,
+        "location": "Lauš",
+        "precise_location": "Kneza Miloša 10",
+        "latitude": 44.81602,
+        "longitude": 17.19796,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 48,
+        "location": "Ada",
+        "precise_location": "Bulevar Srpske vojske 9",
+        "latitude": 44.79766,
+        "longitude": 17.12832,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 49,
+        "location": "Nova Varoš",
+        "precise_location": "Bulevar Srpske vojske 9",
+        "latitude": 44.80468,
+        "longitude": 17.19032,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 50,
+        "location": "Borik",
+        "precise_location": "Nikole Pašića 20",
+        "latitude": 44.7778,
+        "longitude": 17.18261,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 51,
+        "location": "Paprikovac",
+        "precise_location": "Nikole Pašića 20",
+        "latitude": 44.7781,
+        "longitude": 17.12617,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 52,
+        "location": "Lazarevo",
+        "precise_location": "Aleja Svetog Save 15",
+        "latitude": 44.81675,
+        "longitude": 17.17858,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 53,
+        "location": "Nova Varoš",
+        "precise_location": "Ulica Kralja Petra I Karađorđevića 1",
+        "latitude": 44.81387,
+        "longitude": 17.18175,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 54,
+        "location": "Petrićevac",
+        "precise_location": "Vidovdanska 12",
+        "latitude": 44.81746,
+        "longitude": 17.16319,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 55,
+        "location": "Starčevica",
+        "precise_location": "Aleja Svetog Save 15",
+        "latitude": 44.78815,
+        "longitude": 17.1613,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 56,
+        "location": "Borik",
+        "precise_location": "Gundulićeva 14",
+        "latitude": 44.81076,
+        "longitude": 17.15488,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 57,
+        "location": "Petrićevac",
+        "precise_location": "Kralja Tvrtka 5",
+        "latitude": 44.80283,
+        "longitude": 17.16799,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 58,
+        "location": "Starčevica",
+        "precise_location": "Majke Jugovića 8",
+        "latitude": 44.79046,
+        "longitude": 17.17186,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 59,
+        "location": "Starčevica",
+        "precise_location": "Nikole Pašića 20",
+        "latitude": 44.80287,
+        "longitude": 17.18949,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 60,
+        "location": "Ada",
+        "precise_location": "Vidovdanska 12",
+        "latitude": 44.81976,
+        "longitude": 17.19769,
+        "is_suspended": false,
+        "image": ""
+    },
+    {
+        "id": 61,
+        "location": "Paprikovac",
+        "precise_location": "Ulica Kralja Petra I Karađorđevića 1",
+        "latitude": 44.78311,
+        "longitude": 17.12401,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 62,
+        "location": "Paprikovac",
+        "precise_location": "Gundulićeva 14",
+        "latitude": 44.78762,
+        "longitude": 17.16125,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 63,
+        "location": "Borik",
+        "precise_location": "Aleja Svetog Save 15",
+        "latitude": 44.80399,
+        "longitude": 17.18228,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 64,
+        "location": "Paprikovac",
+        "precise_location": "Majke Jugovića 8",
+        "latitude": 44.79125,
+        "longitude": 17.14583,
+        "is_suspended": true,
+        "image": ""
+    },
+    {
+        "id": 65,
+        "location": "Obilićevo",
+        "precise_location": "Nikole Pašića 20",
+        "latitude": 44.77497,
+        "longitude": 17.14928,
+        "is_suspended": false,
+        "image": ""
     }
 ]

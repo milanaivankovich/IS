@@ -4,6 +4,27 @@ import random
 from random import choice, uniform
 from fields.models import Sport, Field
 
+# Lista stvarnih naselja u Banja Luci
+neighborhoods = [
+    "Ada", "Borik", "Starčevica", "Lazarevo", "Obilićevo",
+    "Nova Varoš", "Kočićev Vijenac", "Petrićevac", "Lauš", "Paprikovac"
+]
+
+# Lista stvarnih preciznih lokacija (adresa)
+addresses = [
+    "Ulica Kralja Petra I Karađorđevića 1", 
+    "Vidovdanska 12", 
+    "Gundulićeva 14", 
+    "Bulevar Srpske vojske 9", 
+    "Kralja Tvrtka 5",
+    "Nikole Pašića 20", 
+    "Majke Jugovića 8", 
+    "Aleja Svetog Save 15", 
+    "Cara Lazara 6", 
+    "Kneza Miloša 10"
+]
+
+
 fake = Faker()
 
 class Command(BaseCommand):
@@ -13,8 +34,8 @@ class Command(BaseCommand):
         self.stdout.write('Creating sports...')
         create_sports()
         self.stdout.write('Creating fields...')
-        create_fields()
-        self.stdout.write(self.style.SUCCESS('Successfully generated random fields and sports.'))
+        create_fields(num_fields=50)
+        self.stdout.write(self.style.SUCCESS('Successfully generated random fields.'))
 
 def create_sports():
     # Učitavanje sportova iz baze
@@ -30,11 +51,11 @@ def create_sports():
     for sport in sports:
         print(f'Created sport: {sport.name}')
 
-def create_fields(num_fields=10):
+def create_fields(num_fields=50):
     sports = list(Sport.objects.all())  # Učitavanje svih sportova iz baze
     for _ in range(num_fields):
-        location = fake.city()
-        precise_location = fake.address()
+        location = random.choice(neighborhoods)  
+        precise_location = random.choice(addresses)
         latitude = round(random.uniform(44.77, 44.82), 5)  
         longitude = round(random.uniform(17.12, 17.20), 5)
         is_suspended = choice([True, False])
