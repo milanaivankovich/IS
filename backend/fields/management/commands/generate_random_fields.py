@@ -35,8 +35,8 @@ def create_fields(num_fields=10):
     for _ in range(num_fields):
         location = fake.city()
         precise_location = fake.address()
-        latitude = random.uniform(44.77, 44.82)
-        longitude = random.uniform(17.12, 17.20)
+        latitude = round(random.uniform(44.77, 44.82), 5)  
+        longitude = round(random.uniform(17.12, 17.20), 5)
         is_suspended = choice([True, False])
         image = None
 
