@@ -19,44 +19,49 @@ function urlBase64ToUint8Array(base64String) {
 
 var applicationServerKey = VAPID_PUBLIC_KEY;
 
-export function subscribeUser() {
+export async function subscribeUser() {
     if ('Notification' in window && 'serviceWorker' in navigator) {
-        navigator.serviceWorker.ready.then(function (reg) {
-            reg.pushManager
-                .subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: urlBase64ToUint8Array(
-                        applicationServerKey
-                    ),
-                })
-                .then(function (sub) {
-                    var registration_id = sub.endpoint;
-                    var data = {
-                        registration_id: registration_id,
-                        p256dh: btoa(
-                            String.fromCharCode.apply(
-                                null,
-                                new Uint8Array(sub.getKey('p256dh'))
-                            )
+        try {
+            const registration = await navigator.serviceWorker.register("/navigatorPush.service.js");
+            navigator.serviceWorker.ready.then(function (reg) {
+                reg.pushManager
+                    .subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(
+                            applicationServerKey
                         ),
-                        auth: btoa(
-                            String.fromCharCode.apply(
-                                null,
-                                new Uint8Array(sub.getKey('auth'))
-                            )
-                        ),
-                        browser: navigator.userAgent, //added
-                    }
-                    requestPOSTToServer(data)
-                })
-                .catch(function (e) {
-                    if (Notification.permission === 'denied') {
-                        console.warn('Permission for notifications was denied')
-                    } else {
-                        console.error('Unable to subscribe to push', e)
-                    }
-                })
-        })
+                    })
+                    .then(function (sub) {
+                        var registration_id = sub.endpoint;
+                        var data = {
+                            registration_id: registration_id,
+                            p256dh: btoa(
+                                String.fromCharCode.apply(
+                                    null,
+                                    new Uint8Array(sub.getKey('p256dh'))
+                                )
+                            ),
+                            auth: btoa(
+                                String.fromCharCode.apply(
+                                    null,
+                                    new Uint8Array(sub.getKey('auth'))
+                                )
+                            ),
+                            browser: navigator.userAgent, //added
+                        }
+                        requestPOSTToServer(data)
+                    })
+                    .catch(function (e) {
+                        if (Notification.permission === 'denied') {
+                            console.warn('Permission for notifications was denied')
+                        } else {
+                            console.error('Unable to subscribe to push', e)
+                        }
+                    })
+            })
+        } catch (error) {
+            console.error("SubscribeUser: " + error);
+        }
     }
 }
 
@@ -118,4 +123,10 @@ export async function resetPushSubscription() {
     return subscribeUser();
 }
 
+export const webpushPremission =
+    Notification.requestPermission().then(permission => {
+        if (permission !== "granted") {
+            console.error("Push notifications denied.");
+        }
+    });
 

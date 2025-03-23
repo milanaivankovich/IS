@@ -8,3 +8,4 @@ self.addEventListener('push', event => {
         self.registration.showNotification('Your Notification Title', options)
     );
 });
+

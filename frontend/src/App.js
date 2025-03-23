@@ -20,13 +20,14 @@ import Dashboard from "./pages/Dashboard";
 import WebSocketNotifications from "./components/WebSocketNotifications";
 import "./global.css";
 import API from "./variables";
-import { subscribeUser, resetPushSubscription } from "./webpush/utils";
+import { subscribeUser, resetPushSubscription, webpushPremission } from "./webpush/utils";
 
 
 function App() {
 
   //webpush notifikacije
   useEffect(() => {
+    const notify = webpushPremission;
     subscribeUser();
   }, []);
   //

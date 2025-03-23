@@ -231,7 +231,9 @@ PUSH_NOTIFICATIONS_SETTINGS = {
         #"APNS_TOPIC": "com.example.push_test",
         #"WNS_PACKAGE_SECURITY_ID": "[your package security id, e.g: 'ms-app://e-3-4-6234...']",
         #"WNS_SECRET_KEY": "[your app secret key, e.g.: 'KDiejnLKDUWodsjmewuSZkk']",
-        "WP_PRIVATE_KEY": "./privatekey.pem",#"/path/to/your/private.pem",
+       # "WP_PRIVATE_KEY": "./privatekey.pem",#"/path/to/your/private.pem",
+        "WP_PRIVATE_KEY": "tVTXTBSKmZ-cSlo34fnSzFDyNiPmZCFUTZv1RfVY9KA",#"/path/to/your/private.pem",
+
         "WP_CLAIMS": {'sub': "mailto:ocenekonabasketbl@gmail.com"}
         #WP_ERROR_TIMEOUT: The timeout on WebPush POSTs. (Optional)
 }
