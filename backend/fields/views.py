@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from .management.commands.generate_random_fields import create_fields  # Import the create_fields function
 
 @api_view(['GET'])
 def getData(request):
@@ -71,3 +72,15 @@ def field_by_id(request, id):
     except Field.DoesNotExist:
         return Response({"error": "Field not found"}, status=status.HTTP_404_NOT_FOUND)
     
+
+# Funkcija koja generiše podatke
+@api_view(['GET'])
+def generate_random_fields(request):
+    # Pozivanje funkcije za generisanje podataka
+    create_fields()  # Pozivaš funkciju koju smo prethodno kreirali za generisanje terena
+
+    # Dobijanje svih terena u JSON formatu
+    fields = Field.objects.all()
+    serializer = FieldSerializer(fields, many=True)
+
+    return Response(serializer.data)
