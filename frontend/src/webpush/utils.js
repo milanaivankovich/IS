@@ -1,5 +1,6 @@
 // Utils functions:
 
+import { fetchCurrentUserData } from "../utils"
 import API, { VAPID_PUBLIC_KEY } from "../variables"
 
 function urlBase64ToUint8Array(base64String) {
@@ -66,7 +67,7 @@ export async function subscribeUser() {
 }
 
 // Send the subscription data to your server
-function requestPOSTToServer(data) {
+async function requestPOSTToServer(data) {
     const headers = new Headers();
     headers.set('Content-Type', 'application/json');
     const requestOptions = {
@@ -75,12 +76,15 @@ function requestPOSTToServer(data) {
         body: JSON.stringify(data),
     };
 
+    const userData = await fetchCurrentUserData();
+
     return (
         fetch(
-            `${API}/api/notifications/webpush/subscribe/mimi/`,
+            `${API}/api/notifications/webpush/subscribe/${userData?.username}/`,
             requestOptions
         )
     ).then((response) => response.json())
+        .catch((error) => console.error(error));
 }
 
 export default subscribeUser;

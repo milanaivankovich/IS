@@ -21,14 +21,17 @@ import WebSocketNotifications from "./components/WebSocketNotifications";
 import "./global.css";
 import API from "./variables";
 import { subscribeUser, resetPushSubscription, webpushPremission } from "./webpush/utils";
+import { isUserClient } from "./utils";
 
 
 function App() {
 
   //webpush notifikacije
   useEffect(() => {
-    const notify = webpushPremission;
-    subscribeUser();
+    if (isUserClient()) {
+      const notify = webpushPremission;
+      subscribeUser();
+    }
   }, []);
   //
 
