@@ -179,8 +179,7 @@
 .card-body-information {
   display: flex;
   flex-direction: column;
-  gap: 20px;   
-  padding: 15px;             
+  gap: 20px;               
 }
 
 .card-information:hover {
