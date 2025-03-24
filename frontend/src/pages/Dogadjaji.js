@@ -28,15 +28,18 @@ const Dogadjaji = () => {
     });
   };
   // Dohvaćanje reklama
+  const [advertisementsNextPage, setAdvertisementsNextPage] = useState("");
   const fetchAdvertisements = async () => {
     setLoadingAdvertisements(true);
     try {
       const response = await axios.get("http://localhost:8000/api/advertisements/");
-      if (response.data.error || response.data.length === 0) {
+      if (response.data.error) {
         setAdvertisements([]);
       } else {
-        const futureAdvertisements = filterFutureEvents(response.data);
-        setAdvertisements(futureAdvertisements);
+        //const futureAdvertisements = filterFutureEvents(response.data);
+        //setAdvertisements(futureAdvertisements);
+        setAdvertisements(response.data?.results);
+        setAdvertisementsNextPage(response.data?.next)
       }
     } catch (error) {
       console.error("Greška pri dohvaćanju oglasa:", error);
@@ -86,11 +89,10 @@ const Dogadjaji = () => {
             <p>Nema reklama.</p>
           ) : (
             <div className="Scroll-bar">
-              <div className="Event-cards">
-                {advertisements.map((advertisement) => (
+              <ActivityPanel variant="advertisements" activityDataArray={advertisements} nextPage={advertisementsNextPage} />
+              {/*advertisements.map((advertisement) => (
                   <SponsoredEventCard key={advertisement.id} event={advertisement} />
-                ))}
-              </div>
+                ))*/}
             </div>
           )}
         </div>
@@ -104,12 +106,10 @@ const Dogadjaji = () => {
             <p>Nema aktivnosti.</p>
           ) : (
             <div className="Scroll-bar">
-              <div className="Event-cards">
-                <ActivityPanel activityDataArray={activities} nextPage={activitiesNextPage} />
-                {/*activities.map((activity) => (
+              <ActivityPanel variant="activities" activityDataArray={activities} nextPage={activitiesNextPage} />
+              {/*activities.map((activity) => (
                   <ActivityCard key={activity.id} activity={activity} />
                 ))*/}
-              </div>
             </div>
           )}
         </div>

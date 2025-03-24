@@ -4,7 +4,8 @@ from .views import get_location_by_field_id, get_business_subject_by_id, get_spo
 
 urlpatterns = [
     #Advertisement Endpoints
-    path('api/advertisements/', views.getData), #GET all advertisements
+    #path('api/advertisements/', views.getData), #GET all advertisements
+    path('api/advertisements/', views.AllNewAdveritsementsList.as_view()), #GET all advertisements
     path('api/advertisement/', views.setData), #POST to create new advertisement
     path('api/advertisement/<int:id>/', views.get_advertisement_by_id), #GET advertisement by id
     re_path(r'^api/advertisement/(?P<date>\d{4}-\d{2}-\d{2})/$', views.advertisements_by_date), #GET advertisements by date

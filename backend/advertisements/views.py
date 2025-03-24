@@ -199,3 +199,19 @@ def get_past_advertisements_by_business_subject(request, business_name):
         return Response(serializer.data)
     else:
         return Response({'error': 'No advertisements found for this business subject'}, status=404)
+    
+from activities.pagination import ActivitiesPagination
+from rest_framework.generics import ListAPIView
+from django.utils import timezone
+
+class AllNewAdveritsementsList(ListAPIView): 
+    queryset = Advertisement.objects.all()
+    serializer_class = AdvertisementSerializer
+    pagination_class = ActivitiesPagination
+
+    def get_queryset(self):
+    
+        return Advertisement.objects.filter(
+            date__gte=timezone.now(),
+            is_deleted=False,
+        ).order_by('-date')

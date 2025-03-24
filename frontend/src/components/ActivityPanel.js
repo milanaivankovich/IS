@@ -7,10 +7,8 @@ import { useInView } from "react-intersection-observer";
 import ActivityCard from "./ActivityCard";
 import { Spinner } from "react-bootstrap";
 
-///////komponenta za paginaciju dogadjaja
-const ActivityPanel = ({ activityDataArray }, { nextPage }
-    //, fetchingNextPage
-) => {
+///////komponenta za paginaciju dogadjaja, tip=[activities, advertisements]
+const ActivityPanel = ({ activityDataArray, nextPage, variant }) => {
     const [data, setData] = useState(activityDataArray);
     const [next, setNextPage] = useState(nextPage);
 
@@ -38,13 +36,25 @@ const ActivityPanel = ({ activityDataArray }, { nextPage }
 
     return (
         <div className="scroll-bar-user-profile">
-            {Array.isArray(data) && data.map((activity) => (
-                <ActivityCard key={activity.id} activity={activity} />
-            ))}
+            {variant === "activities" ? (
+
+                Array.isArray(data) && data.map((activity) => (
+                    <ActivityCard key={activity.id} activity={activity} />
+                ))
+
+            ) : (
+                variant === "advertisements" ? (
+                    Array.isArray(data) && data.map((activity) => (
+                        <ActivityCard key={activity.id} activity={activity} />
+                    ))
+
+                ) : console.error("Please select valid object variant=[activities, advertisements]. Error missing ActivityPanel props: ", variant)
+            )}
             <div ref={ref} style={{ width: "40px" }}>
                 {isFetchingNextPage && <Spinner className='spinner-border' animation="border" />}
             </div>
         </div>);
+
 }
 
 export default ActivityPanel;
