@@ -3,6 +3,49 @@ from faker import Faker
 import random
 from random import choice, uniform
 from fields.models import Sport, Field
+from accounts.models import Client
+from activities.models import Activities  # Import aktivnosti
+from django.utils.timezone import now, timedelta
+
+def create_activities(num_activities=40):
+    clients = list(Client.objects.all())  # Učitavanje svih korisnika
+    fields = list(Field.objects.all())  # Učitavanje svih terena
+    sports = list(Sport.objects.all())  # Učitavanje svih sportova
+
+    if not clients or not fields or not sports:
+        print("Nema dovoljno podataka u bazi. Provjeri da li postoje klijenti, tereni i sportovi.")
+        return
+
+    for _ in range(num_activities):
+        title = fake.sentence(nb_words=3)
+        description = fake.paragraph()
+        date = now() + timedelta(days=random.randint(1, 30))  # Aktivnosti u narednih 30 dana
+        duration_hours = random.randint(1, 3)  # Aktivnosti traju 1-3 sata
+        field = random.choice(fields)
+        sport = random.choice(sports)
+        max_participants = random.randint(2, 20)  # Maksimalan broj učesnika od 5 do 20
+
+        # **Neka aktivnosti ne budu popunjene do kraja**
+        num_participants = random.randint(0, max_participants - 1)  
+        is_deleted = random.choice([False, False, False, True])  # 75% šanse da nije obrisano
+ 
+        activity = Activities.objects.create(
+            titel=title,
+            description=description,
+            date=date,
+            duration_hours=duration_hours,
+            field=field,
+            sport=sport,
+            NumberOfParticipants=num_participants,
+            is_deleted=is_deleted,
+            client=random.choice(clients),
+        )
+
+        # Nasumično dodajemo učesnike
+        selected_clients = random.sample(clients, min(num_participants, len(clients)))
+        activity.participants.set(selected_clients)
+
+        print(f"Created activity: {activity}")
 
 # Lista stvarnih naselja u Banja Luci
 neighborhoods = [
@@ -35,6 +78,8 @@ class Command(BaseCommand):
         create_sports()
         self.stdout.write('Creating fields...')
         create_fields(num_fields=50)
+        self.stdout.write('Creating activities...')
+        create_activities(num_activities=100)
         self.stdout.write(self.style.SUCCESS('Successfully generated random fields.'))
 
 def create_sports():
