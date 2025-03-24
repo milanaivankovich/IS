@@ -33,7 +33,7 @@ const Dogadjaji = () => {
     setLoadingAdvertisements(true);
     try {
       const response = await axios.get("http://localhost:8000/api/advertisements/");
-      if (response.data.error) {
+      if (response.data.error || response.data.length === 0 || response.data?.results.length === 0) {
         setAdvertisements([]);
       } else {
         //const futureAdvertisements = filterFutureEvents(response.data);
@@ -53,7 +53,7 @@ const Dogadjaji = () => {
     setLoadingActivities(true);
     try {
       const response = await axios.get("http://localhost:8000/api/activities/");
-      if (response.data?.error) {
+      if (response.data?.error || response.data.length === 0 || response.data?.results.length === 0) {
         setActivities([]);
       } else {
         //const futureActivities = filterFutureEvents(response.data);
