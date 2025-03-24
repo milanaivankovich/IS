@@ -1,6 +1,7 @@
 
 from django.core.mail import send_mail
 from django.utils import timezone
+from datetime import datetime
 from activities.models import Activities
 from accounts.models import Client
 from .models import Notification
@@ -11,12 +12,18 @@ from background_task import background
 
 @background(schedule=60) #schedule je vrijeme nakon kojeg pocinje task
 def activity_starting_soon_notification():
-    print("This task runs every minute!")
-    #kako iskoristiti funkciju nakon sto se dogadjaj napravi, i izmjeni vrijeme (schedule se mora racunati?)
-    current_time = timezone.now()
-    threshold = timezone.timedelta(minutes=30)  # vremensko odstupanje
 
-    posts_to_notify = Activities.objects.filter(date=current_time + threshold)
+    
+    #kako iskoristiti funkciju nakon sto se dogadjaj napravi, i izmjeni vrijeme (schedule se mora racunati?)
+    current_time = timezone.now().replace(tzinfo=None).isoformat()
+    threshold = timezone.timedelta(minutes=30)  # vremensko odstupanje
+    small_step = timezone.timedelta(seconds=30) # jer je nemoguce porediti sekunde
+    
+    #localized_datetime = current_time.replace(tzinfo=timezone_offset)
+    #now = datetime(current_time.day, current_time.month, current_time.year, current_time.hour+2, current_time.minute)
+    print(f"This task runs every minute!  {current_time}")
+
+    posts_to_notify = Activities.objects.filter(date__gt=current_time-small_step + threshold, date__lt=current_time+small_step+threshold)
 
     for post in posts_to_notify:
             #notifikacija za kreatora dogadjaja

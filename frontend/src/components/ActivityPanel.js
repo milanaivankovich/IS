@@ -3,8 +3,10 @@
 
 import axios from "axios";
 
-///////
-const ActivityPanel = (activityDataArray, nextPage, fetchingNextPage) => {
+///////komponenta za paginaciju dogadjaja
+const ActivityPanel = (activityDataArray, nextPage
+    //, fetchingNextPage
+) => {
     const [data, setData] = useState(activityDataArray);
     const [next, setNextPage] = useState(nextPage);
 

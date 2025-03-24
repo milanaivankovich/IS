@@ -440,3 +440,18 @@ def sport_statistics(request):
         'activities_per_sport': list(activities_per_sport),
         'activities_per_month': list(activities_per_month)
     })
+
+from .pagination import ActivitiesPagination
+from rest_framework.generics import ListAPIView
+
+class AllNewActivitiesList(ListAPIView): 
+    queryset = Activities.objects.all()
+    serializer_class = ActivitiesSerializer
+    pagination_class = ActivitiesPagination
+
+    def get_queryset(self):
+    
+        return Activities.objects.filter(
+            date__gte=timezone.now(),
+            is_deleted=False,
+        ).order_by('-date')
