@@ -11,6 +11,7 @@ import SponsoredEventCard from "../components/SponsoredEventCard";
 import ActivityCard from "../components/ActivityCard";
 import iconPath from "../images/marker.jpg";
 import L from 'leaflet';
+import ActivityPanel from "../components/ActivityPanel.js";
 
 const Tereni = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -40,6 +41,8 @@ const Tereni = () => {
       setLoadingActivities(false);
     }
   };
+  const [advertisementsNextPage, setAdvertisementsNextPage] = useState("");
+  const [activitiesNextPage, setActivitiesNextPage] = useState("");
 
   // Dohvaćanje reklama
   const fetchFilteredAdvertisements = async (field, date) => {
@@ -66,11 +69,13 @@ const Tereni = () => {
         response = await axios.get("http://localhost:8000/api/advertisements/");
       }
 
-      if (response.data.error || response.data.length === 0 || response.data?.results.length === 0) {
+      if (response.data.error || response.data.length === 0) {
         setNoAdvertisements(true);
         setFilteredAdvertisements([]);
-      } else if (response.data?.results) { //ako je paginatorni pristup
-        setFilteredAdvertisements(response.data.results)
+      } else if (response.data?.hasOwnProperty("results")) { //ako je paginatorni pristup
+        setFilteredAdvertisements(response.data.results);
+        if (response.data.results.length === 0) setNoAdvertisements(true);
+        setAdvertisementsNextPage(response.data?.next);
       } else {
         const futureAdvertisements = filterFutureEvents(response.data);
         setFilteredAdvertisements(futureAdvertisements);
@@ -112,12 +117,14 @@ const Tereni = () => {
         response = await axios.get("http://localhost:8000/api/activities/");
       }
 
-      if (response.data.error || response.data.length === 0 || response.data?.results.length === 0) {
+      if (response.data.error || response.data.length === 0) {
         setNoActivities(true);
         setFilteredActivities([]);
 
-      } else if (response.data?.results) { //ako je paginatorni pristup
+      } else if (response.data?.hasOwnProperty("results")) { //ako je paginatorni pristup
         setFilteredActivities(response.data.results)
+        if (response.data.results.length === 0) setNoActivities(true);
+        setActivitiesNextPage(response.data?.next);
       } else {
         const futureActivities = filterFutureEvents(response.data);
         setFilteredActivities(futureActivities);
@@ -258,11 +265,11 @@ const Tereni = () => {
             <p>Nema reklama za odabrani datum ili lokaciju.</p>
           ) : (
             <div className="Scroll-bar">
-              <div className="Event-cards">
-                {filteredAdvertisements.map((advertisement) => (
+              <ActivityPanel variant="advertisements" activityDataArray={filteredAdvertisements} nextPage={advertisementsNextPage} />
+
+              {/*filteredAdvertisements.map((advertisement) => (
                   <SponsoredEventCard key={advertisement.id} event={advertisement} />
-                ))}
-              </div>
+                ))*/}
             </div>
           )}
         </div>
@@ -276,11 +283,10 @@ const Tereni = () => {
             <p>Nema aktivnosti za odabrani datum ili lokaciju.</p>
           ) : (
             <div className="Scroll-bar">
-              <div className="Event-cards">
-                {filteredActivities.map((activity) => (
-                  <ActivityCard key={activity.id} activity={activity} />
-                ))}
-              </div>
+              <ActivityPanel variant="activities" activityDataArray={filteredActivities} nextPage={activitiesNextPage} />
+              {/*filteredActivities.map((activity) => (
+                <ActivityCard key={activity.id} activity={activity} />
+              ))*/}
             </div>
           )}
         </div>
