@@ -6,6 +6,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../components/ImageCrop";
 import { auth, googleProvider, GoogleAuthProvider, FacebookAuthProvider, facebookProvider, signInWithPopup } from "../components/Firebase.js";
+import background from '../images/registracija.png';
 
 function RegisterRekreativac() {
 
@@ -297,7 +298,7 @@ function RegisterRekreativac() {
 
 
   return (
-    <div className="register-body">
+    <div className="register-body" style={{ backgroundImage: `url(${background})` }}>
       <div className="register-container">
         <a href="/" className="logo-container">
           <img src={logo} alt="Oće neko na basket?" className="basket-logo" />

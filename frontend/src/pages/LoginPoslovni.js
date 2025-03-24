@@ -3,6 +3,7 @@ import axios from 'axios';
 import './LogIn.css';
 import logo from '../images/logo.png';
 import kosarkas from '../images/kosarkas.jpeg';
+import background from '../images/pozadina1.png';
 
 const LoginPoslovni = () => {
   const [formData, setFormData] = useState({
@@ -81,7 +82,7 @@ const LoginPoslovni = () => {
   
 
   return (
-    <div className="login-container">
+    <div className="login-container" style={{ backgroundImage: `url(${background})` }}>
       <div className="login-left">
         <a href="/">
           <img src={logo} alt="Oće neko na basket?" className="login-logo" />

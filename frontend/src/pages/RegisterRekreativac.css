@@ -1,9 +1,10 @@
-/* RegisterRekreativac.css */
 .register-body {
   margin: 0;
   /* Uklanja bijele margine */
   padding: 0;
-  background-color: lightyellow;
+  /* background-color: lightyellow; */
+  background-position: center;
+  background-repeat: no-repeat;
   /* Svijetloplava pozadina */
   font-family: Arial, sans-serif;
   display: flex;
@@ -15,7 +16,6 @@
   overflow: hidden;
   /* Sprečava skrolovanje ako nešto izlazi van */
 }
-
 .register-container {
   display: flex;
   flex-direction: column;

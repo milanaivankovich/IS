@@ -5,6 +5,8 @@ import logo from '../images/logo.png';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../components/ImageCrop";
+import background from '../images/registracija.png';
+
 
 function RegisterPoslovni() {
   const [imagePreview, setImagePreview] = useState(null);
@@ -168,7 +170,7 @@ function RegisterPoslovni() {
   };
 
   return (
-    <div className="register-body">
+    <div className="register-body" style={{ backgroundImage: `url(${background})` }}>
       <div className="register-container">
         <a href="/" className="logo-container">
           <img src={logo} alt="Oće neko na basket?" className="basket-logo" />
