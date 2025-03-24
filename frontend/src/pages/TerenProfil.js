@@ -14,7 +14,7 @@ import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { FaStar, FaRegStar } from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment, faCalendarAlt, faClock, faLocation, faMapMarkerAlt, faBasketballBall, faCircleCheck, faCircleXmark, faStar, faFutbol, faTableTennis, faVolleyballBall, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-
+import StatisticalFieldChart from '../components/StatisticalFieldChart.js';
 
 const TerenProfil = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -352,6 +352,12 @@ const handleReviewRemoveLike = async (reviewId) => {
               setActiveTab("information")
             }
             }>Informacije</button>
+            <button className={`tab-button ${activeTab === "statistics" ? "active" : ""}`} onClick={() => {
+              setSelectionTitle('Statistike');
+              setSelectionSubtitle('Statistike o terenu');
+              setActiveTab("statistics")
+            }
+            }>Statistike</button>
           </nav></div>
 
         <div className="userprofile-selection">
@@ -513,6 +519,13 @@ const handleReviewRemoveLike = async (reviewId) => {
                           </p>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                )}
+                {activeTab === "statistics" && (
+                  <div className="information-container">
+                    <div className="image-container">
+                      <StatisticalFieldChart />
                     </div>
                   </div>
                 )}
