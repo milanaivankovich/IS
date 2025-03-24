@@ -25,7 +25,7 @@ const Tereni = () => {
   const [noAdvertisements, setNoAdvertisements] = useState(false);
   const [noActivities, setNoActivities] = useState(false);
 
- 
+
   // Dohvaćanje terena
   const fetchFields = async () => {
     try {
@@ -66,17 +66,19 @@ const Tereni = () => {
         response = await axios.get("http://localhost:8000/api/advertisements/");
       }
 
-      if (response.data.error || response.data.length === 0) {
+      if (response.data.error || response.data.length === 0 || response.data?.results.length === 0) {
         setNoAdvertisements(true);
         setFilteredAdvertisements([]);
+      } else if (response.data?.results) { //ako je paginatorni pristup
+        setFilteredAdvertisements(response.data.results)
       } else {
         const futureAdvertisements = filterFutureEvents(response.data);
         setFilteredAdvertisements(futureAdvertisements);
-      
+
         if (futureAdvertisements.length === 0) {
           setNoAdvertisements(true);
+        }
       }
-    }
     } catch (error) {
       console.error("Greška pri dohvaćanju oglasa:", error);
       setNoAdvertisements(true);
@@ -110,13 +112,16 @@ const Tereni = () => {
         response = await axios.get("http://localhost:8000/api/activities/");
       }
 
-      if (response.data.error || response.data.length === 0) {
+      if (response.data.error || response.data.length === 0 || response.data?.results.length === 0) {
         setNoActivities(true);
         setFilteredActivities([]);
+
+      } else if (response.data?.results) { //ako je paginatorni pristup
+        setFilteredActivities(response.data.results)
       } else {
         const futureActivities = filterFutureEvents(response.data);
         setFilteredActivities(futureActivities);
-      
+
         if (futureActivities.length === 0) {
           setNoActivities(true);
         }
@@ -131,16 +136,16 @@ const Tereni = () => {
   const filterFutureEvents = (events) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Resetuje trenutni datum na ponoć
-  
+
     return events.filter((event) => {
       const eventDate = new Date(event.date);
       console.log("Event Date:", eventDate); // Log za provere
       console.log("Today:", today); // Log za provere
-  
+
       return eventDate >= today; // Proverava da li je datum budući ili današnji
     });
   };
-  
+
   // Formatiranje datuma
   const formatDateToLocal = (date) => {
     const year = date.getFullYear();
@@ -150,16 +155,16 @@ const Tereni = () => {
   };
 
   // Klik na marker
-const handleMarkerClick = (field) => {
-  setSelectedField(field); 
-  fetchFilteredAdvertisements(field, selectedDate); 
-  fetchFilteredActivities(field, selectedDate); 
-};
+  const handleMarkerClick = (field) => {
+    setSelectedField(field);
+    fetchFilteredAdvertisements(field, selectedDate);
+    fetchFilteredActivities(field, selectedDate);
+  };
 
-// Klik na sliku
-const handleImageClick = (fieldId) => {
-  window.location.href = `/teren-profil/${fieldId}`;
-};
+  // Klik na sliku
+  const handleImageClick = (fieldId) => {
+    window.location.href = `/teren-profil/${fieldId}`;
+  };
 
   // Promena datuma
   const handleDateChange = (date) => {
@@ -170,10 +175,10 @@ const handleImageClick = (fieldId) => {
 
   //Ikona za marker
   const markerIcon = L.icon({
-    iconUrl: iconPath, 
+    iconUrl: iconPath,
     iconSize: [25, 25],
     iconAnchor: [12.5, 12.5],
-    popupAnchor: [0, -15], 
+    popupAnchor: [0, -15],
   });
 
   // Resetovanje datuma i lokacije
@@ -186,8 +191,8 @@ const handleImageClick = (fieldId) => {
 
   useEffect(() => {
     fetchFields();
-    fetchFilteredAdvertisements(null,null);
-    fetchFilteredActivities(null,null);
+    fetchFilteredAdvertisements(null, null);
+    fetchFilteredActivities(null, null);
   }, []);
 
   useEffect(() => {
@@ -217,7 +222,7 @@ const handleImageClick = (fieldId) => {
               <Marker
                 key={field.id}
                 position={[field.latitude, field.longitude]}
-                icon={markerIcon} 
+                icon={markerIcon}
                 eventHandlers={{ click: () => handleMarkerClick(field) }}
               >
                 <Popup>
