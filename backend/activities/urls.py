@@ -8,7 +8,8 @@ urlpatterns = [
     path('clients/<int:client_id>/activities/add/', views.add_activity, name='add_activity'),
     path('clients/<int:client_id>/client_activities/', views.client_activities, name='client_activities'),
     path('activities/create/', views.ActivitiesCreateView.as_view(), name='create_activity'), #kreiranje aktivnosti
-    path('api/activities/', views.getData),# API endpointi za dohvat i unos podataka
+    #path('api/activities/', views.getData),# API endpointi za dohvat i unos podataka
+    path('api/activities/', views.AllNewActivitiesList.as_view()),# API endpointi za dohvat i unos podataka
     path('api/activities/add/', views.setData, name='add_activity_api'),
    
     path('activities/date/<str:date>/', views.activities_by_date, name='activities_by_date'),      # Filtriranje aktivnosti prema datumu, lokaciji ili kombinaciji
@@ -37,5 +38,6 @@ urlpatterns = [
     path('activities/<int:activity_id>/participants/', views.activity_participants, name='activity_participants'),
     path('api/comments/<int:activity>/', views.comments_by_activity), #GET and POST comments by activity
     path('api/sport-statistics/', sport_statistics, name='sport_statistics'),
+    
 
 ]

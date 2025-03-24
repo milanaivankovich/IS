@@ -2,9 +2,13 @@
 //import './UserProfile.css';
 
 import axios from "axios";
+import { useState } from "react";
+import { useInView } from "react-intersection-observer";
+import ActivityCard from "./ActivityCard";
+import { Spinner } from "react-bootstrap";
 
 ///////komponenta za paginaciju dogadjaja
-const ActivityPanel = (activityDataArray, nextPage
+const ActivityPanel = ({ activityDataArray }, { nextPage }
     //, fetchingNextPage
 ) => {
     const [data, setData] = useState(activityDataArray);
@@ -16,11 +20,11 @@ const ActivityPanel = (activityDataArray, nextPage
         setIsFetchingNextPage(true);
         await axios.get(`${next}`) //token todo
             .then((response) => {
-                setData((prev) => Array.isArray(prev) ? [...prev, ...response.data.results] : response.data.results);
+                setData((prev) => Array.isArray(prev) ? [...prev, ...response.data.results] : response.data?.results);
                 setNextPage(response.data?.next ? response.data.next : null);
             })
             .catch((error) =>
-                console.error("Greska pri dohvacanju notifikacija"))
+                console.error("Greska pri dohvacanju aktivnosti: " + error))
             .finally(() =>
                 setIsFetchingNextPage(false));
     };
@@ -37,7 +41,7 @@ const ActivityPanel = (activityDataArray, nextPage
             {Array.isArray(data) && data.map((activity) => (
                 <ActivityCard key={activity.id} activity={activity} />
             ))}
-            <div ref={ref} style={{ height: "40px" }}>
+            <div ref={ref} style={{ width: "40px" }}>
                 {isFetchingNextPage && <Spinner className='spinner-border' animation="border" />}
             </div>
         </div>);

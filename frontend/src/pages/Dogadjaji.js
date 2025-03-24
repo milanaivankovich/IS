@@ -7,22 +7,23 @@ import MenuBar from "../components/MenuBar.js";
 import Footer from "../components/Footer.js";
 import SponsoredEventCard from "../components/SponsoredEventCard";
 import ActivityCard from "../components/ActivityCard";
+import ActivityPanel from "../components/ActivityPanel.js";
 
 const Dogadjaji = () => {
   const [activities, setActivities] = useState([]);
   const [advertisements, setAdvertisements] = useState([]);
   const [loadingAdvertisements, setLoadingAdvertisements] = useState(false);
-  const [loadingActivities, setLoadingActivities] = useState(false);
-  
+  const [loadingActivities, setLoadingActivities] = useState(true);
+
   const filterFutureEvents = (events) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Resetuje trenutni datum na ponoć
-  
+
     return events.filter((event) => {
       const eventDate = new Date(event.date);
       console.log("Event Date:", eventDate); // Log za provere
       console.log("Today:", today); // Log za provere
-  
+
       return eventDate >= today; // Proverava da li je datum budući ili današnji
     });
   };
@@ -43,18 +44,19 @@ const Dogadjaji = () => {
       setLoadingAdvertisements(false);
     }
   };
-
-
+  const [activitiesNextPage, setActivitiesNextPage] = useState("");
   // Dohvaćanje aktivnosti
   const fetchActivities = async () => {
     setLoadingActivities(true);
     try {
       const response = await axios.get("http://localhost:8000/api/activities/");
-      if (response.data.error || response.data.length === 0) {
+      if (response.data?.error) {
         setActivities([]);
       } else {
-        const futureActivities = filterFutureEvents(response.data);
-        setActivities(futureActivities);
+        //const futureActivities = filterFutureEvents(response.data);
+        //setActivities(futureActivities);
+        await setActivities(response.data?.results);
+        await setActivitiesNextPage(response.data?.next);
       }
     } catch (error) {
       console.error("Greška pri dohvaćanju aktivnosti:", error);
@@ -96,16 +98,17 @@ const Dogadjaji = () => {
         {/* Sekcija za aktivnosti */}
         <div className="Events-bar">
           <div className="Event-bar-title">AKTIVNOSTI</div>
-          {loadingActivities ? (
+          {loadingActivities && !activities ? (
             <p>Učitavanje aktivnosti...</p>
           ) : activities.length === 0 ? (
             <p>Nema aktivnosti.</p>
           ) : (
             <div className="Scroll-bar">
               <div className="Event-cards">
-                {activities.map((activity) => (
+                <ActivityPanel activityDataArray={activities} nextPage={activitiesNextPage} />
+                {/*activities.map((activity) => (
                   <ActivityCard key={activity.id} activity={activity} />
-                ))}
+                ))*/}
               </div>
             </div>
           )}
