@@ -50,3 +50,15 @@ export const isUserClient = async () => {
     return false;
 
 }
+
+export const getNewNotificationCount = async (user_id) => {
+    try {
+        const request = await axios.get(`${API}/api/notifications/unread-count/${user_id}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        return request.data?.unread_count;
+    }
+    catch (error) {
+        console.error("Error: ", error);
+    }
+};

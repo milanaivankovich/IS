@@ -10,7 +10,7 @@ from .utils import send_notification
 
 from background_task import background
 
-@background(schedule=60) #schedule je vrijeme nakon kojeg pocinje task
+@background(schedule=60, name="activity_starting_soon_notification") #schedule je vrijeme nakon kojeg pocinje task
 def activity_starting_soon_notification():
 
     

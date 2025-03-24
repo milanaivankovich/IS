@@ -7,7 +7,9 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
+import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import { Spinner } from "react-bootstrap";
+import { getNewNotificationCount } from "../utils.js";
 
 //variant ostavljeno zbog ostatka koda, ne sluzi nicemu
 const MenuBar = ({ variant, search }) => {
@@ -35,6 +37,10 @@ const MenuBar = ({ variant, search }) => {
     fetchIDType();
   }, []);
 
+  const [newNotifications, setNewNotifications] = useState(0);
+  useEffect(() => { setNewNotifications(id.id) }, [id]);
+
+
   return (
     <nav id="menu-bar" className="menu-bar">
       <div className="menu-left">
@@ -56,9 +62,12 @@ const MenuBar = ({ variant, search }) => {
           (id.id !== -1) && (
             <div className="menu-right">
               {search && <SearchComponent />}
-              <FontAwesomeIcon className="notification-icon" icon={faBell} onClick={() => (window.location.href = "/dashboard")}
-                shake={false} //staviti true ako ima novih notifikacija todo
-              />
+              <div className="notification-signals-stack">
+                <FontAwesomeIcon className="notification-icon" icon={faBell} onClick={() => (window.location.href = "/dashboard")}
+                  shake={false} //staviti true ako ima novih notifikacija todo
+                />
+                {getNewNotificationCount(id.id) !== 0 && <FontAwesomeIcon className="new-notification-signal-icon" icon={faCircle} />}
+              </div>
               <a href="/userprofile">
                 <img
                   src={profileImage}

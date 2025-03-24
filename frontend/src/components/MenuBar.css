@@ -133,5 +133,15 @@
 .notification-icon {
   height: 25px;
   margin-left: 10px;
-  color: #666666;
+  color: var(--secondary-gray);
+}
+
+.new-notification-signal-icon {
+  height: 8px;
+  color: var(--primary-orange)
+}
+
+.notification-signals-stack {
+  display: flex;
+  flex-direction: row;
 }
