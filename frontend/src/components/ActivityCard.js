@@ -13,6 +13,7 @@ import {
 import EditEventCard from "./EditEventCard";
 import { faComments } from "@fortawesome/free-solid-svg-icons";
 import CommentsSection from "./CommentsSection";
+import { toast } from "react-toastify";
 
 const ActivityCard = ({ activity }) => {
   const { description, date, field, titel, sport, id, NumberOfParticipants, participants, client, duration_hours } = activity;
@@ -126,7 +127,7 @@ const ActivityCard = ({ activity }) => {
 
   const handleDelete = async () => {
     if (!isCreator) {
-      alert("Samo kreator može obrisati ovaj događaj.");
+      toast.error("Samo kreator može obrisati ovaj događaj.");
       return;
     }
 
@@ -146,14 +147,14 @@ const ActivityCard = ({ activity }) => {
       );
 
       if (response.status === 200) {
-        alert("Događaj je uspješno obrisan.");
+        toast.success("Događaj je uspješno obrisan.");
         window.location.reload(); // Osvježavanje liste aktivnosti
       } else {
         throw new Error(response.data.error || "Brisanje nije uspelo.");
       }
     } catch (error) {
       console.error("Error deleting activity:", error);
-      alert("Došlo je do greške prilikom brisanja aktivnosti.");
+      toast.warning("Došlo je do greške prilikom brisanja aktivnosti.");
     }
   };
 
@@ -191,12 +192,12 @@ const ActivityCard = ({ activity }) => {
   // Funkcija za registraciju na aktivnost
   const handleRegister = async () => {
     if (!isLoggedIn) {
-      alert("Morate biti prijavljeni kao rekreativac da biste se prijavili na aktivnost.");
+      toast.error("Morate biti prijavljeni kao rekreativac da biste se prijavili na aktivnost.");
       return;
     }
 
     if (remainingSlots <= 0) {
-      alert("Nema slobodnih mesta.");
+      toast.info("Nema slobodnih mesta.");
       return;
     }
 
@@ -240,7 +241,7 @@ const ActivityCard = ({ activity }) => {
           return;
         });
     } else {
-      alert("Morate biti prijavljeni kao rekreativac da biste se prijavili na aktivnost.");
+      toast.error("Morate biti prijavljeni kao rekreativac da biste se prijavili na aktivnost.");
       return;
     }
 
@@ -260,21 +261,21 @@ const ActivityCard = ({ activity }) => {
         fetchParticipants();
         // Smanji broj slobodnih mesta na frontendu
         setRemainingSlots((prev) => prev - 1);
-        alert("Uspešno ste se prijavili na aktivnost!");
+        toast.success("Uspešno ste se prijavili na aktivnost!");
       } else {
         const data = await response.json();
-        alert(data.error || "Greška pri prijavi.");
+        toast.error(`${data.error}`);
       }
     } catch (error) {
       console.error("Error during registration:", error);
-      alert("Došlo je do greške.");
+      toast.error("Došlo je do greške.");
     } finally {
       setIsLoading(false);
     }
   };
   const handleUnregister = async () => {
     if (!isLoggedIn) {
-      alert("Morate biti prijavljeni kao rekreativac da biste se prijavili na aktivnost.");
+      toast.error("Morate biti prijavljeni kao rekreativac da biste se prijavili na aktivnost.");
       return;
     }
     let pk = {
@@ -316,7 +317,7 @@ const ActivityCard = ({ activity }) => {
           return;
         });
     } else {
-      alert("Morate biti prijavljeni kao rekreativac da biste se prijavili na aktivnost.");
+      toast.error("Morate biti prijavljeni kao rekreativac da biste se prijavili na aktivnost.");
       return;
     }
 
@@ -337,14 +338,15 @@ const ActivityCard = ({ activity }) => {
         fetchParticipants();
         // Smanji broj slobodnih mesta na frontendu
         setRemainingSlots((prev) => prev + 1);
-        alert("Uspešno ste se odjavili sa aktivnosti!");
+        toast.success("Uspješno ste se odjavili sa aktivnosti!")
+        //alert("Uspješno ste se odjavili sa aktivnosti!");
       } else {
         const data = await response.json();
-        alert(data.error || "Greška pri prijavi.");
+        toast.error(`${data.error}`);
       }
     } catch (error) {
       console.error("Error during registration:", error);
-      alert("Došlo je do greške.");
+      toast.error("Došlo je do greške.");
     } finally {
       setIsLoading(false);
     }

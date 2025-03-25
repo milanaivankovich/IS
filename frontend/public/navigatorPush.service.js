@@ -2,7 +2,7 @@
 
 var getTitle = function (title) {
     if (title === "") {
-        title = "TITLE DEFAULT";
+        title = "Novo obavještenje";
     }
     return title;
 };

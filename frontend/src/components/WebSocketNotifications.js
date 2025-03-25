@@ -8,7 +8,7 @@ const WebSocketNotifications = () => {
     //const [messages, setMessages] = useState([]);
 
     const connectWebSocketNotifications = (id) => {
-        const socket = new WebSocket(`ws://${url}/ws/notifications/${id}/`); //todo id korisnika je room name
+        const socket = new WebSocket(`ws://${url}/ws/notifications/${id}/`);
 
         // Kada server šalje poruku
         socket.onmessage = (event) => {
@@ -17,7 +17,7 @@ const WebSocketNotifications = () => {
                 //setMessages((prevMessages) => [...prevMessages, newMessage.data]);
 
                 console.log("Message accepted:", newMessage); // Debugging log
-                toast(`@${newMessage.data.content}`); // todo izgled
+                toast(`@${newMessage.data.content}`, { onClick: () => window.location.replace("/dashboard") }); // todo izgled
             } catch (error) {
                 console.error("Error parsing message:", error);
             }
