@@ -1,20 +1,16 @@
 .register-body {
   margin: 0;
-  /* Uklanja bijele margine */
   padding: 0;
-  /* background-color: lightyellow; */
   background-position: center;
   background-repeat: no-repeat;
-  /* Svijetloplava pozadina */
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
-  /* Forma u centru */
+  align-items: flex-start; /* Changed from center to flex-start to allow scrolling */
+  min-height: 100vh; /* Changed from height to min-height */
   box-sizing: border-box;
-  overflow: hidden;
-  /* Sprečava skrolovanje ako nešto izlazi van */
+  overflow: auto; /* Changed from hidden to auto to enable scrolling */
+  padding: 20px 0; /* Added some padding */
 }
 .register-container {
   display: flex;
@@ -194,49 +190,72 @@ button.email-button:hover {
 }
 
 .progress-bar {
-  margin-top: 20px;
+  margin-top: 15px;
   width: 100%;
-  max-width: 400px;
+  position: relative;
 }
 
 .progress-bar .steps {
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* Changed from space-between to center */
+  flex-wrap: nowrap;
+  gap: 5px; /* Added gap instead of margin */
 }
 
 .progress-bar .step {
   text-align: center;
-  flex: 1;
+  flex: 0 0 auto; /* Changed from flex: 1 to prevent stretching */
   cursor: pointer;
+  padding: 0 5px; /* Added padding instead of margin */
+  min-width: 50px; /* Adjusted minimum width */
 }
 
 .progress-bar .step-circle {
-  width: 25px;
-  height: 25px;
+  width: 30px; /* Slightly reduced from 35px */
+  height: 30px;
   background: #ddd;
   border-radius: 50%;
   margin: 0 auto;
-  line-height: 25px;
+  line-height: 30px;
   color: #fff;
   font-size: 14px;
   font-weight: bold;
+  border: 2px solid white;
+  position: relative;
+  z-index: 1;
 }
 
 .progress-bar .step.active .step-circle {
   background: #ff6600;
 }
 
-.progress-bar .step p {
-  margin-top: 5px;
-  font-size: 12px;
-  color: #555;
+.progress-bar .step-circle {
+  width: 25px; /* Further reduced size */
+  height: 25px;
+  background: #ddd;
+  border-radius: 50%;
+  margin: 0 auto;
+  line-height: 25px;
+  color: #fff;
+  font-size: 12px; /* Reduced font size */
+  font-weight: bold;
+  border: 2px solid white;
+  position: relative;
+  z-index: 1;
 }
 
+.progress-bar .step p {
+  margin-top: 5px; /* Further reduced */
+  font-size: 11px; /* Reduced font size */
+  color: #555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .progress-bar .step.active p {
   font-weight: bold;
-  color: #333;
+  color: #f1f0f0;
 }
-
 .tekst-za-unos {
   text-align: center;
 
