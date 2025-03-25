@@ -8,7 +8,7 @@ urlpatterns = [
     path('clients/<int:client_id>/activities/add/', views.add_activity, name='add_activity'),
     path('clients/<int:client_id>/client_activities/', views.client_activities, name='client_activities'),
     path('activities/create/', views.ActivitiesCreateView.as_view(), name='create_activity'), #kreiranje aktivnosti
-    #path('api/activities/', views.getData),# API endpointi za dohvat i unos podataka
+    path('api/activities/nopagination', views.getData),# API endpointi za dohvat i unos podataka
     path('api/activities/', views.AllNewActivitiesList.as_view()),# API endpointi za dohvat i unos podataka
     path('api/activities/add/', views.setData, name='add_activity_api'),
    

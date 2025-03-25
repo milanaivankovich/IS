@@ -9,7 +9,8 @@ class Notification(models.Model):
         ('prijava', 'Prijava'),
         ('komentar', 'Komentar'),
         ('uskoro','Uskoro'),
-         ('azuriranje', 'Update'), #za nadolazeci dogadjaj
+        ('activity_delete','ACTIVITY_DELETE'),
+        ('azuriranje', 'Update'), #za nadolazeci dogadjaj
         #('new_post', 'New Post'),
     ]
      

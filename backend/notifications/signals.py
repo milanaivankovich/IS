@@ -90,7 +90,17 @@ def notify_on_post_update(sender, instance, **kwargs):
     if instance.id:  # Ensure it's an update, not a new object
         old_instance = Activities.objects.get(id=instance.pk)  # Get previous state
         #ako nije promjena participanta u pitanju
-        if old_instance and old_instance.participants == instance.participants:  # Check if 'status' changed
+        if old_instance and old_instance.participants.count() == instance.participants.count():  # Check if 'status' changed
+
+            #ako je post obrisan
+            if instance.is_deleted == True:
+                notification_type='activity_delete'
+                content=f"{instance.client.username} je uklonio događaj na koji ste prijavljeni."
+            #ako nije obrisan
+            else:
+                notification_type='azuriranje'  # Set notification type
+                content=f"{instance.client.username} ažurira događaj na koji ste prijavljeni."
+
 
             for participant in instance.participants.all():
                  #ne salje sam sebi
@@ -99,11 +109,12 @@ def notify_on_post_update(sender, instance, **kwargs):
                         recipient=participant,  # Notify the post author
                         sender=instance.client,  # The user who liked the post
                         post=instance,
-                        notification_type='azuriranje',  # Set notification type
-                        content=f"{instance.client.username} ažurira događaj na koji ste prijavljeni.",
+                        notification_type=notification_type,  # Set notification type
+                        content=content,
                     )
                 send_notification(participant.id ,new_notification)
                 send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
+
 
 
 

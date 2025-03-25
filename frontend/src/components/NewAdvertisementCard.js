@@ -36,7 +36,7 @@ const EditEventCard = ({ user, pk, eventId, closeFunction }) => {
   useEffect(() => {
     const fetchAdvertisements = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/advertisements/");
+        const response = await fetch("http://127.0.0.1:8000/api/advertisements/nopagination");
         if (!response.ok) {
           throw new Error("Failed to fetch advertisements");
         }
@@ -50,11 +50,11 @@ const EditEventCard = ({ user, pk, eventId, closeFunction }) => {
     fetchAdvertisements();
   }, []);
 
-//Dohvacanje svih aktivnosti
+  //Dohvacanje svih aktivnosti
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/activities/");
+        const response = await fetch("http://127.0.0.1:8000/api/activities/nopagination");
         if (!response.ok) {
           throw new Error("Failed to fetch activities");
         }
@@ -235,12 +235,12 @@ const EditEventCard = ({ user, pk, eventId, closeFunction }) => {
 
       const eventStartTime = new Date(eventData.date);
       const eventEndTime = new Date(eventData.date);
-    
+
       eventEndTime.setHours(eventEndTime.getHours() + parseInt(eventData.duration_hours || 0, 10));
       console.log(eventStartTime, eventEndTime, activityStartTime, activityEndTime);
       // Provjera preklapanja vremena
       return (
-        activity.field === selectedLocation?.value  &&
+        activity.field === selectedLocation?.value &&
         (
           (eventStartTime >= activityStartTime && eventStartTime < activityEndTime) ||
           (eventEndTime > activityStartTime && eventEndTime <= activityEndTime) ||
