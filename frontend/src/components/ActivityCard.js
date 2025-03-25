@@ -362,7 +362,7 @@ const ActivityCard = ({ activity }) => {
   const parseDateTime = (dateString, duration_hours) => {
     // Parse the input date string
     const date = new Date(dateString);
-    date.setHours(date.getHours() - 1);
+    date.setHours(date.getHours());
 
     // Format the date as dd/MM/yyyy
     const formattedDate = date

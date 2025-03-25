@@ -15,10 +15,10 @@ from background_task import background
 def activity_starting_soon_notification():
 
     timezone.activate(settings.TIME_ZONE) 
-    print(f"This task runs every minute!", timezone.localtime(timezone.now()))
+    print(f"This task runs every minute!", timezone.now())
 
     #kako iskoristiti funkciju nakon sto se dogadjaj napravi, i izmjeni vrijeme (schedule se mora racunati?)
-    current_time = timezone.localtime(timezone.now())
+    current_time = timezone.now()
     threshold = timezone.timedelta(minutes=30)  # vremensko odstupanje
     small_step = timezone.timedelta(minutes=1) # jer je nemoguce porediti sekunde
     
@@ -26,6 +26,13 @@ def activity_starting_soon_notification():
     #now = datetime(current_time.day, current_time.month, current_time.year, current_time.hour+2, current_time.minute)
 
     posts_to_notify = Activities.objects.filter(date__gt=current_time +threshold, date__lte=current_time+small_step+threshold)
+    
+    #events = Activities.objects.all()
+    #for event in events:
+    #   if event.date>current_time:
+    #        print(f"Event: {event.date}, Local Time: {event.titel} ")
+            
+    
     if posts_to_notify: print("Upcoming events found")
     for post in posts_to_notify:
             #notifikacija za kreatora dogadjaja
@@ -35,14 +42,13 @@ def activity_starting_soon_notification():
         sender=creator,  # potencijalni problem
         post=post,
         notification_type='uskoro',  # Set notification type
-        content=f"Događaj korisnika @{user.username} se održava uskoro", #todo staviti neki format dateTime
+        content=f"Događaj korisnika @{post.client} se održava uskoro", #todo staviti neki format dateTime
         )
         send_notification(creator.id, new_notification)
         send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender}", new_notification.content, f"@{new_notification.sender}/{new_notification.notification_type}")
 
         #notifikacija za participante
-        for user_id in post.participants:
-            user = Client.objects.get(pk=user_id)
+        for user in post.participants.all():
             new_notification = Notification.objects.create(
 
             recipient=user,  # Notify the post author
@@ -56,6 +62,10 @@ def activity_starting_soon_notification():
 
 
     '''      
+
+
+
+
             # Example: Send an email notification
             send_mail(
                 'Nadolazeći dogadjaj',

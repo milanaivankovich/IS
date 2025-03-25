@@ -62,3 +62,9 @@ export const getNewNotificationCount = async (user_id) => {
         console.error("Error: ", error);
     }
 };
+//pretvara date objekat u string u nasoj vremenskoj zoni
+export function convertToISOWithOffset(date) {
+    const shiftedDate = new Date(date.getTime() - new Date().getTimezoneOffset() * 60000);
+    console.log(shiftedDate.toISOString());
+    return shiftedDate.toISOString().slice(0, 16);
+}

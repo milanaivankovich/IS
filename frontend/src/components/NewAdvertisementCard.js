@@ -4,6 +4,7 @@ import CreatorImg from "../images/user.svg";
 import axios from "axios";
 import { IoIosCloseCircle } from "react-icons/io";
 import Select from "react-select";
+import { convertToISOWithOffset } from "../utils";
 
 const EditEventCard = ({ user, pk, eventId, closeFunction }) => {
   const [fields, setFields] = useState([]);
@@ -295,7 +296,8 @@ const EditEventCard = ({ user, pk, eventId, closeFunction }) => {
 
   useEffect(() => {
     if (advertisementDate) {
-      const formattedDate = new Date(advertisementDate).toISOString().slice(0, 16);
+      const formattedDate = convertToISOWithOffset(new Date(advertisementDate)); // 180 minutes = UTC+3
+      //const formattedDate = new Date(advertisementDate).toISOString().slice(0, 16);
       setEventData((prevData) => ({
         ...prevData,
         date: formattedDate,

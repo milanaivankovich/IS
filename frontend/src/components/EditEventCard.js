@@ -4,6 +4,7 @@ import CreatorImg from "../images/user.svg";
 import axios from "axios";
 import Select from 'react-select';
 import { IoIosCloseCircle } from "react-icons/io";
+import { convertToISOWithOffset } from "../utils.js"
 
 const EditEventCard = ({ user, pk, event, closeFunction }) => {
 
@@ -53,7 +54,8 @@ const EditEventCard = ({ user, pk, event, closeFunction }) => {
 
   useEffect(() => {
     if (event.date) {
-      const formattedDate = new Date(event.date).toISOString().slice(0, 16);
+      const formattedDate = convertToISOWithOffset(new Date(event.date)); // 180 minutes = UTC+3
+      //const formattedDate = new Date(event.date).toISOString().slice(0, 16);
       setEventData((prevData) => ({
         ...prevData,
         date: formattedDate.toString(),
@@ -190,9 +192,9 @@ const EditEventCard = ({ user, pk, event, closeFunction }) => {
     // Provjera postoji li aktivnost s istim terenom i datumom
     const isDuplicateActivity = allActivities.some((activity) => {
       const activityStartTime = new Date(activity.date);
-      activityStartTime.setHours(activityStartTime.getHours() - 1);
+      activityStartTime.setHours(activityStartTime.getHours());
       const activityEndTime = new Date(activity.date);
-      activityEndTime.setHours(activityEndTime.getHours() - 1);
+      activityEndTime.setHours(activityEndTime.getHours());
       activityEndTime.setHours(activityEndTime.getHours() + activity.duration_hours);
 
       const eventStartTime = new Date(eventData.date);
@@ -221,9 +223,9 @@ const EditEventCard = ({ user, pk, event, closeFunction }) => {
     // Provjera postoji li oglas s istim terenom i datumom 
     const isDuplicateAd = allAdvertisements.some((ad) => {
       const adStartTime = new Date(ad.date);
-      adStartTime.setHours(adStartTime.getHours() - 1);
+      adStartTime.setHours(adStartTime.getHours());
       const adEndTime = new Date(ad.date);
-      adEndTime.setHours(adEndTime.getHours() - 1);
+      adEndTime.setHours(adEndTime.getHours());
       adEndTime.setHours(adEndTime.getHours() + ad.duration_hours);
 
       const eventStartTime = new Date(eventData.date);

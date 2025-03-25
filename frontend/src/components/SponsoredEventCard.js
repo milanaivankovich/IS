@@ -18,7 +18,7 @@ const SponsoredEventCard = ({ event, user, currentUser, type }) => {
   const [picture, setPicture] = useState("");
   const formattedDate = new Date(date);
 
-  formattedDate.setHours(formattedDate.getHours() - 1);
+  formattedDate.setHours(formattedDate.getHours());
   const dateOnly = formattedDate.toLocaleDateString("en-GB"); // Format: DD/MM/YYYY
   const timeOnly = formattedDate.toLocaleTimeString("en-GB", { hour: '2-digit', minute: '2-digit' }); // Format: HH:MMFormat: HH:MM
   const endTime = new Date(formattedDate);
@@ -194,18 +194,18 @@ const SponsoredEventCard = ({ event, user, currentUser, type }) => {
             <div className="createdBy">
               <FontAwesomeIcon icon={faUser} /> by @
               {name1 ? (
-          <span
-            className="clickable-username"
-            onClick={() => handleUsernameClick(name1)}
-          >
-            {name1}
-          </span>
-        ) : (
-          "Nepoznato"
-        )}
+                <span
+                  className="clickable-username"
+                  onClick={() => handleUsernameClick(name1)}
+                >
+                  {name1}
+                </span>
+              ) : (
+                "Nepoznato"
+              )}
             </div>
           </div>
-          {type==='BusinessSubject' && (
+          {type === 'BusinessSubject' && (
             <div className="event-card-menu">
               <BsThreeDotsVertical className="menu-icon" onClick={toggleMenu} />
               {menuVisible && (
