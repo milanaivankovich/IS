@@ -13,7 +13,7 @@ import { IoIosCloseCircle } from "react-icons/io";
 import FieldsCard from '../components/FieldsCard.js';
 import Spinner from 'react-bootstrap/esm/Spinner.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComment, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faComment } from '@fortawesome/free-solid-svg-icons';
 
 const BusinessSubjectProfile = () => {
 

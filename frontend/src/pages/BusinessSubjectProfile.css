@@ -10,7 +10,7 @@
 }
 
 .history-activity-container {
-    background: linear-gradient(to bottom, #F15A24 30%, #fffefe 30%); /* Narandžasta na vrhu, siva na dnu */
+    background: linear-gradient(to bottom, #c8c7c6 30%, #fffefe 30%); /* Narandžasta na vrhu, siva na dnu */
     border-radius: 5px;
     padding: 20px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
