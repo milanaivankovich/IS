@@ -287,9 +287,10 @@ const BusinessSubjectProfile = () => {
                           <div className="history-activity-header">  
                           </div>
                           <div className="history-activity-text">
-                           <FontAwesomeIcon icon={faUser} className="icon"/> {subjectData.nameSportOrganization} <hr/>
+                            <img src={subjectData.profile_picture !== null ? subjectData.profile_picture : CreatorImg} className="creator-image" alt="Creator" />&nbsp;
+                            @{subjectData.nameSportOrganization} <hr/>
                            <br/><FontAwesomeIcon icon={faComment} className="icon"/>
-                           U prošlosti je kreirao {Array.isArray(activityHistory) ? activityHistory.length : 0} aktivnosti
+                           U PROŠLOSTI JE KREIRAO {Array.isArray(activityHistory) ? activityHistory.length : 0} AKTIVNOSTI
                           </div>
                         </div>
                         )}
