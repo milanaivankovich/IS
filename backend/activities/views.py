@@ -430,8 +430,10 @@ def sport_statistics(request):
     # Broj aktivnosti po sportovima
     activities_per_sport = Activities.objects.values('sport__name').annotate(total_activities=Count('id')).order_by('-total_activities')
 
-    # Broj aktivnosti po mjesecima/godinama
-    activities_per_month = Activities.objects.extra(select={'month': "EXTRACT(MONTH FROM date)"}).values('month').annotate(count=Count('id')).order_by('month')
+    # views.py (dio sa activities_per_month)
+    activities_per_month = Activities.objects.extra(
+       select={'month': "CAST(strftime('%%m', date) AS INTEGER)"}
+    ).values('month').annotate(count=Count('id')).order_by('month')
 
     return JsonResponse({
         'popular_sport': popular_sport,

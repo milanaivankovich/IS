@@ -6,6 +6,7 @@ from fields.models import Sport, Field
 from accounts.models import Client
 from activities.models import Activities  # Import aktivnosti
 from django.utils.timezone import now, timedelta
+from datetime import timedelta
 
 def create_activities(num_activities=40):
     clients = list(Client.objects.all())  # Učitavanje svih korisnika
@@ -19,14 +20,14 @@ def create_activities(num_activities=40):
     for _ in range(num_activities):
         title = fake.sentence(nb_words=3)
         description = fake.paragraph()
-        date = now() + timedelta(days=random.randint(1, 30))  # Aktivnosti u narednih 30 dana
+        date = now() + timedelta(days=random.randint(-300, 60))  # Novi raspon (-300 dana = ~10 mjeseci, +60 dana = ~2 mjeseca)
         duration_hours = random.randint(1, 3)  # Aktivnosti traju 1-3 sata
         field = random.choice(fields)
         sport = random.choice(sports)
-        max_participants = random.randint(2, 20)  # Maksimalan broj učesnika od 5 do 20
+        max_participants = random.randint(5, 20)  # Maksimalan broj učesnika od 5 do 20
 
         # **Neka aktivnosti ne budu popunjene do kraja**
-        num_participants = random.randint(0, max_participants - 1)  
+        num_participants = random.randint(1, max_participants - 1)  
         is_deleted = random.choice([False, False, False, True])  # 75% šanse da nije obrisano
  
         activity = Activities.objects.create(
@@ -79,7 +80,7 @@ class Command(BaseCommand):
         self.stdout.write('Creating fields...')
         create_fields(num_fields=50)
         self.stdout.write('Creating activities...')
-        create_activities(num_activities=100)
+        create_activities(num_activities=50)
         self.stdout.write(self.style.SUCCESS('Successfully generated random fields.'))
 
 def create_sports():
