@@ -276,9 +276,15 @@ const BusinessSubjectProfile = () => {
 
                     {activeTab === "activity" && (
                       <div className="scroll-bar-user-profile">
-                        {Array.isArray(activityHistory) && activityHistory.map((activity) => (
-                          <SponsoredEventCard key={activity.id} event={activity} />
-                        ))}
+                        {(id.type === 'BusinessSubject') && (currentUserData.nameSportOrganization === username) ? (
+                          Array.isArray(activityHistory) && activityHistory.map((activity) => (
+                            <SponsoredEventCard key={activity.id} event={activity} />
+                          ))
+                        ) : (
+                          <p className="history-activity-text">
+                            Korisnik je u prošlosti kreirao {Array.isArray(activityHistory) ? activityHistory.length : 0} aktivnosti
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>

@@ -8,3 +8,14 @@
     width: 25px;
     transform: translate(220px, -260px);
 }
+
+.history-activity-text {
+    font-size: 20px;
+    font-weight: bold;
+    color: #555;
+    text-align: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
