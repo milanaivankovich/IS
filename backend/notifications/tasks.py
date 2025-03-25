@@ -7,27 +7,29 @@ from accounts.models import Client
 from .models import Notification
 from .utils import send_notification
 from .webpush import send_push_notification_to_all_user_devices
+from django.conf import settings
 
 from background_task import background
 
-@background(schedule=60, name="activity_starting_soon_notification") #schedule je vrijeme nakon kojeg pocinje task
+@background(schedule=10) #schedule je vrijeme nakon kojeg pocinje task
 def activity_starting_soon_notification():
 
-    
+    timezone.activate(settings.TIME_ZONE) 
+    print(f"This task runs every minute!", timezone.localtime(timezone.now()))
+
     #kako iskoristiti funkciju nakon sto se dogadjaj napravi, i izmjeni vrijeme (schedule se mora racunati?)
-    current_time = timezone.now().replace(tzinfo=None).isoformat()
+    current_time = timezone.localtime(timezone.now())
     threshold = timezone.timedelta(minutes=30)  # vremensko odstupanje
-    small_step = timezone.timedelta(seconds=30) # jer je nemoguce porediti sekunde
+    small_step = timezone.timedelta(minutes=1) # jer je nemoguce porediti sekunde
     
     #localized_datetime = current_time.replace(tzinfo=timezone_offset)
     #now = datetime(current_time.day, current_time.month, current_time.year, current_time.hour+2, current_time.minute)
-    print(f"This task runs every minute!  {current_time}")
 
-    posts_to_notify = Activities.objects.filter(date__gte=current_time-small_step +threshold, date__lt=current_time+small_step+threshold)
-
+    posts_to_notify = Activities.objects.filter(date__gt=current_time +threshold, date__lte=current_time+small_step+threshold)
+    if posts_to_notify: print("Upcoming events found")
     for post in posts_to_notify:
             #notifikacija za kreatora dogadjaja
-        creator = Client.objects.get(pk=post.client)
+        creator = post.client
         new_notification= Notification.objects.create(
         recipient=creator,  # Notify the post author
         sender=creator,  # potencijalni problem
