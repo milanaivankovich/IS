@@ -53,11 +53,14 @@ function RegisterRekreativac() {
     first_name: "",
     last_name: "",
     username: "",
+    age: "",
+    gender: "",
     password: "",
     confirmPassword: "",
     email: "",
     profile_picture: ""
   });
+
 
   const [passwordCriteria, setPasswordCriteria] = useState({
     minLength: false,
@@ -91,20 +94,23 @@ function RegisterRekreativac() {
     setCurrentStep(stepIndex);
   };
 
-  const isStepValid = () => {
+  const isStepValid = () => { 
     switch (currentStep) {
       case 0:
         return formData.first_name && formData.last_name && formData.username;
       case 1:
-        return validatePassword();
+        return true; // Godine i pol su opcioni
       case 2:
-        return true; // Slika je opciona
+        return validatePassword();
       case 3:
+        return true; // Slika je opciona
+      case 4:
         return formData.email.includes("@");
       default:
         return false;
     }
   };
+
 
 
   const validatePassword = (password = formData.password) => {
@@ -257,6 +263,14 @@ function RegisterRekreativac() {
         formDataToSend.append("first_name", formData.first_name);
         formDataToSend.append("last_name", formData.last_name);
         formDataToSend.append("username", formData.username);
+
+        if (formData.age) {
+          formDataToSend.append("age", formData.age);
+        }
+        if (formData.gender) {
+          formDataToSend.append("gender", formData.gender);
+        }
+
         formDataToSend.append("password", formData.password);
         formDataToSend.append("confirmPassword", formData.confirmPassword);
         formDataToSend.append("email", formData.email);
@@ -342,7 +356,7 @@ function RegisterRekreativac() {
             </div>
           )}
 
-          {currentStep === 1 && (
+          {currentStep === 2 && (
             <div className="form-step">
               <p className="tekst-za-unos">Molimo unesite i potvrdite lozinku</p>
               <label htmlFor="password">Lozinka:</label>
@@ -408,7 +422,31 @@ function RegisterRekreativac() {
               </button>
             </div>
           )}
-          {currentStep === 2 && (
+          {currentStep === 1 && (
+            <div className="form-step">
+              <p className="tekst-za-unos">Molimo unesite godine i izaberite pol (opciono)</p>
+              <label htmlFor="age">Godine:</label>
+              <input
+                type="number"
+                id="age"
+                placeholder="Unesite godine"
+                value={formData.age || ""}
+                onChange={handleInputChange}
+              />
+              <label htmlFor="gender">Pol:</label>
+              <select id="gender" value={formData.gender || ""} onChange={handleInputChange}>
+                <option value="">Izaberite pol</option>
+                <option value="M">Muško</option>
+                <option value="F">Žensko</option>
+                <option value="O">Drugo</option>
+                <option value="N">Ne želim da kažem</option>
+              </select>
+              <button className="continue-button" onClick={nextStep}>
+                Nastavi
+              </button>
+            </div>
+          )}
+          {currentStep === 3 && (
             <div className="form-step">
               <div>
                 {!cropping ? (
@@ -476,7 +514,7 @@ function RegisterRekreativac() {
               </button>
             </div>
           )}
-          {currentStep === 3 && (
+          {currentStep === 4 && (
             <div className="form-step">
               <p className="tekst-za-unos">Molimo unesite svoju email adresu za verifikaciju</p>
               <label htmlFor="email">Email adresa:</label>
@@ -521,7 +559,7 @@ function RegisterRekreativac() {
 
         <div className="progress-bar">
           <div className="steps">
-            {["Unesite podatke", "Unesite lozinku", "Postavite sliku", "Verifikujte email"].map(
+            {["Unesite podatke", "Godine i pol", "Unesite lozinku","Postavite sliku", "Verifikujte email"].map(
               (label, index) => (
                 <div
                   className={`step ${currentStep >= index ? "active" : ""}`}
