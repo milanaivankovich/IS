@@ -6,7 +6,7 @@ from activities.models import Activities
 from accounts.models import Client
 from .models import Notification
 from .utils import send_notification
-
+from .webpush import send_push_notification_to_all_user_devices
 
 from background_task import background
 
@@ -23,7 +23,7 @@ def activity_starting_soon_notification():
     #now = datetime(current_time.day, current_time.month, current_time.year, current_time.hour+2, current_time.minute)
     print(f"This task runs every minute!  {current_time}")
 
-    posts_to_notify = Activities.objects.filter(date__gt=current_time-small_step + threshold, date__lt=current_time+small_step+threshold)
+    posts_to_notify = Activities.objects.filter(date__gte=current_time-small_step +threshold, date__lt=current_time+small_step+threshold)
 
     for post in posts_to_notify:
             #notifikacija za kreatora dogadjaja
@@ -36,6 +36,8 @@ def activity_starting_soon_notification():
         content=f"Događaj korisnika @{user.username} se održava uskoro", #todo staviti neki format dateTime
         )
         send_notification(creator.id, new_notification)
+        send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender}", new_notification.content, f"@{new_notification.sender}/{new_notification.notification_type}")
+
         #notifikacija za participante
         for user_id in post.participants:
             user = Client.objects.get(pk=user_id)
@@ -48,6 +50,8 @@ def activity_starting_soon_notification():
             content=f"Događaj korisnika @{user.username} se održava uskoro",
             )
             send_notification(user.id, new_notification)
+            send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender}", new_notification.content, f"@{new_notification.sender}/{new_notification.notification_type}")
+
 
     '''      
             # Example: Send an email notification

@@ -52,9 +52,6 @@ const NotificationPanel = ({ userId }) => {
         }
     });
 
-    //prikaz kartice dogadjaja
-    const [showEvent, setShowEvent] = useState("");
-
     //prikaz broja neprocitanih notifikacija, dohvatiti broj sa backa zbog paginacije
 
     return (
@@ -72,11 +69,10 @@ const NotificationPanel = ({ userId }) => {
                             <NotificationCard key={index}
                                 item_id={notif?.id}
                                 userImgLink={notif?.sender.profile_picture ? `${notif?.sender.profile_picture}` : userImg}
-                                userId={userId}
+                                eventData={notif?.post}
                                 username={notif?.sender.username}
                                 content={notif?.content} time={notif?.created_at}
                                 is_read={notif?.is_read}
-                                onClick={() => setShowEvent(notif?.post)}
                             />))
                         }
                         <div ref={ref} style={{ height: "40px" }}>
