@@ -12,6 +12,8 @@ import { CiSettings } from "react-icons/ci";
 import { IoIosCloseCircle } from "react-icons/io";
 import FieldsCard from '../components/FieldsCard.js';
 import Spinner from 'react-bootstrap/esm/Spinner.js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faComment, faUser } from '@fortawesome/free-solid-svg-icons';
 
 const BusinessSubjectProfile = () => {
 
@@ -281,9 +283,15 @@ const BusinessSubjectProfile = () => {
                             <SponsoredEventCard key={activity.id} event={activity} />
                           ))
                         ) : (
-                          <p className="history-activity-text">
-                            Korisnik je u prošlosti kreirao {Array.isArray(activityHistory) ? activityHistory.length : 0} aktivnosti
-                          </p>
+                          <div className="history-activity-container">
+                          <div className="history-activity-header">  
+                          </div>
+                          <div className="history-activity-text">
+                           <FontAwesomeIcon icon={faUser} className="icon"/> {subjectData.nameSportOrganization} <hr/>
+                           <br/><FontAwesomeIcon icon={faComment} className="icon"/>
+                           U prošlosti je kreirao {Array.isArray(activityHistory) ? activityHistory.length : 0} aktivnosti
+                          </div>
+                        </div>
                         )}
                       </div>
                     )}

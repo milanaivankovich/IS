@@ -9,13 +9,29 @@
     transform: translate(220px, -260px);
 }
 
-.history-activity-text {
-    font-size: 20px;
-    font-weight: bold;
-    color: #555;
-    text-align: center;
+.history-activity-container {
+    background: linear-gradient(to bottom, #F15A24 30%, #fffefe 30%); /* Narandžasta na vrhu, siva na dnu */
+    border-radius: 5px;
     padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 20px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
+
+  .history-activity-container:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); 
+  }
+  
+  .history-activity-header {
+    font-size: 18px;
+    padding: 20px 0;
+    text-align: center;
+  }
+  
+  .history-activity-text {
+    font-size: 18px;
+    color: #616161; 
+    padding: 10px;
+    margin-top: 30px;
+  }
+  
