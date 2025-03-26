@@ -9,6 +9,8 @@ import { CiSettings } from "react-icons/ci";
 import { IoIosCloseCircle } from "react-icons/io";
 import FieldsCard from '../components/FieldsCard.js';
 import Spinner from 'react-bootstrap/Spinner';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faComment } from '@fortawesome/free-solid-svg-icons';
 //import "bootstrap/dist/css/bootstrap.min.css";
 //todo spinner.css bez ostalih stilova
 
@@ -284,9 +286,22 @@ const UserProfile = () => {
 
                   {activeTab === "activity" && (
                     <div className="scroll-bar-user-profile">
-                      {Array.isArray(activityHistory) && activityHistory.map((activity) => (
-                        <ActivityCard key={activity.id} activity={activity} />
-                      ))}
+                      {(id.type === 'Client') && (currentUserData.username === username) ? (
+                          Array.isArray(activityHistory) && activityHistory.map((activity) => (
+                            <ActivityCard key={activity.id} activity={activity} />
+                          ))
+                        ) : (
+                          <div className="history-activity-container">
+                          <div className="history-activity-header">  
+                          </div>
+                          <div className="history-activity-text">
+                            <img src={userData.profile_picture !== null ? userData.profile_picture : CreatorImg} className="creator-image" alt="Creator" />&nbsp;&nbsp;
+                            {userData.username} <hr/>
+                           <br/><FontAwesomeIcon icon={faComment} className="icon"/>
+                           U PROŠLOSTI JE KREIRAO {Array.isArray(activityHistory) ? activityHistory.length : 0} AKTIVNOSTI
+                          </div>
+                        </div>
+                        )}
                     </div>
                   )}
                 </div>

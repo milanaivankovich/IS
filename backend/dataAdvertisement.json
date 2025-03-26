@@ -64,5 +64,16 @@
         "sport_id": 4,
         "is_deleted": false,
         "duration_hours": 2
+    },
+    {
+        "id": 7,
+        "name": "Trening na otvorenom",
+        "description": "Organizujem trening na otvorenom",
+        "date": "2025-03-26",
+        "business_subject_id": 3,
+        "field_id": 8,
+        "sport_id": 1,
+        "is_deleted": false,
+        "duration_hours": 2
     }
 ]
