@@ -37,8 +37,11 @@ const MenuBar = ({ variant, search }) => {
     fetchIDType();
   }, []);
 
-  const [newNotifications, setNewNotifications] = useState(0);
-  useEffect(() => { setNewNotifications(id.id) }, [id]);
+  const [newNotifications, setNewNotifications] = useState("0");
+  useEffect(() => {
+    getNewNotificationCount(id.id).then((count) =>
+      setNewNotifications(count));
+  }, [id]);
 
 
   return (
@@ -66,7 +69,7 @@ const MenuBar = ({ variant, search }) => {
                 <FontAwesomeIcon className="notification-icon" icon={faBell} onClick={() => (window.location.href = "/dashboard")}
                   shake={false} //staviti true ako ima novih notifikacija todo
                 />
-                {getNewNotificationCount(id.id) !== 0 && <FontAwesomeIcon className="new-notification-signal-icon" icon={faCircle} />}
+                {newNotifications !== 0 && <FontAwesomeIcon className="new-notification-signal-icon" icon={faCircle} />}
               </div>
               <a href="/userprofile">
                 <img
