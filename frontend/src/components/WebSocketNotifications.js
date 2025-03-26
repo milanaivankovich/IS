@@ -8,7 +8,8 @@ const WebSocketNotifications = () => {
     //const [messages, setMessages] = useState([]);
 
     const connectWebSocketNotifications = (id) => {
-        const socket = new WebSocket(`ws://${url}/ws/notifications/${id}/`);
+        const token = localStorage.getItem("token");
+        const socket = new WebSocket(`ws://${url}/ws/notifications/${id}/?token=${token}`);
 
         // Kada server šalje poruku
         socket.onmessage = (event) => {

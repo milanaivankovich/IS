@@ -88,9 +88,11 @@ def notify_on_post_update(sender, instance, **kwargs):
     """
 
     if instance.id:  # Ensure it's an update, not a new object
-        old_instance = Activities.objects.get(id=instance.pk)  # Get previous state
+        old_instance = Activities.objects.get(id=instance.id)  # Get previous state
         #ako nije promjena participanta u pitanju
-        if old_instance and old_instance.participants.count() == instance.participants.count():  # Check if 'status' changed
+        old_participants = set(old_instance.participants.all())
+        new_participants = set(instance.participants.all())
+        if old_instance and old_participants == new_participants:  # Check if 'status' changed
 
             #ako je post obrisan
             if instance.is_deleted == True:

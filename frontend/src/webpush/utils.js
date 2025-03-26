@@ -131,6 +131,9 @@ export const webpushPremission =
     Notification.requestPermission().then(permission => {
         if (permission !== "granted") {
             console.error("Push notifications denied.");
+            toast.warning("Molimo omogućite notifikacije u pregledniku za obavještenja o nadolazećim događajima")
+        } else if (permission === "granted") {
+            subscribeUser();
         }
     });
 
