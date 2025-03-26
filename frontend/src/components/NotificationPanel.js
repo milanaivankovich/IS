@@ -16,13 +16,16 @@ const NotificationPanel = ({ userId }) => {
     const [loadingNotifications, setLoadingNotifications] = useState(true);
     const fetchAll = async () => {
         setLoadingNotifications(true);
-        await axios.get(`${API}/api/notifications/pagination/${userId}`) //token todo
+        await axios.get(`${API}/api/notifications/pagination/${userId}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }
+        )
             .then((response) => {
                 setNotifications(response.data?.results)
                 setNextPage(response.data?.next ? response.data.next : null);
             })
             .catch((error) =>
-                console.error("Greska pri dohvacanju notifikacija"))
+                console.error(error, "Greska pri dohvacanju notifikacija"))
             .finally(() =>
                 setLoadingNotifications(false));
     };
@@ -34,7 +37,9 @@ const NotificationPanel = ({ userId }) => {
     const [isFetchingNextPage, setIsFetchingNextPage] = useState(false);
     const fetchNextPage = async () => {
         setIsFetchingNextPage(true);
-        await axios.get(`${nextPage}`) //token todo
+        await axios.get(`${nextPage}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
             .then((response) => {
                 setNotifications((prev) => Array.isArray(prev) ? [...prev, ...response.data.results] : response.data.results);
                 setNextPage(response.data?.next ? response.data.next : null);
@@ -52,11 +57,22 @@ const NotificationPanel = ({ userId }) => {
         }
     });
 
-    //prikaz broja neprocitanih notifikacija, dohvatiti broj sa backa zbog paginacije
+    //mark all as read
+    const markAllAsRead = async () => {
+        await axios.get(`${API}/api/notifications/mark-all-read/${userId}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+            .then((response) => {
+                fetchAll();
+            })
+            .catch((error) =>
+                console.error(error + "Greska pri mark all as read"));
+    };
 
     return (
         <div className="notification-panel-body">
             <div className="Event-bar-title">NOTIFIKACIJE</div>
+            <button className="mark-all-as-read-button" onClick={markAllAsRead}>Označi sve kao pročitano</button>
             {loadingNotifications ? (
                 <Spinner className='spinner-border' animation="border" />
             ) : notifications?.length === 0 ? (

@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from .utils import is_action_authorized
 
 from django.contrib.auth.models import User
 
@@ -55,11 +56,31 @@ def get_notifications_by_client_id(request, id): #todo authorization
     
 from .pagination import MyCursorPagination
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
 
 class NotificationList(ListAPIView): 
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
     pagination_class = MyCursorPagination
+
+    def get(self, request, *args, **kwargs):
+        try:
+            client_id = int(self.kwargs.get("id"))
+        except ValueError:
+            return Response({'error':'Invalid client ID'}, status=400)
+        client = get_object_or_404(Client, id=client_id)
+        #autorizacija
+        response = is_action_authorized(request, client)
+        if response.status_code != status.HTTP_200_OK:
+            return response
+
+        queryset = self.get_queryset()
+        paginator = MyCursorPagination()  # Use custom pagination here
+        result_page = paginator.paginate_queryset(queryset, request)
+
+        # Serialize paginated data
+        serializer = NotificationSerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def get_queryset(self):
         try:
@@ -68,12 +89,12 @@ class NotificationList(ListAPIView):
             return Response({'error':'Invalid client ID'}, status=400)
         
         client = get_object_or_404(Client, id=client_id)
-    
+
         return Notification.objects.filter(
             recipient=client,
             is_deleted=False,
         ).order_by('-created_at')
-    
+
        # if notifications.exists():
        #     serializer = NotificationSerializer(notifications, many=True)
        #     return Response(serializer.data)
@@ -97,6 +118,11 @@ def mark_notification_as_read(request, item_id):
 @api_view(['PUT'])
 def mark_all_notifications_as_read(request, reciever_id):
     client = get_object_or_404(Client, id=reciever_id)
+
+    response = is_action_authorized(request, client)
+    if response.status_code != status.HTTP_200_OK:
+        return response
+    
     updated_count = Notification.objects.filter(recipient=client).update(is_read=True)
     return Response({"message": f"{updated_count} records updated successfully",
         "client_id": reciever_id})
@@ -109,28 +135,6 @@ def count_unread_notifications(request, reciever_id):
         "unread_count": count
     }); 
     
-    """
-        token = request.headers.get('Authorization')  # Expected format: "Token <your_token>"
-    
-    if not token:
-        return Response({"error": "Authentication token required"}, status=status.HTTP_401_UNAUTHORIZED)
-    
-    try:
-        # Extract the actual token key from the "Token <token>" format
-        token_key = token.split(' ')[1]  # Assumes "Token <token>"
-        
-        # Retrieve the token object from the database
-        client_token = ClientToken.objects.get(key=token_key)
-        
-        # Retrieve the client associated with this token
-        user = client_token.client  # Assuming a reverse relationship 'client' exists
-        return Response({"pk": user.pk}, status=status.HTTP_200_OK)
-
-    except IndexError:
-        return Response({"error": "Invalid token format"}, status=status.HTTP_400_BAD_REQUEST)
-    except ClientToken.DoesNotExist:
-        return Response({"error": "Invalid token or token expired"}, status=status.HTTP_401_UNAUTHORIZED)  
-    """
     
 #@api_view(['GET'])
 #def get_all_notifications(request):
