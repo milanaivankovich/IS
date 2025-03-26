@@ -17,7 +17,7 @@ urlpatterns = [
     path('api/notifications/pagination/<int:id>', views.NotificationList.as_view(), name = 'get_notifications_by_client_pagination'),
     path('api/notifications/unread-count/<int:reciever_id>', count_unread_notifications),
     path('api/notifications/mark-read/<int:item_id>/', mark_notification_as_read),
-    path('api/notifications/mark-all-read/<int:reciever_id>/', mark_all_notifications_as_read),
+    path('api/notifications/mark-all-read/<int:reciever_id>/', mark_all_notifications_as_read, name='mark_all_notifications_as_read'),
     path('api/notifications/delete/<int:item_id>/', delete_notification),
     path('api/notifications/webpush/subscribe/<str:username>/', views.subscribe_to_webpush_service, name='subscribe_webpush'),
     #path("webpush/subscribe/<str:username>/", webpush_subscribe, name="webpush_subscribe"),

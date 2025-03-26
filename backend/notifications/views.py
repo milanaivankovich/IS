@@ -123,7 +123,7 @@ def mark_all_notifications_as_read(request, reciever_id):
     if response.status_code != status.HTTP_200_OK:
         return response
     
-    updated_count = Notification.objects.filter(recipient=client).update(is_read=True)
+    updated_count = Notification.objects.filter(recipient=client, is_read=False).update(is_read=True)
     return Response({"message": f"{updated_count} records updated successfully",
         "client_id": reciever_id})
 

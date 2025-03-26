@@ -59,9 +59,10 @@ const NotificationPanel = ({ userId }) => {
 
     //mark all as read
     const markAllAsRead = async () => {
-        await axios.get(`${API}/api/notifications/mark-all-read/${userId}`, {
+        await axios.put(`${API}/api/notifications/mark-all-read/${userId}/`, null, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        })
+        }
+        )
             .then((response) => {
                 fetchAll();
             })
