@@ -152,6 +152,9 @@ def get_location_by_field_id(request, field_id):
     except Field.DoesNotExist:
         return Response({'error': 'Field not found'}, status=404)
     
+
+from notifications.utils import after_post_update_or_delete
+
 @api_view(['PUT'])
 def update_activity(request, activity_id):
     try:
@@ -166,6 +169,7 @@ def update_activity(request, activity_id):
         try:
             # Validacija na nivou modela (clean metoda)
             serializer.save()
+            after_post_update_or_delete(activity, False)
             return Response({'message': 'Aktivnost uspješno ažurirana!', 'activity': serializer.data}, status=200)
         except ValidationError as e:
             return Response({'error': str(e)}, status=400)
@@ -390,6 +394,8 @@ def delete_activity(request, pk):
     # Označavanje aktivnosti kao obrisane
     activity.is_deleted = True
     activity.save()
+    after_post_update_or_delete(activity, True)
+
 
     return Response({'message': 'Activity marked as deleted'}, status=200)
 

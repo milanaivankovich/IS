@@ -81,6 +81,7 @@ def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
                     send_notification(participant.id ,new_notification)
                     send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
 
+''' ne radi provjeru kada se korisnik prijavi na aktivnost samo
 @receiver(pre_save, sender=Activities)
 def notify_on_post_update(sender, instance, **kwargs):
     """
@@ -117,6 +118,6 @@ def notify_on_post_update(sender, instance, **kwargs):
                 send_notification(participant.id ,new_notification)
                 send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
 
-
+'''
 
 
