@@ -26,7 +26,7 @@ const ActivityCard = ({ activity }) => {
   const [isCreator, setIsCreator] = useState(false); // Da li je trenutni korisnik kreator
   const [showMenu, setShowMenu] = useState(false); // Prikazuje meni sa tri tačkice
   const initialRemainingSlots =
-    NumberOfParticipants - participants.length;
+    NumberOfParticipants - participants?.length;
   const [remainingSlots, setRemainingSlots] = useState(initialRemainingSlots);
   const [isLoading, setIsLoading] = useState(false);
   const [activityParticipants, setActivityParticipants] = useState([]);

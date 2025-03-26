@@ -30,7 +30,7 @@ function App() {
   useEffect(() => {
     if (isUserClient()) {
       const notify = webpushPremission;
-      subscribeUser();
+      //subscribeUser();
     }
   }, []);
   //

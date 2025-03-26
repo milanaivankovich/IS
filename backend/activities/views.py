@@ -456,4 +456,4 @@ class AllNewActivitiesList(ListAPIView):
         return Activities.objects.filter(
             date__gte=timezone.now(),
             is_deleted=False,
-        ).order_by('-date')
+        ).order_by('date')
