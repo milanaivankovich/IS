@@ -12,8 +12,7 @@ import { CiSettings } from "react-icons/ci";
 import { IoIosCloseCircle } from "react-icons/io";
 import FieldsCard from '../components/FieldsCard.js';
 import Spinner from 'react-bootstrap/esm/Spinner.js';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faComment } from '@fortawesome/free-solid-svg-icons';
+
 
 const BusinessSubjectProfile = () => {
 
@@ -278,22 +277,9 @@ const BusinessSubjectProfile = () => {
 
                     {activeTab === "activity" && (
                       <div className="scroll-bar-user-profile">
-                        {(id.type === 'BusinessSubject') && (currentUserData.nameSportOrganization === username) ? (
-                          Array.isArray(activityHistory) && activityHistory.map((activity) => (
-                            <SponsoredEventCard key={activity.id} event={activity} />
-                          ))
-                        ) : (
-                          <div className="history-activity-container">
-                          <div className="history-activity-header">  
-                          </div>
-                          <div className="history-activity-text">
-                            <img src={subjectData.profile_picture !== null ? subjectData.profile_picture : CreatorImg} className="creator-image" alt="Creator" />&nbsp;
-                            @{subjectData.nameSportOrganization} <hr/>
-                           <br/><FontAwesomeIcon icon={faComment} className="icon"/>
-                           U PROŠLOSTI JE KREIRAO {Array.isArray(activityHistory) ? activityHistory.length : 0} AKTIVNOSTI
-                          </div>
-                        </div>
-                        )}
+                        {Array.isArray(activityHistory) && activityHistory.map((activity) => (
+                           <SponsoredEventCard key={activity.id} event={activity} />
+                         ))}
                       </div>
                     )}
                   </div>
