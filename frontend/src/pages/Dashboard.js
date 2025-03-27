@@ -13,6 +13,8 @@ import { fetchIdAndTypeOfUser } from "../utils.js";
 import { Badge, Stack } from "react-bootstrap";
 import axios from "axios";
 import API from "../variables.js";
+import { faChartBar } from "@fortawesome/free-solid-svg-icons";
+import StatisticsPanelUser from "../components/StatisticsPanelUser";
 
 const Dashboard = () => {
 
@@ -99,8 +101,17 @@ const Dashboard = () => {
                                         </Stack>
                                     </Nav.Link>
                                 </Nav.Item>
+                                
                                 <Nav.Item>
                                     <Nav.Link eventKey="third">
+                                        <Stack direction="horizontal" gap={2}>
+                                            Statistika
+                                            <FontAwesomeIcon className="notification-icon" icon={faChartBar} />
+                                        </Stack>
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link eventKey="fourth">
                                         Uskoro
                                         <FontAwesomeIcon className="notification-icon" icon={faClock} />
                                     </Nav.Link>
@@ -114,6 +125,9 @@ const Dashboard = () => {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="second">
                                     <NotificationPanel userId={userIdType?.id}></NotificationPanel>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey="third">
+                                    <StatisticsPanelUser />
                                 </Tab.Pane>
                             </Tab.Content>
                         </Col>

@@ -1,0 +1,18 @@
+.statistics-panel .card {
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.statistics-panel .card-header {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.statistics-panel .list-group-item {
+    font-size: 0.95rem;
+    padding: 1rem;
+}
+
+.recharts-wrapper {
+    margin: 0 auto;
+}
