@@ -1,9 +1,10 @@
 
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
-from .serializers import NotificationSerializer, NotificationGenericSerializer
+from .serializers import NotificationGenericSerializer
 
 #room name je Client<int:ID> ili BusinessSubject<int:ID> u zavisnosti ko je primalac
+'''
 def send_notification(room_name, notification):
     """Broadcast a notification to the correct room."""
     channel_layer = get_channel_layer()
@@ -18,6 +19,7 @@ def send_notification(room_name, notification):
             'data': serialized_data
         }
     )
+'''
 
 def send_notification_generic(room_name, notification):
     """Broadcast a notification to the correct room."""
@@ -35,7 +37,7 @@ def send_notification_generic(room_name, notification):
     )
 
 from activities.models import Activities
-from .models import NotificationGeneric, Notification
+from .models import NotificationGeneric
 from .webpush import send_push_notification_to_all_user_devices
 
 def after_post_update_or_delete(instance, is_deleted):
@@ -54,16 +56,16 @@ def after_post_update_or_delete(instance, is_deleted):
 
     for participant in instance.participants.all():
                  #ne salje sam sebi
-                new_notification = Notification.objects.create(
+                new_notification = NotificationGeneric.objects.create(
 
-                        recipient=participant,  # Notify the post author
-                        sender=instance.client,  # The user who liked the post
-                        post=instance,
+                        recipient_client=participant,  # Notify the post author
+                        sender_client=instance.client,  # The user who liked the post
+                        activity=instance,
                         notification_type=notification_type,  # Set notification type
                         content=content,
                     )
-                send_notification(f"Client{participant.id}" ,new_notification)
-                send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
+                send_notification_generic(f"Client{participant.id}" ,new_notification)
+                send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client.username}", new_notification.content, f"@{new_notification.sender_client.username}/{new_notification.notification_type}")
 
 
 from rest_framework import status
@@ -120,3 +122,4 @@ def is_action_authorized_subject(request, request_user):
         return Response({"error": "Invalid token format"}, status=status.HTTP_400_BAD_REQUEST)
     except ClientToken.DoesNotExist:
         return Response({"error": "Invalid token or token expired"}, status=status.HTTP_401_UNAUTHORIZED)  
+    

@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from .models import NotificationGeneric
 from activities.models import Activities, Comment
 from accounts.models import Client
-from .utils import send_notification, send_notification_generic
+from .utils import send_notification_generic
 from .webpush import send_push_notification_to_all_user_devices
 
 @receiver(m2m_changed, sender=Activities.participants.through)
@@ -62,7 +62,7 @@ def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
                     content=f"{comment.client.username} komentariše događaj: {instance.titel}.",
                     comment=comment
                 )
-                send_notification(f"Client{instance.client.id}",new_notification)
+                send_notification_generic(f"Client{instance.client.id}",new_notification)
                 send_push_notification_to_all_user_devices(new_notification.recipient_sender, f"@{new_notification.sender_client.username}", new_notification.content, f"@{new_notification.sender_client.username}/{new_notification.notification_type}")
 
             
@@ -78,7 +78,7 @@ def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
                         content=f"{comment.client.username} komentariše događaj: {instance.titel}.",
                         comment=comment
                     )
-                    send_notification(f"Client{participant.id}" ,new_notification)
+                    send_notification_generic(f"Client{participant.id}" ,new_notification)
                     send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
 
 ''' ne radi provjeru kada se korisnik prijavi na aktivnost samo

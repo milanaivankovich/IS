@@ -223,7 +223,6 @@ class NotificationClientGenericList(ListAPIView):
     pagination_class = MyCursorPagination
 
     def get(self, request, *args, **kwargs):
-        '''
         try:
             client_id = int(self.kwargs.get("id"))
         except ValueError:
@@ -233,7 +232,7 @@ class NotificationClientGenericList(ListAPIView):
         response = is_action_authorized(request, client)
         if response.status_code != status.HTTP_200_OK:
             return response
-        '''
+        
         queryset = self.get_queryset()
         paginator = MyCursorPagination()  # Use custom pagination here
         result_page = paginator.paginate_queryset(queryset, request)

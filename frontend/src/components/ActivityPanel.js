@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import ActivityCard from "./ActivityCard";
 import { Spinner } from "react-bootstrap";
+import SponsoredEventCard from "./SponsoredEventCard";
 
 ///////komponenta za paginaciju dogadjaja, tip=[activities, advertisements]
 const ActivityPanel = ({ activityDataArray, nextPage, variant }) => {
@@ -45,7 +46,7 @@ const ActivityPanel = ({ activityDataArray, nextPage, variant }) => {
             ) : (
                 variant === "advertisements" ? (
                     Array.isArray(data) && data.map((activity) => (
-                        <ActivityCard key={activity.id} activity={activity} />
+                        <SponsoredEventCard key={activity.id} event={activity} />
                     ))
 
                 ) : console.error("Please select valid object variant=[activities, advertisements]. Error missing ActivityPanel props: ", variant)

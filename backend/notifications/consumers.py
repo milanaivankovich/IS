@@ -1,6 +1,6 @@
 import json 
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .serializers import NotificationSerializer
+from .serializers import NotificationGenericSerializer
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 from urllib.parse import parse_qs
@@ -53,7 +53,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 return  # Ignore empty messages
 
             data = json.loads(text_data)
-            serializer = NotificationSerializer(data)
+            serializer = NotificationGenericSerializer(data)
             if serializer.is_valid():
                 serialized_data = serializer.data
             else:

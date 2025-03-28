@@ -4,8 +4,8 @@ from django.utils import timezone
 from datetime import datetime
 from activities.models import Activities
 from accounts.models import Client
-from .models import Notification
-from .utils import send_notification
+from .models import NotificationGeneric
+from .utils import send_notification_generic
 from .webpush import send_push_notification_to_all_user_devices
 from django.conf import settings
 
@@ -37,34 +37,35 @@ def activity_starting_soon_notification():
     for post in posts_to_notify:
             #notifikacija za kreatora dogadjaja
         creator = post.client
-        new_notification= Notification.objects.create(
-        recipient=creator,  # Notify the post author
-        sender=creator,  # potencijalni problem
-        post=post,
+        new_notification= NotificationGeneric.objects.create(
+        recipient_client=creator,  # Notify the post author
+        sender_client=creator,  # potencijalni problem
+        activity=post,
         notification_type='uskoro',  # Set notification type
         content=f"Događaj korisnika @{post.client} se održava uskoro", #todo staviti neki format dateTime
         )
-        send_notification(creator.id, new_notification)
-        send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender}", new_notification.content, f"@{new_notification.sender}/{new_notification.notification_type}")
+        send_notification_generic(creator.id, new_notification)
+        send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client}", new_notification.content, f"@{new_notification.sender_client}/{new_notification.notification_type}")
 
         #notifikacija za participante
         for user in post.participants.all():
-            new_notification = Notification.objects.create(
+            new_notification = NotificationGeneric.objects.create(
 
-            recipient=user,  # Notify the post author
-            sender=creator,  # The user who liked the post
-            post=post,
+            recipient_client=user,  # Notify the post author
+            sender_client=creator,  # The user who liked the post
+            activity=post,
             notification_type='uskoro',  # Set notification type
             content=f"Događaj korisnika @{user.username} se održava uskoro",
             )
-            send_notification(user.id, new_notification)
-            send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender}", new_notification.content, f"@{new_notification.sender}/{new_notification.notification_type}")
+            send_notification_generic(user.id, new_notification)
+            send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client}", new_notification.content, f"@{new_notification.sender_client}/{new_notification.notification_type}")
 
 
     '''      
 
 
-
+from accounts.views import send_email_via_gmail 
+        send_email_via_gmail(to_email, subject, message)
 
             # Example: Send an email notification
             send_mail(
@@ -73,11 +74,4 @@ def activity_starting_soon_notification():
                 'ocenekonabasketbl@gmail.com',  # Replace with your email
                 [post.client.email],  # Assuming the Post model has a 'user' field
             )
-#bolji nacin
-            if __name__ == "__main__":
-    to_email = "anastasija.milenic@student.etf.unibl.org"  # Change to your email address
-    subject = "Test Email"
-    message = "This is a test email sent from Python!"
-    send_email_via_gmail(to_email, subject, message)
-
             '''

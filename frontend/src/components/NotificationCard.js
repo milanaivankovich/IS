@@ -8,7 +8,7 @@ import ShowNotificationActivity from "./notifications/ShowNotificationActivity";
 import ReactDOM from "react-dom";
 
 
-const NotificationCard = ({ item_id, userImgLink, eventData, username, content, time, is_read }) => {
+const NotificationCard = ({ item_id, userImgLink, eventData, eventDataType, username, content, time, is_read }) => {
     //11 mins ago instead of time
     //todo mark all as read
     const date = new Date(time);
@@ -87,7 +87,7 @@ const NotificationCard = ({ item_id, userImgLink, eventData, username, content, 
         </Collapse>
         {isVisible && eventData &&
             <Modal>
-                <ShowNotificationActivity eventData={eventData} closeFunction={toggleFloatingWindow} />
+                <ShowNotificationActivity eventData={eventData} eventDataType={eventDataType} closeFunction={toggleFloatingWindow} />
             </Modal>}
     </>
     );

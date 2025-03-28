@@ -85,8 +85,8 @@ const NotificationPanel = ({ userId, userType }) => {
                         {notifications?.map((notif, index) => (
                             <NotificationCard key={index}
                                 item_id={notif?.id}
-                                userImgLink={notif?.sender_client?.profile_picture ? `${notif?.sender_client?.profile_picture}` :
-                                    notif?.sender_subject?.profile_picture ? `${notif?.sender_client?.profile_picture}` :
+                                userImgLink={notif?.sender_client?.profile_picture ? `${API}${notif?.sender_client?.profile_picture}` :
+                                    notif?.sender_subject?.profile_picture ? `${API}${notif?.sender_subject?.profile_picture}` :
                                         userImg}
                                 eventData={notif.hasOwnProperty("activity") ? notif?.activity : notif?.advertisement}
                                 eventDataType={notif.hasOwnProperty("activity") ? "activity" : "advertisement"}
