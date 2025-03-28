@@ -1,9 +1,9 @@
 from django.db.models.signals import m2m_changed, post_save, pre_save
 from django.dispatch import receiver
-from .models import Notification
+from .models import NotificationGeneric
 from activities.models import Activities, Comment
 from accounts.models import Client
-from .utils import send_notification
+from .utils import send_notification, send_notification_generic
 from .webpush import send_push_notification_to_all_user_devices
 
 @receiver(m2m_changed, sender=Activities.participants.through)
@@ -17,30 +17,30 @@ def participate_notification(sender, instance, action, reverse, pk_set, **kwargs
     if action == "post_add":  # User liked the post
         for user_id in pk_set:
             user = Client.objects.get(pk=user_id)
-            new_notification = Notification.objects.create(
+            new_notification = NotificationGeneric.objects.create(
 
-                recipient=instance.client,  # Notify the post author
-                sender=user,  # The user who liked the post
-                post=instance,
+                recipient_client=instance.client,  # Notify the post author
+                sender_client=user,  # The user who liked the post
+                activity=instance,
                 notification_type='prijava',  # Set notification type
                 content=f"{user.username} se prijavio na događaj.",
             )
-            send_notification(f"Client{instance.client.id}",new_notification)
-            send_push_notification_to_all_user_devices(new_notification.recipient, f"@{user.username}", new_notification.content, f"@{user.username}/{new_notification.notification_type}")
+            send_notification_generic(f"Client{instance.client.id}",new_notification)
+            send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{user.username}", new_notification.content, f"@{user.username}/{new_notification.notification_type}")
 
 
     elif action == "post_remove":  # User unliked the post
         for user_id in pk_set:
             user = Client.objects.get(pk=user_id)
-            new_notification = Notification.objects.create(
-                recipient=instance.client,  # Notify the post author
-                sender=user,  # The user who liked the post
-                post=instance,
+            new_notification = NotificationGeneric.objects.create(
+                recipient_client=instance.client,  # Notify the post author
+                sender_client=user,  # The user who liked the post
+                activity=instance,
                 notification_type='odjava',  # Set notification type
                 content=f"{user.username} se odjavio sa događaja.",
             )
-            send_notification(f"Client{instance.client.id}",new_notification)
-            send_push_notification_to_all_user_devices(new_notification.recipient, f"@{user.username}", new_notification.content, f"@{user.username}/{new_notification.notification_type}")
+            send_notification_generic(f"Client{instance.client.id}",new_notification)
+            send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{user.username}", new_notification.content, f"@{user.username}/{new_notification.notification_type}")
 
 @receiver(m2m_changed, sender=Activities.comments.through)
 def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
@@ -53,33 +53,33 @@ def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
         for comment_id in pk_set: #za svaki novi komentar poslati obavjest
             comment = Comment.objects.get(pk=comment_id)
             if (instance.client!=comment.client): #ako ne komentarisemo sami svoj dogadjaj poslati obavjest
-                new_notification = Notification.objects.create(
+                new_notification = NotificationGeneric.objects.create(
 
-                    recipient=instance.client,  # Notify the post author
-                    sender=comment.client,  # The user who liked the post
-                    post=instance,
+                    recipient_client=instance.client,  # Notify the post author
+                    sender_client=comment.client,  # The user who liked the post
+                    activity=instance,
                     notification_type='komentar',  # Set notification type
                     content=f"{comment.client.username} komentariše događaj: {instance.titel}.",
                     comment=comment
                 )
                 send_notification(f"Client{instance.client.id}",new_notification)
-                send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
+                send_push_notification_to_all_user_devices(new_notification.recipient_sender, f"@{new_notification.sender_client.username}", new_notification.content, f"@{new_notification.sender_client.username}/{new_notification.notification_type}")
 
             
             #poslati obavjest drugim participantima
             for participant in instance.participants.all():
                 if (participant!=comment.client): #da ne salje sam sebi
-                    new_notification = Notification.objects.create(
+                    new_notification = NotificationGeneric.objects.create(
 
-                        recipient=participant,  # Notify the post author
-                        sender=comment.client,  # The user who liked the post
-                        post=instance,
+                        recipient_client=participant,  # Notify the post author
+                        sender_client=comment.client,  # The user who liked the post
+                        activity=instance,
                         notification_type='komentar',  # Set notification type
                         content=f"{comment.client.username} komentariše događaj: {instance.titel}.",
                         comment=comment
                     )
                     send_notification(f"Client{participant.id}" ,new_notification)
-                    send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
+                    send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
 
 ''' ne radi provjeru kada se korisnik prijavi na aktivnost samo
 @receiver(pre_save, sender=Activities)

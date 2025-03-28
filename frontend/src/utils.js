@@ -51,9 +51,9 @@ export const isUserClient = async () => {
 
 }
 
-export const getNewNotificationCount = async (user_id) => {
+export const getNewNotificationCount = async (user_id, user_type) => {
     try {
-        const request = await axios.get(`${API}/api/notifications/unread-count/${user_id}`, {
+        const request = await axios.get(`${API}/api/notifications/unread-count/${user_type}/${user_id}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
         return request.data?.unread_count;

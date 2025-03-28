@@ -27,14 +27,15 @@ const Dashboard = () => {
             try {
                 await fetchIdAndTypeOfUser()
                     .then((userType) => {
-                        if (!userType
+                        if (userType
                             /*|| userType.type === "BusinessSubject"*/
                         )/* {
                             alert("Niste ulogovani kao rekreativac!");
                             window.location.replace('/pocetna');
-                        }*/
+                        }*/ {
                             setUserIdType(userType);
-                        getNotificationCount(userType.id)
+                            getNotificationCount(userType?.id, userType?.type)
+                        }
                     });
             } catch (error) {
                 console.error(error + "Error");
@@ -49,9 +50,9 @@ const Dashboard = () => {
     const [messagesCount, setMessagesCount] = useState(1);
     //broj neprocitanih notifikacija
     const [notificationCount, setNotificationCount] = useState(0); //todo get zahtjev
-    const getNotificationCount = async (user_id) => {
+    const getNotificationCount = async (user_id, user_type) => {
         try {
-            const request = await axios.get(`${API}/api/notifications/unread-count/${user_id}`, {
+            const request = await axios.get(`${API}/api/notifications/unread-count/${user_type}/${user_id}`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             })
             setNotificationCount(request.data?.unread_count);
@@ -61,16 +62,6 @@ const Dashboard = () => {
             console.error("Error: ", error);
         }
     };
-    //test webpush
-    async function sendNotification() {
-        await fetch("http://127.0.0.1:8000/webpush/notify/mimi", {
-            method: "POST",
-            body: JSON.stringify({ message: "Hello from Django!" }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-    }
 
     return (
         <div className="dashboard-body">
@@ -112,12 +103,6 @@ const Dashboard = () => {
                                         </Stack>
                                     </Nav.Link>
                                 </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link eventKey="fourth">
-                                        Uskoro
-                                        <FontAwesomeIcon className="notification-icon" icon={faClock} />
-                                    </Nav.Link>
-                                </Nav.Item>
                             </Nav>
                         </Col>
                         <Col sm={9}>
@@ -126,7 +111,7 @@ const Dashboard = () => {
                                     Chat
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="second">
-                                    <NotificationPanel userId={userIdType?.id}></NotificationPanel>
+                                    <NotificationPanel userId={userIdType?.id} userType={userIdType?.type}></NotificationPanel>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
                                     <StatisticsPanelUser />

@@ -8,7 +8,7 @@ import { useInView } from "react-intersection-observer";
 import "../pages/Dashboard.css";
 import ActivityCard from "./ActivityCard.js";
 
-const NotificationPanel = ({ userId }) => {
+const NotificationPanel = ({ userId, userType }) => {
 
     const [nextPage, setNextPage] = useState(null);
     //dohvacanje 10 notifikacija
@@ -16,7 +16,7 @@ const NotificationPanel = ({ userId }) => {
     const [loadingNotifications, setLoadingNotifications] = useState(true);
     const fetchAll = async () => {
         setLoadingNotifications(true);
-        await axios.get(`${API}/api/notifications/pagination/${userId}`, {
+        await axios.get(`${API}/api/notifications/pagination/${userType}/${userId}`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         }
         )
@@ -59,7 +59,7 @@ const NotificationPanel = ({ userId }) => {
 
     //mark all as read
     const markAllAsRead = async () => {
-        await axios.put(`${API}/api/notifications/mark-all-read/${userId}/`, null, {
+        await axios.put(`${API}/api/notifications/mark-all-read/${userType}/${userId}/`, null, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         }
         )
@@ -85,9 +85,12 @@ const NotificationPanel = ({ userId }) => {
                         {notifications?.map((notif, index) => (
                             <NotificationCard key={index}
                                 item_id={notif?.id}
-                                userImgLink={notif?.sender.profile_picture ? `${notif?.sender.profile_picture}` : userImg}
-                                eventData={notif?.post}
-                                username={notif?.sender.username}
+                                userImgLink={notif?.sender_client?.profile_picture ? `${notif?.sender_client?.profile_picture}` :
+                                    notif?.sender_subject?.profile_picture ? `${notif?.sender_client?.profile_picture}` :
+                                        userImg}
+                                eventData={notif.hasOwnProperty("activity") ? notif?.activity : notif?.advertisement}
+                                eventDataType={notif.hasOwnProperty("activity") ? "activity" : "advertisement"}
+                                username={notif?.sender_client?.username ? notif?.sender_client?.username : notif?.sender_subject?.name}
                                 content={notif?.content} time={notif?.created_at}
                                 is_read={notif?.is_read}
                             />))
