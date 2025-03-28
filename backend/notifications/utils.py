@@ -3,6 +3,7 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from .serializers import NotificationSerializer
 
+#room name je Client<int:ID> ili BusinessSubject<int:ID> u zavisnosti ko je primalac
 def send_notification(room_name, notification):
     """Broadcast a notification to the correct room."""
     channel_layer = get_channel_layer()
@@ -47,7 +48,7 @@ def after_post_update_or_delete(instance, is_deleted):
                         notification_type=notification_type,  # Set notification type
                         content=content,
                     )
-                send_notification(participant.id ,new_notification)
+                send_notification(f"Client{participant.id}" ,new_notification)
                 send_push_notification_to_all_user_devices(new_notification.recipient, f"@{new_notification.sender.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
 
 

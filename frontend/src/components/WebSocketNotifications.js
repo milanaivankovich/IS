@@ -9,7 +9,7 @@ const WebSocketNotifications = () => {
 
     const connectWebSocketNotifications = (id, type) => {
         const token = localStorage.getItem("token");
-        const socket = new WebSocket(`ws://${url}/ws/notifications/${type}-${id}/?token=${token}`);
+        const socket = new WebSocket(`ws://${url}/ws/notifications/${type}${id}/?token=${token}`);
 
         // Kada server šalje poruku
         socket.onmessage = (event) => {
@@ -26,7 +26,7 @@ const WebSocketNotifications = () => {
 
         // Kretanje povezivanja sa serverom
         socket.onopen = () => {
-            console.log(`Povezan sa WebSocket serverom ws://${url}/ws/notifications/${id}/`);
+            console.log(`Povezan sa WebSocket serverom`);
         };
 
         // Ako dođe do greške u vezi
