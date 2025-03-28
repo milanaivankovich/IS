@@ -35,13 +35,11 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             #return await sync_to_async(client_token.client)()
         except ClientToken.DoesNotExist:
             pass
-        '''
         try:
-            bs_token = await sync_to_async(BusinessSubjectToken.objects.get)(key=token)
-            return bs_token.business_subject
+            return await sync_to_async(BusinessSubjectToken.objects.get)(key=token)
         except BusinessSubjectToken.DoesNotExist:
-            return None'
-        '''
+            return None
+        
 ###    
 
     async def disconnect(self, close_code):

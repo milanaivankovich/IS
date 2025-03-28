@@ -1,6 +1,6 @@
 // Utils functions:
 
-import { fetchCurrentUserData } from "../utils"
+import { fetchCurrentUserData, fetchIdAndTypeOfUser } from "../utils"
 import API, { VAPID_PUBLIC_KEY } from "../variables"
 import { toast } from "react-toastify"
 
@@ -77,11 +77,11 @@ async function requestPOSTToServer(data) {
         body: JSON.stringify(data),
     };
 
-    const userData = await fetchCurrentUserData();
+    const userData = await fetchIdAndTypeOfUser();
 
     return (
         fetch(
-            `${API}/api/notifications/webpush/subscribe/${userData?.username}/`,
+            `${API}/api/notifications/webpush/subscribe/${userData?.type}/${userData?.id}/`,
             requestOptions
         )
     ).then((response) => response.json())

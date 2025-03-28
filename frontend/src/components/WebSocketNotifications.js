@@ -7,9 +7,9 @@ const WebSocketNotifications = () => {
     const url = "127.0.0.1:8000";
     //const [messages, setMessages] = useState([]);
 
-    const connectWebSocketNotifications = (id) => {
+    const connectWebSocketNotifications = (id, type) => {
         const token = localStorage.getItem("token");
-        const socket = new WebSocket(`ws://${url}/ws/notifications/${id}/?token=${token}`);
+        const socket = new WebSocket(`ws://${url}/ws/notifications/${type}-${id}/?token=${token}`);
 
         // Kada server šalje poruku
         socket.onmessage = (event) => {
@@ -93,7 +93,7 @@ const WebSocketNotifications = () => {
                 await fetchIdAndTypeOfUser()
                     .then((userType) => {
                         if (userType && userType.id !== -1 && userType.type === "Client") { //sta sa subjektom?
-                            connectWebSocketNotifications(userType.id)
+                            connectWebSocketNotifications(userType.id, userType.type)
                             //connectWebSocketChat(userType.id)
                         }
                     });

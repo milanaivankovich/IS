@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view
-from accounts.models import Client
+from accounts.models import Client,  BusinessSubject
 from activities.models import Activities, Comment
 from .models import Notification
 from activities.serializers import ActivitiesSerializer, CommentSerializer
@@ -11,8 +11,6 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .utils import is_action_authorized
-
-from django.contrib.auth.models import User
 
 class NotificationViewSet(viewsets.ModelViewSet):
     queryset = Notification.objects.all().order_by('-created_at')
@@ -207,11 +205,16 @@ def register_subscription(request, username):
         return JsonResponse({"status": "Subscription successful"})
     return JsonResponse({"error": "Invalid request"}, status=400)
 
-from .webpush import subscribe_webpush, official_send_push_notification
+from .webpush import subscribe_webpush, official_send_push_notification, subscribe_webpush_business_subject
 @csrf_exempt
-def subscribe_to_webpush_service(request, username):
-    user = get_object_or_404(Client, username=username)
+def subscribe_to_webpush_service(request, id):
+    user = get_object_or_404(Client, id=id)
     return subscribe_webpush(request, user)
+
+@csrf_exempt
+def subscribe_to_webpush_service_business_subject(request, id):
+    user = get_object_or_404(BusinessSubject, id=id)
+    return subscribe_webpush_business_subject(request, user)
 '''
 @csrf_exempt
 def test_sending_notification(request)

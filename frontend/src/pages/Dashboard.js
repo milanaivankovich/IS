@@ -27,15 +27,17 @@ const Dashboard = () => {
             try {
                 await fetchIdAndTypeOfUser()
                     .then((userType) => {
-                        if (!userType || userType.type === "BusinessSubject") {
+                        if (!userType
+                            /*|| userType.type === "BusinessSubject"*/
+                        )/* {
                             alert("Niste ulogovani kao rekreativac!");
                             window.location.replace('/pocetna');
-                        }
-                        setUserIdType(userType);
+                        }*/
+                            setUserIdType(userType);
                         getNotificationCount(userType.id)
                     });
             } catch (error) {
-                console.error("Error");
+                console.error(error + "Error");
                 alert("Došlo je do greške.");
             }
             setLoading(false);
@@ -101,7 +103,7 @@ const Dashboard = () => {
                                         </Stack>
                                     </Nav.Link>
                                 </Nav.Item>
-                                
+
                                 <Nav.Item>
                                     <Nav.Link eventKey="third">
                                         <Stack direction="horizontal" gap={2}>

@@ -19,7 +19,9 @@ urlpatterns = [
     path('api/notifications/mark-read/<int:item_id>/', mark_notification_as_read),
     path('api/notifications/mark-all-read/<int:reciever_id>/', mark_all_notifications_as_read, name='mark_all_notifications_as_read'),
     path('api/notifications/delete/<int:item_id>/', delete_notification),
-    path('api/notifications/webpush/subscribe/<str:username>/', views.subscribe_to_webpush_service, name='subscribe_webpush'),
+    path('api/notifications/webpush/subscribe/Client/<int:id>/', views.subscribe_to_webpush_service, name='subscribe_webpush_client'),
+    path('api/notifications/webpush/subscribe/BusinessSubject/<int:id>/', views.subscribe_to_webpush_service_business_subject, name='subscribe_webpush_business_subject'),
+
     #path("webpush/subscribe/<str:username>/", webpush_subscribe, name="webpush_subscribe"),
     #path('api/webpush/notify/<str:username>/', send_push_notification, name="webpush_notify"),
 ]

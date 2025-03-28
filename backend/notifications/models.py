@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import Client
+from accounts.models import Client, BusinessSubject
 from activities.models import Activities
 from activities.models import Comment
 
@@ -40,3 +40,13 @@ class WebPushInfo(models.Model):
 
     class Meta:
         unique_together = ('user', 'device')
+
+class WebPushInfoBusinessSubject(models.Model):
+    subject = models.ForeignKey(BusinessSubject, related_name='subject_device', on_delete=models.CASCADE)
+    device = models.ForeignKey(WebPushDevice, related_name='subject_registration', on_delete=models.CASCADE)    
+
+    def __str__(self):
+        return f"Device Registration for {self.subject.id}: {self.device.registration_id}"
+
+    class Meta:
+        unique_together = ('subject', 'device')
