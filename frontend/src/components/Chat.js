@@ -3,7 +3,7 @@ import { TextField, Button, Box, Typography, Paper } from "@mui/material";
 import useWebSocket from "../hooks/useWebSocket";
 
 const Chat = ({ token }) => {
-    const { messages, sendMessage, fetchMessages, sendTyping, onlineUsers, isConnected } = useWebSocket(token);
+    const { messages, sendMessage, fetchMessages, sendTyping, onlineUsers = [], isConnected, typingNotification } = useWebSocket(token);
     const [newMessage, setNewMessage] = useState("");
     const [isTyping, setIsTyping] = useState(false);
     const messagesEndRef = useRef(null);
@@ -11,18 +11,33 @@ const Chat = ({ token }) => {
     // Fetch old messages on component mount
     useEffect(() => {
         fetchMessages();
-    }, []);
+    }, [fetchMessages]);
 
-    // Scroll to latest message when messages update
+    // Scroll to the latest message when messages update
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
     }, [messages]);
+
+    // Handle typing state and send notification
+    useEffect(() => {
+        if (typingNotification) {
+            setIsTyping(true);
+            setTimeout(() => setIsTyping(false), 2000); // Hide typing after 2 seconds
+        }
+    }, [typingNotification]);
 
     const handleSendMessage = () => {
         if (newMessage.trim() === "") return;
-        sendMessage(newMessage);
-        setNewMessage("");
-        setIsTyping(false);
+
+        try {
+            sendMessage(newMessage);
+            setNewMessage("");
+            setIsTyping(false);
+        } catch (error) {
+            console.error("Message sending failed:", error);
+        }
     };
 
     return (
@@ -39,9 +54,9 @@ const Chat = ({ token }) => {
             <Typography variant="h5" textAlign="center" fontWeight="bold" gutterBottom>
                 Chat
             </Typography>
-            
+
             <Typography variant="subtitle2" color="text.secondary">
-                {isConnected ? "🟢 Online" : "🔴 Offline"}
+                {isConnected ? "🟢 Online" : isConnected === false ? "🔴 Offline" : "Status unknown"}
             </Typography>
 
             <Typography variant="subtitle2" sx={{ my: 1 }}>
@@ -61,6 +76,7 @@ const Chat = ({ token }) => {
                             alignSelf: msg.sender === token ? "flex-end" : "flex-start",
                             bgcolor: msg.sender === token ? "primary.main" : "grey.300",
                             color: msg.sender === token ? "white" : "black",
+                            wordWrap: "break-word", // Ensures long words break and don't overflow
                         }}
                     >
                         <Typography variant="subtitle2" fontWeight="bold">
@@ -90,9 +106,7 @@ const Chat = ({ token }) => {
                     value={newMessage}
                     onChange={(e) => {
                         setNewMessage(e.target.value);
-                        setIsTyping(true);
                         sendTyping();  // Notify others you're typing
-                        setTimeout(() => setIsTyping(false), 2000);
                     }}
                     onKeyPress={(e) => {
                         if (e.key === "Enter") handleSendMessage();

@@ -1,11 +1,11 @@
+from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from urllib.parse import parse_qs
-from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from accounts.models import ClientToken, BusinessSubjectToken
 from .models import Message
+from accounts.models import ClientToken, BusinessSubjectToken
 
 PAGE_SIZE = 10
 MAX_BULK_DELETE = 20
@@ -65,8 +65,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.handle_bulk_delete_messages(data)
         elif action == "edit_message":
             await self.handle_edit_message(data)
+        elif action == "typing":
+            await self.handle_typing(data)
 
     async def chat_message(self, event):
+        await self.send(text_data=json.dumps(event))
+
+    async def typing_notification(self, event):
         await self.send(text_data=json.dumps(event))
 
     async def broadcast_online_users(self):
@@ -80,20 +85,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def handle_send_message(self, data):
         sender_id = self.user.id
-        sender_type = "user"
         receiver_id = data.get("receiver_id")
-        receiver_type = data.get("receiver_type")
         content = data.get("message")
 
-        sender_content_type = await sync_to_async(ContentType.objects.get)(model=sender_type)
-        receiver_content_type = await sync_to_async(ContentType.objects.get)(model=receiver_type)
-
         message = await sync_to_async(Message.objects.create)(
-            sender_content_type=sender_content_type,
+            sender_content_type=ContentType.objects.get_for_model(self.user),
             sender_object_id=sender_id,
-            receiver_content_type=receiver_content_type,
+            receiver_content_type=ContentType.objects.get(model='client'),  # Change this based on receiver
             receiver_object_id=receiver_id,
             content=content,
+            room_name="chatroom",
             is_read=False,
             is_deleted=False
         )
@@ -109,11 +110,22 @@ class ChatConsumer(AsyncWebsocketConsumer):
             },
         )
 
+    async def handle_typing(self, data):
+        # Broadcasting typing event
+        sender = self.user.username
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                "type": "typing_notification",
+                "sender": sender,
+                "is_typing": True
+            }
+        )
+
     async def handle_fetch_messages(self, data):
         user = self.user
         page = int(data.get("page", 1))
         offset = (page - 1) * PAGE_SIZE
-
         query = Message.objects.filter(receiver_object_id=user.id, is_deleted=False)
         total_messages = await sync_to_async(query.count)()
 

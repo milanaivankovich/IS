@@ -15,6 +15,7 @@ import axios from "axios";
 import API from "../variables.js";
 import { faChartBar } from "@fortawesome/free-solid-svg-icons";
 import StatisticsPanelUser from "../components/StatisticsPanelUser";
+import Chat from "../components/Chat"; // Import Chat component
 
 const Dashboard = () => {
 
@@ -27,12 +28,7 @@ const Dashboard = () => {
             try {
                 await fetchIdAndTypeOfUser()
                     .then((userType) => {
-                        if (userType
-                            /*|| userType.type === "BusinessSubject"*/
-                        )/* {
-                            alert("Niste ulogovani kao rekreativac!");
-                            window.location.replace('/pocetna');
-                        }*/ {
+                        if (userType) {
                             setUserIdType(userType);
                             getNotificationCount(userType?.id, userType?.type)
                         }
@@ -46,17 +42,16 @@ const Dashboard = () => {
         is_registered();
     }, []);
 
-    //broj neprocitanih poruka todo
+    // Number of unread messages and notifications
     const [messagesCount, setMessagesCount] = useState(1);
-    //broj neprocitanih notifikacija
-    const [notificationCount, setNotificationCount] = useState(0); //todo get zahtjev
+    const [notificationCount, setNotificationCount] = useState(0);
+
     const getNotificationCount = async (user_id, user_type) => {
         try {
             const request = await axios.get(`${API}/api/notifications/unread-count/${user_type}/${user_id}`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             })
             setNotificationCount(request.data?.unread_count);
-            console.log(request);
         }
         catch (error) {
             console.error("Error: ", error);
@@ -76,7 +71,7 @@ const Dashboard = () => {
                                     <Nav.Link eventKey="first">
                                         <Stack direction="horizontal" gap={2}>
                                             Poruke
-                                            {messagesCount !== 0 && //todo staviti broj novih poruka
+                                            {messagesCount !== 0 &&
                                                 <Badge bg="secondary" pill>{messagesCount}</Badge>
                                             }
                                             <FontAwesomeIcon className="notification-icon" icon={faMessage} />
@@ -108,7 +103,8 @@ const Dashboard = () => {
                         <Col sm={9}>
                             <Tab.Content className="tab-content-all">
                                 <Tab.Pane eventKey="first">
-                                    Chat
+                                    {/* Embed the Chat component here */}
+                                    <Chat token={userIdType?.id} />
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="second">
                                     <NotificationPanel userId={userIdType?.id} userType={userIdType?.type}></NotificationPanel>
@@ -120,7 +116,8 @@ const Dashboard = () => {
                         </Col>
                     </Row>
                 </Tab.Container>}
-        </div >);
+        </div >
+    );
 }
 
 export default Dashboard;
