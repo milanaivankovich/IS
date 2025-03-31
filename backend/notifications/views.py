@@ -11,14 +11,16 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .utils import is_action_authorized
+from .pagination import MyCursorPagination
 
-class NotificationViewSet(viewsets.ModelViewSet):
-    queryset = Notification.objects.all().order_by('-created_at')
-    serializer_class = NotificationSerializer
+class NotificationGenericViewSet(viewsets.ModelViewSet):
+    queryset = NotificationGeneric.objects.all().order_by('-created_at')
+    serializer_class = NotificationGenericSerializer
+    pagination_class = MyCursorPagination
 
     def get_queryset(self):
         """Filter notifications to show only those for the logged-in user."""
-        return self.queryset.filter(recipient=self.request.user)
+        return self.queryset
     
 @api_view(['GET'])
 def get_notifications_by_client_id(request, id): #todo authorization
@@ -38,7 +40,7 @@ def get_notifications_by_client_id(request, id): #todo authorization
     else:
         return Response({'error': 'No notifications found for this client'}, status=404)
     
-from .pagination import MyCursorPagination
+
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 

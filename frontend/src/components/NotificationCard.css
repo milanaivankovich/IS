@@ -25,6 +25,10 @@
     z-index: 0;
 }
 
+.toast-body:hover {
+    cursor: pointer;
+}
+
 .close-icon-notifications-show-event {
     height: 30px;
     width: 20px;

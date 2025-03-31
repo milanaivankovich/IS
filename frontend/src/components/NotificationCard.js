@@ -77,8 +77,8 @@ const NotificationCard = ({ item_id, userImgLink, eventData, eventDataType, user
                 >
                     <img src={userImgLink} className="rounded me-2" id="notification-img" alt="" />
                     <strong className="me-auto">
-                        <a className="link-to-profile" href={`/userprofile/${username}`}>
-                            @{username}
+                        <a className="link-to-profile" href={`/userprofile/${username}`}> {/*todo ako je poslovni */}
+                            {username}
                         </a></strong>
                     <small>{formatedTime}</small>
                 </Toast.Header>

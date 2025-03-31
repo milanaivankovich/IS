@@ -39,7 +39,7 @@ const MenuBar = ({ variant, search }) => {
 
   const [newNotifications, setNewNotifications] = useState("0");
   useEffect(() => {
-    getNewNotificationCount(id.id).then((count) =>
+    getNewNotificationCount(id.id, id.type).then((count) =>
       setNewNotifications(count));
   }, [id]);
 

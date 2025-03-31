@@ -61,12 +61,88 @@ def activity_starting_soon_notification():
             send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client}", new_notification.content, f"@{new_notification.sender_client}/{new_notification.notification_type}")
 
 
-    '''      
+     #task za filter notifikacija
+from django.db.models import Count
+from accounts.models import BusinessSubject
+from advertisements.models import Advertisement
 
+@background(schedule=10) #schedule je vrijeme nakon kojeg pocinje task
+def filter_and_send_notifications():
+    print("filter notifications activated!")
+    
+    not_deleted = NotificationGeneric.objects.filter(is_deleted=False)
+    #logika za ciscenje, grupe gdje se sve poklapa (ne mora biti isti posiljalac, akcenat na dogadjaju)
+    grouped_by_recipient = not_deleted.values(
+    'recipient_client', 
+    'recipient_subject',
+    #'content',
+    'notification_type',
+    'advertisement',
+    'activity' #ovo su polja koja ce imati grupa, nema sender!
+    ).annotate(
+        total=Count('id'),
+        #senders=GroupConcat("sender")
+        )
+    for item in grouped_by_recipient:
+        if item['total']<=1: continue
+        client = Client.objects.filter(id=item['recipient_client']).first()
+        subject = BusinessSubject.objects.filter(id=item['recipient_subject']).first()
+        activity = Activities.objects.filter(id=item['activity']).first()
+        advertisement = Advertisement.objects.filter(id=item['advertisement']).first()
+        type=item['notification_type']
+        print(f"activity [{activity}], advertisement [{advertisement}], {type}")
+        #todo if clientSettings = group notifications
+        #filtrirati notifikacije za brisanje
+        to_delete = NotificationGeneric.objects.filter( #moze se iskoristiti za dobijanje imena participanata etc
+                recipient_client= client, 
+                recipient_subject= subject,
+                #'content',
+                notification_type= type,
+                activity = activity,
+                advertisement=advertisement,
+            ).order_by('-created_at')
+           #samo prvobitne obrisati posljednji mora ostati
+        to_delete.update(is_deleted=True)
+        sender_client = to_delete.first().sender_client
+        sender_subject =  to_delete.first().sender_subject
+        content = to_delete.first().content
 
+        if type == 'prijava': content = f"{item['total']} nove odjave sa događaja"
+        elif type == 'odjava': content = f"{item['total']} nove prijave na događaj"
+
+            #pravimo novu grupnu notifikaciju ako je potrebnaa
+        group_notification = NotificationGeneric.objects.create(
+                sender_client = sender_client,
+                sender_subject = sender_subject,
+                recipient_client=client,
+                recipient_subject=subject,
+                content=content,
+                notification_type = type,
+                activity=activity,
+                advertisement=advertisement,
+            )
+        print("new notification: ", group_notification)
+            #ostale obrisati
+            
+    ###
+'''
+    unsent_notifications = NotificationGeneric.filter(is_sent=False)
+
+    for notif in unsent_notifications:
+        if notif.recipient_client:
+            send_notification_generic(notif.recipient_client, notif)
+            send_push_notification_to_all_user_devices()
+        elif notif.recipient_subject:
+            ...
+        notif.is_sent= True
+        #notif.save()
+    
+    slanje putem maila za notifikacije 30 min prije dogadjaja
+    userSettings = Settings.objects.get(id=notification.recipient_client) ili subject?
+    if userSettings and userSettings.mailNotifications = True
 from accounts.views import send_email_via_gmail 
         send_email_via_gmail(to_email, subject, message)
-
+''' '''
             # Example: Send an email notification
             send_mail(
                 'Nadolazeći dogadjaj',
