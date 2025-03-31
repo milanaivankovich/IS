@@ -1,7 +1,7 @@
 # myapp/management/commands/run_task_on_startup.py
 
 from django.core.management.base import BaseCommand
-from notifications.tasks import activity_starting_soon_notification
+from notifications.tasks import activity_starting_soon_notification, filter_and_send_notifications
 from background_task.models import Task
 
 class Command(BaseCommand):
@@ -15,3 +15,9 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('Successfully added new task.'))
         else: 
             self.stdout.write(self.style.ERROR('Duplicate task'))
+        if not Task.objects.filter(task_name="filter_and_send_notifications").exists():
+            filter_and_send_notifications(schedule=0, repeat=30)
+            self.stdout.write(self.style.SUCCESS('Successfully added new task.'))
+        else: 
+            self.stdout.write(self.style.ERROR('Duplicate task'))
+
