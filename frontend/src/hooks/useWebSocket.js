@@ -20,18 +20,29 @@ const useWebSocket = (token) => {
             const data = JSON.parse(event.data);
             console.log("Received:", data);
 
-            if (data.type === "chat_message") {
-                setMessages((prev) => [...prev, data]);
-            } else if (data.type === "message_history") {
-                setMessages(data.messages.reverse());
-            } else if (data.type === "message_edited") {
-                setMessages((prev) =>
-                    prev.map((msg) =>
-                        msg.message_id === data.message_id ? { ...msg, message: data.new_content } : msg
-                    )
-                );
-            } else if (data.type === "message_deleted") {
-                setMessages((prev) => prev.filter((msg) => msg.message_id !== data.message_id));
+            switch (data.type) {
+                case "chat_message":
+                    setMessages((prev) => [...prev, data]);
+                    break;
+                case "message_history":
+                    setMessages(data.messages.reverse());  // Consider revisiting the order if needed
+                    break;
+                case "message_edited":
+                    setMessages((prev) =>
+                        prev.map((msg) =>
+                            msg.message_id === data.message_id ? { ...msg, message: data.new_content } : msg
+                        )
+                    );
+                    break;
+                case "message_deleted":
+                    setMessages((prev) => prev.filter((msg) => msg.message_id !== data.message_id));
+                    break;
+                case "typing_notification":
+                    console.log(`${data.user} is typing...`);
+                    break;
+                default:
+                    console.log("Unknown message type:", data);
+                    break;
             }
         };
 
@@ -40,16 +51,22 @@ const useWebSocket = (token) => {
             setIsConnected(false);
         };
 
+        socket.onerror = (error) => {
+            console.error("WebSocket error:", error);
+        };
+
         return () => {
-            socket.close();
+            if (socketRef.current) {
+                socketRef.current.close();
+            }
         };
     }, [token]);
 
     const sendMessage = (message) => {
         if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
             const newMessage = {
-                sender: "You",
-                message: message,
+                sender: "You",  // Replace with actual sender info if needed
+                message,
                 timestamp: new Date().toLocaleTimeString(),
             };
             setMessages((prev) => [...prev, newMessage]);
@@ -75,7 +92,13 @@ const useWebSocket = (token) => {
         }
     };
 
-    return { messages, sendMessage, fetchMessages, editMessage, deleteMessage, isConnected };
+    const sendTyping = () => {
+        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+            socketRef.current.send(JSON.stringify({ action: "typing_notification", sender: token }));
+        }
+    };
+
+    return { messages, sendMessage, fetchMessages, editMessage, deleteMessage, sendTyping, isConnected };
 };
 
 export default useWebSocket;

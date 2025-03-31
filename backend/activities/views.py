@@ -16,7 +16,10 @@ from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from django.db.models import Count, Avg
 from django.http import JsonResponse
-
+from django.db.models import  IntegerField
+from django.db.models.functions import Substr
+from django.utils.timezone import now
+from datetime import timedelta
 
 class ActivitiesCreateView(CreateView):
     model = Activities
@@ -422,22 +425,40 @@ def comments_by_activity(request, activity):
             return Response(CommentSerializer(comment).data, status=201)
         return Response(serializer.errors, status=400)
     
-@api_view(['GET', 'POST'])
+@api_view(['GET'])
 def sport_statistics(request):
+    # Preuzimanje parametra perioda iz URL-a
+    period = request.GET.get("period", "all")
+
+    # Određivanje početnog datuma za filtriranje
+    if period == "7d":
+        start_date = now() - timedelta(days=7)
+    elif period == "1m":
+        start_date = now() - timedelta(days=30)
+    elif period == "6m":
+        start_date = now() - timedelta(days=180)
+    else:
+        start_date = None  # Uzimamo sve podatke
+
+    # Filtriranje podataka prema periodu
+    activities = Activities.objects.all()
+    if start_date:
+        activities = activities.filter(date__gte=start_date)
+
     # Najpopularniji sport (po broju aktivnosti)
-    popular_sport = Activities.objects.values('sport__name').annotate(total=Count('id')).order_by('-total').first()
+    popular_sport = activities.values('sport__name').annotate(total=Count('id')).order_by('-total').first()
 
     # Sport sa najviše učesnika
-    sport_with_most_participants = Activities.objects.values('sport__name').annotate(total_participants=Count('participants')).order_by('-total_participants').first()
+    sport_with_most_participants = activities.values('sport__name').annotate(total_participants=Count('NumberOfParticipants')).order_by('-total_participants').first()
 
     # Prosječan broj učesnika po sportu
-    avg_participants_per_sport = Activities.objects.values('sport__name').annotate(avg_participants=Avg('NumberOfParticipants'))
+    avg_participants_per_sport = activities.values('sport__name').annotate(avg_participants=Avg('NumberOfParticipants'))
 
     # Broj aktivnosti po sportovima
-    activities_per_sport = Activities.objects.values('sport__name').annotate(total_activities=Count('id')).order_by('-total_activities')
+    activities_per_sport = activities.values('sport__name').annotate(total_activities=Count('id')).order_by('-total_activities')
 
-    # views.py (dio sa activities_per_month)
-    activities_per_month = Activities.objects.extra(
+    # Aktivnosti po mjesecima (samo filtrirane aktivnosti)
+    activities_per_month = activities.extra(
        select={'month': "CAST(strftime('%%m', date) AS INTEGER)"}
     ).values('month').annotate(count=Count('id')).order_by('month')
 
