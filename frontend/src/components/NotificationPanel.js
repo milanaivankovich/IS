@@ -5,7 +5,7 @@ import axios from "axios";
 import { Spinner, ToastContainer } from "react-bootstrap";
 import userImg from "../images/user.svg";
 import { useInView } from "react-intersection-observer";
-import "../pages/Dashboard.css";
+import "./notifications/NotificationPanel.css";
 import ActivityCard from "./ActivityCard.js";
 
 const NotificationPanel = ({ userId, userType }) => {

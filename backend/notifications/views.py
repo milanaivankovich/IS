@@ -297,8 +297,75 @@ def subscribe_to_webpush_service(request, id):
 def subscribe_to_webpush_service_business_subject(request, id):
     user = get_object_or_404(BusinessSubject, id=id)
     return subscribe_webpush_business_subject(request, user)
-'''
-@csrf_exempt
-def test_sending_notification(request)
-    official_send_push_notification(requ,"test","test")'
-    '''
+
+
+#preferences
+from rest_framework.views import APIView
+from notifications.models import Preferences
+class PreferencesAPIView(APIView):
+    queryset = Preferences.objects.all()
+    serializer_class = NotificationGenericSerializer
+
+    def get(self, request):
+        """Handles GET request"""
+        try:
+            client_id = int(self.kwargs.get("id"))
+            type = int(self.kwargs.get("type"))
+        except ValueError:
+            return Response({'error':'Invalid client ID or type'}, status=400)
+        
+        if type=="Client":
+            client = get_object_or_404(Client, id=client_id)
+        #autorizacija
+            response = is_action_authorized(request, client)
+            if response.status_code != status.HTTP_200_OK:
+                return response
+            
+            preference = Preferences.objects.filter(client=client).first()
+            
+        elif type=="BusinessSubject":
+            subject = get_object_or_404(BusinessSubject, id=client_id)
+            response = is_action_authorized_subject(request, subject)
+            if response.status_code != status.HTTP_200_OK:
+                return response
+            
+            preference = Preferences.objects.filter(subject=subject).first()
+
+        if not preference: return Response({
+            "email_notifications": False,
+            "group_notifications": False
+        })
+        return Response(preference)
+    
+    def put(self, request):
+        try:
+            client_id = int(self.kwargs.get("id"))
+            type = int(self.kwargs.get("type"))
+        except ValueError:
+            return Response({'error':'Invalid client ID or type'}, status=400)
+        
+        if type=="Client":
+            client = get_object_or_404(Client, id=client_id)
+        #autorizacija
+            response = is_action_authorized(request, client)
+            if response.status_code != status.HTTP_200_OK:
+                return response
+            
+            preference = Preferences.objects.get_or_create(client=client)
+            
+        elif type=="BusinessSubject":
+            subject = get_object_or_404(BusinessSubject, id=client_id)
+            response = is_action_authorized_subject(request, subject)
+            if response.status_code != status.HTTP_200_OK:
+                return response
+            
+            preference = Preferences.objects.get_or_create(subject=subject)
+
+        email = request.data.get("email_notifications")
+        group = request.data.get("group_notifications")
+
+        if email and group:
+            preference.update(email_notifications=email)
+            preference.update(group_notifications=group)
+            return Response({"message": "Preferences updated!"}, status=status.HTTP_200_OK)
+        return Response({"error": "Invalid request data"}, status=status.HTTP_400_BAD_REQUEST)

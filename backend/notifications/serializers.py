@@ -2,7 +2,7 @@ from rest_framework import serializers
 from activities.models import Activities, Comment
 from accounts.serializers import ClientSerializer
 from activities.serializers import ActivitiesSerializer, CommentSerializer
-from .models import NotificationGeneric, Notification
+from .models import NotificationGeneric, Notification, Preferences
 from django.contrib.auth.models import User
 
 class NotificationSerializer(serializers.ModelSerializer):
@@ -30,3 +30,8 @@ class NotificationGenericSerializer(serializers.ModelSerializer):
     class Meta:
         model = NotificationGeneric
         fields = ['id', 'sender_client', 'sender_subject', 'activity', 'advertisement' , 'comment', 'notification_type', 'content', 'is_read', 'created_at', 'recipient_client', 'recipient_subject']
+
+class PreferencesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Preferences
+        fields = ['email_notifications', 'group_notifications']
