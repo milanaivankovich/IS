@@ -314,25 +314,25 @@ class PreferencesAPIView(APIView):
         except ValueError:
             return Response({'error':'Invalid client ID or type'}, status=400)
         """
-        if type=="Client":
+        if type.lower()=="client":
             client = get_object_or_404(Client, id=id)
         #autorizacija
             response = is_action_authorized(request, client)
             if response.status_code != status.HTTP_200_OK:
                 return response
             
-            preference = Preferences.objects.get_or_create(client=client)
+            preference, is_created = Preferences.objects.get_or_create(client=client)
             
-        elif type=="BusinessSubject":
+        elif type.lower()=="businesssubject":
             subject = get_object_or_404(BusinessSubject, id=id)
             response = is_action_authorized_subject(request, subject)
             if response.status_code != status.HTTP_200_OK:
                 return response
             
-            preference = Preferences.objects.get_or_create(subject=subject)
+            preference, is_created = Preferences.objects.get_or_create(subject=subject)
 
-        serializer = PreferencesSerializer(preference, many=False)
-        return Response(serializer.data)
+        serializer = self.serializer_class(preference)
+        return Response(serializer.data, status.HTTP_200_OK)
     
     def put(self, request, type, id):
         '''
@@ -349,7 +349,7 @@ class PreferencesAPIView(APIView):
             if response.status_code != status.HTTP_200_OK:
                 return response
             
-            preference = Preferences.objects.get_or_create(client=client)
+            preference, is_created = Preferences.objects.get_or_create(client=client)
             
         elif type=="BusinessSubject":
             subject = get_object_or_404(BusinessSubject, id=id)
@@ -357,13 +357,14 @@ class PreferencesAPIView(APIView):
             if response.status_code != status.HTTP_200_OK:
                 return response
             
-            preference = Preferences.objects.get_or_create(subject=subject)
+            preference, is_created = Preferences.objects.get_or_create(subject=subject)
 
         email = request.data.get("email_notifications")
         group = request.data.get("group_notifications")
 
-        if email and group:
-            preference.update(email_notifications=email)
-            preference.update(group_notifications=group)
-            return Response({"message": "Preferences updated!"}, status=status.HTTP_200_OK)
-        return Response({"error": "Invalid request data"}, status=status.HTTP_400_BAD_REQUEST)
+        if email==None or group==None:
+            return Response({"error": "Invalid request data"}, status=status.HTTP_400_BAD_REQUEST)
+        preference.email_notifications=bool(email)
+        preference.group_notifications=bool(group)
+        preference.save()
+        return Response({"message": "Preferences updated!"}, status=status.HTTP_200_OK)

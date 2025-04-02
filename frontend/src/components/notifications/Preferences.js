@@ -3,16 +3,34 @@ import Switch from '@mui/material/Switch';
 import { changePreferences, getNotificationsPreferences } from "./utils";
 import axios from "axios";
 import API from "../../variables";
+import { toast } from "react-toastify";
 
 //veliki prikaz za activity ili advertisement
 
 const Preferences = ({ userType, userId }) => {
-    const [Email, setEmail] = useState(false);
-    const [Group, setGroup] = useState(false);
+    const [Email, setEmail] = useState(null);
+    const [Group, setGroup] = useState(null);
+    useEffect(() => {
+        if (userId !== -1 && userType)
+            getNotificationsPreferences(userId, userType).
+                then((preferences) => {
+                    setGroup(Boolean(preferences?.group_notifications));
+                    setEmail(Boolean(preferences?.email_notifications));
+                });
+    }
+        , [])
+    return (<>
+        {Email !== null && Group !== null && <PreferencesChild userId={userId} userType={userType} email_notifications={Email} group_notifications={Group} />}
+    </>)
+}
+
+const PreferencesChild = ({ userType, userId, group_notifications, email_notifications }) => {
+    const [Email, setEmail] = useState(email_notifications);
+    const [Group, setGroup] = useState(group_notifications);
 
     const changePreferences = async (user_id, user_type) => {
         try {
-            const request = await axios.post(`${API}/api/notifications/preferences/${user_type}/${user_id}`,
+            const request = await axios.put(`${API}/api/notifications/preferences/${user_type}/${user_id}/`,
                 {
                     'email_notifications': Email,
                     'group_notifications': Group
@@ -27,24 +45,16 @@ const Preferences = ({ userType, userId }) => {
         }
     };
 
-    const handleEmailChange = (event) => {
+    const handleEmailChange = async (event) => {
         setEmail(event.target.checked);
-        changePreferences(userId, userType);
     };
     const handleGroupChange = (event) => {
         setGroup(event.target.checked);
-        changePreferences(userId, userType);
     };
-
     useEffect(() => {
-        if (userId !== -1 && userType !== -1)
-            getNotificationsPreferences(userId, userType).
-                then((preferences) => {
-                    setGroup(Boolean(preferences?.group_notifications));
-                    setEmail(Boolean(preferences?.email_notifications));
-                });
-    }
-        , [])
+        changePreferences(userId, userType);
+    }, [Email, Group])
+
     return (<div style={{ margin: "10px" }}>
         <h2 style={{ margin: "15px" }}>NOTIFIKACIJE</h2>
 
@@ -74,9 +84,7 @@ const Preferences = ({ userType, userId }) => {
                         <Switch
                             checked={Group}
                             onChange={handleGroupChange}
-                            color="default"
-                            uncontrolled
-                        />
+                            color="default" />
                     </td>
                 </tr>
             </tbody>
