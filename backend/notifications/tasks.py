@@ -47,6 +47,8 @@ def activity_starting_soon_notification():
         send_notification_generic(creator.id, new_notification)
         send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client}", new_notification.content, f"@{new_notification.sender_client}/{new_notification.notification_type}")
         send_email_notification(new_notification.recipient_client, new_notification.activity)
+        new_notification.is_sent=True
+        new_notification.save()
         #notifikacija za participante
         for user in post.participants.all():
             new_notification = NotificationGeneric.objects.create(
@@ -60,6 +62,8 @@ def activity_starting_soon_notification():
             send_notification_generic(user.id, new_notification)
             send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client}", new_notification.content, f"@{new_notification.sender_client}/{new_notification.notification_type}")
             send_email_notification(new_notification.recipient_client, new_notification.activity)
+            new_notification.is_sent=True
+            new_notification.save()
 
 
      #task za filter notifikacija
@@ -91,13 +95,13 @@ def filter_and_send_notifications():
         activity = Activities.objects.filter(id=item['activity']).first()
         advertisement = Advertisement.objects.filter(id=item['advertisement']).first()
         type=item['notification_type']
-        print(f"activity [{activity}], advertisement [{advertisement}], {type}")
+        #print(f"activity [{activity}], advertisement [{advertisement}], {type}")
         
         #provjeriti opcije korisnika
         if client:
-            preferences = Preferences.objects.get_or_create(client=client)
+            preferences, is_created = Preferences.objects.get_or_create(client=client)
         elif subject:
-            preferences = Preferences.objects.get_or_create(subject=subject)
+            preferences, is_created = Preferences.objects.get_or_create(subject=subject)
         
 
         if not preferences.group_notifications: continue
@@ -116,8 +120,9 @@ def filter_and_send_notifications():
         sender_subject =  to_delete.first().sender_subject
         content = to_delete.first().content
 
-        if type == 'prijava': content = f"{item['total']} nove odjave sa događaja"
-        elif type == 'odjava': content = f"{item['total']} nove prijave na događaj"
+        if type == 'prijava': content = f"+{item['total']} nove odjave"
+        elif type == 'odjava': content = f"+{item['total']} nove prijave"
+        elif type == 'komentar': content = f"+{item['total']} nova komentara"
 
             #pravimo novu grupnu notifikaciju ako je potrebnaa
         group_notification = NotificationGeneric.objects.create(
@@ -130,12 +135,12 @@ def filter_and_send_notifications():
                 activity=activity,
                 advertisement=advertisement,
             )
-        print("new notification: ", group_notification)
+        #print("new notification: ", group_notification)
 
 
 def send_email_notification(client, activity):
     if client:
-        preferences = Preferences.objects.get_or_create(client=client)
+        preferences, is_created = Preferences.objects.get_or_create(client=client)
     #slanje putem maila za notifikacije 30 min prije dogadjaja
     if preferences.email_notifications:
         send_email_via_gmail(client.email, 
@@ -149,6 +154,6 @@ def send_email_notification(client, activity):
             
             Napomena: Ova poruka je automatski generisana. Molimo vas da ne odgovarate na ovu email adresu.
             
-            S poštovanjem,  
+            Sa poštovanjem,  
             'Oće neko na basket
             """)
