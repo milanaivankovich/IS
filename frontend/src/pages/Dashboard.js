@@ -16,6 +16,7 @@ import API from "../variables.js";
 import { faChartBar } from "@fortawesome/free-solid-svg-icons";
 import StatisticsPanelUser from "../components/StatisticsPanelUser";
 import Chat from "../components/Chat"; // Import Chat component
+import ChatContainer from "../components/ChatContainer.js";
 
 const Dashboard = () => {
 
@@ -103,8 +104,8 @@ const Dashboard = () => {
                         <Col sm={9}>
                             <Tab.Content className="tab-content-all">
                                 <Tab.Pane eventKey="first">
-                                    {/* Embed the Chat component here */}
-                                    <Chat token={userIdType?.id} />
+                                    
+                                    <ChatContainer token={userIdType?.id} />
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="second">
                                     <NotificationPanel userId={userIdType?.id} userType={userIdType?.type}></NotificationPanel>

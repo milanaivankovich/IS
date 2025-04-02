@@ -14,22 +14,24 @@ User = get_user_model()
 online_users = set()
 
 class ChatConsumer(AsyncWebsocketConsumer):
-    async def connect(self):
-        query_string = parse_qs(self.scope["query_string"].decode())
-        token = query_string.get("token", [None])[0]
+   async def connect(self):
+    query_string = parse_qs(self.scope["query_string"].decode())
+    token = query_string.get("token", [None])[0]
+    room_name = query_string.get("room", ["global"])[0]  # Default room
 
-        self.user = await self.authenticate_user(token)
-        if self.user is None:
-            await self.close()
-            return
+    self.user = await self.authenticate_user(token)
+    if self.user is None:
+        await self.close()
+        return
 
-        self.username = self.user.username
-        online_users.add(self.username)
-        self.room_group_name = "chatroom"
+    self.username = self.user.username
+    self.room_group_name = f"chatroom_{room_name}"  # Dynamic room
+    online_users.setdefault(self.room_group_name, set()).add(self.username)
 
-        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-        await self.accept()
-        await self.broadcast_online_users()
+    await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+    await self.accept()
+    await self.broadcast_online_users()
+
 
     async def authenticate_user(self, token):
         if not token:
@@ -76,9 +78,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def broadcast_online_users(self):
         await self.channel_layer.group_send(
-            self.room_group_name,
-            {"type": "online_users", "users": list(online_users)},
-        )
+        self.room_group_name,
+        {
+            "type": "online_users",
+            "users": list(online_users.get(self.room_group_name, set())),
+        },
+    )
+
 
     async def online_users(self, event):
         await self.send(text_data=json.dumps(event))
