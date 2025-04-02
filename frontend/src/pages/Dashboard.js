@@ -123,7 +123,7 @@ const Dashboard = () => {
                                     <StatisticsPanelUser />
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="fourth">
-                                    <Preferences />
+                                    <Preferences userId={userIdType?.id} userType={userIdType?.type} />
                                 </Tab.Pane>
                             </Tab.Content>
                         </Col>

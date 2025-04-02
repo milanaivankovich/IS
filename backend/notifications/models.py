@@ -96,8 +96,8 @@ class NotificationGeneric(models.Model):
 class Preferences(models.Model):
     email_notifications = models.BooleanField(default=False)
     group_notifications = models.BooleanField(default=False)
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='recieve_notifications_client', null=True, blank=True)
-    subject = models.ForeignKey(BusinessSubject, on_delete=models.CASCADE, related_name='recieve_notifications_client', null=True, blank=True)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='client_preference', null=True, blank=True)
+    subject = models.ForeignKey(BusinessSubject, on_delete=models.CASCADE, related_name='subject_preference', null=True, blank=True)
     
     def __str__(self):
         return f"{self.client} - {self.subject}  : {self.email_notifications} - {self.group_notifications}"

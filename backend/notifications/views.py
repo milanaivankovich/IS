@@ -298,54 +298,24 @@ def subscribe_to_webpush_service_business_subject(request, id):
     user = get_object_or_404(BusinessSubject, id=id)
     return subscribe_webpush_business_subject(request, user)
 
-
+from .serializers import PreferencesSerializer
 #preferences
 from rest_framework.views import APIView
 from notifications.models import Preferences
 class PreferencesAPIView(APIView):
     queryset = Preferences.objects.all()
-    serializer_class = NotificationGenericSerializer
+    serializer_class = PreferencesSerializer
 
-    def get(self, request):
-        """Handles GET request"""
+    def get(self, request, type, id):
+        """Handles GET request
         try:
             client_id = int(self.kwargs.get("id"))
             type = int(self.kwargs.get("type"))
         except ValueError:
             return Response({'error':'Invalid client ID or type'}, status=400)
-        
+        """
         if type=="Client":
-            client = get_object_or_404(Client, id=client_id)
-        #autorizacija
-            response = is_action_authorized(request, client)
-            if response.status_code != status.HTTP_200_OK:
-                return response
-            
-            preference = Preferences.objects.filter(client=client).first()
-            
-        elif type=="BusinessSubject":
-            subject = get_object_or_404(BusinessSubject, id=client_id)
-            response = is_action_authorized_subject(request, subject)
-            if response.status_code != status.HTTP_200_OK:
-                return response
-            
-            preference = Preferences.objects.filter(subject=subject).first()
-
-        if not preference: return Response({
-            "email_notifications": False,
-            "group_notifications": False
-        })
-        return Response(preference)
-    
-    def put(self, request):
-        try:
-            client_id = int(self.kwargs.get("id"))
-            type = int(self.kwargs.get("type"))
-        except ValueError:
-            return Response({'error':'Invalid client ID or type'}, status=400)
-        
-        if type=="Client":
-            client = get_object_or_404(Client, id=client_id)
+            client = get_object_or_404(Client, id=id)
         #autorizacija
             response = is_action_authorized(request, client)
             if response.status_code != status.HTTP_200_OK:
@@ -354,7 +324,35 @@ class PreferencesAPIView(APIView):
             preference = Preferences.objects.get_or_create(client=client)
             
         elif type=="BusinessSubject":
-            subject = get_object_or_404(BusinessSubject, id=client_id)
+            subject = get_object_or_404(BusinessSubject, id=id)
+            response = is_action_authorized_subject(request, subject)
+            if response.status_code != status.HTTP_200_OK:
+                return response
+            
+            preference = Preferences.objects.get_or_create(subject=subject)
+
+        serializer = PreferencesSerializer(preference, many=False)
+        return Response(serializer.data)
+    
+    def put(self, request, type, id):
+        '''
+        try:
+            client_id = int(self.kwargs.get("id"))
+            type = int(self.kwargs.get("type"))
+        except ValueError:
+            return Response({'error':'Invalid client ID or type'}, status=400)
+        '''
+        if type=="Client":
+            client = get_object_or_404(Client, id=id)
+        #autorizacija
+            response = is_action_authorized(request, client)
+            if response.status_code != status.HTTP_200_OK:
+                return response
+            
+            preference = Preferences.objects.get_or_create(client=client)
+            
+        elif type=="BusinessSubject":
+            subject = get_object_or_404(BusinessSubject, id=id)
             response = is_action_authorized_subject(request, subject)
             if response.status_code != status.HTTP_200_OK:
                 return response

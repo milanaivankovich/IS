@@ -37,11 +37,12 @@ const Preferences = ({ userType, userId }) => {
     };
 
     useEffect(() => {
-        getNotificationsPreferences(userId, userType).
-            then((preferences) => {
-                setGroup(Boolean(preferences?.group_notifications));
-                setEmail(Boolean(preferences?.email_notifications));
-            });
+        if (userId !== -1 && userType !== -1)
+            getNotificationsPreferences(userId, userType).
+                then((preferences) => {
+                    setGroup(Boolean(preferences?.group_notifications));
+                    setEmail(Boolean(preferences?.email_notifications));
+                });
     }
         , [])
     return (<div style={{ margin: "10px" }}>
