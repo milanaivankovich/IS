@@ -28,4 +28,5 @@ urlpatterns = [
 
     #path("webpush/subscribe/<str:username>/", webpush_subscribe, name="webpush_subscribe"),
     #path('api/webpush/notify/<str:username>/', send_push_notification, name="webpush_notify"),
+    path('api/notifications/preferences/<str:type>/<int:id>/', views.PreferencesAPIView.as_view(), name='notifications_preferences'),
 ]

@@ -4,6 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Row from 'react-bootstrap/Row';
 import Tab from 'react-bootstrap/Tab';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './Dashboard.css';
 import MenuBar from "../components/MenuBar";
 import NotificationPanel from "../components/NotificationPanel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,10 +14,14 @@ import { fetchIdAndTypeOfUser } from "../utils.js";
 import { Badge, Stack } from "react-bootstrap";
 import axios from "axios";
 import API from "../variables.js";
-import { faChartBar } from "@fortawesome/free-solid-svg-icons";
+import { faChartBar, faCogs } from "@fortawesome/free-solid-svg-icons";
 import StatisticsPanelUser from "../components/StatisticsPanelUser";
 import Chat from "../components/Chat"; // Import Chat component
+<<<<<<< HEAD
 import ChatContainer from "../components/ChatContainer.js";
+=======
+import Preferences from "../components/notifications/Preferences.js";
+>>>>>>> 999a263ccba905ccbf0e2ed45c2ef2472cd40d07
 
 const Dashboard = () => {
 
@@ -99,6 +104,14 @@ const Dashboard = () => {
                                         </Stack>
                                     </Nav.Link>
                                 </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link eventKey="fourth">
+                                        <Stack direction="horizontal" gap={2}>
+                                            Podešavanja
+                                            <FontAwesomeIcon className="notification-icon" icon={faCogs} />
+                                        </Stack>
+                                    </Nav.Link>
+                                </Nav.Item>
                             </Nav>
                         </Col>
                         <Col sm={9}>
@@ -112,6 +125,9 @@ const Dashboard = () => {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
                                     <StatisticsPanelUser />
+                                </Tab.Pane>
+                                <Tab.Pane eventKey="fourth">
+                                    <Preferences userId={userIdType?.id} userType={userIdType?.type} />
                                 </Tab.Pane>
                             </Tab.Content>
                         </Col>
