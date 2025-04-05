@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import '../components/StatisticalFieldChart.css';
 
 // Registrujte potrebne komponente u Chart.js
 ChartJS.register(
@@ -24,8 +25,8 @@ const StatisticalChart = () => {
       {
         label: 'Posjeta terenu',
         data: [],
-        borderColor: 'rgba(75, 192, 192, 1)', // Boja linije
-        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Boja podloge
+        borderColor: '#F15A24', // Boja linije
+        backgroundColor: 'rgba(233, 236, 236, 0.2)', // Boja podloge
         tension: 0.4, // Glatkoća linije
       },
     ],
@@ -85,10 +86,18 @@ const StatisticalChart = () => {
     <div>
       <h2>Posjete terenu</h2>
       <div>
-        <button onClick={() => setPeriod('last-7-days')}>Posljednjih 7 dana</button>
-        <button onClick={() => setPeriod('last-month')}>Posljednjih mjesec dana</button>
-        <button onClick={() => setPeriod('last-6-months')}>Posljednjih 6 mjeseci</button>
-        <button onClick={() => setPeriod('all-time')}>Sve vrijeme</button>
+        <button className="button" onClick={() => setPeriod('last-7-days')}>
+          Posljednjih 7 dana
+        </button>
+        <button className="button" onClick={() => setPeriod('last-month')}>
+          Posljednjih mjesec dana
+        </button>
+        <button className="button" onClick={() => setPeriod('last-6-months')}>
+          Posljednjih 6 mjeseci
+        </button>
+        <button className="button" onClick={() => setPeriod('all-time')}>
+          Sve vrijeme
+        </button>
       </div>
       <Line
         data={{
@@ -108,5 +117,3 @@ const StatisticalChart = () => {
 };
 
 export default StatisticalChart;
-
-
