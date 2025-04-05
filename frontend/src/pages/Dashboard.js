@@ -17,11 +17,8 @@ import API from "../variables.js";
 import { faChartBar, faCogs } from "@fortawesome/free-solid-svg-icons";
 import StatisticsPanelUser from "../components/StatisticsPanelUser";
 import Chat from "../components/Chat"; // Import Chat component
-<<<<<<< HEAD
 import ChatContainer from "../components/ChatContainer.js";
-=======
 import Preferences from "../components/notifications/Preferences.js";
->>>>>>> 999a263ccba905ccbf0e2ed45c2ef2472cd40d07
 
 const Dashboard = () => {
 
