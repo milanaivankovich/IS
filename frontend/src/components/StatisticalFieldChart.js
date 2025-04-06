@@ -3,7 +3,6 @@ import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import '../components/StatisticalFieldChart.css';
 
-// Registrujte potrebne komponente u Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -16,18 +15,18 @@ ChartJS.register(
 
 const StatisticalChart = () => {
   // Stanje za izbor vremenskog razdoblja
-  const [period, setPeriod] = useState('all-time'); // Default je sve vreme
+  const [period, setPeriod] = useState('all-time'); 
 
   // Podaci za graf
   const data = {
     labels: [],
     datasets: [
       {
-        label: 'Posjeta terenu',
+        label: 'Oglasi na terenu',
         data: [],
-        borderColor: '#F15A24', // Boja linije
-        backgroundColor: 'rgba(233, 236, 236, 0.2)', // Boja podloge
-        tension: 0.4, // Glatkoća linije
+        borderColor: '#F15A24', 
+        backgroundColor: 'rgba(233, 236, 236, 0.2)', 
+        tension: 0.4, 
       },
     ],
   };
@@ -77,14 +76,14 @@ const StatisticalChart = () => {
     plugins: {
       title: {
         display: true,
-        text: 'Statistika posjeta terenu',
+        text: 'Statistika oglasa na terenu',
       },
     },
   };
 
   return (
     <div>
-      <h2>Posjete terenu</h2>
+      <h2>Oglasi na terenu</h2>
       <div>
         <button className="button" onClick={() => setPeriod('last-7-days')}>
           Posljednjih 7 dana

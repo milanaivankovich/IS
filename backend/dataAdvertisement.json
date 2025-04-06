@@ -75,5 +75,16 @@
         "sport_id": 1,
         "is_deleted": false,
         "duration_hours": 2
+    },
+    {
+        "id": 8,
+        "name": "aktivnost1",
+        "description": "opis1",
+        "date": "2025-06-04",
+        "business_subject_id": 3,
+        "field_id": 1,
+        "sport_id": 1,
+        "is_deleted": false,
+        "duration_hours": 2
     }
 ]

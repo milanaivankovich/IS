@@ -7,6 +7,11 @@ from django.utils.timezone import now
 from fields.models import Field, Sport   
 from accounts.models import BusinessSubject
 from datetime import datetime
+from datetime import timedelta
+from activities.pagination import ActivitiesPagination
+from rest_framework.generics import ListAPIView
+from django.utils import timezone
+
 
 @api_view(['GET'])
 def getData(request):
@@ -200,9 +205,6 @@ def get_past_advertisements_by_business_subject(request, business_name):
     else:
         return Response({'error': 'No advertisements found for this business subject'}, status=404)
     
-from activities.pagination import ActivitiesPagination
-from rest_framework.generics import ListAPIView
-from django.utils import timezone
 
 class AllNewAdveritsementsList(ListAPIView): 
     queryset = Advertisement.objects.all()
@@ -215,3 +217,36 @@ class AllNewAdveritsementsList(ListAPIView):
             date__gte=timezone.now(),
             is_deleted=False,
         ).order_by('-date')
+
+
+
+@api_view(['GET'])
+def filtered_advertisements_by_field(request, field, period):
+    try:
+        if period == 'lastweek':
+            time_filter = now() - timedelta(days=7)
+        elif period == 'lastmonth':
+            time_filter = now() - timedelta(days=30)
+        elif period == 'last6months':
+            time_filter = now() - timedelta(days=180)
+        elif period == 'alltime':
+            time_filter = None 
+        else:
+            return Response({'error': 'Invalid period parameter'}, status=400)
+
+        if time_filter:
+            advertisements = Advertisement.objects.filter(
+                field=field, 
+                is_deleted=False, 
+                date__gte=time_filter
+            ).order_by('date')
+        else:
+            advertisements = Advertisement.objects.filter(
+                field=field, 
+                is_deleted=False
+            ).order_by('date')
+
+        serializer = AdvertisementSerializer(advertisements, many=True)
+        return Response(serializer.data)
+    except Advertisement.DoesNotExist:
+        return Response({'error': 'No advertisements found'}, status=404)
