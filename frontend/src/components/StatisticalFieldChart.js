@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import '../components/StatisticalFieldChart.css';
@@ -14,8 +15,42 @@ ChartJS.register(
 );
 
 const StatisticalChart = () => {
-  // Stanje za izbor vremenskog razdoblja
   const [period, setPeriod] = useState('all-time'); 
+  const [advertisements, setAdvertisements] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Dohvati podatke s API-a
+  useEffect(() => {
+    const fetchAdvertisements = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/advertisements/lastweek/field/1/');
+        setAdvertisements(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchAdvertisements();
+  }, []);  
+
+
+  // Funkcija za grupisanje oglasa po datumu
+  const groupAdvertisementsByDate = (ads) => {
+    return ads.reduce((acc, ad) => {
+      const date = ad.date.split('T')[0]; // Uzimamo samo datum (bez vremena)
+      if (!acc[date]) {
+        acc[date] = 0;
+      }
+      acc[date]++;
+      return acc;
+    }, {});
+  };
+
+  // Grupirani podaci
+  const groupedAdvertisements = groupAdvertisementsByDate(advertisements);
+
 
   // Podaci za graf
   const data = {
@@ -35,9 +70,26 @@ const StatisticalChart = () => {
   const getDataForPeriod = (period) => {
     switch (period) {
       case 'last-7-days':
+        const today = new Date();
+        const last7DaysLabels = [];
+        const last7DaysData = [];
+
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date(today);
+          date.setDate(today.getDate() - i);
+          const day = date.getDate();
+          const month = date.getMonth() + 1; 
+          const year = date.getFullYear();
+          const dateString = `${day}/${month}/${year}`;
+          last7DaysLabels.push(dateString);
+
+          // Broj oglasa za taj datum
+          last7DaysData.push(0,0,0,0,0,1,1);
+        }
+
         return {
-          labels: ['Prije 7 dana', 'Prije 6 dana', 'Prije 5 dana', 'Prije 4 dana', 'Prije 3 dana', 'Prije 2 dana', 'Danas'],
-          data: [80, 90, 100, 110, 120, 130, 140],
+          labels: last7DaysLabels,
+          data: last7DaysData,
         };
       case 'last-month':
         return {
@@ -111,6 +163,15 @@ const StatisticalChart = () => {
         }}
         options={options}
       />
+      <div>
+      {loading ? (
+        <p>Učitavanje...</p>
+      ) : (
+        <div>
+          <pre>{JSON.stringify(groupedAdvertisements, null, 2)}</pre>
+        </div>
+      )}
+    </div>
     </div>
   );
 };

@@ -86,5 +86,16 @@
         "sport_id": 1,
         "is_deleted": false,
         "duration_hours": 2
+    },
+    {
+        "id": 9,
+        "name": "oglas111",
+        "description": "opis",
+        "date": "2025-05-04",
+        "business_subject_id": 3,
+        "field_id": 1,
+        "sport_id": 1,
+        "is_deleted": false,
+        "duration_hours": 2
     }
 ]
