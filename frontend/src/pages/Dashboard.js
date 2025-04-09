@@ -16,8 +16,10 @@ import axios from "axios";
 import API from "../variables.js";
 import { faChartBar, faCogs } from "@fortawesome/free-solid-svg-icons";
 import StatisticsPanelUser from "../components/StatisticsPanelUser";
-import Chat from "../components/Chat"; // Import Chat component
+import Chat from "../components/Chat"; 
 import ChatContainer from "../components/ChatContainer.js";
+import ChatRooms from "../components/ChatRoom.js";
+import ChatRoom from "../components/ChatRoom.js";
 import Preferences from "../components/notifications/Preferences.js";
 
 const Dashboard = () => {
@@ -113,10 +115,10 @@ const Dashboard = () => {
                         </Col>
                         <Col sm={9}>
                             <Tab.Content className="tab-content-all">
-                                <Tab.Pane eventKey="first">
-                                    
-                                    <ChatContainer token={userIdType?.id} />
-                                </Tab.Pane>
+                            <Tab.Pane eventKey="first">
+                                <Chat/>
+                            </Tab.Pane>
+
                                 <Tab.Pane eventKey="second">
                                     <NotificationPanel userId={userIdType?.id} userType={userIdType?.type}></NotificationPanel>
                                 </Tab.Pane>
