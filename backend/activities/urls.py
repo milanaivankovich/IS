@@ -38,6 +38,7 @@ urlpatterns = [
     path('activities/<int:activity_id>/participants/', views.activity_participants, name='activity_participants'),
     path('api/comments/<int:activity>/', views.comments_by_activity), #GET and POST comments by activity
     path('api/sport-statistics/', sport_statistics, name='sport_statistics'),
+    path('api/activities/<str:period>/field/<int:field>/', views.filtered_activities_by_field, name='get_filtered_activities_by_field'), #GET activities by field and period
     
 
 ]

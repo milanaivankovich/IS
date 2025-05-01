@@ -484,3 +484,34 @@ class AllNewActivitiesList(ListAPIView):
             date__gte=timezone.now(),
             is_deleted=False,
         ).order_by('date')
+    
+@api_view(['GET'])
+def filtered_activities_by_field(request, field, period):
+    if period == 'lastweek':
+        time_start = now() - timedelta(days=7)
+        time_end = now()
+    elif period == 'lastmonth':
+        time_start = now() - timedelta(days=30)
+        time_end = now()
+    elif period == 'last6months':
+        time_start = now() - timedelta(days=180)
+        time_end = now()
+    elif period == 'alltime':
+        time_start = None
+        time_end = None
+    else:
+        return Response({'error': 'Invalid period parameter'}, status=400)
+
+    advertisements = Activities.objects.filter(
+        field=field,
+        is_deleted=False
+    )
+
+    if time_start and time_end:
+        advertisements = advertisements.filter(date__gte=time_start, date__lte=time_end)
+
+    if not advertisements.exists():
+        return Response({'error': 'No activities found'}, status=404)
+
+    serializer = ActivitiesSerializer(advertisements.order_by('date'), many=True)
+    return Response(serializer.data)

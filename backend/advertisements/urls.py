@@ -19,5 +19,5 @@ urlpatterns = [
     path('api/advertisement/update/<int:pk>/', update_advertisement, name='update_advertisement'),
     path('api/advertisement/delete/<int:pk>/', delete_advertisement, name='delete_advertisement'),
     path('api/advertisementspast/businesssubject/<str:business_name>/', get_past_advertisements_by_business_subject, name='get_advertisements_by_business_subject'), #GET advertisements by business subject id
-    path('api/advertisements/<str:period>/field/<int:field>/', views.filtered_advertisements_by_field, name='get_filtered_advertisements_by_field'),
+    path('api/advertisements/<str:period>/field/<int:field>/', views.filtered_advertisements_by_field, name='get_filtered_advertisements_by_field'), #GET advertisements by field and period
 ] 
