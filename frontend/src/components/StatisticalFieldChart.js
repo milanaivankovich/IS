@@ -15,15 +15,33 @@ ChartJS.register(
 );
 
 const StatisticalChart = () => {
-  const [period, setPeriod] = useState('all-time'); 
+  const [period, setPeriod] = useState('last-7-days'); 
   const [advertisements, setAdvertisements] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Dohvati podatke s API-a
+  // Dohvati podatke sa API-a
   useEffect(() => {
     const fetchAdvertisements = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/advertisements/lastweek/field/1/');
+        let endpoint = '';
+        switch (period) {
+          case 'last-7-days':
+            endpoint = 'lastweek'; 
+            break;
+          case 'last-month':
+            endpoint = 'lastmonth';
+            break;
+          case 'last-6-months':
+            endpoint = 'last6months'; 
+            break;
+          case 'all-time':
+            endpoint = 'alltime'; 
+            break;
+          default:
+            endpoint = 'alltime'; 
+        }
+
+        const response = await axios.get(`http://127.0.0.1:8000/api/advertisements/${endpoint}/field/1/`);
         setAdvertisements(response.data);
         setLoading(false);
       } catch (error) {
@@ -33,7 +51,7 @@ const StatisticalChart = () => {
     };
 
     fetchAdvertisements();
-  }, []);  
+  }, [period]); 
 
 
   // Funkcija za grupisanje oglasa po datumu
