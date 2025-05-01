@@ -353,11 +353,17 @@ const handleReviewRemoveLike = async (reviewId) => {
             }
             }>Informacije</button>
             <button className={`tab-button ${activeTab === "statistics" ? "active" : ""}`} onClick={() => {
-              setSelectionTitle('Statistike');
-              setSelectionSubtitle('Statistike o terenu');
-              setActiveTab("statistics")
+              setSelectionTitle('Statistike reklama');
+              setSelectionSubtitle('Statistike reklama na terenu');
+              setActiveTab("statisticsAdvertisements")
             }
-            }>Statistike</button>
+            }>Statistike reklama</button>
+            <button className={`tab-button ${activeTab === "statistics" ? "active" : ""}`} onClick={() => {
+              setSelectionTitle('Statistike aktivnosti');
+              setSelectionSubtitle('Statistike aktivnosti na terenu');
+              setActiveTab("statisticsActivities")
+            }
+            }>Statistike aktivnosti</button>
           </nav></div>
 
         <div className="userprofile-selection">
@@ -522,7 +528,14 @@ const handleReviewRemoveLike = async (reviewId) => {
                     </div>
                   </div>
                 )}
-                {activeTab === "statistics" && (
+                {activeTab === "statisticsAdvertisements" && (
+                  <div className="information-container">
+                    <div className="image-container">
+                      <StatisticalFieldChart />
+                    </div>
+                  </div>
+                )}
+                {activeTab === "statisticsActivities" && (
                   <div className="information-container">
                     <div className="image-container">
                       <StatisticalFieldChart />
