@@ -15,33 +15,19 @@ ChartJS.register(
 );
 
 const StatisticalChart = () => {
-  const [period, setPeriod] = useState('last-7-days'); 
+  const [period, setPeriod] = useState('lastweek'); 
   const [advertisements, setAdvertisements] = useState([]);
   const [loading, setLoading] = useState(true);
+  const path = window.location.pathname;
+  const fieldId = path.split("/")[2];
 
-  // Dohvati podatke sa API-a
+  // Dohvata podatke sa API-a
   useEffect(() => {
     const fetchAdvertisements = async () => {
       try {
-        let endpoint = '';
-        switch (period) {
-          case 'last-7-days':
-            endpoint = 'lastweek'; 
-            break;
-          case 'last-month':
-            endpoint = 'lastmonth';
-            break;
-          case 'last-6-months':
-            endpoint = 'last6months'; 
-            break;
-          case 'all-time':
-            endpoint = 'alltime'; 
-            break;
-          default:
-            endpoint = 'alltime'; 
-        }
-
-        const response = await axios.get(`http://127.0.0.1:8000/api/advertisements/${endpoint}/field/1/`);
+        // Dinamički pozovi API na osnovu ID-a terena
+        const response = await axios.get(`http://127.0.0.1:8000/api/advertisements/${period}/field/${fieldId}/`);
+        console.log(fieldId);
         setAdvertisements(response.data);
         setLoading(false);
       } catch (error) {
@@ -51,7 +37,7 @@ const StatisticalChart = () => {
     };
 
     fetchAdvertisements();
-  }, [period]); 
+  }, [fieldId, period]);
 
 
   // Funkcija za grupisanje oglasa po datumu
@@ -87,7 +73,7 @@ const StatisticalChart = () => {
   // Funkcija za generisanje podataka na temelju odabranog razdoblja
   const getDataForPeriod = (period) => {
     switch (period) {
-      case 'last-7-days':
+      case 'lastweek':
         const today = new Date();
         const last7DaysLabels = [];
         const last7DaysData = [];
@@ -109,17 +95,17 @@ const StatisticalChart = () => {
           labels: last7DaysLabels,
           data: last7DaysData,
         };
-      case 'last-month':
+      case 'lastmonth':
         return {
           labels: ['Početak mjeseca', '1. nedelja', '2. nedelja', '3. nedelja', '4. nedelja'],
           data: [150, 160, 170, 180, 190],
         };
-      case 'last-6-months':
+      case 'last6months':
         return {
           labels: ['Novembar', 'Decembar', 'Januar', 'Februar', 'Mart', 'April'],
           data: [120, 150, 180, 90, 200, 220],
         };
-      case 'all-time':
+      case 'alltime':
         return {
           labels: [
             'Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun', 'Jul', 'Avgust', 'Septembar', 
@@ -137,7 +123,7 @@ const StatisticalChart = () => {
     }
   };
 
-  // Ažuriraj podatke na temelju odabranog razdoblja
+  // Ažurira podatke na temelju odabranog razdoblja
   const chartData = getDataForPeriod(period);
 
   // Opcije za graf
@@ -155,16 +141,16 @@ const StatisticalChart = () => {
     <div>
       <h2>Oglasi na terenu</h2>
       <div>
-        <button className="button" onClick={() => setPeriod('last-7-days')}>
+        <button className="button" onClick={() => setPeriod('lastweek')}>
           Posljednjih 7 dana
         </button>
-        <button className="button" onClick={() => setPeriod('last-month')}>
+        <button className="button" onClick={() => setPeriod('lastmonth')}>
           Posljednjih mjesec dana
         </button>
-        <button className="button" onClick={() => setPeriod('last-6-months')}>
+        <button className="button" onClick={() => setPeriod('last6months')}>
           Posljednjih 6 mjeseci
         </button>
-        <button className="button" onClick={() => setPeriod('all-time')}>
+        <button className="button" onClick={() => setPeriod('alltime')}>
           Sve vrijeme
         </button>
       </div>
