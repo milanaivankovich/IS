@@ -82,44 +82,96 @@ const StatisticalChart = () => {
           const date = new Date(today);
           date.setDate(today.getDate() - i);
           const day = date.getDate();
-          const month = date.getMonth() + 1; 
+          const month = date.getMonth() + 1;
           const year = date.getFullYear();
-          const dateString = `${day}/${month}/${year}`;
-          last7DaysLabels.push(dateString);
+          const label = `${day}/${month}/${year}`;
+          last7DaysLabels.push(label);
 
-          // Broj oglasa za taj datum
-          last7DaysData.push(0,0,0,0,0,1,1);
+          const key = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+          const adsCount = groupedAdvertisements[key] || 0;
+          last7DaysData.push(adsCount);
         }
 
         return {
           labels: last7DaysLabels,
           data: last7DaysData,
         };
-      case 'lastmonth':
-        return {
-          labels: ['Početak mjeseca', '1. nedelja', '2. nedelja', '3. nedelja', '4. nedelja'],
-          data: [150, 160, 170, 180, 190],
-        };
-      case 'last6months':
-        return {
-          labels: ['Novembar', 'Decembar', 'Januar', 'Februar', 'Mart', 'April'],
-          data: [120, 150, 180, 90, 200, 220],
-        };
-      case 'alltime':
-        return {
-          labels: [
-            'Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun', 'Jul', 'Avgust', 'Septembar', 
-            'Oktobar', 'Novembar', 'Decembar'
-          ],
-          data: [
-            120, 150, 180, 90, 200, 220, 250, 230, 210, 190, 170, 160 // Podaci za svaki mjesec
-          ],
-        };
+        
+        case 'lastmonth':
+          const todayLM = new Date();
+          const last28Days = [];
+        
+          for (let i = 27; i >= 0; i--) {
+            const date = new Date(todayLM);
+            date.setDate(todayLM.getDate() - i);
+            last28Days.push(date.toISOString().split('T')[0]);
+          }
+        
+          const weeksLM = [0, 0, 0, 0];
+        
+          last28Days.forEach((dateStr, index) => {
+            const groupIndex = Math.floor(index / 7); 
+            if (groupedAdvertisements[dateStr]) {
+              weeksLM[groupIndex] += groupedAdvertisements[dateStr];
+            }
+          });
+        
+          return {
+            labels: ['1. sedmica', '2. sedmica', '3. sedmica', '4. sedmica'],
+            data: weeksLM,
+          };
+        
+          case 'last6months':
+            const today6M = new Date();
+            const monthsLabels = [];
+            const monthsData = [0, 0, 0, 0, 0, 0];
+          
+            const monthKeys = [];
+            for (let i = 5; i >= 0; i--) {
+              const date = new Date(today6M.getFullYear(), today6M.getMonth() - i, 1);
+              const month = date.toLocaleString('default', { month: 'long' });
+              const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+              monthsLabels.push(month.charAt(0).toUpperCase() + month.slice(1)); 
+              monthKeys.push(monthKey);
+            }
+          
+            Object.entries(groupedAdvertisements).forEach(([dateStr, count]) => {
+              const [year, month] = dateStr.split('-');
+              const key = `${year}-${month}`;
+              const index = monthKeys.indexOf(key);
+              if (index !== -1) {
+                monthsData[index] += count;
+              }
+            });
+          
+            return {
+              labels: monthsLabels,
+              data: monthsData,
+            };
+          
+            case 'alltime':
+              const alltimeLabels = [
+                'Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun',
+                'Jul', 'Avgust', 'Septembar', 'Oktobar', 'Novembar', 'Decembar'
+              ];
+            
+              const alltimeData = Array(12).fill(0); 
+              const currentYear = new Date().getFullYear();
+            
+              Object.entries(groupedAdvertisements).forEach(([dateStr, count]) => {
+                const [year, month] = dateStr.split('-');
+                if (parseInt(year) === currentYear) {
+                  const index = parseInt(month, 10) - 1; 
+                  alltimeData[index] += count;
+                }
+              });
+            
+              return {
+                labels: alltimeLabels,
+                data: alltimeData,
+              };            
       default:
-        return {
-          labels: ['Januar', 'Februar', 'Mart', 'April', 'Maj', 'Jun'],
-          data: [120, 150, 180, 90, 200, 220],
-        };
+        return null;
     }
   };
 
@@ -171,9 +223,7 @@ const StatisticalChart = () => {
       {loading ? (
         <p>Učitavanje...</p>
       ) : (
-        <div>
-          <pre>{JSON.stringify(groupedAdvertisements, null, 2)}</pre>
-        </div>
+        null
       )}
     </div>
     </div>
