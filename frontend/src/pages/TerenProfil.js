@@ -531,14 +531,14 @@ const handleReviewRemoveLike = async (reviewId) => {
                 {activeTab === "statisticsAdvertisements" && (
                   <div className="information-container">
                     <div className="image-container">
-                      <StatisticalFieldChart />
+                      <StatisticalFieldChart eventType={"advertisements"} />
                     </div>
                   </div>
                 )}
                 {activeTab === "statisticsActivities" && (
                   <div className="information-container">
                     <div className="image-container">
-                      <StatisticalFieldChart />
+                      <StatisticalFieldChart eventType={"activities"}/>
                     </div>
                   </div>
                 )}

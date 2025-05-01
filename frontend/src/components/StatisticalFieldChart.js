@@ -14,7 +14,7 @@ ChartJS.register(
   Legend
 );
 
-const StatisticalChart = () => {
+const StatisticalChart = ({eventType}) => {
   const [period, setPeriod] = useState('lastweek'); 
   const [advertisements, setAdvertisements] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,10 +23,11 @@ const StatisticalChart = () => {
 
   // Dohvata podatke sa API-a
   useEffect(() => {
-    const fetchAdvertisements = async () => {
+    const fetchData = async () => {
       try {
-        // Dinamički pozovi API na osnovu ID-a terena
-        const response = await axios.get(`http://127.0.0.1:8000/api/advertisements/${period}/field/${fieldId}/`);
+        const endpoint = `http://127.0.0.1:8000/api/${eventType}/${period}/field/${fieldId}/`;  
+        
+        const response = await axios.get(endpoint);
         console.log(fieldId);
         setAdvertisements(response.data);
         setLoading(false);
@@ -36,8 +37,8 @@ const StatisticalChart = () => {
       }
     };
 
-    fetchAdvertisements();
-  }, [fieldId, period]);
+    fetchData();
+  }, [fieldId, period, eventType]);
 
 
   // Funkcija za grupisanje oglasa po datumu
