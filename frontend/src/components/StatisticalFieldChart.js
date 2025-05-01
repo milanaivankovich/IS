@@ -62,7 +62,7 @@ const StatisticalChart = ({eventType}) => {
     labels: [],
     datasets: [
       {
-        label: 'Oglasi na terenu',
+        label: 'Događaji na terenu',
         data: [],
         borderColor: '#F15A24', 
         backgroundColor: 'rgba(233, 236, 236, 0.2)', 
@@ -185,10 +185,23 @@ const StatisticalChart = ({eventType}) => {
     plugins: {
       title: {
         display: true,
-        text: 'Statistika oglasa na terenu',
+        text: 'Statistika događaja na terenu',
       },
     },
-  };
+    scales: {
+      y: {
+        ticks: {
+          callback: function(value) {
+            if (Number.isInteger(value)) {
+              return value;
+            }
+          },
+          stepSize: 1, 
+        },
+        beginAtZero: true,
+      },
+    },
+  };  
 
   return (
     <div>
