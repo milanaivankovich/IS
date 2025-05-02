@@ -16,6 +16,7 @@ import axios from "axios";
 import API from "../variables.js";
 import { faChartBar, faCogs } from "@fortawesome/free-solid-svg-icons";
 import StatisticsPanelUser from "../components/StatisticsPanelUser";
+import StatisticsFieldsPanelUser from "../components/StatisticsFieldsPanelUser";
 import Chat from "../components/Chat"; 
 import ChatContainer from "../components/ChatContainer.js";
 import ChatRooms from "../components/ChatRoom.js";
@@ -98,13 +99,21 @@ const Dashboard = () => {
                                 <Nav.Item>
                                     <Nav.Link eventKey="third">
                                         <Stack direction="horizontal" gap={2}>
-                                            Statistika
+                                            Statistike sportova
                                             <FontAwesomeIcon className="notification-icon" icon={faChartBar} />
                                         </Stack>
                                     </Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link eventKey="fourth">
+                                        <Stack direction="horizontal" gap={2}>
+                                            Statistike terena
+                                            <FontAwesomeIcon className="notification-icon" icon={faChartBar} />
+                                        </Stack>
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link eventKey="fifth">
                                         <Stack direction="horizontal" gap={2}>
                                             Podešavanja
                                             <FontAwesomeIcon className="notification-icon" icon={faCogs} />
@@ -126,6 +135,9 @@ const Dashboard = () => {
                                     <StatisticsPanelUser />
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="fourth">
+                                    <StatisticsFieldsPanelUser />
+                                </Tab.Pane>
+                                <Tab.Pane eventKey="fifth">
                                     <Preferences userId={userIdType?.id} userType={userIdType?.type} />
                                 </Tab.Pane>
                             </Tab.Content>

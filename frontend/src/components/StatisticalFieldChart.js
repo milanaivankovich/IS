@@ -28,7 +28,6 @@ const StatisticalChart = ({eventType}) => {
         const endpoint = `http://127.0.0.1:8000/api/${eventType}/${period}/field/${fieldId}/`;  
         
         const response = await axios.get(endpoint);
-        console.log(fieldId);
         setAdvertisements(response.data);
         setLoading(false);
       } catch (error) {
@@ -44,7 +43,7 @@ const StatisticalChart = ({eventType}) => {
   // Funkcija za grupisanje oglasa po datumu
   const groupAdvertisementsByDate = (ads) => {
     return ads.reduce((acc, ad) => {
-      const date = ad.date.split('T')[0]; // Uzimamo samo datum (bez vremena)
+      const date = ad.date.split('T')[0]; 
       if (!acc[date]) {
         acc[date] = 0;
       }
