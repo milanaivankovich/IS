@@ -20,6 +20,10 @@ from django.db.models import  IntegerField
 from django.db.models.functions import Substr
 from django.utils.timezone import now
 from datetime import timedelta
+from .pagination import ActivitiesPagination
+from rest_framework.generics import ListAPIView
+from collections import defaultdict, Counter
+import requests
 
 class ActivitiesCreateView(CreateView):
     model = Activities
@@ -46,6 +50,13 @@ def setData(request):
     else:
         print(serializer.errors)  # Ovo će ispisati greške u konzoli
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def getAllActivities(request):
+    now = datetime.now()
+    activities = Activities.objects.all()  
+    serializer = ActivitiesSerializer(activities, many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 def client_activities(request, client_id):
@@ -470,8 +481,6 @@ def sport_statistics(request):
         'activities_per_month': list(activities_per_month)
     })
 
-from .pagination import ActivitiesPagination
-from rest_framework.generics import ListAPIView
 
 class AllNewActivitiesList(ListAPIView): 
     queryset = Activities.objects.all()
@@ -515,3 +524,40 @@ def filtered_activities_by_field(request, field, period):
 
     serializer = ActivitiesSerializer(advertisements.order_by('date'), many=True)
     return Response(serializer.data)
+
+
+#za dohvatanje 5 najpopularnijih terena po sportu
+def top_5_fields_by_sport(activities, sport_ids=[1, 2, 3, 4]):
+    sport_field_counter = defaultdict(Counter)
+
+    for activity in activities:
+        if isinstance(activity, dict):  # Provjeri je li activity dictionary
+            sport_id = activity.get('sport')
+            field_id = activity.get('field')
+
+            if not activity.get('is_deleted') and sport_id in sport_ids:
+                sport_field_counter[sport_id][field_id] += 1
+        else:
+            print(f"Unexpected activity format: {activity}")
+
+    result = {}
+    for sport_id in sport_ids:
+        top_fields = sport_field_counter[sport_id].most_common(5)
+        result[sport_id] = [field_id for field_id, _ in top_fields]
+
+    return result
+
+
+@api_view(['GET'])
+def top_fields_by_sport_view(request):
+    try:
+        response = requests.get("http://127.0.0.1:8000/api/all-activities/")  
+        if response.status_code != 200:
+            return Response({"error": "Failed to fetch activities"}, status=500)
+
+        activities = response.json()  
+        result = top_5_fields_by_sport(activities)
+        return Response(result, status=200)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)

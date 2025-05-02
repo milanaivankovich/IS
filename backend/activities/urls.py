@@ -39,6 +39,6 @@ urlpatterns = [
     path('api/comments/<int:activity>/', views.comments_by_activity), #GET and POST comments by activity
     path('api/sport-statistics/', sport_statistics, name='sport_statistics'),
     path('api/activities/<str:period>/field/<int:field>/', views.filtered_activities_by_field, name='get_filtered_activities_by_field'), #GET activities by field and period
-    
-
+    path('api/all-activities/', views.getAllActivities, name='getAllActivities'), #GET all activities 
+    path('api/top-fields-by-sport/', views.top_fields_by_sport_view, name='top_fields_by_sport_view'), #GET top 5 fields by sport 
 ]
