@@ -287,7 +287,7 @@ def register_subscription(request, username):
         return JsonResponse({"status": "Subscription successful"})
     return JsonResponse({"error": "Invalid request"}, status=400)
 
-from .webpush import subscribe_webpush, official_send_push_notification, subscribe_webpush_business_subject
+from .webpush import subscribe_webpush, official_send_push_notification, subscribe_webpush_business_subject, unsubscribe_webpush, unsubscribe_webpush_bussinesSubject
 @csrf_exempt
 def subscribe_to_webpush_service(request, id):
     user = get_object_or_404(Client, id=id)
@@ -297,6 +297,25 @@ def subscribe_to_webpush_service(request, id):
 def subscribe_to_webpush_service_business_subject(request, id):
     user = get_object_or_404(BusinessSubject, id=id)
     return subscribe_webpush_business_subject(request, user)
+
+@csrf_exempt
+def unsubscribe_webpush_service_business_subject(request, id):
+    user = get_object_or_404(BusinessSubject, id=id)
+    
+    response = is_action_authorized_subject(request, user)
+    if response.status_code != status.HTTP_200_OK:
+        return response
+    return unsubscribe_webpush_bussinesSubject(request, user)
+
+@csrf_exempt
+def unsubscribe_webpush_service_client(request, id):
+    user = get_object_or_404(Client, id=id)
+    
+    response = is_action_authorized(request, user)
+    if response.status_code != status.HTTP_200_OK:
+        return response
+    return unsubscribe_webpush(request, user)
+    
 
 from .serializers import PreferencesSerializer
 #preferences

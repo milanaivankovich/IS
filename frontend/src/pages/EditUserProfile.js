@@ -8,6 +8,7 @@ import AddPhoto from '../components/AddPhoto.js';
 import { IoIosCloseCircle } from "react-icons/io";
 import { Modal, Button } from 'react-bootstrap';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { unsubscribeFromPushSubscription } from "../webpush/utils.js";
 //import 'bootstrap/dist/css/bootstrap.min.css';
 
 const EditUserProfile = () => {
@@ -198,8 +199,9 @@ const EditUserProfile = () => {
       });
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     // Remove the token from localStorage
+    await unsubscribeFromPushSubscription();
     localStorage.removeItem('token');
     window.location.replace("/login");
   };

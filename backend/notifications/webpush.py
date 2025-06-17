@@ -109,4 +109,22 @@ def subscribe_webpush_business_subject(request, user):
 
         except Exception as e:
             return JsonResponse({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+def unsubscribe_webpush(request, user):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        endpoint = data.get('endpoint')
+        if endpoint:
+            WebPushInfo.objects.filter(user=user).filter(device__registration_id=endpoint).delete()
+            return JsonResponse({"status": "unsubscribed"})
+    return JsonResponse({"error": "Invalid request"}, status=400)
+        
+def unsubscribe_webpush_bussinesSubject(request, user):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        endpoint = data.get('endpoint')
+        if endpoint:
+            WebPushInfoBusinessSubject.objects.filter(subject=user).filter(device__registration_id=endpoint).delete()
+            return JsonResponse({"status": "unsubscribed"})
+    return JsonResponse({"error": "Invalid request"}, status=400)
 

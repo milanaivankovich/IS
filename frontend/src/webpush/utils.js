@@ -1,5 +1,6 @@
 // Utils functions:
 
+import axios from "axios"
 import { fetchCurrentUserData, fetchIdAndTypeOfUser } from "../utils"
 import API, { VAPID_PUBLIC_KEY } from "../variables"
 import { toast } from "react-toastify"
@@ -113,6 +114,26 @@ function getBrowserName() {
         return "Internet Explorer"; // IE browser
     }
     return "Unknown Browser"; // If the browser is not recognized
+}
+
+export async function unsubscribeFromPushSubscription() {
+    const registration = await navigator.serviceWorker.ready;
+    const subscription = await registration.pushManager.getSubscription();
+
+    if (subscription) {
+        const userData = await fetchIdAndTypeOfUser();
+        console.log("Unsubscribing from push subscription...");
+        await subscription.unsubscribe();
+        axios.post(`${API}/api/notifications/webpush/unsubscribe/${userData?.type}/${userData?.id}/`, {
+            endpoint: subscription.endpoint,
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        }).catch(error => {
+            console.error("Error unsubscribing from push subscription:", error);
+        });
+        console.log("Unsubscribed successfully.");
+    } else {
+        console.log("No push subscription found.");
+    }
 }
 
 export async function resetPushSubscription() {
