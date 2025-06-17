@@ -191,9 +191,10 @@ const EditUserProfile = () => {
 
   const handleLogout = async () => {
     // Remove the token from localStorage
-    await unsubscribeFromPushSubscription();
-    localStorage.removeItem('token');
-    window.location.replace("/login");
+    await unsubscribeFromPushSubscription(localStorage.getItem('token')).then(() => {
+      localStorage.removeItem('token');
+      window.location.replace("/login");
+    })
   };
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);

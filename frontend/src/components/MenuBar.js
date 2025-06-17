@@ -10,6 +10,7 @@ import { faBell } from "@fortawesome/free-regular-svg-icons";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import { Spinner } from "react-bootstrap";
 import { getNewNotificationCount } from "../utils.js";
+import { useNotifCountContext } from "./notifications/NotificationCountContext.js";
 
 //variant ostavljeno zbog ostatka koda, ne sluzi nicemu
 const MenuBar = ({ variant, search }) => {
@@ -37,13 +38,15 @@ const MenuBar = ({ variant, search }) => {
     fetchIDType();
   }, []);
 
-  const [newNotifications, setNewNotifications] = useState("0");
+  const { notifCount, setNotifCount } = useNotifCountContext();
   useEffect(() => {
     if (id.id !== -1) {
       getNewNotificationCount(id.id, id.type).then((count) =>
-        setNewNotifications(count));
+        setNotifCount(count));
     }
   }, [id]);
+
+
 
 
   return (
@@ -71,7 +74,7 @@ const MenuBar = ({ variant, search }) => {
                 <FontAwesomeIcon className="notification-icon" icon={faBell} onClick={() => (window.location.href = "/dashboard")}
                   shake={false} //staviti true ako ima novih notifikacija todo
                 />
-                {newNotifications !== 0 && <FontAwesomeIcon className="new-notification-signal-icon" icon={faCircle} />}
+                {notifCount !== 0 && <FontAwesomeIcon className="new-notification-signal-icon" icon={faCircle} />}
               </div>
               <a href="/userprofile">
                 <img

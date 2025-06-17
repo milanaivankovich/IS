@@ -4,6 +4,10 @@ import api from "./variables.js"
 import axios from "axios";
 
 export const fetchIdAndTypeOfUser = async () => {
+    if (localStorage.getItem('token') === null) {
+        console.error("Error: fetchIdAndTypeOfUser: No token found in localStorage.");
+        return { id: -1, type: "" }; // User is not logged in
+    }
     try {
         const request = await axios.get(`${api}/api/get-user-type-and-id/`, {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -19,6 +23,10 @@ export const fetchIdAndTypeOfUser = async () => {
 
 export const fetchCurrentUserData = async () => {
     const id = await fetchIdAndTypeOfUser();
+    if (id.id === -1) {
+        console.error("User is not logged in.");
+        return null; // User is not logged in
+    }
     try {
         const response = await axios.get(`${API}/api/client/${id.id}/`)
 

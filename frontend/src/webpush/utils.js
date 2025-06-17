@@ -79,6 +79,10 @@ async function requestPOSTToServer(data) {
     };
 
     const userData = await fetchIdAndTypeOfUser();
+    if (!userData || !userData?.type || !userData?.id || userData?.id === -1) {
+        console.error("User data is not available. Cannot subscribe to push notifications.");
+        return;
+    }
 
     return (
         fetch(
@@ -116,7 +120,7 @@ function getBrowserName() {
     return "Unknown Browser"; // If the browser is not recognized
 }
 
-export async function unsubscribeFromPushSubscription() {
+export async function unsubscribeFromPushSubscription(token) {
     const registration = await navigator.serviceWorker.ready;
     const subscription = await registration.pushManager.getSubscription();
 
@@ -126,7 +130,7 @@ export async function unsubscribeFromPushSubscription() {
         await subscription.unsubscribe();
         axios.post(`${API}/api/notifications/webpush/unsubscribe/${userData?.type}/${userData?.id}/`, {
             endpoint: subscription.endpoint,
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            headers: { Authorization: `Bearer ${token}` }
         }).catch(error => {
             console.error("Error unsubscribing from push subscription:", error);
         });

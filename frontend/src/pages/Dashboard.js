@@ -17,11 +17,12 @@ import API from "../variables.js";
 import { faChartBar, faCogs } from "@fortawesome/free-solid-svg-icons";
 import StatisticsPanelUser from "../components/StatisticsPanelUser";
 import StatisticsFieldsPanelUser from "../components/StatisticsFieldsPanelUser";
-import Chat from "../components/Chat"; 
+import Chat from "../components/Chat";
 import ChatContainer from "../components/ChatContainer.js";
 import ChatRooms from "../components/ChatRoom.js";
 import ChatRoom from "../components/ChatRoom.js";
 import Preferences from "../components/notifications/Preferences.js";
+import { useNotifCountContext } from "../components/notifications/NotificationCountContext.js";
 
 const Dashboard = () => {
 
@@ -36,7 +37,7 @@ const Dashboard = () => {
                     .then((userType) => {
                         if (userType) {
                             setUserIdType(userType);
-                            getNotificationCount(userType?.id, userType?.type)
+                            getNotifCount(userType?.id, userType?.type)
                         }
                     });
             } catch (error) {
@@ -50,14 +51,15 @@ const Dashboard = () => {
 
     // Number of unread messages and notifications
     const [messagesCount, setMessagesCount] = useState(1);
-    const [notificationCount, setNotificationCount] = useState(0);
+    //const [notifCount, setNotifCount] = useState(0);
+    const { notifCount, setNotifCount } = useNotifCountContext();
 
-    const getNotificationCount = async (user_id, user_type) => {
+    const getNotifCount = async (user_id, user_type) => {
         try {
             const request = await axios.get(`${API}/api/notifications/unread-count/${user_type}/${user_id}`, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             })
-            setNotificationCount(request.data?.unread_count);
+            setNotifCount(request.data?.unread_count);
         }
         catch (error) {
             console.error("Error: ", error);
@@ -88,8 +90,8 @@ const Dashboard = () => {
                                     <Nav.Link eventKey="second">
                                         <Stack direction="horizontal" gap={2}>
                                             Notifikacije
-                                            {notificationCount !== 0 &&
-                                                <Badge bg="secondary" pill>{notificationCount}</Badge>
+                                            {notifCount !== 0 &&
+                                                <Badge bg="secondary" pill>{notifCount}</Badge>
                                             }
                                             <FontAwesomeIcon className="notification-icon" icon={faBell} />
                                         </Stack>
@@ -124,9 +126,9 @@ const Dashboard = () => {
                         </Col>
                         <Col sm={9}>
                             <Tab.Content className="tab-content-all">
-                            <Tab.Pane eventKey="first">
-                                <Chat/>
-                            </Tab.Pane>
+                                <Tab.Pane eventKey="first">
+                                    <Chat />
+                                </Tab.Pane>
 
                                 <Tab.Pane eventKey="second">
                                     <NotificationPanel userId={userIdType?.id} userType={userIdType?.type}></NotificationPanel>

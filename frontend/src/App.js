@@ -22,6 +22,7 @@ import "./global.css";
 import API from "./variables";
 import { subscribeUser, resetPushSubscription, webpushPremission } from "./webpush/utils";
 import { isUserClient } from "./utils";
+import { NotifCountProvider } from "./components/notifications/NotificationCountContext";
 
 
 function App() {
@@ -83,22 +84,24 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div className="Header">
-          {currentPage === "pocetna" && <Pocetna />}
-          {currentPage === "login" && <LogIn />}
-          {currentPage === "login1" && <LoginPoslovni />}
-          {currentPage === "dogadjaji" && <Dogadjaji />}
-          {currentPage === "tereni" && <Tereni />}
-          {currentPage === "edituserprofile" && <EditUserProfile />}
-          {currentPage === "editbusinessprofile" && <EditBusinessSubjectProfile />}
-          {currentPage === "usertype" && <OdabirVrsteKorisnika />}
-          {currentPage === "usertype1" && <OdabirVrsteKorisnikaRegistracija />}
-          {currentPage === "userprofile" && <UserProfile />}
-          {currentPage === "registerRekreativac" && <RegisterRekreativac />}
-          {currentPage === "registerPoslovni" && <RegisterPoslovni />}
-          {currentPage === "userprofile1" && <BusinessSubjectProfile />}
-          {currentPage === "teren-profil" && <TerenProfil id={terenId} />}
-          {currentPage === "resetpassword" && <ResetPassword />}
-          {currentPage === "dashboard" && <Dashboard />}
+          <NotifCountProvider>
+            {currentPage === "pocetna" && <Pocetna />}
+            {currentPage === "login" && <LogIn />}
+            {currentPage === "login1" && <LoginPoslovni />}
+            {currentPage === "dogadjaji" && <Dogadjaji />}
+            {currentPage === "tereni" && <Tereni />}
+            {currentPage === "edituserprofile" && <EditUserProfile />}
+            {currentPage === "editbusinessprofile" && <EditBusinessSubjectProfile />}
+            {currentPage === "usertype" && <OdabirVrsteKorisnika />}
+            {currentPage === "usertype1" && <OdabirVrsteKorisnikaRegistracija />}
+            {currentPage === "userprofile" && <UserProfile />}
+            {currentPage === "registerRekreativac" && <RegisterRekreativac />}
+            {currentPage === "registerPoslovni" && <RegisterPoslovni />}
+            {currentPage === "userprofile1" && <BusinessSubjectProfile />}
+            {currentPage === "teren-profil" && <TerenProfil id={terenId} />}
+            {currentPage === "resetpassword" && <ResetPassword />}
+            {currentPage === "dashboard" && <Dashboard />}
+          </NotifCountProvider>
         </div>
         <WebSocketNotifications />
       </header>

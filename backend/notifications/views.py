@@ -302,18 +302,18 @@ def subscribe_to_webpush_service_business_subject(request, id):
 def unsubscribe_webpush_service_business_subject(request, id):
     user = get_object_or_404(BusinessSubject, id=id)
     
-    response = is_action_authorized_subject(request, user)
-    if response.status_code != status.HTTP_200_OK:
-        return response
-    return unsubscribe_webpush_bussinesSubject(request, user)
+    ##response = is_action_authorized_subject(request, user)
+    ##if response.status_code != status.HTTP_200_OK:
+    ##    return response
+    ##return unsubscribe_webpush_bussinesSubject(request, user)
 
 @csrf_exempt
 def unsubscribe_webpush_service_client(request, id):
     user = get_object_or_404(Client, id=id)
     
-    response = is_action_authorized(request, user)
-    if response.status_code != status.HTTP_200_OK:
-        return response
+    ##response = is_action_authorized(request, user)
+    ##if response.status_code != status.HTTP_200_OK:
+    ##    return JsonResponse(response.data, safe=False, status = response.status_code)
     return unsubscribe_webpush(request, user)
     
 

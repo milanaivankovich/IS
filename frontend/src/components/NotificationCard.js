@@ -6,6 +6,7 @@ import API from "../variables";
 import axios from "axios";
 import ShowNotificationActivity from "./notifications/ShowNotificationActivity";
 import ReactDOM from "react-dom";
+import { useNotifCountContext } from "./notifications/NotificationCountContext";
 
 
 const NotificationCard = ({ item_id, userImgLink, eventData, eventDataType, username, content, time, is_read }) => {
@@ -16,6 +17,8 @@ const NotificationCard = ({ item_id, userImgLink, eventData, eventDataType, user
     const [show, setShow] = useState(true);
     const [isReadState, setIsReadState] = useState(is_read);
 
+    const { notifCount, setNotifCount } = useNotifCountContext();
+
     //brisanje notifikacije
     const deleteNotification = async () => {
         try {
@@ -23,6 +26,7 @@ const NotificationCard = ({ item_id, userImgLink, eventData, eventDataType, user
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             })
             console.log(request);
+            setNotifCount(prevCount => prevCount > 0 ? prevCount - 1 : 0); // Decrease notification count
         }
         catch (error) {
             console.error("Error: ", error);
@@ -37,6 +41,7 @@ const NotificationCard = ({ item_id, userImgLink, eventData, eventDataType, user
                 })
                 console.log(request);
                 setIsReadState(true);
+                setNotifCount(prevCount => prevCount > 0 ? prevCount - 1 : 0); // Decrease notification count
             }
             catch (error) {
                 console.error("Error: ", error);
