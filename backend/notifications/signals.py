@@ -25,8 +25,8 @@ def participate_notification(sender, instance, action, reverse, pk_set, **kwargs
                 notification_type='prijava',  # Set notification type
                 content=f"{user.username} se prijavio na događaj.",
             )
-            send_notification_generic(f"Client{instance.client.id}",new_notification)
-            send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{user.username}", new_notification.content, f"@{user.username}/{new_notification.notification_type}")
+            #send_notification_generic(f"Client{instance.client.id}",new_notification)
+            #send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{user.username}", new_notification.content, f"@{user.username}/{new_notification.notification_type}")
 
 
     elif action == "post_remove":  # User unliked the post
@@ -39,8 +39,8 @@ def participate_notification(sender, instance, action, reverse, pk_set, **kwargs
                 notification_type='odjava',  # Set notification type
                 content=f"{user.username} se odjavio sa događaja.",
             )
-            send_notification_generic(f"Client{instance.client.id}",new_notification)
-            send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{user.username}", new_notification.content, f"@{user.username}/{new_notification.notification_type}")
+           # send_notification_generic(f"Client{instance.client.id}",new_notification)
+           # send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{user.username}", new_notification.content, f"@{user.username}/{new_notification.notification_type}")
 
 @receiver(m2m_changed, sender=Activities.comments.through)
 def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
@@ -62,8 +62,8 @@ def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
                     content=f"{comment.client.username} komentariše događaj: {instance.titel}.",
                     comment=comment
                 )
-                send_notification_generic(f"Client{instance.client.id}",new_notification)
-                send_push_notification_to_all_user_devices(new_notification.recipient_sender, f"@{new_notification.sender_client.username}", new_notification.content, f"@{new_notification.sender_client.username}/{new_notification.notification_type}")
+               # send_notification_generic(f"Client{instance.client.id}",new_notification)
+               # send_push_notification_to_all_user_devices(new_notification.recipient_sender, f"@{new_notification.sender_client.username}", new_notification.content, f"@{new_notification.sender_client.username}/{new_notification.notification_type}")
 
             
             #poslati obavjest drugim participantima
@@ -78,8 +78,8 @@ def comment_notification(sender, instance, action, reverse, pk_set, **kwargs):
                         content=f"{comment.client.username} komentariše događaj: {instance.titel}.",
                         comment=comment
                     )
-                    send_notification_generic(f"Client{participant.id}" ,new_notification)
-                    send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
+                   # send_notification_generic(f"Client{participant.id}" ,new_notification)
+                   # send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client.username}", new_notification.content, f"@{new_notification.sender.username}/{new_notification.notification_type}")
 
 ''' ne radi provjeru kada se korisnik prijavi na aktivnost samo
 @receiver(pre_save, sender=Activities)

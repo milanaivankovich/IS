@@ -64,8 +64,8 @@ def after_post_update_or_delete(instance, is_deleted):
                         notification_type=notification_type,  # Set notification type
                         content=content,
                     )
-                send_notification_generic(f"Client{participant.id}" ,new_notification)
-                send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client.username}", new_notification.content, f"@{new_notification.sender_client.username}/{new_notification.notification_type}")
+                #send_notification_generic(f"Client{participant.id}" ,new_notification)
+                #send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client.username}", new_notification.content, f"@{new_notification.sender_client.username}/{new_notification.notification_type}")
 
 
 from rest_framework import status

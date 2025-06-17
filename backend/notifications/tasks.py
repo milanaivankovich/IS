@@ -60,7 +60,7 @@ def activity_starting_soon_notification():
             content=f"Događaj korisnika @{user.username} se održava uskoro",
             )
             send_notification_generic(user.id, new_notification)
-            send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client}", new_notification.content, f"@{new_notification.sender_client}/{new_notification.notification_type}")
+            send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client.username}", new_notification.content, f"@{new_notification.sender_client.username}/{new_notification.notification_type}")
             send_email_notification(new_notification.recipient_client, new_notification.activity)
             new_notification.is_sent=True
             new_notification.save()
@@ -120,11 +120,11 @@ def filter_and_send_notifications():
         sender_subject =  to_delete.first().sender_subject
         content = to_delete.first().content
 
-        if type == 'prijava': content = f"+{item['total']} nove odjave"
-        elif type == 'odjava': content = f"+{item['total']} nove prijave"
-        elif type == 'komentar': content = f"+{item['total']} nova komentara"
+        if type == 'prijava': content = f"Nove prijave za događaj"
+        elif type == 'odjava': content = f"Nove odjave za događaj"
+        elif type == 'komentar': content = f"Imate nove komentare"
 
-            #pravimo novu grupnu notifikaciju ako je potrebnaa
+            #pravimo novu grupnu notifikaciju ako je potrebna
         group_notification = NotificationGeneric.objects.create(
                 sender_client = sender_client,
                 sender_subject = sender_subject,
@@ -136,6 +136,18 @@ def filter_and_send_notifications():
                 advertisement=advertisement,
             )
         #print("new notification: ", group_notification)
+    not_sent = NotificationGeneric.objects.filter(is_sent=False, is_deleted=False)
+    for notif in not_sent:
+        if notif.sender_client:
+            sender = notif.sender_client
+        else: sender = notif.sender_subject
+        if notif.recipient_client:
+            recipient = notif.recipient_client
+        else: recipient = notif.recipient_subject
+        send_notification_generic(f"Client{recipient.id}",notif)
+        send_push_notification_to_all_user_devices(recipient, f"@{sender.username}", notif.content, f"@{sender.username}/{notif.notification_type}")
+        notif.is_sent = True
+        notif.save()
 
 
 def send_email_notification(client, activity):
