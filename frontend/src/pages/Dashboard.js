@@ -23,6 +23,8 @@ import ChatRooms from "../components/ChatRoom.js";
 import ChatRoom from "../components/ChatRoom.js";
 import Preferences from "../components/notifications/Preferences.js";
 import { useNotifCountContext } from "../components/notifications/NotificationCountContext.js";
+import ChatPage from "./ChatPage";
+
 
 const Dashboard = () => {
 
@@ -127,7 +129,7 @@ const Dashboard = () => {
                         <Col sm={9}>
                             <Tab.Content className="tab-content-all">
                                 <Tab.Pane eventKey="first">
-                                    <Chat />
+                                    <ChatPage />;
                                 </Tab.Pane>
 
                                 <Tab.Pane eventKey="second">
