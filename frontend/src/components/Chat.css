@@ -1,35 +1,26 @@
-.chat-container {
-    width: 300px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+/* Vreme poruke - malo veći font, sivi ton */
+.cs-message-sent-time {
+  font-size: 12px !important;
+  color: #999 !important;
+  margin-left: 8px;
 }
 
-.status {
-    margin-bottom: 10px;
-    font-weight: bold;
+/* Status poruke (read / delivered) prikaz */
+.cs-message-status {
+  font-size: 11px !important;
+  color: #0078ff !important; /* plava boja za read */
+  margin-left: 8px;
+  font-weight: 600;
 }
 
-.messages {
-    max-height: 300px;
-    overflow-y: auto;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
+/* Možeš koristiti i drugačije boje za "delivered" */
+.cs-message-status-delivered {
+  color: #999 !important;
 }
 
-.message {
-    padding: 5px;
-    border-bottom: 1px solid #eee;
-}
-
-input {
-    width: 100%;
-    padding: 5px;
-    margin-top: 10px;
-}
-
-button {
-    margin-top: 5px;
-    cursor: pointer;
+/* Možeš prilagoditi padding između poruke i info */
+.cs-message-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

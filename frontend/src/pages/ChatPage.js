@@ -4,9 +4,9 @@ import ConversationList from "../components/ConversationList";
 import Chat from "../components/Chat";
 
 const dummyUsers = [
-  { id: 1, name: "Ana" },
-  { id: 2, name: "Marko" },
-  { id: 3, name: "Jovana" },
+  { id: 1, name: "Ana", avatar: "https://i.pravatar.cc/150?img=1", online: true },
+  { id: 2, name: "Marko", avatar: "https://i.pravatar.cc/150?img=2", online: false },
+  { id: 3, name: "Jovana", avatar: "https://i.pravatar.cc/150?img=3", online: true },
 ];
 
 const dummyConversations = [
@@ -20,21 +20,35 @@ const ChatPage = () => {
   const token = "dummy-token";
 
   const handleSelectUser = (user) => {
-    setSelectedUser(null); // Reset selection first
-    setTimeout(() => setSelectedUser(user), 0); // Then set the new user
+    setSelectedUser(null);
+    setTimeout(() => setSelectedUser(user), 0);
   };
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-      <div style={{ width: "25%", padding: "1rem", borderRight: "1px solid #ccc" }}>
-        <h3>Pretraži korisnike</h3>
+    <div style={{ display: "flex", height: "100vh", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" }}>
+      <div
+        style={{
+          width: "320px",
+          padding: "1rem",
+          borderRight: "1px solid #ccc",
+          backgroundColor: "#f9f9f9",
+          display: "flex",
+          flexDirection: "column",
+          gap: "1rem",
+        }}
+      >
+        <h3 style={{ marginBottom: "0.5rem" }}>Pretraži korisnike</h3>
         <UserSearch users={dummyUsers} onSelect={handleSelectUser} />
 
-        <h4 style={{ marginTop: "2rem" }}>Nedavne poruke</h4>
-        <ConversationList conversations={dummyConversations} onSelect={handleSelectUser} />
+        <h4 style={{ marginTop: "2rem", marginBottom: "0.5rem" }}>Nedavne poruke</h4>
+        <ConversationList
+          users={dummyUsers}
+          conversations={dummyConversations}
+          onSelect={handleSelectUser}
+        />
       </div>
 
-      <div style={{ flex: 1, padding: "1rem" }}>
+      <div style={{ flex: 1, padding: "1rem", display: "flex", flexDirection: "column" }}>
         {selectedUser ? (
           <Chat
             token={token}
@@ -43,7 +57,18 @@ const ChatPage = () => {
             selectedUser={selectedUser}
           />
         ) : (
-          <div>Izaberi korisnika da započneš razgovor.</div>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              color: "#888",
+              fontSize: "1.2rem",
+            }}
+          >
+            Izaberi korisnika da započneš razgovor.
+          </div>
         )}
       </div>
     </div>
