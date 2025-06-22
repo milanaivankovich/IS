@@ -9,29 +9,14 @@ import {
 } from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import { format } from "timeago.js";
+import Picker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
 import EmojiPicker from "emoji-picker-react";
 
 const reactionsList = ["❤️", "👍", "😂", "😮", "😢", "👏"];
 
 const Chat = ({ currentUserId, selectedUser }) => {
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      sender: currentUserId,
-      content: "Zdravo! Kako si?",
-      timestamp: new Date(Date.now() - 1000 * 60 * 3),
-      status: "read",
-      reaction: null,
-    },
-    {
-      id: 2,
-      sender: selectedUser.id,
-      content: "Ćao! Super, ti?",
-      timestamp: new Date(Date.now() - 1000 * 60 * 2),
-      status: "read",
-      reaction: null,
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [typing, setTyping] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [showPicker, setShowPicker] = useState(false);
@@ -40,10 +25,25 @@ const Chat = ({ currentUserId, selectedUser }) => {
   const messageListRef = useRef(null);
 
   useEffect(() => {
-    if (messageListRef.current) {
-      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
-    }
-  }, [messages]);
+    setMessages([
+      {
+        id: 1,
+        sender: currentUserId,
+        content: "Zdravo! Kako si?",
+        timestamp: new Date(Date.now() - 1000 * 60 * 3),
+        status: "read",
+        reaction: null,
+      },
+      {
+        id: 2,
+        sender: selectedUser.id,
+        content: "Ćao! Super, ti?",
+        timestamp: new Date(Date.now() - 1000 * 60 * 2),
+        status: "read",
+        reaction: null,
+      },
+    ]);
+  }, [selectedUser]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -55,7 +55,7 @@ const Chat = ({ currentUserId, selectedUser }) => {
           {
             id: Date.now(),
             sender: selectedUser.id,
-            content: "Ovo je simulirana poruka od druge strane 😊",
+            content: "Ovo je simulirana poruka 😊",
             timestamp: new Date(),
             status: "delivered",
             reaction: null,
@@ -63,94 +63,98 @@ const Chat = ({ currentUserId, selectedUser }) => {
         ]);
       }, 2000);
     }, 15000);
+
     return () => clearInterval(interval);
   }, [selectedUser]);
 
-  const handleSend = (msgText) => {
-    if (!msgText.trim()) return;
+  const handleSend = (text) => {
+    if (!text.trim()) return;
     setMessages((prev) => [
       ...prev,
       {
         id: Date.now(),
         sender: currentUserId,
-        content: msgText,
+        content: text,
         timestamp: new Date(),
         status: "delivered",
         reaction: null,
       },
     ]);
-    setShowPicker(false);
     setInputValue("");
+    setShowPicker(false);
   };
 
-  const onEmojiClick = (emojiData) => {
-    setInputValue((prev) => prev + emojiData.emoji);
-  };
-
-  const togglePicker = () => setShowPicker((prev) => !prev);
-
-  const addReaction = (msgId, reaction) => {
-    setMessages((prev) =>
-      prev.map((m) => (m.id === msgId ? { ...m, reaction } : m))
-    );
-    setReactionToMsg(null);
+  const onEmojiSelect = (emoji) => {
+    setInputValue((prev) => prev + emoji.native);
+    setShowPicker(false);
   };
 
   return (
-    <div style={{ height: "100%", display: "flex", flexDirection: "column", position: "relative" }}>
+    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       {/* Header */}
-      <div style={{ padding: "12px 16px", borderBottom: "1px solid #ddd", backgroundColor: "#f4f4f4", display: "flex", alignItems: "center", gap: "12px" }}>
+      <div
+        style={{
+          padding: "12px 16px",
+          borderBottom: "1px solid #ddd",
+          backgroundColor: "#f4f4f4",
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+        }}
+      >
         <img
           src={selectedUser.avatar || "https://via.placeholder.com/40"}
           alt="avatar"
-          style={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover" }}
+          style={{ width: 40, height: 40, borderRadius: "50%" }}
         />
         <h4 style={{ margin: 0 }}>{selectedUser.name}</h4>
       </div>
+     
 
-      <MainContainer style={{ flex: 1 }}>
+      <MainContainer>
         <ChatContainer>
           <MessageList
-            typingIndicator={typing ? <TypingIndicator content={`${selectedUser.name} tipka...`} /> : null}
+            typingIndicator={
+              typing ? <TypingIndicator content={`${selectedUser.name} tipka...`} /> : null
+            }
             ref={messageListRef}
-            style={{ overflowY: "auto" }}
           >
             {messages.map((msg) => (
-              <div key={msg.id} style={{ marginBottom: "10px", position: "relative" }}>
+              <div key={msg.id} style={{ position: "relative", marginBottom: "30px" }}>
+                {msg.reaction && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      fontSize: "18px",
+                      top: "-20px",
+                      right: msg.sender === currentUserId ? "10px" : undefined,
+                      left: msg.sender !== currentUserId ? "50px" : undefined,
+                    }}
+                  >
+                    {msg.reaction}
+                  </div>
+                )}
                 <Message
-                  onClick={() => setReactionToMsg(msg.id)}
                   model={{
                     message: msg.content,
                     sender: msg.sender === currentUserId ? "You" : selectedUser.name,
                     direction: msg.sender === currentUserId ? "outgoing" : "incoming",
                     avatarPosition: "start",
                     avatarSpacer: true,
-                    avatar: msg.sender === currentUserId ? null : selectedUser.avatar,
+                    avatar: msg.sender !== currentUserId ? selectedUser.avatar : undefined,
                   }}
+                  onClick={() => setReactionToMsg(msg.id)}
                 />
-                {msg.reaction && (
-                  <span
-                    style={{
-                      position: "absolute",
-                      bottom: 5,
-                      left: msg.sender !== currentUserId ? "50px" : undefined,
-                      right: msg.sender === currentUserId ? "20px" : undefined,
-                      fontSize: "18px",
-                    }}
-                  >
-                    {msg.reaction}
-                  </span>
-                )}
                 <div
                   style={{
                     fontSize: "12px",
                     color: "#888",
-                    marginLeft: msg.sender === currentUserId ? "auto" : "40px",
-                    marginTop: "2px",
-                    display: "flex",
-                    gap: "10px",
-                    justifyContent: msg.sender === currentUserId ? "flex-end" : "flex-start",
+                    marginTop: "4px",
+                    marginLeft: msg.sender === currentUserId ? "auto" : "50px",
                     maxWidth: "70%",
+                    display: "flex",
+                    justifyContent: msg.sender === currentUserId ? "flex-end" : "flex-start",
+                    gap: "10px",
                   }}
                 >
                   <span>{format(msg.timestamp)}</span>
@@ -162,8 +166,6 @@ const Chat = ({ currentUserId, selectedUser }) => {
                 {reactionToMsg === msg.id && (
                   <div
                     style={{
-                      display: "flex",
-                      gap: "8px",
                       position: "absolute",
                       bottom: "30px",
                       left: msg.sender !== currentUserId ? "10px" : undefined,
@@ -172,26 +174,37 @@ const Chat = ({ currentUserId, selectedUser }) => {
                       border: "1px solid #ccc",
                       borderRadius: "8px",
                       padding: "4px 8px",
-                      zIndex: 2,
+                      zIndex: 10,
+                      display: "flex",
+                      gap: "6px",
                     }}
                   >
                     {reactionsList.map((r) => (
                       <button
                         key={r}
-                        style={{
-                          fontSize: "18px",
-                          background: "transparent",
-                          border: "none",
-                          cursor: "pointer",
+                        onClick={() => {
+                          setMessages((prev) =>
+                            prev.map((msg) => (msg.id === reactionToMsg ? { ...msg, reaction: r } : msg))
+                          );
+                          setReactionToMsg(null);
                         }}
-                        onClick={() => addReaction(msg.id, r)}
+                        style={{
+                          border: "none",
+                          background: "transparent",
+                          cursor: "pointer",
+                          fontSize: "18px",
+                        }}
                       >
                         {r}
                       </button>
                     ))}
                     <button
                       onClick={() => setReactionToMsg(null)}
-                      style={{ border: "none", background: "transparent", cursor: "pointer", fontSize: "16px" }}
+                      style={{
+                        border: "none",
+                        background: "transparent",
+                        cursor: "pointer",
+                      }}
                     >
                       ✕
                     </button>
@@ -201,47 +214,55 @@ const Chat = ({ currentUserId, selectedUser }) => {
             ))}
           </MessageList>
 
-          {/* Emoji picker */}
-          {showPicker && (
-            <div
-              style={{
-                position: "absolute",
-                bottom: "70px",
-                right: "20px",
-                zIndex: 1000,
-              }}
-            >
-              <EmojiPicker onEmojiClick={onEmojiClick} />
-            </div>
-          )}
+          {/* Ovde ćemo staviti MessageInput sa emoji pickerom */}
+        {/* Emoji dugme iznad MessageInput-a */}
+ 
 
-          {/* Input + emoji button wrapper */}
-          
-            <button
-              onClick={togglePicker}
-              style={{
-                fontSize: "22px",
-                background: "transparent",
-                border: "none",
-                cursor: "pointer",
-                marginRight: "8px",
-                userSelect: "none",
-              }}
-              aria-label="Toggle emoji picker"
-            >
-              😊
-            </button>
-            <MessageInput
-              placeholder="Unesi poruku"
-              onSend={handleSend}
-              attachButton={false}
-              value={inputValue}
-              onChange={setInputValue}
-              style={{ flex: 1 }}
-            />
-          
-        </ChatContainer>
-      </MainContainer>
+  {/* Message input pomeren da emoji dugme ne preklapa */}
+  <MessageInput
+    placeholder="Unesi poruku"
+    value={inputValue}
+    onChange={setInputValue}
+    onSend={handleSend}
+    attachButton
+    autoFocus
+    style={{
+      width: "calc(100% - 50px)", // pravi mesta za dugme
+      marginRight: "50px", // pomeraj po potrebi
+    }}
+  />
+</ChatContainer>
+ <button
+    onClick={() => setShowPicker((prev) => !prev)}
+    style={{
+      position: "absolute",
+      bottom: "10px", // podešavaj po potrebi
+      right: "16px",
+      background: "transparent",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "24px",
+      zIndex: 1000,
+    }}
+    aria-label="Emoji dugme"
+  >
+    😊
+  </button>
+
+  {/* Emoji picker koji se otvara iznad dugmeta */}
+  {showPicker && (
+    <div
+      style={{
+        position: "absolute",
+        bottom: "10px", // iznad dugmeta
+        right: "12px",
+        zIndex: 2000,
+      }}
+    >
+      <Picker data={data} onEmojiSelect={onEmojiSelect} />
+    </div>
+  )}
+</MainContainer>
     </div>
   );
 };
