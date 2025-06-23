@@ -172,29 +172,68 @@
   }
 }
 
-.history-activity-container {
-  background: linear-gradient(to bottom, #c8c7c6 30%, #fffefe 30%); /* Narandžasta na vrhu, siva na dnu */
-  border-radius: 5px;
+.analytics-section {
   padding: 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.history-activity-container:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); 
-}
-
-.history-activity-header {
-  font-size: 18px;
-  padding: 20px 0;
+.analytics-summary {
+  margin-bottom: 30px;
   text-align: center;
 }
 
-.history-activity-text {
-  font-size: 18px;
-  color: #616161; 
-  padding: 0px;
-  margin-top: 50px;
-  margin-bottom: 50px;
+.charts-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.chart {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.chart h4 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.analytics-section {
+    padding: 20px;
+}
+
+.analytics-summary {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.analytics-summary h3, .analytics-summary h4 {
+    margin: 5px 0;
+    color: #333;
+}
+
+.charts-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.chart {
+    flex: 1;
+    min-width: 300px;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.chart h4 {
+    margin-top: 0;
+    color: #444;
+    text-align: center;
 }

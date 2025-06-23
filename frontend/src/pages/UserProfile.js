@@ -6,151 +6,163 @@ import Footer from "../components/Footer.js";
 import CreatorImg from "../images/user.svg";
 import EditEventCard from "../components/EditEventCard.js";
 import { CiSettings } from "react-icons/ci";
-import { IoIosCloseCircle } from "react-icons/io";
 import FieldsCard from '../components/FieldsCard.js';
 import Spinner from 'react-bootstrap/Spinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
-//import "bootstrap/dist/css/bootstrap.min.css";
-//todo spinner.css bez ostalih stilova
-
+import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
 import './UserProfile.css';
 
 const UserProfile = () => {
   const uri = 'http://localhost:8000';
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
 
-  //logika za prikaz bilo kog profila
-
+  // Get username from URL
   const path = window.location.pathname;
   const segments = path.split('/');
-  const [username, setUsername] = useState(segments[2]);
+  const [username, setUsername] = useState(segments[2] || '');
 
+  // User data states
   const [userData, setUserData] = useState({
-    "first_name": '',
-    "last_name": '',
-    "username": 'user',
-    "email": '',
-    "profile_picture": null
+    first_name: '',
+    last_name: '',
+    username: '',
+    email: '',
+    profile_picture: null
   });
 
   const [loadingUser, setLoadingUser] = useState(true);
+  const [currentUserData, setCurrentUserData] = useState({});
+  const [id, setID] = useState({ id: -1, type: '' });
 
+  // Tab and data states
+  const [activeTab, setActiveTab] = useState("events");
+  const [eventsData, setEventsData] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [registered, setRegistered] = useState([]);
+  const [activityHistory, setActivityHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Analytics data
+const [analyticsData, setAnalyticsData] = useState({
+    total_participated: 0,
+    created_activities: 0,
+    registered_activities: 0,
+    sport_distribution: [],
+    monthly_stats: { total: 0, created: 0, registered: 0 },
+    average_per_week: 0
+});
+  // Tab titles
+  const [selectionTitle, setSelectionTitle] = useState('Događaji');
+  const [selectionSubtitle, setSelectionSubtitle] = useState('Događaji koje je kreirao korisnik');
+
+  // Fetch user data
   useEffect(() => {
-
     const fetchUserData = async () => {
-      await axios.get(`${uri}/api/client/${username}/`
-      ).then(async response => {
-        await setUserData({
+      try {
+        const response = await axios.get(`${uri}/api/client/${username}/`);
+        setUserData({
           first_name: response.data.first_name,
           last_name: response.data.last_name,
           username: response.data.username,
           email: response.data.email,
           profile_picture: response.data.profile_picture ? uri + response.data.profile_picture : null,
-        })
-      }).catch(error => {
+        });
+      } catch (error) {
         console.error('Error fetching data: ', error);
-        alert('Error 404');
-      });
+      }
     };
-    if (username)
-      fetchUserData();
+
+    if (username) fetchUserData();
   }, [username]);
 
-  /////////
-
-
-  const [isVisible, setIsVisible] = useState(false);
-
-  const toggleFloatingWindow = () => {
-    setIsVisible(!isVisible);
-  };
-
-  //aktivnosti na razlicitim tabovima
-  const [activeTab, setActiveTab] = useState("events");
-  const [favorites, setFavorites] = useState([]);
-  const [registered, setRegistered] = useState([]);
-  const [activityHistory, setActivityHistory] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  //podaci korisnika koji je trenutno ulogovan u slucaju da udje na svoj nalog
-
-  const [id, setID] = useState({
-    "id": -1,
-    "type": ''
-  });
-
-  const [currentUserData, setCurrentUserData] = useState({});
-
+  // Fetch current user ID and type
   useEffect(() => {
     const fetchIDType = async () => {
-      await axios.get(`${uri}/api/get-user-type-and-id/`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      })
-        .then((request) => {
-          setID(request.data);
-        })
-        .catch((error) => {
-          console.error("Error getting ID: ", error);
-          alert("Neuspjesna autorizacija. Molimo ulogujte se... ");
-          window.location.replace("/login"); //todo probati /usertype1
+      try {
+        const response = await axios.get(`${uri}/api/get-user-type-and-id/`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         });
+        setID(response.data);
+      } catch (error) {
+        console.error("Error getting ID: ", error);
+        window.location.replace("/login");
+      }
     };
 
     fetchIDType();
   }, []);
 
+  // Fetch current user data based on type
   useEffect(() => {
-    const fetchSubjectData = async () => {
-      if (window.location.pathname === '/userprofile' && id.type === 'BusinessSubject')
-        window.location.replace("/userprofile1");
-      await axios.get(`${uri}/api/business-subject/${id.id}/`)
-        .then(async response => {
-          await setCurrentUserData({
-            nameSportOrganization: response.data.nameSportOrganization,
-            description: response.data.description,
-            email: response.data.email,
-            profile_picture: response.data.profile_picture ? uri + response.data.profile_picture : null,
-          });
-        })
-        .catch(error => {
-          console.error('Error fetching data: ', error);
-          //alert('Error 404');
-        }).finally(() => setLoadingUser(false));
-    };
     const fetchCurrentUserData = async () => {
-      await axios.get(`${uri}/api/client/${id.id}/`)
-        .then(async response => {
-          await setCurrentUserData({
+      try {
+        if (id.type === 'Client') {
+          const response = await axios.get(`${uri}/api/client/${id.id}/`);
+          setCurrentUserData({
             first_name: response.data.first_name,
             last_name: response.data.last_name,
             username: response.data.username,
             email: response.data.email,
             profile_picture: response.data.profile_picture ? uri + response.data.profile_picture : null,
-          })
-          if (window.location.pathname === '/userprofile' && id.type === 'Client')
+          });
+          if (window.location.pathname === '/userprofile') {
             setUsername(response.data.username);
-        }).catch(error => {
-          console.error('Error fetching data: ', error);
-          //alert('Error 404');
-        }).finally(() => setLoadingUser(false));
+          }
+        } else if (id.type === 'BusinessSubject') {
+          if (window.location.pathname === '/userprofile') {
+            window.location.replace("/userprofile1");
+          }
+          const response = await axios.get(`${uri}/api/business-subject/${id.id}/`);
+          setCurrentUserData({
+            nameSportOrganization: response.data.nameSportOrganization,
+            description: response.data.description,
+            email: response.data.email,
+            profile_picture: response.data.profile_picture ? uri + response.data.profile_picture : null,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      } finally {
+        setLoadingUser(false);
+      }
     };
 
     if (id.id !== -1) {
-      if (id.type === 'Client')
-        fetchCurrentUserData();
-      else if (id.type === 'BusinessSubject')
-        fetchSubjectData();
-      else alert('Unsupported client type.');
+      fetchCurrentUserData();
     }
-
   }, [id]);
 
+  // Fetch analytics data
+ useEffect(() => {
+    const fetchAnalyticsData = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            console.log("Current token:", token); // Debug
+            const response = await axios.get(`${uri}/api/user-analytics/${username}/`, {
+                headers: { 
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+            });
+            console.log("Analytics response:", response); // Debug
+            setAnalyticsData(response.data);
+        } catch (error) {
+            console.error("Error details:", {
+                message: error.message,
+                response: error.response,
+                request: error.request
+            }); // Detaljan debug
+        }
+    };
 
-  const [eventsData, setEventsData] = useState([]);
-  const [selectionTitle, setSelectionTitle] = useState('Događaji');
-  const [selectionSubtitle, setSelectionSubtitle] = useState('Događaji koje je kreirao korisnik');
+    if (activeTab === "analytics" && username) {
+        fetchAnalyticsData();
+    }
+}, [activeTab, username]);
 
-  // Funkcija za dohvaćanje podataka za različite kartice
+  // Fetch data for current tab
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -188,130 +200,252 @@ const UserProfile = () => {
       }
     };
 
-    if (username)
-      fetchData();
+    if (username) fetchData();
   }, [activeTab, username, id]);
 
+  const toggleFloatingWindow = () => {
+    setIsVisible(!isVisible);
+  };
+
   return (
-    <body className='user-profile-page'>
+    <div className='user-profile-page'>
       <header className="userprofile-menu">
         <MenuBar variant={"registered"} search={true} />
       </header>
-      {loadingUser ?
-        (<div className='loading-line'></div>) :
-
-        (<div className="userprofile-body">
+      
+      {loadingUser ? (
+        <div className='loading-line'></div>
+      ) : (
+        <div className="userprofile-body">
           <div className="userprofile-header">
-            <img src={userData.profile_picture ? userData.profile_picture : CreatorImg}
-              className="userprofilepreview-image" alt="profile photo" />
+            <img 
+              src={userData.profile_picture || CreatorImg}
+              className="userprofilepreview-image" 
+              alt="profile" 
+            />
             <div className='name-surname-username'>
               <h0 className="userprofile-name">{userData.first_name} {userData.last_name}</h0>
               <h1 className="userprofile-subtitle">@{userData.username}</h1>
             </div>
-            {((id.type === 'Client') && (currentUserData.username === username)) ? (
-              <CiSettings className='edituserprofile-button' onClick={() => window.location.replace('/edituserprofile')} />
-            ) : null}
+            {id.type === 'Client' && currentUserData.username === username && (
+              <CiSettings 
+                className='edituserprofile-button' 
+                onClick={() => window.location.replace('/edituserprofile')} 
+              />
+            )}
           </div>
+
           <div>
             <nav className="profile-tabs">
-              <button className='userprofile-tab-button'
+              <button 
+                className={`userprofile-tab-button ${activeTab === "events" ? "active" : ""}`}
                 onClick={() => {
                   setSelectionTitle('Događaji');
                   setSelectionSubtitle('Događaji koje je kreirao korisnik');
                   setActiveTab("events");
-                }}>Događaji</button>
-              <button className='userprofile-tab-button' onClick={() => {
-                setSelectionTitle('Omiljeno'); setSelectionSubtitle('Vaši omiljeni tereni');
-                setActiveTab("favorites")
-              }}>Omiljeno</button>
-              {<button className='userprofile-tab-button' onClick={() => {
-                setSelectionTitle('Prijave na aktivnosti'); setSelectionSubtitle('Događaji kojima se korisnik pridružio');
-                setActiveTab("registered-activities")
-              }
-
-              }>Prijave na aktivnosti</button>}
-              <button className='userprofile-tab-button' onClick={() => {
-                setSelectionTitle('Istoriјa aktivnosti'); setSelectionSubtitle('Događaji koji su prošli');
-                setActiveTab("activity")
-              }}>Istorija Aktivnosti</button>
-            </nav></div>
+                }}
+              >
+                Događaji
+              </button>
+              
+              <button 
+                className={`userprofile-tab-button ${activeTab === "favorites" ? "active" : ""}`}
+                onClick={() => {
+                  setSelectionTitle('Omiljeno'); 
+                  setSelectionSubtitle('Vaši omiljeni tereni');
+                  setActiveTab("favorites");
+                }}
+              >
+                Omiljeno
+              </button>
+              
+              <button 
+                className={`userprofile-tab-button ${activeTab === "registered-activities" ? "active" : ""}`}
+                onClick={() => {
+                  setSelectionTitle('Prijave na aktivnosti'); 
+                  setSelectionSubtitle('Događaji kojima se korisnik pridružio');
+                  setActiveTab("registered-activities");
+                }}
+              >
+                Prijave na aktivnosti
+              </button>
+              
+              <button 
+                className={`userprofile-tab-button ${activeTab === "activity" ? "active" : ""}`}
+                onClick={() => {
+                  setSelectionTitle('Istorija aktivnosti'); 
+                  setSelectionSubtitle('Događaji koji su prošli');
+                  setActiveTab("activity");
+                }}
+              >
+                Istorija Aktivnosti
+              </button>
+              
+              <button 
+                className={`userprofile-tab-button ${activeTab === "analytics" ? "active" : ""}`}
+                onClick={() => {
+                  setSelectionTitle('Analitika'); 
+                  setSelectionSubtitle('Statistika učestvovanja na aktivnostima');
+                  setActiveTab("analytics");
+                }}
+              >
+                Analitika
+              </button>
+            </nav>
+          </div>
 
           <div className="userprofile-selection">
             <h1 className="userprofile-name">{selectionTitle}</h1>
             <h2 className="userprofile-subtitle">{selectionSubtitle}</h2>
+            
             <section className="tab-content">
               {loading ? (
                 <Spinner className='spinner-border' animation="border" />
               ) : (
-                <div>
+                <>
                   {activeTab === "events" && (
                     <div className="events-section">
                       <div className="scroll-bar-user-profile">
-                        {Array.isArray(eventsData) && eventsData.map((activity) => (
+                        {eventsData.map((activity) => (
                           <ActivityCard key={activity.id} activity={activity} />
                         ))}
                       </div>
-                      {((id.type === 'Client') && (currentUserData.username === username)) ? (
-                        <button className="create-event-button" onClick={() => toggleFloatingWindow()}>
-                          + Novi događaj
-                        </button>
-                      ) : null}
-                      {isVisible ? (
-                        <div>
-                          <EditEventCard user={currentUserData} pk={id.id} event={{
-                            "id": -1
-                          }} className="new-event-card" closeFunction={toggleFloatingWindow} />
-                          {/*<IoIosCloseCircle className="close-icon" onClick={() => toggleFloatingWindow()} />*/}
-                        </div>
-                      ) : null}
+                      {id.type === 'Client' && currentUserData.username === username && (
+                        <>
+                          <button 
+                            className="create-event-button" 
+                            onClick={toggleFloatingWindow}
+                          >
+                            + Novi događaj
+                          </button>
+                          {isVisible && (
+                            <EditEventCard 
+                              user={currentUserData} 
+                              pk={id.id} 
+                              event={{ id: -1 }}
+                              className="new-event-card" 
+                              closeFunction={toggleFloatingWindow} 
+                            />
+                          )}
+                        </>
+                      )}
                     </div>
                   )}
 
                   {activeTab === "favorites" && (
                     <div className="scroll-bar-user-profile">
-                      {Array.isArray(favorites) && favorites.map((favorite) => (
-                        <FieldsCard key={favorite.id} field={favorite} userId={id.id} userType={id.type} />
+                      {favorites.map((favorite) => (
+                        <FieldsCard 
+                          key={favorite.id} 
+                          field={favorite} 
+                          userId={id.id} 
+                          userType={id.type} 
+                        />
                       ))}
                     </div>
                   )}
 
-                  {
-                    activeTab === "registered-activities" && (
-                      <div className="scroll-bar-user-profile">
-                        {Array.isArray(registered) && registered.map((activity) => (
-                          <ActivityCard key={activity.id} activity={activity} />
-                        ))}
-                      </div>
-                    )}
+                  {activeTab === "registered-activities" && (
+                    <div className="scroll-bar-user-profile">
+                      {registered.map((activity) => (
+                        <ActivityCard key={activity.id} activity={activity} />
+                      ))}
+                    </div>
+                  )}
 
                   {activeTab === "activity" && (
                     <div className="scroll-bar-user-profile">
-                      {(id.type === 'Client') && (currentUserData.username === username) ? (
-                          Array.isArray(activityHistory) && activityHistory.map((activity) => (
-                            <ActivityCard key={activity.id} activity={activity} />
-                          ))
-                        ) : (
-                          <div className="history-activity-container">
-                          <div className="history-activity-header">  
-                          </div>
+                      {id.type === 'Client' && currentUserData.username === username ? (
+                        activityHistory.map((activity) => (
+                          <ActivityCard key={activity.id} activity={activity} />
+                        ))
+                      ) : (
+                        <div className="history-activity-container">
                           <div className="history-activity-text">
-                            <img src={userData.profile_picture !== null ? userData.profile_picture : CreatorImg} className="creator-image" alt="Creator" />&nbsp;&nbsp;
-                            {userData.username} <hr/>
-                           <br/><FontAwesomeIcon icon={faComment} className="icon"/>
-                           U PROŠLOSTI JE KREIRAO {Array.isArray(activityHistory) ? activityHistory.length : 0} AKTIVNOSTI
+                            <img 
+                              src={userData.profile_picture || CreatorImg} 
+                              className="creator-image" 
+                              alt="Creator" 
+                            />
+                            &nbsp;&nbsp;
+                            {userData.username} 
+                            <hr/>
+                            <br/>
+                            <FontAwesomeIcon icon={faComment} className="icon"/>
+                            U PROŠLOSTI JE KREIRAO {activityHistory.length} AKTIVNOSTI
                           </div>
                         </div>
-                        )}
+                      )}
                     </div>
                   )}
-                </div>
+
+                  {activeTab === "analytics" && (
+    <div className="analytics-section">
+        <div className="analytics-summary">
+            <h3>Ukupno aktivnosti: {analyticsData.total_participated}</h3>
+            <h4>Kreirane aktivnosti: {analyticsData.created_activities}</h4>
+            <h4>Prijavljeni događaji: {analyticsData.registered_activities}</h4>
+            <h4>U poslednjih 30 dana: {analyticsData.monthly_stats.total}</h4>
+            <h4>Prosečno nedeljno: {analyticsData.average_per_week}</h4>
+        </div>
+        
+        <div className="charts-container">
+            <div className="chart">
+                <h4>Raspodela po sportovima</h4>
+                <ResponsiveContainer width="100%" height={400}>
+                    <BarChart
+                        data={analyticsData.sport_distribution}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                        layout="vertical"
+                    >
+                        <XAxis type="number" />
+                        <YAxis dataKey="sport" type="category" width={100} />
+                        <Tooltip />
+                        <Legend />
+                        <Bar dataKey="total" name="Ukupno" fill="#8884d8" />
+                        <Bar dataKey="created" name="Kreirano" fill="#82ca9d" />
+                        <Bar dataKey="registered" name="Prijavljeno" fill="#ffc658" />
+                    </BarChart>
+                </ResponsiveContainer>
+            </div>
+            
+            <div className="chart">
+                <h4>Termini aktivnosti (poslednjih 30 dana)</h4>
+                <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                        <Pie
+                            data={[
+                                { name: 'Kreirane', value: analyticsData.monthly_stats.created },
+                                { name: 'Prijavljene', value: analyticsData.monthly_stats.registered }
+                            ]}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                            nameKey="name"
+                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                        >
+                            <Cell fill="#8884d8" />
+                            <Cell fill="#82ca9d" />
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                    </PieChart>
+                </ResponsiveContainer>
+            </div>
+        </div>
+    </div>
+)}
+                </>
               )}
             </section>
           </div>
-        </div >)
-      }
+        </div>
+      )}
       <Footer />
-    </body >
+    </div>
   );
 };
 
