@@ -189,12 +189,30 @@ const EditUserProfile = () => {
       });
   };
 
-  const handleLogout = async () => {
+/*   const handleLogout = async () => {
     // Remove the token from localStorage
     await unsubscribeFromPushSubscription(localStorage.getItem('token')).then(() => {
       localStorage.removeItem('token');
       window.location.replace("/login");
     })
+  }; */
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem('token');
+  
+    try {
+      await axios.post("http://localhost:8000/api/logout/", {}, {
+        headers: {
+          Authorization: `Token ${token}`
+        }
+      });
+    } catch (err) {
+      console.error("Logout failed", err);
+    } finally {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.replace("/login");
+    }
   };
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
