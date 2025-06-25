@@ -55,6 +55,51 @@ def send_message(request):
     
     return Response({"message": "Message sent successfully!"})    
 
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from accounts.models import ClientToken, BusinessSubjectToken
+from accounts.serializers import ClientSerializer, BusinessSubjectSerializer
+
+@api_view(["GET"])
+@permission_classes([AllowAny])  # Ako ne koristiš Django login sistem
+def get_current_user_from_token(request):
+    token = request.headers.get("Authorization")
+
+    if not token:
+        return Response({"error": "Token is missing"}, status=400)
+
+    # Strip "Token " prefix if present
+    if token.startswith("Token "):
+        token = token[6:]
+
+    # Try to find the user by token
+    try:
+        client_token = ClientToken.objects.get(key=token)
+        client = client_token.client
+        return Response({
+            "id": client.id,
+            "username": client.username,
+            "email": client.email,
+            "type": "client",
+            # Add more fields if needed
+        })
+    except ClientToken.DoesNotExist:
+        pass
+
+    try:
+        bs_token = BusinessSubjectToken.objects.get(key=token)
+        bs = bs_token.business_subject
+        return Response({
+            "id": bs.id,
+            "name": bs.nameSportOrganization,
+            "email": bs.email,
+            "type": "businesssubject",
+            # Add more fields if needed
+        })
+    except BusinessSubjectToken.DoesNotExist:
+        return Response({"error": "Invalid token"}, status=401)
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

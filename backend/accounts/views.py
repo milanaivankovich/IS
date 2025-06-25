@@ -712,8 +712,18 @@ def login_user(request):
             defaults={"key": get_random_string(40)}  # Assign a random token key if it's created
         )
 
-        # Return the token
-        return Response({"token": token.key}, status=200)
+        return Response({
+    "token": token.key,
+    "user": {
+        "id": user.id,
+        "username": user.username,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "profile_picture": request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
+        # Dodaj sve što ti treba
+    }
+}, status=200)
+
 
     except Exception as e:
         logger.error(f"Unexpected error during login for user '{username}': {str(e)}", exc_info=True)

@@ -112,6 +112,12 @@ class ClientSerializer(serializers.ModelSerializer):
         if Client.objects.filter(email=value).exists():
             raise serializers.ValidationError("A user with this email already exists.")
         return value
+    def get_profile_picture(self, obj):
+        request = self.context.get('request')
+        if obj.profile_picture:
+            return request.build_absolute_uri(obj.profile_picture.url)
+        return None
+
 
     def validate_username(self, value):
         instance = self.instance  # Current instance being updated

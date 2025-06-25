@@ -3,12 +3,6 @@ import UserSearch from "../components/UserSearch";
 import ConversationList from "../components/ConversationList";
 import Chat from "../components/Chat";
 
-const dummyUsers = [
-  { id: 1, name: "Ana", avatar: "https://i.pravatar.cc/150?img=1", online: true },
-  { id: 2, name: "Marko", avatar: "https://i.pravatar.cc/150?img=2", online: false },
-  { id: 3, name: "Jovana", avatar: "https://i.pravatar.cc/150?img=3", online: true },
-];
-
 const dummyConversations = [
   { name: "Marko", other_user: { id: 2 } },
   { name: "Ana", other_user: { id: 1 } },
@@ -16,8 +10,9 @@ const dummyConversations = [
 
 const ChatPage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
-  const currentUserId = 999; // Dummy logged-in user
-  const token = "dummy-token";
+  const [allUsers, setAllUsers] = useState([]); // Pravi korisnici iz UserSearch
+  const currentUserId = JSON.parse(localStorage.getItem("user"))?.id || null;
+  const token = localStorage.getItem("token");
 
   const handleSelectUser = (user) => {
     setSelectedUser(null);
@@ -38,11 +33,11 @@ const ChatPage = () => {
         }}
       >
         <h3 style={{ marginBottom: "0.5rem" }}>Pretraži korisnike</h3>
-        <UserSearch users={dummyUsers} onSelect={handleSelectUser} />
+        <UserSearch onSelect={handleSelectUser} setAllUsers={setAllUsers} />
 
         <h4 style={{ marginTop: "2rem", marginBottom: "0.5rem" }}>Nedavne poruke</h4>
         <ConversationList
-          users={dummyUsers}
+          users={allUsers}
           conversations={dummyConversations}
           onSelect={handleSelectUser}
         />

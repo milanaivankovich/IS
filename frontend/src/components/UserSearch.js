@@ -1,19 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const UserSearch = ({ users, onSelect }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+const UserSearch = ({ onSelect, setAllUsers }) => {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleSearch = async (q) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`http://localhost:8000/api/search/users/?q=${q}`, {
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await res.json();
+
+     const combined = [
+  ...(data.clients || []).map((client) => ({
+    id: client.id,
+    name: `${client.first_name} ${client.last_name}`,
+    avatar: client.profile_picture
+      ? `http://localhost:8000${client.profile_picture}` // već je to pun URL ako backend koristi `request.build_absolute_uri`
+      : `https://ui-avatars.com/api/?name=${encodeURIComponent(client.username)}&background=random&color=fff`
+
+,
+    online: true,
+  })),
+  ...(data.business_profiles || []).map((bp) => ({
+    id: bp.id,
+    name: bp.nameSportOrganization,
+    avatar: bp.profile_picture
+      ? `http://localhost:8000${bp.profile_picture}`
+      : "https://via.placeholder.com/40",
+    online: true,
+  })),
+];
+
+      setResults(combined);
+      setAllUsers(combined); // Šaljemo korisnike u ChatPage za ConversationList
+    } catch (err) {
+      console.error("Greška prilikom pretrage:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (query.trim() !== "") {
+        handleSearch(query);
+      } else {
+        setResults([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayDebounce);
+  }, [query]);
 
   return (
     <div>
       <input
         type="text"
         placeholder="Pretraži korisnike..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
         style={{
           width: "100%",
           padding: "0.5rem",
@@ -23,11 +73,12 @@ const UserSearch = ({ users, onSelect }) => {
           fontSize: "1rem",
         }}
       />
+      {isLoading && <div style={{ fontSize: "0.9rem", color: "#888" }}>Učitavanje...</div>}
       <ul style={{ listStyle: "none", paddingLeft: 0, maxHeight: "200px", overflowY: "auto" }}>
-        {filteredUsers.map((u) => (
+        {results.map((user) => (
           <li
-            key={u.id}
-            onClick={() => onSelect(u)}
+            key={user.id}
+            onClick={() => onSelect(user)}
             style={{
               cursor: "pointer",
               padding: "0.5rem 0",
@@ -35,26 +86,34 @@ const UserSearch = ({ users, onSelect }) => {
               alignItems: "center",
               gap: "10px",
               borderBottom: "1px solid #eee",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}
           >
             <img
-              src={u.avatar}
-              alt={u.name}
+              src={user.avatar}
+              alt={user.name}
               style={{ width: 32, height: 32, borderRadius: "50%" }}
             />
-            <span>{u.name}</span>
-            {u.online && <span style={{
-              backgroundColor: "#4caf50",
-              width: "10px",
-              height: "10px",
-              borderRadius: "50%",
-              display: "inline-block",
-              marginLeft: "auto"
-            }} title="Online"></span>}
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{user.name}</span>
+            {user.online && (
+              <span
+                style={{
+                  backgroundColor: "#4caf50",
+                  width: "10px",
+                  height: "10px",
+                  borderRadius: "50%",
+                  display: "inline-block",
+                  marginLeft: "auto",
+                }}
+                title="Online"
+              />
+            )}
           </li>
         ))}
-        {filteredUsers.length === 0 && (
-          <li style={{ color: "#999", padding: "0.5rem" }}>Nema korisnika.</li>
+        {results.length === 0 && query && !isLoading && (
+          <li style={{ color: "#999", padding: "0.5rem" }}>Nema rezultata za pretragu.</li>
         )}
       </ul>
     </div>
