@@ -44,7 +44,7 @@ def activity_starting_soon_notification():
         notification_type='uskoro',  # Set notification type
         content=f"Događaj korisnika @{post.client} se održava uskoro", #todo staviti neki format dateTime
         )
-        send_notification_generic(creator.id, new_notification)
+        send_notification_generic(f"Client{creator.id}", new_notification)
         send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client}", new_notification.content, f"@{new_notification.sender_client}/{new_notification.notification_type}")
         send_email_notification(new_notification.recipient_client, new_notification.activity)
         new_notification.is_sent=True
@@ -59,7 +59,7 @@ def activity_starting_soon_notification():
             notification_type='uskoro',  # Set notification type
             content=f"Događaj korisnika @{user.username} se održava uskoro",
             )
-            send_notification_generic(user.id, new_notification)
+            send_notification_generic(f"Client{user.id}", new_notification)
             send_push_notification_to_all_user_devices(new_notification.recipient_client, f"@{new_notification.sender_client.username}", new_notification.content, f"@{new_notification.sender_client.username}/{new_notification.notification_type}")
             send_email_notification(new_notification.recipient_client, new_notification.activity)
             new_notification.is_sent=True
@@ -75,7 +75,7 @@ from advertisements.models import Advertisement
 def filter_and_send_notifications():
     print("filter notifications activated!")
     
-    not_deleted = NotificationGeneric.objects.filter(is_deleted=False)
+    not_deleted = NotificationGeneric.objects.filter(is_deleted=False, is_sent=False)
     #logika za ciscenje, grupe gdje se sve poklapa (ne mora biti isti posiljalac, akcenat na dogadjaju)
     grouped_by_recipient = not_deleted.values(
     'recipient_client', 
@@ -116,6 +116,8 @@ def filter_and_send_notifications():
             ).order_by('-created_at')
            #samo prvobitne obrisati posljednji mora ostati
         to_delete.update(is_deleted=True)
+
+        #if to_delete.count() <= 1: continue #ako je samo jedna ostaviti je
         sender_client = to_delete.first().sender_client
         sender_subject =  to_delete.first().sender_subject
         content = to_delete.first().content
@@ -143,7 +145,9 @@ def filter_and_send_notifications():
         else: sender = notif.sender_subject
         if notif.recipient_client:
             recipient = notif.recipient_client
-        else: recipient = notif.recipient_subject
+        else: 
+            recipient = notif.recipient_subject
+
         send_notification_generic(f"Client{recipient.id}",notif)
         send_push_notification_to_all_user_devices(recipient, f"@{sender.username}", notif.content, f"@{sender.username}/{notif.notification_type}")
         notif.is_sent = True

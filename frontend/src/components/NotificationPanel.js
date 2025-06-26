@@ -7,6 +7,7 @@ import userImg from "../images/user.svg";
 import { useInView } from "react-intersection-observer";
 import "./notifications/NotificationPanel.css";
 import ActivityCard from "./ActivityCard.js";
+import { useNotifCountContext } from "./notifications/NotificationCountContext";
 
 const NotificationPanel = ({ userId, userType }) => {
 
@@ -14,6 +15,7 @@ const NotificationPanel = ({ userId, userType }) => {
     //dohvacanje 10 notifikacija
     const [notifications, setNotifications] = useState([]);
     const [loadingNotifications, setLoadingNotifications] = useState(true);
+    const { notifCount, setNotifCount } = useNotifCountContext();
     const fetchAll = async () => {
         setLoadingNotifications(true);
         await axios.get(`${API}/api/notifications/pagination/${userType}/${userId}`, {
@@ -65,6 +67,7 @@ const NotificationPanel = ({ userId, userType }) => {
         )
             .then((response) => {
                 fetchAll();
+                setNotifCount(0);
             })
             .catch((error) =>
                 console.error(error + "Greska pri mark all as read"));
