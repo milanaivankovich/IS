@@ -22,6 +22,7 @@ const UserSearch = ({ onSelect, setAllUsers }) => {
     avatar: client.profile_picture
       ? `http://localhost:8000${client.profile_picture}` // već je to pun URL ako backend koristi `request.build_absolute_uri`
       : `https://ui-avatars.com/api/?name=${encodeURIComponent(client.username)}&background=random&color=fff`
+      
 
 ,
     online: true,
@@ -31,7 +32,7 @@ const UserSearch = ({ onSelect, setAllUsers }) => {
     name: bp.nameSportOrganization,
     avatar: bp.profile_picture
       ? `http://localhost:8000${bp.profile_picture}`
-      : "https://via.placeholder.com/40",
+      : `https://ui-avatars.com/api/?name=${encodeURIComponent(bp.nameSportOrganization)}&background=random&color=fff`,
     online: true,
   })),
 ];
