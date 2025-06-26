@@ -19,5 +19,7 @@ class Message(models.Model):
     is_deleted = models.BooleanField(default=False)
     room_name = models.CharField(max_length=100, default='global')
 
+    reaction = models.CharField(max_length=10, blank=True, null=True) 
+
     def __str__(self):
         return f"{self.sender} to {self.receiver}: {self.content[:30]}"

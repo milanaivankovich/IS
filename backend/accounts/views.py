@@ -160,7 +160,7 @@ def social_login(request):
 
             # Return client details and token
             return JsonResponse({
-                "uid": user_data["uid"],
+                "id": client.id,
                 "email": user_data.get("email"),
                 "name": f"{first_name} {last_name}",
                 "photoURL": photo_url,
@@ -961,7 +961,7 @@ def search_users(request):
     for client in client_results:
         client_data = ClientSerializer(client).data
         
-        client_data['id'] = client.username
+        client_data['id'] = client.id
         
         # Add client data to the results
         serialized_clients.append(client_data)

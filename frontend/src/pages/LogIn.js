@@ -143,7 +143,11 @@ const Login = () => {
       localStorage.setItem('token', token);
   
       // Optionally store user data for UI purposes
-      localStorage.setItem('user', JSON.stringify(user));
+      // Čuvaj backend korisničke podatke
+      // Čuvaj backend korisničke podatke
+      localStorage.setItem('user', JSON.stringify(response.data));
+
+
   
       // Redirect the user to the home page or another appropriate location
       window.location.href = "/";

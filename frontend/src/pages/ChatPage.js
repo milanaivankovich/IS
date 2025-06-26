@@ -15,6 +15,7 @@ const ChatPage = () => {
   const token = localStorage.getItem("token");
 
   const handleSelectUser = (user) => {
+    console.log("Izabrani korisnik:", user);
     setSelectedUser(null);
     setTimeout(() => setSelectedUser(user), 0);
   };
@@ -46,11 +47,12 @@ const ChatPage = () => {
       <div style={{ flex: 1, padding: "1rem", display: "flex", flexDirection: "column" }}>
         {selectedUser ? (
           <Chat
-            token={token}
-            roomName={[currentUserId, selectedUser.id].sort().join("_")}
-            currentUserId={currentUserId}
-            selectedUser={selectedUser}
-          />
+  token={token}
+  roomName={[currentUserId, selectedUser.id].sort().join("_")}
+  currentUserId={currentUserId}
+  selectedUser={selectedUser}
+/>
+
         ) : (
           <div
             style={{
