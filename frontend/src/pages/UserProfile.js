@@ -10,7 +10,7 @@ import FieldsCard from '../components/FieldsCard.js';
 import Spinner from 'react-bootstrap/Spinner';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComment } from '@fortawesome/free-solid-svg-icons';
-import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, Cell, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import './UserProfile.css';
 
 const UserProfile = () => {
@@ -46,12 +46,11 @@ const UserProfile = () => {
 
   // Analytics data
 const [analyticsData, setAnalyticsData] = useState({
-    total_participated: 0,
-    created_activities: 0,
-    registered_activities: 0,
-    sport_distribution: [],
-    monthly_stats: { total: 0, created: 0, registered: 0 },
-    average_per_week: 0
+    favorite_sport: null,
+    created_by_sport: [],
+    participated_by_sport: [],
+    total_created: 0,
+    total_participated: 0
 });
   // Tab titles
   const [selectionTitle, setSelectionTitle] = useState('Događaji');
@@ -135,25 +134,35 @@ const [analyticsData, setAnalyticsData] = useState({
   }, [id]);
 
   // Fetch analytics data
- useEffect(() => {
+useEffect(() => {
     const fetchAnalyticsData = async () => {
         try {
             const token = localStorage.getItem('token');
-            console.log("Current token:", token); // Debug
+            if (!token) {
+                console.error("No token found");
+                return;
+            }
+
             const response = await axios.get(`${uri}/api/user-analytics/${username}/`, {
                 headers: { 
                     Authorization: `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
+                withCredentials: true  // Include cookies if using session auth
             });
-            console.log("Analytics response:", response); // Debug
-            setAnalyticsData(response.data);
+            
+            setAnalyticsData({
+                favorite_sport: response.data.favorite_sport,
+                created_by_sport: response.data.created_by_sport,
+                participated_by_sport: response.data.participated_by_sport,
+                total_created: response.data.total_created,
+                total_participated: response.data.total_participated
+            });
         } catch (error) {
-            console.error("Error details:", {
-                message: error.message,
-                response: error.response,
-                request: error.request
-            }); // Detaljan debug
+            console.error("Error fetching analytics:", error);
+            if (error.response?.status === 403) {
+                alert("You don't have permission to view this data");
+            }
         }
     };
 
@@ -379,60 +388,46 @@ const [analyticsData, setAnalyticsData] = useState({
                     </div>
                   )}
 
-                  {activeTab === "analytics" && (
+                  
+
+{activeTab === "analytics" && (
     <div className="analytics-section">
         <div className="analytics-summary">
-            <h3>Ukupno aktivnosti: {analyticsData.total_participated}</h3>
-            <h4>Kreirane aktivnosti: {analyticsData.created_activities}</h4>
-            <h4>Prijavljeni događaji: {analyticsData.registered_activities}</h4>
-            <h4>U poslednjih 30 dana: {analyticsData.monthly_stats.total}</h4>
-            <h4>Prosečno nedeljno: {analyticsData.average_per_week}</h4>
+            <h3>Omiljeni sport: {analyticsData.favorite_sport || 'Nema podataka'}</h3>
+            <h4>Ukupno kreiranih događaja: {analyticsData.total_created}</h4>
+            <h4>Ukupno prijavljenih događaja: {analyticsData.total_participated}</h4>
         </div>
         
         <div className="charts-container">
             <div className="chart">
-                <h4>Raspodela po sportovima</h4>
+                <h4>Kreirani događaji po sportovima</h4>
                 <ResponsiveContainer width="100%" height={400}>
                     <BarChart
-                        data={analyticsData.sport_distribution}
+                        data={analyticsData.created_by_sport}
                         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                         layout="vertical"
                     >
                         <XAxis type="number" />
-                        <YAxis dataKey="sport" type="category" width={100} />
+                        <YAxis dataKey="sport__name" type="category" width={100} />
                         <Tooltip />
-                        <Legend />
-                        <Bar dataKey="total" name="Ukupno" fill="#8884d8" />
-                        <Bar dataKey="created" name="Kreirano" fill="#82ca9d" />
-                        <Bar dataKey="registered" name="Prijavljeno" fill="#ffc658" />
+                        <Bar dataKey="count" name="Broj događaja" fill="#8884d8" />
                     </BarChart>
                 </ResponsiveContainer>
             </div>
             
             <div className="chart">
-                <h4>Termini aktivnosti (poslednjih 30 dana)</h4>
-                <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                        <Pie
-                            data={[
-                                { name: 'Kreirane', value: analyticsData.monthly_stats.created },
-                                { name: 'Prijavljene', value: analyticsData.monthly_stats.registered }
-                            ]}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            outerRadius={80}
-                            fill="#8884d8"
-                            dataKey="value"
-                            nameKey="name"
-                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                        >
-                            <Cell fill="#8884d8" />
-                            <Cell fill="#82ca9d" />
-                        </Pie>
+                <h4>Prijavljeni događaji po sportovima</h4>
+                <ResponsiveContainer width="100%" height={400}>
+                    <BarChart
+                        data={analyticsData.participated_by_sport}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                        layout="vertical"
+                    >
+                        <XAxis type="number" />
+                        <YAxis dataKey="sport__name" type="category" width={100} />
                         <Tooltip />
-                        <Legend />
-                    </PieChart>
+                        <Bar dataKey="count" name="Broj događaja" fill="#82ca9d" />
+                    </BarChart>
                 </ResponsiveContainer>
             </div>
         </div>

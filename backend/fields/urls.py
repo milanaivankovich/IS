@@ -12,4 +12,5 @@ urlpatterns = [
     path('api/field/<int:field_id>/sports/', views.field_sports, name='field_sports'), #GET sports by field id
     path('api/field/id/<int:id>/', views.field_by_id), #GET field by id
     path('api/random-fields/', views.generate_random_fields, name='generate_random_fields'),
+    path('api/user-analytics/<str:username>/', views.user_analytics, name='user-analytics'),
 ]

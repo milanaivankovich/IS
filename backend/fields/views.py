@@ -99,92 +99,58 @@ def generate_random_fields(request):
 @permission_classes([IsAuthenticated])
 def user_analytics(request, username):
     try:
-        # Proverite da li zahtev dolazi od istog korisnika
-        if request.user.username != username:
-            return Response({'error': 'Not authorized to view this data'}, status=403)
+        # Get the client object
+        client = Client.objects.get(username=username)
+        
+        # Verify request user matches the requested username or is admin
+        if request.user.username != username and not request.user.is_staff:
+            return Response(
+                {'error': 'Not authorized to view this data'}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
             
-        # Debug ispis
-        print(f"User making request: {request.user.username}")
-        print(f"Requested user data: {username}")
-  
-        print(f"Starting analytics for user: {username}")  # Debug
-        user = User.objects.get(username=username)
-        print(f"User found: {user.id}")  # Debug
-        
-        # 1. Ukupan broj aktivnosti
-        total_query = Activities.objects.filter(
-            Q(creator__username=username) | Q(participants__user__username=username)
-        ).distinct()
-        print(f"Total activities query: {total_query.query}")  # Debug SQL
-        total_participated = total_query.count()
-        print(f"Total activities count: {total_participated}")  # Debug
-        
-        # 2. Kreirane aktivnosti
-        created_query = Activities.objects.filter(creator__username=username)
-        print(f"Created activities query: {created_query.query}")  # Debug SQL
-        created_activities = created_query.count()
-        print(f"Created activities count: {created_activities}")  # Debug
-        
-        # 3. Prijavljene aktivnosti
-        registered_query = Activities.objects.filter(
-            participants__user__username=username
-        ).exclude(creator__username=username)
-        print(f"Registered activities query: {registered_query.query}")  # Debug SQL
-        registered_activities = registered_query.count()
-        print(f"Registered activities count: {registered_activities}")  # Debug
-        
-        # 4. Raspodela po sportovima
-        sport_distribution = Activities.objects.filter(
-            Q(creator__username=username) | Q(participants__user__username=username)
+        # 1. Favorite sport calculation
+        sport_stats = Activities.objects.filter(
+            Q(client=client) | Q(participants=client)
         ).values('sport__name').annotate(
-            count=Count('id'),
-            created=Count(Case(When(creator__username=username, then=1))),
-            registered=Count(Case(When(participants__user__username=username, then=1)))
+            total=Count('id'),
+            created=Count('id', filter=Q(client=client)),
+            participated=Count('id', filter=Q(participants=client))
+        ).order_by('-total')
+        
+        favorite_sport = sport_stats.first()['sport__name'] if sport_stats else None
+        
+        # 2. Created activities by sport
+        created_by_sport = Activities.objects.filter(
+            client=client
+        ).values('sport__name').annotate(
+            count=Count('id')
         ).order_by('-count')
         
-        print(f"Sport distribution raw: {list(sport_distribution)}")  # Debug
-        
-        sport_data = []
-        for item in sport_distribution:
-            sport_data.append({
-                'sport': item['sport__name'] or 'Nepoznat sport',
-                'total': item['count'],
-                'created': item['created'],
-                'registered': item['registered']
-            })
-        
-        print(f"Sport data prepared: {sport_data}")  # Debug
-        
-        # 5. Mesečne statistike
-        last_month = timezone.now() - timedelta(days=30)
-        monthly_stats = Activities.objects.filter(
-            Q(creator__username=username) | Q(participants__user__username=username),
-            date__gte=last_month
-        ).aggregate(
-            total=Count('id'),
-            created=Count(Case(When(creator__username=username, then=1))),
-            registered=Count(Case(When(participants__user__username=username, then=1)))
-        )
-        
-        print(f"Monthly stats: {monthly_stats}")  # Debug
-        
-        average_per_week = round(monthly_stats['total'] / 4.33, 1) if monthly_stats['total'] > 0 else 0
+        # 3. Participated activities by sport
+        participated_by_sport = Activities.objects.filter(
+            participants=client
+        ).values('sport__name').annotate(
+            count=Count('id')
+        ).order_by('-count')
         
         response_data = {
-            'total_participated': total_participated,
-            'created_activities': created_activities,
-            'registered_activities': registered_activities,
-            'sport_distribution': sport_data,
-            'monthly_stats': monthly_stats,
-            'average_per_week': average_per_week
+            'favorite_sport': favorite_sport,
+            'created_by_sport': list(created_by_sport),
+            'participated_by_sport': list(participated_by_sport),
+            'total_created': Activities.objects.filter(client=client).count(),
+            'total_participated': Activities.objects.filter(participants=client).count(),
         }
         
-        print(f"Final response data: {response_data}")  # Debug
         return Response(response_data)
         
-    except User.DoesNotExist:
-        print(f"User {username} not found")  # Debug
-        return Response({'error': 'User not found'}, status=404)
+    except Client.DoesNotExist:
+        return Response(
+            {'error': 'User not found'}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
     except Exception as e:
-        print(f"Error in user_analytics: {str(e)}")  # Debug
-        return Response({'error': str(e)}, status=400)
+        return Response(
+            {'error': str(e)}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )

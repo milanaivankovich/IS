@@ -237,3 +237,41 @@
     color: #444;
     text-align: center;
 }
+/* Add these styles to UserProfile.css */
+
+.analytics-summary {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.analytics-summary h3 {
+    font-size: 1.5rem;
+    color: #F15A24;
+    margin-bottom: 15px;
+}
+
+.analytics-summary h4 {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 8px 0;
+}
+
+.chart {
+    flex: 1;
+    min-width: 400px;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.chart h4 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 1.2rem;
+}
