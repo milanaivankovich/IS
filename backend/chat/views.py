@@ -9,6 +9,19 @@ from rest_framework.decorators import permission_classes
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from accounts.models import ClientToken, BusinessSubjectToken
+from accounts.serializers import ClientSerializer, BusinessSubjectSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q, Max
+from accounts.models import Client, BusinessSubject
+from django.contrib.auth import get_user_model
+
 
 class MessageListCreate(generics.ListCreateAPIView):
     queryset = Message.objects.all()
@@ -55,11 +68,109 @@ def send_message(request):
     
     return Response({"message": "Message sent successfully!"})    
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from accounts.models import ClientToken, BusinessSubjectToken
-from accounts.serializers import ClientSerializer, BusinessSubjectSerializer
+@api_view(["GET"])
+def conversations_list(request):
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Token "):
+        return Response({"detail": "Authentication credentials were not provided."}, status=403)
+
+    token = auth_header.split(" ")[1]
+
+    user = None
+    try:
+        user = ClientToken.objects.select_related("client").get(key=token).client
+    except ClientToken.DoesNotExist:
+        try:
+            user = BusinessSubjectToken.objects.select_related("business_subject").get(key=token).business_subject
+        except BusinessSubjectToken.DoesNotExist:
+            pass
+
+    if user is None:
+        return Response({"detail": "Invalid token."}, status=403)
+
+    # Ovde nastavljaj kao što si imao, sada je user autentifikovan
+    # Svi ContentType za moguce korisnike (koristi se za poređenje)
+    user_ct = ContentType.objects.get_for_model(user)
+    client_ct = ContentType.objects.get_for_model(Client)
+    bs_ct = ContentType.objects.get_for_model(BusinessSubject)
+
+    # Prvo skup poruka gde je user sender ili receiver
+    messages = Message.objects.filter(
+        Q(sender_content_type=user_ct, sender_object_id=user.id) |
+        Q(receiver_content_type=user_ct, receiver_object_id=user.id),
+        is_deleted=False,
+    )
+
+    # ...ostatak koda ostaje isti...
+
+    conversations = {}
+
+    for msg in messages.order_by("-timestamp"):
+        if msg.sender_content_type == user_ct and msg.sender_object_id == user.id:
+            other_ct = msg.receiver_content_type
+            other_id = msg.receiver_object_id
+        else:
+            other_ct = msg.sender_content_type
+            other_id = msg.sender_object_id
+
+        key = (other_ct.id, other_id)
+        if key not in conversations:
+            other_user_data = {}
+
+            model = other_ct.model_class()
+            try:
+                other_instance = model.objects.get(id=other_id)
+            except model.DoesNotExist:
+                continue
+
+            if other_ct == user_ct:
+                other_user_data = {
+                    "id": other_instance.id,
+                    "type": "user",
+                    "username": getattr(other_instance, "username", None),
+                    "name": f"{getattr(other_instance, 'first_name', '')} {getattr(other_instance, 'last_name', '')}".strip(),
+                }
+            elif other_ct == client_ct:
+                other_user_data = {
+                    "id": other_instance.id,
+                    "type": "client",
+                    "username": getattr(other_instance, "username", None),
+                    "name": getattr(other_instance, "name", None) or getattr(other_instance, "username", None),
+                    "avatar": other_instance.profile_picture.url if other_instance.profile_picture else None,
+                    
+                }
+            elif other_ct == bs_ct:
+                other_user_data = {
+                    "id": other_instance.id,
+                    "type": "businesssubject",
+                    "name": getattr(other_instance, "name", None) or getattr(other_instance, "nameSportOrganization", None),
+                    "avatar": other_instance.profile_picture.url if other_instance.profile_picture else None,
+                }
+            else:
+                other_user_data = {
+                    "id": other_instance.id,
+                    "type": other_ct.model,
+                    "name": str(other_instance),
+                }
+
+            conversations[key] = {
+                "other_user": other_user_data,
+                "last_message": msg.content,
+                "last_timestamp": msg.timestamp.isoformat(),
+                "unread": messages.filter(
+                    sender_content_type=other_ct,
+                    sender_object_id=other_id,
+                    receiver_content_type=user_ct,
+                    receiver_object_id=user.id,
+                    is_read=False,
+                    is_deleted=False,
+                ).count(),
+            }
+
+    conversations_list = sorted(conversations.values(), key=lambda x: x["last_timestamp"], reverse=True)
+
+    return Response(conversations_list)
+
 
 @api_view(["GET"])
 @permission_classes([AllowAny])  # Ako ne koristiš Django login sistem

@@ -1,69 +1,72 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import UserSearch from "../components/UserSearch";
 import ConversationList from "../components/ConversationList";
 import Chat from "../components/Chat";
-
-const dummyConversations = [
-  { name: "Marko", other_user: { id: 2 } },
-  { name: "Ana", other_user: { id: 1 } },
-];
+import axios from "axios";
 
 const ChatPage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
-  const [allUsers, setAllUsers] = useState([]); // Pravi korisnici iz UserSearch
-  const currentUserId = JSON.parse(localStorage.getItem("user"))?.id || null;
+  const [allUsers, setAllUsers] = useState([]); // iz UserSearch
+  const [conversations, setConversations] = useState([]); // za listu
+  const currentUser = JSON.parse(localStorage.getItem("user"));
+  const currentUserId = currentUser?.id;
   const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const fetchConversations = useCallback(async () => {
+    try {
+      const resp = await axios.get("http://localhost:8000/api/conversations/", {
+        headers: { Authorization: `Token ${token}` },
+        params: { user: user},
+        
+      });
+      setConversations(resp.data);
+    } catch (err) {
+      console.error("Greška pri učitavanju konverzacija:", err);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    fetchConversations();
+  }, [fetchConversations]);
 
   const handleSelectUser = (user) => {
-    console.log("Izabrani korisnik:", user);
     setSelectedUser(null);
     setTimeout(() => setSelectedUser(user), 0);
   };
 
-  return (
-    <div style={{ display: "flex", height: "100vh", fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" }}>
-      <div
-        style={{
-          width: "320px",
-          padding: "1rem",
-          borderRight: "1px solid #ccc",
-          backgroundColor: "#f9f9f9",
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-        }}
-      >
-        <h3 style={{ marginBottom: "0.5rem" }}>Pretraži korisnike</h3>
-        <UserSearch onSelect={handleSelectUser} setAllUsers={setAllUsers} />
+  const handleNewMessage = (conversationUser) => {
+    setConversations(prev => {
+      // premjesti ili dodaj iznad
+      const others = prev.filter(c => c.other_user.id !== conversationUser.id);
+      return [{ other_user: conversationUser, last_message: "", unread: 0 }, ...others];
+    });
+    fetchConversations();
+  };
 
-        <h4 style={{ marginTop: "2rem", marginBottom: "0.5rem" }}>Nedavne poruke</h4>
+  return (
+    <div style={{ display: "flex", height: "100vh" }}>
+      <div style={{ width: 320, padding: 16, borderRight: "1px solid #ccc", display: "flex", flexDirection: "column" }}>
+        <h3>Pretraži korisnike</h3>
+        <UserSearch onSelect={handleSelectUser} setAllUsers={setAllUsers} />
+        <h4>Nedavne poruke</h4>
         <ConversationList
-          users={allUsers}
-          conversations={dummyConversations}
+          conversations={conversations}
           onSelect={handleSelectUser}
+          users={allUsers}
         />
       </div>
-
-      <div style={{ flex: 1, padding: "1rem", display: "flex", flexDirection: "column" }}>
+      <div style={{ flex: 1, padding: 16, display: "flex", flexDirection: "column" }}>
         {selectedUser ? (
           <Chat
-  token={token}
-  roomName={[currentUserId, selectedUser.id].sort().join("_")}
-  currentUserId={currentUserId}
-  selectedUser={selectedUser}
-/>
-
+            token={token}
+            currentUserId={currentUserId}
+            selectedUser={selectedUser}
+            roomName={[currentUserId, selectedUser.id].sort().join("_")}
+            onNewMessage={handleNewMessage}
+          />
         ) : (
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              color: "#888",
-              fontSize: "1.2rem",
-            }}
-          >
+          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "#888" }}>
             Izaberi korisnika da započneš razgovor.
           </div>
         )}

@@ -8,8 +8,6 @@ from django.db.models import Q
 from .models import Message
 from accounts.models import Client, BusinessSubject, ClientToken, BusinessSubjectToken
 
-
-
 PAGE_SIZE = 10
 MAX_BULK_DELETE = 20
 
@@ -42,7 +40,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.broadcast_online_users()
 
     async def disconnect(self, close_code):
-        if self.room_group_name in online_users and self.username in online_users[self.room_group_name]:
+        if (
+            self.room_group_name in online_users
+            and self.username in online_users[self.room_group_name]
+        ):
             online_users[self.room_group_name].remove(self.username)
             if not online_users[self.room_group_name]:
                 del online_users[self.room_group_name]
@@ -69,6 +70,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.handle_typing(data)
         elif action == "add_reaction":
             await self.handle_add_reaction(data)
+        elif action == "fetch_conversations":
+            await self.handle_fetch_conversations(data)
 
     async def chat_message(self, event):
         print("Sending message to frontend:", event)  # Debug
@@ -153,7 +156,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "receiver": receiver_id,
                     "message_id": message.id,
                     "timestamp": message.timestamp.isoformat(),  # Dodaje 'Z' na kraj ako je UTC
-
                 },
             )
         except Exception as e:
@@ -161,14 +163,55 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 text_data=json.dumps({"type": "error", "message": str(e)})
             )
 
+    async def handle_fetch_conversations(self, data):
+        user = self.user
+
+        # Ovdje ti ne treba dodatni parametar, user je već autentiifikovan preko tokena
+        user_ct = await sync_to_async(ContentType.objects.get_for_model)(user)
+        user_id = user.id
+
+        # Vrati sve poruke gde je korisnik ili poslao ili primio
+        messages_qs = Message.objects.filter(
+            Q(sender_content_type=user_ct, sender_object_id=user_id)
+            | Q(receiver_content_type=user_ct, receiver_object_id=user_id),
+            is_deleted=False,
+        )
+
+        messages = await sync_to_async(list)(messages_qs.order_by("-timestamp"))
+
+        # Grupisanje poruka po "drugom korisniku" (tj. sagovorniku)
+        conv_dict = {}
+
+        for msg in messages:
+            # Ko je sagovornik u ovoj poruci?
+            if msg.sender_content_type == user_ct and msg.sender_object_id == user_id:
+                other_ct = msg.receiver_content_type
+                other_id = msg.receiver_object_id
+            else:
+                other_ct = msg.sender_content_type
+                other_id = msg.sender_object_id
+
+            key = (other_ct.model, other_id)
+
+            if key not in conv_dict:
+                conv_dict[key] = {
+                    "other_user": {"type": other_ct.model, "id": other_id},
+                    "last_message": msg.content,
+                    "timestamp": msg.timestamp.isoformat(),
+                    # možeš dodati druge informacije po potrebi
+                }
+
+        # Pošalji nazad konverzacije
+        await self.send(
+            text_data=json.dumps(
+                {"type": "conversation_list", "conversations": list(conv_dict.values())}
+            )
+        )
+
     async def handle_typing(self, data):
         await self.channel_layer.group_send(
             self.room_group_name,
-            {
-                "type": "typing_notification",
-                "sender": self.username,
-                "is_typing": True,
-            },
+            {"type": "typing_notification", "sender": self.username, "is_typing": True},
         )
 
     async def handle_fetch_messages(self, data):
@@ -206,12 +249,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         has_more = (offset + PAGE_SIZE) < total_messages
         await self.send(
             text_data=json.dumps(
-                {
-                    "type": "message_history",
-                    "messages": message_list,
-                    "page": page,
-                    "has_more": has_more,
-                }
+                {"type": "message_history", "messages": message_list, "page": page, "has_more": has_more}
             )
         )
 
@@ -222,9 +260,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             if message.sender_object_id == self.user.id:
                 message.is_deleted = True
                 await sync_to_async(message.save)()
-                await self.send(
-                    text_data=json.dumps({"type": "message_deleted", "message_id": message_id})
-                )
+                await self.send(text_data=json.dumps({"type": "message_deleted", "message_id": message_id}))
         except Message.DoesNotExist:
             pass
 
@@ -277,11 +313,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await sync_to_async(message.save)()
             await self.channel_layer.group_send(
                 self.room_group_name,
-                {
-                    "type": "message_reacted",
-                    "message_id": message_id,
-                    "reaction": emoji,
-                },
+                {"type": "message_reacted", "message_id": message_id, "reaction": emoji},
             )
         except Message.DoesNotExist:
             pass
@@ -297,9 +329,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @sync_to_async
     def get_bs_user_from_token(self, token):
         try:
-            bs_token = BusinessSubjectToken.objects.select_related(
-                "business_subject"
-            ).get(key=token)
+            bs_token = BusinessSubjectToken.objects.select_related("business_subject").get(key=token)
             return bs_token.business_subject
         except BusinessSubjectToken.DoesNotExist:
             return None
@@ -311,3 +341,4 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if user:
             return user
         return await self.get_bs_user_from_token(token)
+        

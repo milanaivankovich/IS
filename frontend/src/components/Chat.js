@@ -14,73 +14,81 @@ import data from "@emoji-mart/data";
 
 const reactionsList = ["❤️", "👍", "😂", "😮", "😢", "👏"];
 
-const Chat = ({ currentUserId, selectedUser, token, roomName }) => {
+const Chat = ({ currentUserId, selectedUser, token, roomName, onNewMessage }) => {
   const [messages, setMessages] = useState([]);
   const [typing, setTyping] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [showPicker, setShowPicker] = useState(false);
   const [reactionToMsg, setReactionToMsg] = useState(null);
   const [socket, setSocket] = useState(null);
-
-  const messageListRef = useRef(null);
   const numericUserId = parseInt(currentUserId, 10);
 
-  // Reset messages on room or user change
+  const messageListRef = useRef(null);
+
+  // Čistimo poruke kada se menja soba ili korisnik
   useEffect(() => {
     setMessages([]);
   }, [roomName, selectedUser]);
 
+  // Kreiramo WS i postavljamo evente
   useEffect(() => {
-    if (!token || !roomName) return;
+    if (!token || !roomName || !selectedUser) return;
 
-    const ws = new WebSocket(
-      `ws://localhost:8000/ws/chat/${roomName}/?token=${token}`
-    );
+    const ws = new WebSocket(`ws://localhost:8000/ws/chat/${roomName}/?token=${token}`);
     setSocket(ws);
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log("Primljena WS poruka:", data);
+    ws.onopen = () => {
+      console.log("✅ WebSocket otvoren");
+      ws.send(JSON.stringify({ action: "fetch_messages", page: 1 }));
+    };
 
-      if (data.type === "chat_message") {
-        console.log("Sender:", data.sender);
-        console.log("currentUserId (broj):", numericUserId);
-        setMessages((prev) => [
-          ...prev,
-          {
+    ws.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      switch (data.type) {
+        case "chat_message": {
+          const senderId = parseInt(data.sender, 10);
+          const msgObj = {
             id: data.message_id,
-            sender: parseInt(data.sender, 10),
+            sender: senderId,
             content: data.message,
             timestamp: data.timestamp ? new Date(data.timestamp) : new Date(),
             reaction: null,
             status: "delivered",
-          },
-        ]);
-      }
+          };
+          // Callback
+          const convUser = senderId === numericUserId ? selectedUser : {
+            id: senderId,
+            name: selectedUser.name,
+            avatar: selectedUser.avatar,
+            online: true,
+          };
+          onNewMessage && onNewMessage(convUser);
 
-      if (data.type === "message_reacted") {
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === data.message_id ? { ...msg, reaction: data.reaction } : msg
-          )
-        );
-      }
-
-      if (data.type === "typing_notification") {
-        setTyping(true);
-        setTimeout(() => setTyping(false), 2000);
-      }
-
-      if (data.type === "message_history") {
-        const loaded = data.messages.map((m) => ({
-          id: m.id,
-          sender: parseInt(m.sender, 10),
-          content: m.message,
-          timestamp: new Date(m.timestamp),
-          reaction: m.reaction || null,
-          status: m.is_read ? "read" : "delivered",
-        }));
-        setMessages(loaded);
+          setMessages((prev) => [...prev, msgObj]);
+          break;
+        }
+        case "typing_notification":
+          setTyping(true);
+          break;
+        case "message_reacted":
+          setMessages((prev) =>
+            prev.map((m) => (m.id === data.message_id ? { ...m, reaction: data.reaction } : m))
+          );
+          break;
+        case "message_history":
+          setMessages(
+            data.messages.map((m) => ({
+              id: m.id,
+              sender: parseInt(m.sender, 10),
+              content: m.message,
+              timestamp: new Date(m.timestamp),
+              reaction: m.reaction || null,
+              status: m.is_read ? "read" : "delivered",
+            }))
+          );
+          break;
+        default:
+          break;
       }
     };
 
@@ -91,29 +99,30 @@ const Chat = ({ currentUserId, selectedUser, token, roomName }) => {
     return () => {
       ws.close();
     };
-  }, [roomName, token]);
+  }, [roomName, token, selectedUser]);
 
+  // Automatski gasimo indikator tipkanja posle 3 sekunde
   useEffect(() => {
-    if (!socket) return;
+    if (!typing) return;
+    const timeout = setTimeout(() => setTyping(false), 3000);
+    return () => clearTimeout(timeout);
+  }, [typing]);
 
-    socket.onopen = () => {
-      console.log("✅ WebSocket otvoren, šaljem fetch_messages");
-      socket.send(
-        JSON.stringify({
-          action: "fetch_messages",
-          page: 1,
-        })
-      );
-    };
-  }, [socket]);
+  // Automatski scroll na dno kada stigne nova poruka
+  useEffect(() => {
+    if (messageListRef.current) {
+      messageListRef.current.scrollToBottom();
+    }
+  }, [messages]);
 
+  // Slanje poruke
   const handleSend = (text) => {
     if (!text.trim() || !socket || !selectedUser) return;
 
     socket.send(
       JSON.stringify({
         action: "send_message",
-        receiver_id: selectedUser.id, // Sigurno broj
+        receiver_id: selectedUser.id,
         message: text,
       })
     );
@@ -122,11 +131,13 @@ const Chat = ({ currentUserId, selectedUser, token, roomName }) => {
     setShowPicker(false);
   };
 
+  // Emoji picker handler
   const onEmojiSelect = (emoji) => {
     setInputValue((prev) => prev + emoji.native);
     setShowPicker(false);
   };
 
+  // Slanje reakcije na poruku
   const sendReaction = (emoji, messageId) => {
     if (!socket) return;
     socket.send(
@@ -169,7 +180,10 @@ const Chat = ({ currentUserId, selectedUser, token, roomName }) => {
             ref={messageListRef}
           >
             {messages.map((msg) => (
-              <div key={msg.id} style={{ position: "relative", marginBottom: "30px" }}>
+              <div
+                key={msg.id}
+                style={{ position: "relative", marginBottom: "30px" }}
+              >
                 {msg.reaction && (
                   <div
                     style={{
@@ -202,7 +216,8 @@ const Chat = ({ currentUserId, selectedUser, token, roomName }) => {
                     marginLeft: msg.sender === numericUserId ? "auto" : "50px",
                     maxWidth: "70%",
                     display: "flex",
-                    justifyContent: msg.sender === numericUserId ? "flex-end" : "flex-start",
+                    justifyContent:
+                      msg.sender === numericUserId ? "flex-end" : "flex-start",
                     gap: "10px",
                   }}
                 >
@@ -266,10 +281,7 @@ const Chat = ({ currentUserId, selectedUser, token, roomName }) => {
             onSend={handleSend}
             attachButton
             autoFocus
-            style={{
-              width: "calc(100% - 50px)",
-              marginRight: "50px",
-            }}
+            style={{ width: "calc(100% - 50px)", marginRight: "50px" }}
           />
         </ChatContainer>
 
