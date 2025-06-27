@@ -136,7 +136,7 @@ def conversations_list(request):
                     "type": "client",
                     "username": getattr(other_instance, "username", None),
                     "name": getattr(other_instance, "name", None) or getattr(other_instance, "username", None),
-                    "avatar": other_instance.profile_picture.url if other_instance.profile_picture else None,
+                    "avatar": request.build_absolute_uri(other.profile_picture.url) if other.profile_picture else None,
                     
                 }
             elif other_ct == bs_ct:

@@ -7,11 +7,12 @@ const ConversationList = ({ conversations, onSelect, users }) => {
 
   const getAvatarUrl = (user) => {
     const name = user.name || user.username || "Korisnik";
+    const avatar = user.avatar || user.profile_picture;
 
-    if (user.avatar) {
-      return user.avatar.startsWith("http")
-        ? user.avatar
-        : `${BASE_URL}${user.avatar}`;
+    if (avatar) {
+      return avatar.startsWith("http")
+        ? avatar
+        : `${BASE_URL}${avatar}`;
     }
 
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -29,7 +30,7 @@ const ConversationList = ({ conversations, onSelect, users }) => {
         return (
           <li
             key={idx}
-            onClick={() => onSelect(other)}
+            onClick={() => onSelect({ ...user, avatar: avatarUrl })} // ensure avatar is passed
             style={{
               display: "flex",
               alignItems: "center",
@@ -40,17 +41,16 @@ const ConversationList = ({ conversations, onSelect, users }) => {
           >
             <img
               src={avatarUrl}
-              alt=""
+              alt={user.name}
               style={{ width: 32, height: 32, borderRadius: "50%" }}
               onError={(e) => {
-                const fallback = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
                   user.name || "Korisnik"
                 )}&background=random&color=fff`;
-                e.target.src = fallback;
               }}
             />
             <div style={{ marginLeft: 8, flex: 1 }}>
-              <strong>{user.name || other.name}</strong>
+              <strong>{user.name}</strong>
               <br />
               <span style={{ fontSize: "0.9rem", color: "#555" }}>
                 {conv.last_message}
