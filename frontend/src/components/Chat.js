@@ -75,18 +75,22 @@ const Chat = ({ currentUserId, selectedUser, token, roomName, onNewMessage }) =>
             prev.map((m) => (m.id === data.message_id ? { ...m, reaction: data.reaction } : m))
           );
           break;
-        case "message_history":
-          setMessages(
-            data.messages.map((m) => ({
-              id: m.id,
-              sender: parseInt(m.sender, 10),
-              content: m.message,
-              timestamp: new Date(m.timestamp),
-              reaction: m.reaction || null,
-              status: m.is_read ? "read" : "delivered",
-            }))
-          );
-          break;
+       case "message_history":
+  setMessages(
+    data.messages
+      .slice() // kopija niza
+      .reverse() // najstarije → najnovije
+      .map((m) => ({
+        id: m.id,
+        sender: parseInt(m.sender, 10),
+        content: m.message,
+        timestamp: new Date(m.timestamp),
+        reaction: m.reaction || null,
+        status: m.is_read ? "read" : "delivered",
+      }))
+  );
+  break;
+
         default:
           break;
       }
