@@ -17,7 +17,7 @@ const ChatPage = () => {
     try {
       const resp = await axios.get("http://localhost:8000/api/conversations/", {
         headers: { Authorization: `Token ${token}` },
-        params: { user: user},
+        
         
       });
       setConversations(resp.data);

@@ -68,6 +68,9 @@ def send_message(request):
     
     return Response({"message": "Message sent successfully!"})    
 
+
+
+
 @api_view(["GET"])
 def conversations_list(request):
     auth_header = request.headers.get("Authorization")
@@ -88,24 +91,22 @@ def conversations_list(request):
     if user is None:
         return Response({"detail": "Invalid token."}, status=403)
 
-    # Ovde nastavljaj kao što si imao, sada je user autentifikovan
-    # Svi ContentType za moguce korisnike (koristi se za poređenje)
+    # Dohvatanje ContentType za prepoznavanje modela
     user_ct = ContentType.objects.get_for_model(user)
     client_ct = ContentType.objects.get_for_model(Client)
     bs_ct = ContentType.objects.get_for_model(BusinessSubject)
 
-    # Prvo skup poruka gde je user sender ili receiver
+    # Poruke u kojima je korisnik pošiljalac ili primalac
     messages = Message.objects.filter(
         Q(sender_content_type=user_ct, sender_object_id=user.id) |
         Q(receiver_content_type=user_ct, receiver_object_id=user.id),
         is_deleted=False,
     )
 
-    # ...ostatak koda ostaje isti...
-
     conversations = {}
 
     for msg in messages.order_by("-timestamp"):
+        # Ko je drugi korisnik u konverzaciji?
         if msg.sender_content_type == user_ct and msg.sender_object_id == user.id:
             other_ct = msg.receiver_content_type
             other_id = msg.receiver_object_id
@@ -113,44 +114,43 @@ def conversations_list(request):
             other_ct = msg.sender_content_type
             other_id = msg.sender_object_id
 
-        key = (other_ct.id, other_id)
+        key = f"{other_ct.id}_{other_id}"
         if key not in conversations:
-            other_user_data = {}
-
-            model = other_ct.model_class()
             try:
+                model = other_ct.model_class()
                 other_instance = model.objects.get(id=other_id)
-            except model.DoesNotExist:
+            except Exception as e:
+                print(f"❌ Greška: {e}")
                 continue
 
-            if other_ct == user_ct:
-                other_user_data = {
-                    "id": other_instance.id,
-                    "type": "user",
-                    "username": getattr(other_instance, "username", None),
-                    "name": f"{getattr(other_instance, 'first_name', '')} {getattr(other_instance, 'last_name', '')}".strip(),
-                }
-            elif other_ct == client_ct:
+            # Precizno odredi tip korisnika
+            if other_ct.model_class() == Client:
+                name = f"{getattr(other_instance, 'first_name', '')} {getattr(other_instance, 'last_name', '')}".strip()
+                name = name if name else getattr(other_instance, "username", "Nepoznat korisnik")
                 other_user_data = {
                     "id": other_instance.id,
                     "type": "client",
                     "username": getattr(other_instance, "username", None),
-                    "name": getattr(other_instance, "name", None) or getattr(other_instance, "username", None),
-                    "avatar": request.build_absolute_uri(other.profile_picture.url) if other.profile_picture else None,
-                    
+                    "name": name,
+                    "avatar": request.build_absolute_uri(other_instance.profile_picture.url) if other_instance.profile_picture else None,
                 }
-            elif other_ct == bs_ct:
+
+            elif other_ct.model_class() == BusinessSubject:
                 other_user_data = {
                     "id": other_instance.id,
                     "type": "businesssubject",
                     "name": getattr(other_instance, "name", None) or getattr(other_instance, "nameSportOrganization", None),
-                    "avatar": other_instance.profile_picture.url if other_instance.profile_picture else None,
+                    "avatar": request.build_absolute_uri(other_instance.profile_picture.url) if other_instance.profile_picture else None,
                 }
-            else:
+
+            else:  # fallback na običnog User-a
+                name = f"{getattr(other_instance, 'first_name', '')} {getattr(other_instance, 'last_name', '')}".strip()
                 other_user_data = {
                     "id": other_instance.id,
-                    "type": other_ct.model,
-                    "name": str(other_instance),
+                    "type": "user",
+                    "username": getattr(other_instance, "username", None),
+                    "name": name if name else getattr(other_instance, "username", "Nepoznat korisnik"),
+                    "avatar": request.build_absolute_uri(other_instance.profile_picture.url) if hasattr(other_instance, "profile_picture") and other_instance.profile_picture else None,
                 }
 
             conversations[key] = {
@@ -167,9 +167,10 @@ def conversations_list(request):
                 ).count(),
             }
 
-    conversations_list = sorted(conversations.values(), key=lambda x: x["last_timestamp"], reverse=True)
+    sorted_conversations = sorted(conversations.values(), key=lambda x: x["last_timestamp"], reverse=True)
+    return Response(sorted_conversations)
 
-    return Response(conversations_list)
+
 
 
 @api_view(["GET"])
