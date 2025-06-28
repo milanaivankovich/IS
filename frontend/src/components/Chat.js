@@ -53,14 +53,14 @@ const Chat = ({ currentUserId, selectedUser, token, roomName, onNewMessage }) =>
             content: data.message,
             timestamp: data.timestamp ? new Date(data.timestamp) : new Date(),
             reaction: null,
-            status: "delivered",
+            
           };
           // Callback
           const convUser = senderId === numericUserId ? selectedUser : {
             id: senderId,
             name: selectedUser.name,
             avatar: selectedUser.avatar,
-            online: true,
+            online: false,
           };
           onNewMessage && onNewMessage(convUser);
 
@@ -86,7 +86,7 @@ const Chat = ({ currentUserId, selectedUser, token, roomName, onNewMessage }) =>
         content: m.message,
         timestamp: new Date(m.timestamp),
         reaction: m.reaction || null,
-        status: m.is_read ? "read" : "delivered",
+        
       }))
   );
   break;
@@ -226,9 +226,9 @@ const Chat = ({ currentUserId, selectedUser, token, roomName, onNewMessage }) =>
                   }}
                 >
                   <span>{format(msg.timestamp)}</span>
-                  {msg.sender === numericUserId && (
-                    <span>{msg.status === "read" ? "Pročitano" : "Dostavljeno"}</span>
-                  )}
+                  {msg.sender === numericUserId 
+                    
+                }
                 </div>
 
                 {reactionToMsg === msg.id && (

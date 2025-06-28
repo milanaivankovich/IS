@@ -25,7 +25,7 @@ const UserSearch = ({ onSelect, setAllUsers }) => {
       
 
 ,
-    online: true,
+    online: false,
   })),
   ...(data.business_profiles || []).map((bp) => ({
     id: bp.id,
@@ -33,7 +33,7 @@ const UserSearch = ({ onSelect, setAllUsers }) => {
     avatar: bp.profile_picture
       ? `http://localhost:8000${bp.profile_picture}`
       : `https://ui-avatars.com/api/?name=${encodeURIComponent(bp.nameSportOrganization)}&background=random&color=fff`,
-    online: true,
+    online: false,
   })),
 ];
 
