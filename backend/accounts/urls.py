@@ -2,7 +2,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import get_business_subject_favorite_fields, update_client_favorite_fields, update_business_subject_favorite_fields
+from .views import get_business_subject_favorite_fields, update_client_favorite_fields, update_business_subject_favorite_fields, paypal_webhook, save_subscription
 
 # Set up the router for viewsets
 router = DefaultRouter()
@@ -49,6 +49,10 @@ urlpatterns = [
     path('api/profile/', views.get_profile, name='get_profile'),  # GET the profile of the logged-in user
 
     path('api/search/users/', views.search_users, name='search_users'),
+    path("api/paypal/webhook/", views.paypal_webhook, name='paypal_webhook'),
+    path("api/save-subscription/", views.save_subscription, name='save_subscription'),
+
+
 
     path('api/activate-client/', views.activate_client, name='activate_client'),
     path('api/deactivate-client/', views.deactivate_client, name='deactivate_client'),

@@ -11,6 +11,8 @@ from accounts.authentication import custom_authenticate_bs
 from firebase_admin import auth
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
+import requests
+from django.conf import settings
 
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -28,6 +30,9 @@ from google.auth.transport.requests import Request
 
 from django.http import HttpResponse
 from django.urls import path
+import json
+from django.views.decorators.csrf import csrf_exempt
+
 
 
 from django.utils.crypto import get_random_string
@@ -103,6 +108,32 @@ def verify_firebase_token(token):
     except Exception as e:
         print(f"Token verification failed: {e}")
         return None
+
+def cancel_subscription(subscription_id):
+    token = get_access_token()
+    url = f"https://api-m.sandbox.paypal.com/v1/billing/subscriptions/{subscription_id}/cancel"
+    headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+    resp = requests.post(url, headers=headers, json={"reason": "Korisnik deaktivirao nalog."})
+    return resp.status_code == 204
+
+def get_access_token():
+    auth = (settings.PAYPAL_CLIENT_ID, settings.PAYPAL_SECRET)
+    r = requests.post("https://api-m.sandbox.paypal.com/v1/oauth2/token",
+                      auth=auth, data={"grant_type": "client_credentials"})
+    return r.json().get("access_token")        
+
+@api_view(["POST"])
+def save_subscription(request):
+    sid = request.data.get("subscription_id")
+    email = request.data.get("email")
+    try:
+        bs = BusinessSubject.objects.get(email=email)
+        bs.subscription_id = sid
+        bs.subscription_status = "ACTIVE"
+        bs.save()
+        return Response({"msg":"OK"})
+    except BusinessSubject.DoesNotExist:
+        return Response({"error":"Business not found"}, status=404)    
 
 
 @csrf_exempt
@@ -677,7 +708,23 @@ def login_business_subject(request):
         return Response({"error": "An unexpected error occurred"}, status=500)
 
 
+@csrf_exempt
+def paypal_webhook(request):
+    event = json.loads(request.body)
+    event_type = event.get("event_type")
+    resource = event.get("resource", {})
 
+    if event_type in ("BILLING.SUBSCRIPTION.CANCELLED", "BILLING.SUBSCRIPTION.EXPIRED"):
+        sub_id = resource.get("id")
+        try:
+            bs = BusinessSubject.objects.get(subscription_id=sub_id)
+            bs.is_active = False
+            bs.subscription_status = event_type.split('.')[-1]
+            bs.save()
+            print(f"[Webhook] Deaktiviran: {bs.id}")
+        except BusinessSubject.DoesNotExist:
+            print(f"[Webhook] Pretplata {sub_id} nije pronađena.")
+    return HttpResponse(status=200)
 
 
 # Get logger for debugging

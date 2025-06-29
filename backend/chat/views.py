@@ -139,7 +139,7 @@ def conversations_list(request):
                 other_user_data = {
                     "id": other_instance.id,
                     "type": "businesssubject",
-                    "name": getattr(other_instance, "name", None) or getattr(other_instance, "nameSportOrganization", None),
+                    "name": getattr(other_instance, "name", None) or getattr(other_instance, "business_name", None),
                     "avatar": request.build_absolute_uri(other_instance.profile_picture.url) if other_instance.profile_picture else None,
                 }
 

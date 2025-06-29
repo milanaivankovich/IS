@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import "./RegisterRekreativac.css";
 import logo from '../images/logo.png';
@@ -15,6 +16,7 @@ function RegisterPoslovni() {
 
   const [imageSrc, setImageSrc] = useState(null);
   const [finalImage, setFinalImage] = useState(null);
+
   const [selectedImage, setSelectedImage] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0, width: 50, height: 50 });
   const [zoom, setZoom] = useState(1);
@@ -126,48 +128,77 @@ function RegisterPoslovni() {
       validatePassword(value);
     }
   };
-
-  const submitForm = async () => {
-    if (isStepValid()) {
-      setIsSubmitting(true);
-      try {
-        // Kreiraj FormData objekt
-        const data = new FormData();
-        data.append("nameSportOrganization", formData.nameSportOrganization);
-        data.append("password", formData.password);
-        data.append("confirmPassword", formData.confirmPassword);
-        data.append("email", formData.email);
-
-        // Dodaj sliku, ako postoji
-        if (formData.profile_picture) {
-          data.append("profile_picture", formData.profile_picture, formData.profile_picture.name || "profile_picture.jpg");
-        }
-
-        // Pošalji zahtjev
-        const response = await axios.post("http://localhost:8000/api/business-subject/", data, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-        console.log(response.data);
-        alert("Registracija uspješna! Verifikujte email.");
-        setFormData({
-          nameSportOrganization: "",
-          password: "",
-          confirmPassword: "",
-          email: "",
-          profile_picture: null,
-        });
-        setCurrentStep(0);
-      } catch (error) {
-        console.error("Greška prilikom registracije:", error.response?.data || error.message);
-        alert("Došlo je do greške prilikom registracije. Molimo pokušajte ponovo.");
-      } finally {
-        setIsSubmitting(false);
+const submitForm = async () => {
+  if (isStepValid()) {
+    setIsSubmitting(true);
+    try {
+      const data = new FormData();
+      data.append("nameSportOrganization", formData.nameSportOrganization);
+      data.append("password", formData.password);
+      data.append("confirmPassword", formData.confirmPassword);
+      data.append("email", formData.email);
+      if (formData.profile_picture) {
+        data.append("profile_picture", formData.profile_picture, formData.profile_picture.name || "profile_picture.jpg");
       }
+
+      const response = await axios.post("http://localhost:8000/api/business-subject/", data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log(response.data);
+
+      // ➕ NE vraćamo na početak, nego idemo na PayPal plaćanje
+      alert("Registracija uspješna! Sada izvršite plaćanje da biste aktivirali nalog.");
+      setCurrentStep(4); // ➡️ prelaz na korak 4 (PayPal dugme)
+
+    } catch (error) {
+      console.error("Greška prilikom registracije:", error.response?.data || error.message);
+      alert("Došlo je do greške prilikom registracije. Molimo pokušajte ponovo.");
+    } finally {
+      setIsSubmitting(false);
     }
-  };
+  }
+};
+
+  const [paypalLoaded, setPaypalLoaded] = useState(false);
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "https://www.paypal.com/sdk/js?client-id=AVz-mziUWjFPehTT7yrA6_NiBnJmu8j6wPVQvS_LLugEfVPgbpPjViGFFCGisV7Oa90Rg7tRZQrHDnvE&vault=true&intent=subscription";
+    script.async = true;
+    script.onload = () => setPaypalLoaded(true);
+    document.body.appendChild(script);
+  }, []);
+
+  useEffect(() => {
+  if (currentStep === 4 && paypalLoaded && window.paypal) {
+    // Čisti prethodni sadržaj
+    const container = document.getElementById("paypal-button-container");
+    if (container) {
+      container.innerHTML = "";
+    }
+
+    window.paypal.Buttons({
+      createSubscription: (_, actions) =>
+        actions.subscription.create({ plan_id: "P-9MX26362W3324194YNBQYDJA" }),
+      onApprove: (data, actions) => {
+  console.log("Subscription approved:", data);
+  alert("Registracija uspješna! ID pretplate: " + data.subscriptionID);
+  window.location.href = "/login1";
+},
+
+      onError: err => {
+        console.error("PayPal greška:", err);
+        alert("Greška pri plaćanju. Pokušajte ponovo.");
+      },
+    }).render("#paypal-button-container");
+  }
+}, [currentStep, paypalLoaded]);
+
+
+
 
   return (
     <div className="register-body" style={{ backgroundImage: `url(${background})` }}>
@@ -333,6 +364,12 @@ function RegisterPoslovni() {
               </button>
             </div>
           )}
+           {currentStep === 4 && (
+          <div className="form-step">
+            <h3>Plaćanje članarine (10 EUR mjesečno)</h3>
+            <div id="paypal-button-container" />
+          </div>
+        )}
 
 
 
