@@ -27,8 +27,14 @@ const ChatPage = () => {
   }, [token]);
 
   useEffect(() => {
+  fetchConversations(); // pozovi odmah
+
+  const intervalId = setInterval(() => {
     fetchConversations();
-  }, [fetchConversations]);
+  }, 2000); // svakih 5 sekundi
+
+  return () => clearInterval(intervalId); // čisti interval kad komponenta nestane
+}, [fetchConversations]);
 
   const handleSelectUser = (user) => {
     setSelectedUser(null);
