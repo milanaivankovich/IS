@@ -635,7 +635,7 @@ logger = logging.getLogger(__name__)
 @api_view(["POST"])
 def login_business_subject(request):
     try:
-        # Get username and password from the request
+        # Get email and password from the request
         email = request.data.get("email")
         password = request.data.get("password")
 
@@ -643,7 +643,7 @@ def login_business_subject(request):
         if not email or not password:
             return Response({"error": "Email and password are required"}, status=400)
 
-        # Use the custom authentication function to authenticate the user
+        # Authenticate the user
         user = custom_authenticate_bs(email, password)
 
         if not user:
@@ -652,26 +652,29 @@ def login_business_subject(request):
 
         # Check if the user is active
         if not user.is_active:
-            # Set the user as active
             user.is_active = True
             user.save()
             logger.info(f"Account '{email}' was reactivated during login.")
-           
 
-        # Create or retrieve the token for the user (client or business subject)
+        # Create or retrieve token
         token, created = BusinessSubjectToken.objects.get_or_create(
-            business_subject=user,  # Use 'user' here since both Client and BusinessSubject will be handled
-            defaults={"key": get_random_string(40)}  # Assign a random token key if it's created
+            business_subject=user,
+            defaults={"key": get_random_string(40)}
         )
 
-        # Return the token
-        return Response({"token": token.key}, status=200)
+        # Build response
+        return Response({
+            "token": token.key,
+            "user": {
+                "id": user.id,
+                "username": user.business_name,
+                "profile_picture": request.build_absolute_uri(user.profile_picture.url) if user.profile_picture else None,
+            }
+        }, status=200)
 
     except Exception as e:
         logger.error(f"Unexpected error during login for user '{email}': {str(e)}", exc_info=True)
-        return Response({"error": "An unexpected error occurred"}, status=500)    
-
-
+        return Response({"error": "An unexpected error occurred"}, status=500)
 
 
 
